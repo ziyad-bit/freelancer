@@ -32,12 +32,4 @@ class UserRequest extends FormRequest
 			'password'  => $route == 'signup' ? 'confirmed' : '' . 'required|string|max:50|min:8',
 		];
 	}
-
-	/* protected function prepareForValidation()
-	{
-		$this->merge([
-			'email'    => filter_var($this->email, FILTER_SANITIZE_FULL_SPECIAL_CHARS),
-			'name'     => filter_var($this->name, FILTER_SANITIZE_FULL_SPECIAL_CHARS),
-		]);
-	} */
 }

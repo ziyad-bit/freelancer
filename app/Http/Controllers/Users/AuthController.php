@@ -4,18 +4,24 @@ namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
+use App\Interfaces\Repository\AuthRepositoryInterface;
+use App\Interfaces\Repository\ProfileRepositoryInterface;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
 class AuthController extends Controller
 {
-	public function __construct()
+	private $authRepository;
+	private $profileRepository;
+
+	public function __construct(AuthRepositoryInterface $authRepository, ProfileRepositoryInterface $profileRepository)
 	{
 		$this->middleware('auth')->only(['logout', 'index']);
 		$this->middleware('guest')->except(['logout', 'index']);
+
+		$this->authRepository    = $authRepository;
+		$this->profileRepository = $profileRepository;
 	}
 
 	####################################   getLogin   #####################################
@@ -27,19 +33,15 @@ class AuthController extends Controller
 	####################################   postLogin   #####################################
 	public function postLogin(UserRequest $request):RedirectResponse
 	{
-		$credentials = $request->only('email', 'password');
-
-		if (auth()->attempt($credentials, $request->filled('remember_me'))) {
-			return to_route('home');
-		} else {
-			return to_route('get.login')->with(['error' => 'incorrect password or email']);
-		}
+		return $this->authRepository->login($request);
 	}
 
 	####################################   index   #####################################
 	public function index():View
 	{
-		return view('users.auth.home');
+		$user_info = $this->profileRepository->getUserInfo();
+
+		return view('users.auth.home', compact('user_info'));
 	}
 
 	####################################   create   #####################################
@@ -51,9 +53,7 @@ class AuthController extends Controller
 	####################################   store   #####################################
 	public function store(UserRequest $request):RedirectResponse
 	{
-		$data = $request->safe()->except('password') + ['password' => Hash::make($request->password), 'created_at' => now()];
-
-		$user_id = DB::table('users')->insertGetId($data);
+		$user_id = $this->authRepository->storeUser($request);
 
 		Auth::loginUsingId($user_id);
 

@@ -21,3 +21,5 @@ Route::namespace('Users')->controller('AuthController')->group(function(){
     Route::get('/signup','create')->name('signup');
     Route::post('/signup','store')->name('signup');
 });
+
+Route::resource('profile','Users\ProfileController');

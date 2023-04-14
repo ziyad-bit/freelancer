@@ -2,7 +2,7 @@
     <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm">
         <div class="container">
 
-            <a class="navbar-brand" href="">
+            <a class="navbar-brand" href="{{ route('home') }}">
                 Social Media
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -18,7 +18,7 @@
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
                             <a class="nav-link"
-                                href="">{{ __('profile') }}</a>
+                            href="{{ route('profile.index') }}">{{ __('profile') }}</a>
                         </li>
                     </ul>
                 @endauth
