@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProfileRequest;
 use App\Interfaces\Repository\ProfileRepositoryInterface;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -36,9 +37,11 @@ class ProfileController extends Controller
 	}
 
 	####################################   store   #####################################
-	public function store($request):RedirectResponse
+	public function store(ProfileRequest $request):RedirectResponse
 	{
-		return to_route('');
+		$this->profileRepository->storeUserInfo($request);
+
+		return to_route('profile.index')->with('success', 'you add data successfully');
 	}
 
 	####################################   show   #####################################
@@ -48,15 +51,20 @@ class ProfileController extends Controller
 	}
 
 	####################################   edit   #####################################
-	public function edit(int $id):View
+	public function edit():View
 	{
-		return view('');
+		$countries   = $this->profileRepository->getCountries();
+		$user_info   = $this->profileRepository->getUserInfo();
+
+		return view('users.profile.edit', compact('user_info', 'countries'));
 	}
 
 	####################################   update   #####################################
-	public function update($request, int $id):RedirectResponse
+	public function update(ProfileRequest $request):RedirectResponse
 	{
-		return to_route('');
+		$this->profileRepository->updateUserInfo($request);
+
+		return to_route('profile.edit', 'auth')->with('success', 'you updated profile successfully');
 	}
 
 	####################################   destroy   #####################################

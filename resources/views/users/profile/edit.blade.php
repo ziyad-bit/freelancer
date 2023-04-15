@@ -9,8 +9,9 @@
         <div class="alert alert-danger text-center">{{ Session::get('error') }}</div>
     @endif
 
-    <form method="POST" action="{{ route('profile.store') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('profile.update','auth') }}" enctype="multipart/form-data">
         @csrf
+        @method('put')
 
         <div class="card text-white bg-dark mb-3" style="max-width: 34rem;margin-top: 20px">
             <div class="card-header">{{ __('add group') }}</div>
@@ -20,10 +21,12 @@
                     <label for="exampleInputEmail1">
                         location
                     </label>
-                    <select class="form-select" name="location" aria-label="Default select example">
+                    <select class="form-select"  name="location" aria-label="Default select example">
                         <option value="">...</option>
                         @foreach ($countries as $country)
-                            <option value="{{ $country['name']['common'] }}">{{ $country['name']['common'] }}</option>
+                            <option @selected($country['name']['common'] == $user_info->location) value="{{ $country['name']['common'] }}">
+                                {{ $country['name']['common'] }}
+                            </option>
                         @endforeach
                     </select>
 
@@ -40,8 +43,8 @@
                     </label>
                     <select class="form-select" name="type"  aria-label="Default select example">
                         
-                            <option value="freelancer">freelancer</option>
-                            <option value="client">client</option>
+                            <option @selected('freelancer' == $user_info->type) value="freelancer">freelancer</option>
+                            <option @selected('client' == $user_info->type) value="client">client</option>
                         
                     </select>
 
@@ -56,7 +59,7 @@
                     <label for="exampleInputPassword1">
                         job
                     </label>
-                    <input type="text" name="job" class="form-control">
+                    <input type="text" value="{{ $user_info->job }}" name="job" class="form-control">
                     @error('job')
                         <small style="color: red">
                             {{ $message }}
@@ -68,7 +71,7 @@
                     <label for="exampleInputPassword1">
                         overview
                     </label>
-                    <textarea type="text" name="overview" class="form-control"  cols="30" rows="4"></textarea>
+                    <textarea type="text"  name="overview" class="form-control"  cols="30" rows="4">{{ $user_info->overview }}</textarea>
                     @error('overview')
                         <small style="color: red">
                             {{ $message }}

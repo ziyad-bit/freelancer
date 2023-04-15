@@ -11,17 +11,24 @@
 @endsection
 
 @section('content')
-    <a  class="btn btn-primary" href="{{ route('profile.create') }}" role="button">
-        complete your profile
-    </a>
+    @if (!$user_info)
+        <a class="btn btn-primary" href="{{ route('profile.create') }}" style="margin-left:270px; margin-top:70px;" role="button">
+            complete profile
+        </a>
+
+        @else
+        <a class="btn btn-primary" href="{{ route('profile.edit','auth') }}" style="margin-left:270px; margin-top:70px;" role="button">
+            update profile
+        </a>
+    @endif
 
     <div class="card mb-3 card_profile" style="margin-top: 15px">
         <div class="row no-gutters">
             <div class="col-md-4">
-                <img src="{{ asset('/images/users/' . Auth::user()->image) }}" style="height: 292px;width: 199px"
+                <img src="{{ asset('/storage/images/users/' . Auth::user()->image) }}" style="width: 199px"
                     class="card-img image-profile" alt="..." />
             </div>
-            
+
             <div class="col-md-8">
                 <ul class="list-group ">
                     <li class="list-group-item active">
