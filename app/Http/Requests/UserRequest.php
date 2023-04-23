@@ -27,9 +27,9 @@ class UserRequest extends FormRequest
 		$route = Route::currentRouteName();
 
 		return [
-			'name'      => $route == 'login' ? 'nullable' : 'required' . '|string|max:50|min:3',
-			'email'     => $route == 'login' ? '' : 'unique:users,email' . '|required|email|max:50|min:10|',
-			'password'  => $route == 'signup' ? 'confirmed' : '' . 'required|string|max:50|min:8',
+			'name'      => $route === 'login' ? 'nullable' : 'required' . '|string|max:20|min:3',
+			'email'     => $route === 'login' ? '' : 'unique:users,email' . '|required|email|max:40|min:10|',
+			'password'  => $route === 'signup' ? 'confirmed' : '' . 'required|string|max:30|min:8',
 		];
 	}
 }

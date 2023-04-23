@@ -17,8 +17,8 @@ class RepoServiceProvider extends ServiceProvider
 	 */
 	public function register()
 	{
-		$this->app->bind(AuthRepositoryInterface::class, AuthRepository::class);
-		$this->app->bind(ProfileRepositoryInterface::class, ProfileRepository::class);
+		$this->app->singleton(AuthRepositoryInterface::class, AuthRepository::class);
+		$this->app->singleton(ProfileRepositoryInterface::class, ProfileRepository::class);
 	}
 
 	/**
@@ -28,6 +28,5 @@ class RepoServiceProvider extends ServiceProvider
 	 */
 	public function boot()
 	{
-
 	}
 }

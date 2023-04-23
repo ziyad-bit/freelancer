@@ -22,4 +22,5 @@ Route::namespace('Users')->controller('AuthController')->group(function(){
     Route::post('/signup','store')->name('signup');
 });
 
-Route::resource('profile','Users\ProfileController');
+Route::get('/profile/delete','Users\ProfileController@delete')->name('profile.delete');
+Route::resource('profile','Users\ProfileController')->except(['show']);

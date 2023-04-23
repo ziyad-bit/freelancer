@@ -5,10 +5,11 @@ namespace App\Repositories;
 use App\Http\Requests\ProfileRequest;
 use App\Interfaces\Repository\ProfileRepositoryInterface;
 use App\Traits\UploadPhoto;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Validator;
 
 class ProfileRepository implements ProfileRepositoryInterface
 {
@@ -29,14 +30,6 @@ class ProfileRepository implements ProfileRepositoryInterface
 	public function getUserInfo():object|null
 	{
 		return DB::table('user_infos')->where('user_id', Auth::id())->first();
-	}
-
-	####################################   getCountries   #####################################
-	public function getCountries(): array
-	{
-		$response = Http::get('https://restcountries.com/v3.1/all?fields=name');
-
-		return $response->collect()->sortBy('name')->toArray();
 	}
 
 	####################################   storeUserInfo   #####################################
@@ -66,5 +59,17 @@ class ProfileRepository implements ProfileRepositoryInterface
 
 			DB::table('users')->where('id', $user_id)->update(['image' => $new_image]);
 		}
+	}
+
+	####################################   updateUserInfo   #####################################
+	public function deleteUserInfo(Request $request):void
+	{
+		Validator::make($request->only('password'), [
+			'password' => 'required|current_password|string',
+		])->validate();
+
+		DB::table('users')->where('id', Auth::id())->delete();
+
+		Auth::logout();
 	}
 }

@@ -24,8 +24,8 @@
                     <select class="form-select"  name="location" aria-label="Default select example">
                         <option value="">...</option>
                         @foreach ($countries as $country)
-                            <option @selected($country['name']['common'] == $user_info->location) value="{{ $country['name']['common'] }}">
-                                {{ $country['name']['common'] }}
+                            <option @selected($country == $user_info->location) value="{{ $country }}">
+                                {{ $country }}
                             </option>
                         @endforeach
                     </select>

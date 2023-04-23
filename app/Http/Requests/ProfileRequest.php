@@ -28,7 +28,19 @@ class ProfileRequest extends FormRequest
 			'type'      => 'required|string|max:20|min:3',
 			'job'       => 'required|string|max:30|min:3',
 			'overview'  => 'required|string|max:250|min:3',
-			'image'     => 'required|image|mimes:jpg,gif,jpeg,png,webp|max:14',
+			'image'     => $this->method() === 'PUT' ? 'nullable' : 'required' . '|image|mimes:jpg,gif,jpeg,png,webp|max:20000',
+		];
+	}
+
+		/**
+	 * Get custom attributes for validator errors.
+	 *
+	 * @return array
+	 */
+	public function attributes()
+	{
+		return [
+			'type' => 'this field',
 		];
 	}
 }

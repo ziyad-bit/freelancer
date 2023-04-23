@@ -11,16 +11,26 @@
 @endsection
 
 @section('content')
+    @if (Session::has('error'))
+        <div class="alert alert-danger text-center">{{ Session::get('error') }}</div>
+    @endif
+    
     @if (!$user_info)
-        <a class="btn btn-primary" href="{{ route('profile.create') }}" style="margin-left:270px; margin-top:70px;" role="button">
+        <a class="btn btn-primary" href="{{ route('profile.create') }}" style="margin-left:270px; margin-top:70px;"
+            role="button">
             complete profile
         </a>
-
-        @else
-        <a class="btn btn-primary" href="{{ route('profile.edit','auth') }}" style="margin-left:270px; margin-top:70px;" role="button">
+    @else
+        <a class="btn btn-primary" href="{{ route('profile.edit', 'auth') }}" style="margin-left:270px; margin-top:70px;"
+            role="button">
             update profile
         </a>
     @endif
+
+    <a class="btn btn-danger" href="{{ route('profile.delete') }}" style="margin-left:270px; margin-top:70px;"
+            role="button">
+            delete account
+        </a>
 
     <div class="card mb-3 card_profile" style="margin-top: 15px">
         <div class="row no-gutters">

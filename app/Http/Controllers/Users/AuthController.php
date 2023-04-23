@@ -65,6 +65,6 @@ class AuthController extends Controller
 	{
 		Auth::logout();
 
-		return to_route('get.login');
+		return to_route('login');
 	}
 }

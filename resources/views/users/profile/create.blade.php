@@ -23,7 +23,7 @@
                     <select class="form-select" name="location" aria-label="Default select example">
                         <option value="">...</option>
                         @foreach ($countries as $country)
-                            <option value="{{ $country['name']['common'] }}">{{ $country['name']['common'] }}</option>
+                            <option value="{{ $country }}">{{ $country }}</option>
                         @endforeach
                     </select>
 
@@ -40,6 +40,7 @@
                     </label>
                     <select class="form-select" name="type"  aria-label="Default select example">
                         
+                            <option value="">...</option>
                             <option value="freelancer">freelancer</option>
                             <option value="client">client</option>
                         

@@ -5,16 +5,21 @@ namespace App\Http\Controllers\Users;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProfileRequest;
 use App\Interfaces\Repository\ProfileRepositoryInterface;
+use App\Traits\GetCountries;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
+	use GetCountries;
+
 	private $profileRepository;
 
 	public function __construct(ProfileRepositoryInterface $profileRepository)
 	{
 		$this->middleware('auth');
+		$this->middleware('profile')->only(['create', 'store']);
 
 		$this->profileRepository = $profileRepository;
 	}
@@ -31,7 +36,7 @@ class ProfileController extends Controller
 	####################################   create   #####################################
 	public function create():View
 	{
-		$countries = $this->profileRepository->getCountries();
+		$countries = $this->getCountries();
 
 		return view('users.profile.create', compact('countries'));
 	}
@@ -44,16 +49,10 @@ class ProfileController extends Controller
 		return to_route('profile.index')->with('success', 'you add data successfully');
 	}
 
-	####################################   show   #####################################
-	public function show(int $id):View
-	{
-		return view('');
-	}
-
 	####################################   edit   #####################################
 	public function edit():View
 	{
-		$countries   = $this->profileRepository->getCountries();
+		$countries   = $this->getCountries();
 		$user_info   = $this->profileRepository->getUserInfo();
 
 		return view('users.profile.edit', compact('user_info', 'countries'));
@@ -67,9 +66,17 @@ class ProfileController extends Controller
 		return to_route('profile.edit', 'auth')->with('success', 'you updated profile successfully');
 	}
 
-	####################################   destroy   #####################################
-	public function destroy(int $id):RedirectResponse
+	####################################   show   #####################################
+	public function delete():View
 	{
-		return to_route('');
+		return view('users.profile.delete');
+	}
+
+	####################################   destroy   #####################################
+	public function destroy(Request $request):RedirectResponse
+	{
+		$this->profileRepository->deleteUserInfo($request);
+
+		return to_route('login');
 	}
 }
