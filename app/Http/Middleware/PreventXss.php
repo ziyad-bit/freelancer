@@ -20,9 +20,9 @@ class PreventXss
 		$inputs = $request->input();
 
 		if ($inputs != []) {
-			foreach ($inputs as $key => $val) {
-				$inputs[$key] = strip_tags($val);
-			}
+			array_walk_recursive($inputs, function ($inputs) {
+				$inputs = strip_tags($inputs);
+			});
 
 			$request->merge($inputs);
 		}

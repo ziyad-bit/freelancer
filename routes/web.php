@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+####################################   Auth   #####################################
 Route::namespace('Users')->controller('AuthController')->group(function(){
     Route::get('/login','getLogin')->name('login');
     Route::post('/login','postLogin')->name('login');
@@ -22,5 +23,9 @@ Route::namespace('Users')->controller('AuthController')->group(function(){
     Route::post('/signup','store')->name('signup');
 });
 
+####################################   Profile   #####################################
 Route::get('/profile/delete','Users\ProfileController@delete')->name('profile.delete');
 Route::resource('profile','Users\ProfileController')->except(['show']);
+
+####################################   Skill   #####################################
+Route::resource('skill','Users\SkillController')->except(['show']);

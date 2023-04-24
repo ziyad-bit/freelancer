@@ -19,7 +19,7 @@
                                 class="col-md-4 col-form-label text-md-end">{{ __('E-Mail Address') }}</label>
 
                             <div class="col-md-6">
-                                <input id="email"  value="maryam10@example.org"
+                                <input id="email"  value="abel.senger@example.net"
                                     class="form-control" name="email"
                                     value="{{ old('email') }}" required autocomplete="email" autofocus>
                             </div>

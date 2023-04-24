@@ -14,7 +14,7 @@
     @if (Session::has('error'))
         <div class="alert alert-danger text-center">{{ Session::get('error') }}</div>
     @endif
-    
+
     @if (!$user_info)
         <a class="btn btn-primary" href="{{ route('profile.create') }}" style="margin-left:270px; margin-top:70px;"
             role="button">
@@ -27,10 +27,10 @@
         </a>
     @endif
 
-    <a class="btn btn-danger" href="{{ route('profile.delete') }}" style="margin-left:270px; margin-top:70px;"
-            role="button">
-            delete account
-        </a>
+    <a class="btn btn-danger" href="{{ route('profile.delete') }}" style="margin-left:313px; margin-top:70px;"
+        role="button">
+        delete account
+    </a>
 
     <div class="card mb-3 card_profile" style="margin-top: 15px">
         <div class="row no-gutters">
@@ -102,6 +102,12 @@
 
     @if ($user_skills)
         <h2>skills</h2>
+        
+        <a class="btn btn-primary" href="{{ route('skill.create') }}" style="margin-left:270px;"
+            role="button">
+            add skills
+        </a>
+
         <ol class="list-group list-group-numbered" style="margin-left: 30px;width: 20%">
             @foreach ($user_skills as $user_skill)
                 <li class="list-group-item">{{ $user_skill->skill }}</li>
