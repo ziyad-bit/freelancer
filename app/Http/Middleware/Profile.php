@@ -25,6 +25,7 @@ class Profile
 	 */
 	public function handle(Request $request, Closure $next)
 	{
+		//store
 		if ($this->profileRepository->getUserInfo()) {
 			return to_route('profile.index')->with('error', 'something went wrong');
 		}

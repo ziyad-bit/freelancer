@@ -1,16 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
-    
-        <div class="alert alert-success text-center success_msg" style="display:none"></div>
-    
+    <input type="hidden" value="{{ route('skill.store') }}" id="store_route">
+
+    <div class="alert alert-success text-center success_msg" style="display:none"></div>
 
     @if (Session::has('error'))
         <div class="alert alert-danger text-center">{{ Session::get('error') }}</div>
     @endif
 
     <input type="hidden" value="{{ $skills }}" id="skills_input">
-    <input type="hidden" value="{{ route('skill.store') }}" id="store_route">
 
     <form id="skill_form">
         <div class="card text-white bg-dark mb-3" style="max-width: 34rem;margin-top: 20px">
@@ -25,7 +24,7 @@
                     <label for="exampleInputEmail1">
                         1- skill
                     </label>
-                    <input list="skills" name="skills_name[1]" class="form-control">
+                    <input list="skills" name="skills_name[1]" class="form-control input">
 
                     <datalist id="skills">
                         @forelse ($skills as $skill)

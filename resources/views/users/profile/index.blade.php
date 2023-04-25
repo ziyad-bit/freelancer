@@ -11,9 +11,14 @@
 @endsection
 
 @section('content')
+    <input type="hidden" value="{{ route('skill.destroy', 'id') }}" id="delete_route">
+
     @if (Session::has('error'))
         <div class="alert alert-danger text-center">{{ Session::get('error') }}</div>
     @endif
+
+    
+    <div class="alert alert-success text-center success_msg" style="display: none"></div>
 
     @if (!$user_info)
         <a class="btn btn-primary" href="{{ route('profile.create') }}" style="margin-left:270px; margin-top:70px;"
@@ -101,18 +106,26 @@
     <p style="margin-left: 30px"></p>
 
     @if ($user_skills)
+        <div class="alert alert-danger text-center err_msg" style="display: none"></div>
         <h2>skills</h2>
-        
-        <a class="btn btn-primary" href="{{ route('skill.create') }}" style="margin-left:270px;"
-            role="button">
+
+        <a class="btn btn-primary" href="{{ route('skill.create') }}" style="margin-left:270px;margin-top: -76px" role="button">
             add skills
         </a>
 
-        <ol class="list-group list-group-numbered" style="margin-left: 30px;width: 20%">
+        <ol class="list-group list-group-numbered " style="margin-left: 30px;width: 20%">
             @foreach ($user_skills as $user_skill)
-                <li class="list-group-item">{{ $user_skill->skill }}</li>
+                <li class="list-group-item user_skill{{ $user_skill->id }}">{{ $user_skill->skill }}
+                    <button class="btn btn-danger delete_btn" id="{{ $user_skill->id }}" style="float: right;">
+                        delete
+                    </button>
+                </li>
             @endforeach
         </ol>
     @endif
 
+@endsection
+
+@section('script')
+    <script src="{{ asset('js/profile/index.js') }}"></script>
 @endsection

@@ -8,7 +8,7 @@ generalEventListener('click', '.add_button', e => {
                     <label for="exampleInputEmail1">
                     ${number}- skill
                     </label>
-                    <input list="skills" name="skills_name[${number}]" class="form-control">
+                    <input list="skills" name="skills_name[${number}]" class="form-control input">
 
                         <small style="color: red" class="errors" id="skills_name.${number}_err">
                             
@@ -41,7 +41,6 @@ button.onclick = function () {
                 formData.set(pair[0], skill.id)
             }
         }
-
     }
 
     axios.post(url, formData)
@@ -49,12 +48,18 @@ button.onclick = function () {
             if (res.status == 200) {
                 let success_msg   = res.data.success;
 
-                document.querySelector('.errors').style.display='none'
+                document.querySelector('.errors').style.display='none';
+                
 
-                const success_ele = document.querySelector('.success_msg');
+                const success_ele   = document.querySelector('.success_msg'),
+                        inputs      = document.getElementsByClassName('input');
 
-                success_ele.textContent=success_msg;
-                success_ele.style.display='';
+                for (let i = 0; i < inputs.length; i++) {
+                    inputs[i].value='';
+                }
+
+                success_ele.textContent   = success_msg;
+                success_ele.style.display = '';
             }
         })
         .catch(err=>{
@@ -70,5 +75,3 @@ button.onclick = function () {
             }
         });
 }
-
-

@@ -30,7 +30,7 @@ class SkillRequest extends FormRequest
 
 		return [
 			'skills_name'   => 'required|array|min:1',
-			'skills_name.*' => ['distinct', 'exists:skills,id', Rule::notIn($skills_id)]
+			'skills_name.*' => ['distinct', 'exists:skills,id', Rule::notIn($skills_id)],
 		];
 	}
 

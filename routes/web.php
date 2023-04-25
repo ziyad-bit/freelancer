@@ -28,4 +28,4 @@ Route::get('/profile/delete','Users\ProfileController@delete')->name('profile.de
 Route::resource('profile','Users\ProfileController')->except(['show']);
 
 ####################################   Skill   #####################################
-Route::resource('skill','Users\SkillController')->except(['show']);
+Route::resource('skill','Users\SkillController')->except(['show','edit','update']);

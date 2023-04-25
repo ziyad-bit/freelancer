@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SkillRequest;
 use App\Interfaces\Repository\SkillRepositoryInterface;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class SkillController extends Controller
@@ -18,6 +17,9 @@ class SkillController extends Controller
 		$this->middleware('auth');
 
 		$this->skillRepository = $skillRepository;
+
+		$id = basename(url()->full());
+		$this->middleware('skill:' . $id)->only('destroy');
 	}
 
 	####################################   create   #####################################
@@ -36,27 +38,11 @@ class SkillController extends Controller
 		return response()->json(['success' => 'you added skills successfully']);
 	}
 
-	####################################   show   #####################################
-	public function show(int $id):View
-	{
-		return view('');
-	}
-
-	####################################   edit   #####################################
-	public function edit(int $id):View
-	{
-		return view('');
-	}
-
-	####################################   update   #####################################
-	public function update($request, int $id):RedirectResponse
-	{
-		return to_route('');
-	}
-
 	####################################   destroy   #####################################
-	public function destroy(int $id):RedirectResponse
+	public function destroy(int $id):JsonResponse
 	{
-		return to_route('');
+		$this->skillRepository->deleteSkill($id);
+
+		return response()->json();
 	}
 }
