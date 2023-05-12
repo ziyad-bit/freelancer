@@ -3,15 +3,26 @@
 namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
+use App\Interfaces\Repository\ProjectRepositoryInterface;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ProjectController extends Controller
 {
-	####################################   index   #####################################
-	public function index():View
+	private $ProjectRepository;
+
+	public function __construct(ProjectRepositoryInterface $ProjectRepository)
 	{
-		return view('');
+		$this->middleware('auth');
+
+		$this->ProjectRepository = $ProjectRepository;
+	}
+	####################################   index   #####################################
+	public function index_projects(Request $request):View|JsonResponse
+	{
+		return $this->ProjectRepository->getProjects($request);
 	}
 
 	####################################   create   #####################################

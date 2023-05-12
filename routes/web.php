@@ -29,3 +29,7 @@ Route::resource('profile','Users\ProfileController')->except(['show']);
 
 ####################################   Skill   #####################################
 Route::resource('skill','Users\SkillController')->except(['show','edit','update']);
+
+####################################   Project   #####################################
+Route::any('/project/index-projects','Users\ProjectController@index_projects')->name('project.index_posts');
+Route::resource('project','Users\ProjectController')->except(['show','index']);

@@ -14,9 +14,9 @@ return new class extends Migration {
 	{
 		Schema::create('user_infos', function (Blueprint $table) {
 			$table->id();
-			$table->string('location', 20);
+			$table->string('location', 100);
 			$table->decimal('review', 2, 1, true)->default(0);
-			$table->string('job', 30);
+			$table->string('job', 50);
 			$table->text('overview');
 			$table->bigInteger('card_num', false, true);
 			$table->enum('type', ['client', 'freelancer']);

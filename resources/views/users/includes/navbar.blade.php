@@ -2,12 +2,11 @@
     <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm">
         <div class="container">
 
-            <a class="navbar-brand" href="{{ route('home') }}">
+            <a class="navbar-brand" href="{{ route('project.index_posts') }}">
                 Social Media
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="{{ __('Toggle navigation') }}">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
@@ -17,8 +16,11 @@
                 @auth
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link"
-                            href="{{ route('profile.index') }}">{{ __('profile') }}</a>
+                            <a class="nav-link" href="{{ route('profile.index') }}">{{ __('profile') }}</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('project.index_posts') }}">projects</a>
                         </li>
                     </ul>
                 @endauth
@@ -35,7 +37,6 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('signup') }}">{{ __('signup') }}</a>
                         </li>
-                        
                     @else
                         <form method="POST" id="search_form" action="" class="d-flex">
                             @csrf
@@ -51,8 +52,7 @@
                         </form>
 
                         <i class="fas fa-bell" style="color: white;font-size: larger;position: relative;" id="bell">
-                            <span id="notifs_count" class="rounded-circle"
-                                style="display: none"></span>
+                            <span id="notifs_count" class="rounded-circle" style="display: none"></span>
                         </i>
 
 
@@ -63,15 +63,15 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                            
 
-                                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
+
+                                <a class="dropdown-item" href="{{ route('logout') }}"
+                                    onclick="event.preventDefault();
                                                     document.getElementById('logout-form').submit();">
                                     {{ __('logout') }}
                                 </a>
 
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                    class="d-none">
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                     @csrf
                                 </form>
                             </div>
