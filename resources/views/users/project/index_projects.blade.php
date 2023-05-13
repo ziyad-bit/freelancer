@@ -1,4 +1,4 @@
-@foreach ($projects as $project)
+@forelse ($projects as $project)
     <div class="card-body">
         <h5 class="card-title">{{ $project->title }}</h5>
 
@@ -12,6 +12,12 @@
 
         <p class="card-text ">{{ $project->content }}</p>
 
+        @foreach (explode(',', $project->skills_names) as $skill)
+            <span  class="badge text-bg-secondary" style="font-size:medium">
+                {{ $skill }}
+            </span>
+        @endforeach
+
         <div class="text-muted">
             @if ($project->card_num)
                 <span style="color: green">payment verified </span>
@@ -24,4 +30,6 @@
     </div>
 
     <hr>
-@endforeach
+@empty
+    <p>no projects</p>
+@endforelse
