@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
 			$this->call(Project_infoSeeder::class); 
 		// $this->call(SkillSeeder::class);
 		/*   $this->call(User_skillSeeder::class);
-		$this->call(OfferSeeder::class); */
+		$this->call(proposalSeeder::class); */
 		// $this->call(TransactionSeeder::class);
 		/* $this->call(MessageSeeder::class);
 		$this->call(NotificationSeeder::class);

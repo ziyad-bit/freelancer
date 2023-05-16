@@ -8,7 +8,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
-class OfferSeeder extends Seeder
+class proposalSeeder extends Seeder
 {
 	use DateRandom;
 
@@ -26,7 +26,7 @@ class OfferSeeder extends Seeder
 		for ($i = 0; $i < 100; $i++) {
 			$date   = $this->dateRandom();
 
-			DB::table('offers')->insert([
+			DB::table('proposals')->insert([
 				'content'     => $faker->paragraph(),
 				'price'       => $faker->numberBetween(100, 200),
 				'approval'    => Arr::random(['approved', 'refused']),

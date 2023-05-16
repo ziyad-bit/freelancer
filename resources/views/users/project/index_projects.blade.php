@@ -1,6 +1,6 @@
 @forelse ($projects as $project)
     <div class="card-body">
-        <h5 class="card-title">{{ $project->title }}</h5>
+        <h5 class="card-title">{{ $project->title }} {{$project->id}}</h5>
 
         <div class="text-muted" style="margin-bottom: 15px">
             <span>budget : ${{ $project->min_price }} - ${{ $project->max_price }}</span>
@@ -18,7 +18,11 @@
             </span>
         @endforeach
 
-        <div class="text-muted">
+        <div class="text-muted" style="margin-top: 10px">
+            {{ $project->proposals_count }} proposals 
+        </div>
+
+        <div class="text-muted" style="margin-top: 10px">
             @if ($project->card_num)
                 <span style="color: green">payment verified </span>
             @else

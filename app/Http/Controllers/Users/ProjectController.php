@@ -40,7 +40,9 @@ class ProjectController extends Controller
 	####################################   show   #####################################
 	public function show(int $id):View
 	{
-		return view('');
+		$project=$this->ProjectRepository->showProject($id);
+
+		return view('users.project.show');
 	}
 
 	####################################   edit   #####################################
