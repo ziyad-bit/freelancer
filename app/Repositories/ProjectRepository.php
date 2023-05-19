@@ -19,11 +19,11 @@ class ProjectRepository implements ProjectRepositoryInterface
 	####################################   getProjects   #####################################
 	public function getProjects(Request $request):View|JsonResponse
 	{
-		$user_skills = DB::table('users')
-				->where('users.id', Auth::id())
-				->join('user_skill', 'users.id', '=', 'user_skill.user_id')
-				->join('skills', 'skills.id', '=', 'user_skill.skill_id')
-				->pluck('skill')
+		$projects_ids=DB::table('projects')
+				->join('project_skill', 'projects.id', '=', 'project_skill.project_id')
+				->join('user_skill', 'project_skill.skill_id', '=', 'user_skill.skill_id')
+				->where('user_skill.user_id', Auth::user()->id)
+				->pluck('projects.id')
 				->toArray();
 
 		$projects = DB::table('projects')
@@ -32,20 +32,22 @@ class ProjectRepository implements ProjectRepositoryInterface
 					'project_infos.*',
 					'location',
 					'card_num',
+					'review',
 					DB::raw('GROUP_CONCAT(DISTINCT skill) as skills_names'),
 					DB::raw('COUNT(DISTINCT proposals.id) as proposals_count')
 				)
 				->join('project_skill', 'projects.id', '=', 'project_skill.project_id')
-				->join('skills','skills.id',  '=', 'project_skill.skill_id')
 				->join('project_infos', 'projects.id', '=', 'project_infos.project_id')
+				->join('skills',  'project_skill.skill_id', '=','skills.id')
 				->join('users', 'users.id', '=', 'projects.user_id')
 				->join('user_infos', 'users.id', '=', 'user_infos.user_id')
 				->join('proposals', 'projects.id', '=', 'proposals.project_id')
-				->whereIn('skill',$user_skills)
+				->join('user_skill', 'project_skill.skill_id', '=', 'user_skill.skill_id')
+				->whereIn('projects.id', $projects_ids)
 				->groupBy('projects.id')
 				->latest()
 				->cursorPaginate(10);
-
+		
 		$cursor = $this->getCursor($projects);
 
 		if ($request->ajax()) {
@@ -82,6 +84,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 					'location',
 					'card_num',
 					'name',
+					'review',
 					DB::raw('GROUP_CONCAT(DISTINCT skill) as skills_names'),
 					DB::raw('COUNT(DISTINCT proposals.id) as proposals_count')
 				)
@@ -90,15 +93,18 @@ class ProjectRepository implements ProjectRepositoryInterface
 				->join('project_infos', 'projects.id', '=', 'project_infos.project_id')
 				->join('users', 'users.id', '=', 'projects.user_id')
 				->join('user_infos', 'users.id', '=', 'user_infos.user_id')
-				->leftjoin('proposals', 'projects.id', '=', 'proposals.project_id')
+				->join('proposals', 'projects.id', '=', 'proposals.project_id')
 				->where('projects.id',$id)
 				->groupBy('projects.id')
 				->first();
 				
-		if (!empty($project)) {
+		if ($project) {
 			$auth_proposal = DB::table('proposals')
-							->where('proposals.project_id', '=', $project->id)
-							->get();
+						->select('proposals.*','location','card_num','name','review',)
+						->join('users', 'users.id', '=', 'proposals.user_id')
+						->join('user_infos', 'users.id', '=', 'user_infos.user_id')
+						->where(['project_id'=> $project->id ,'proposals.user_id'=>Auth::id()])
+						->first();
 
 			$project->proposal = $auth_proposal;
 		}

@@ -42,7 +42,7 @@ class ProjectController extends Controller
 	{
 		$project=$this->ProjectRepository->showProject($id);
 
-		return view('users.project.show');
+		return view('users.project.show', compact('project'));
 	}
 
 	####################################   edit   #####################################

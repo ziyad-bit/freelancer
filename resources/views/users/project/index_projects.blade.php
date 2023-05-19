@@ -1,6 +1,10 @@
 @forelse ($projects as $project)
-    <div class="card-body">
-        <h5 class="card-title">{{ $project->title }} {{$project->id}}</h5>
+    <div class="card-body" >
+        <a href="{{ route('project.show',$project->id) }}" style="text-decoration:none">
+            <h5 class="card-title">
+                {{ $project->title }}
+            </h5>
+        </a>
 
         <div class="text-muted" style="margin-bottom: 15px">
             <span>budget : ${{ $project->min_price }} - ${{ $project->max_price }}</span>
@@ -12,14 +16,16 @@
 
         <p class="card-text ">{{ $project->content }}</p>
 
-        @foreach (explode(',', $project->skills_names) as $skill)
-            <span  class="badge text-bg-secondary" style="font-size:medium">
+        @forelse ( explode(',',$project->skills_names)  as $skill )
+            <span class="badge text-bg-secondary" style="font-size:medium">
                 {{ $skill }}
             </span>
-        @endforeach
+        @empty
+            <p>no skill</p>
+        @endforelse
 
         <div class="text-muted" style="margin-top: 10px">
-            {{ $project->proposals_count }} proposals 
+            {{ $project->proposals_count }} proposals
         </div>
 
         <div class="text-muted" style="margin-top: 10px">
@@ -30,6 +36,8 @@
             @endif
 
             <span style="margin-left: 10px">location: {{ $project->location }}</span>
+
+            <span style="margin-left: 10px">review: {{ $project->review }}</span>
         </div>
     </div>
 

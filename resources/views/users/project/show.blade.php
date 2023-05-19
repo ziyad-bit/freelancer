@@ -11,27 +11,75 @@
 @endsection
 
 @section('content')
-    <input type="hidden" value="{{ route('project.index_posts') }}" class="index_url">
+    <div class="card-body" style="margin-top: 25px">
+        <h5 class="card-title">{{ $project->title }}</h5>
 
-    <div class="card" style="margin-top: 25px">
-        <div class="card-header">
-            <h3>Jobs you might like</h3>
+        <div class="text-muted" style="margin-bottom: 15px">
+            <span>budget : ${{ $project->min_price }} - ${{ $project->max_price }}</span>
+            <span style="margin-left: 10px">experience: {{ $project->exp }}</span>
+            <span style="margin-left: 10px">time: {{ $project->num_of_days }} days</span>
+            <span style="margin-left: 10px">posted:
+                {{ \Carbon\Carbon::parse($project->created_at)->diffForhumans() }}</span>
         </div>
 
-        <div class="parent_projects" data-cursor="{{ $cursor }}">
-            @include('users.project.index_projects')
-        </div>
-        
+        <p class="card-text ">{{ $project->content }}</p>
 
-        <div class="d-flex justify-content-center">
-            <div class="alert alert-danger err_msg" style="display: none"></div>
+        @foreach (explode(',', $project->skills_names) as $skill)
+            <span class="badge text-bg-secondary" style="font-size:medium">
+                {{ $skill }}
+            </span>
+        @endforeach
 
-            <button class="btn btn-primary submit_btn" style="width: 120px;margin-bottom: 25px" role="button">
-                load more
-            </button>
+        <div class="text-muted" style="margin-top: 10px">
+            {{ $project->proposals_count }} proposals
         </div>
-        
+
+        <div class="text-muted" style="margin-top: 10px">
+            @if ($project->card_num)
+                <span style="color: green">payment verified </span>
+            @else
+                <span>payment unverified </span>
+            @endif
+
+            <span style="margin-left: 10px">location: {{ $project->location }}</span>
+
+            <span style="margin-left: 10px">name: {{ $project->name }}</span>
+
+            <span style="margin-left: 10px">review: {{ $project->review }}</span>
+        </div>
     </div>
+
+    <hr>
+
+    <h3 class="text-center">proposals</h3>
+
+    @if ($project->proposal)
+        <div class="card-body" style="margin-top: 25px">
+            <div class="text-muted" style="margin-bottom: 15px">
+                <span> ${{ $project->proposal->price }}</span>
+                <span style="margin-left: 10px">time: {{ $project->proposal->num_of_days }} days</span>
+                <span style="margin-left: 10px">posted:
+                    {{ \Carbon\Carbon::parse($project->proposal->created_at)->diffForhumans() }}</span>
+            </div>
+
+            <p class="card-text ">{{ $project->proposal->content }}</p>
+
+            <div class="text-muted" style="margin-top: 10px">
+                @if ($project->proposal->card_num)
+                    <span style="color: green">payment verified </span>
+                @else
+                    <span>payment unverified </span>
+                @endif
+
+                <span style="margin-left: 10px">location: {{ $project->proposal->location }}</span>
+
+                <span style="margin-left: 10px">name: {{ $project->proposal->name }}</span>
+
+                <span style="margin-left: 10px">review: {{ $project->proposal->review }}</span>
+            </div>
+        </div>
+    @endif
+
 @endsection
 
 @section('script')
