@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Skill;
 use App\Models\Project;
+use App\Models\Skill;
 use Illuminate\Database\Seeder;
 
 class Project_skillSeeder extends Seeder
