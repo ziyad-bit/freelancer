@@ -35,13 +35,12 @@ class ProjectRepository implements ProjectRepositoryInterface
 					DB::raw('GROUP_CONCAT(DISTINCT skill) as skills_names'),
 					DB::raw('COUNT(DISTINCT proposals.id) as proposals_count')
 				)
-				->join('project_skill', 'projects.id', '=', 'project_skill.project_id')
 				->join('project_infos', 'projects.id', '=', 'project_infos.project_id')
+				->join('project_skill', 'projects.id', '=', 'project_skill.project_id')
 				->join('skills', 'project_skill.skill_id', '=', 'skills.id')
 				->join('users', 'users.id', '=', 'projects.user_id')
 				->join('user_infos', 'users.id', '=', 'user_infos.user_id')
 				->join('proposals', 'projects.id', '=', 'proposals.project_id')
-				->join('user_skill', 'project_skill.skill_id', '=', 'user_skill.skill_id')
 				->whereIn('projects.id', $projects_ids)
 				->groupBy('projects.id')
 				->latest()
@@ -61,14 +60,27 @@ class ProjectRepository implements ProjectRepositoryInterface
 	####################################   storeProject   #####################################
 	public function storeProject(ProjectRequest $request):void
 	{
-		$Projects    = $request->input('Projects_name');
+		$project_data = $request->safe()->only(['title', 'content']) + ['user_id' => Auth::id(), 'created_at' => now()];
+		$project_id   = DB::table('projects')->insertGetId($project_data);
 
-		$Projects_arr = [];
-		foreach ($Projects as $Project) {
-			$Projects_arr[] = ['Project_id' => $Project, 'user_id' => Auth::id()];
+		$project_info_data = $request->safe()->except(['title', 'content']) + ['project_id' => $project_id];
+
+		DB::table('project_infos')->insert($project_info_data);
+
+		$files_arr = [];
+		$files     = $request->input('files');
+
+		if ($files != []) {
+			foreach ($files as $file) {
+				$files_arr[] = [
+					'name'       => $file,
+					'project_id' => $project_id,
+					'created_at' => now(),
+				];
+			}
+
+			DB::table('project_files')->insert($files_arr);
 		}
-
-		DB::table('user_Project')->insert($Projects_arr);
 	}
 
 	####################################   showProject   #####################################

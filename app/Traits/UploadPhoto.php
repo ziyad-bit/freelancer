@@ -7,7 +7,7 @@ use Intervention\Image\Facades\Image;
 
 trait UploadPhoto
 {
-	public function uploadPhoto(object $request, int $width = null, string $path = 'users', int $height = null):string
+	public function uploadPhotoWithResize(object $request, int $width = null, string $path, int $height = null):string
 	{
 		$file = $request->file('image');
 		$name = $file->hashName();
@@ -25,7 +25,7 @@ trait UploadPhoto
 	{
 		Storage::delete('images/' . $path . '/' . $old_image);
 
-		$image = $this->uploadPhoto($request, $width, $path, $height);
+		$image = $this->uploadPhotoWithResize($request, $width, $path, $height);
 
 		return $image;
 	}

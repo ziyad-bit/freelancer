@@ -12,12 +12,11 @@ return new class extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('project_infos', function (Blueprint $table) {
-			$table->smallInteger('min_price', false, true);
-			$table->smallInteger('max_price', false, true);
-			$table->tinyInteger('num_of_days', false, true);
-			$table->enum('exp', ['beginer', 'intermediate', 'experienced']);
+		Schema::create('project_files', function (Blueprint $table) {
+			$table->bigIncrements('id');
+			$table->string('name', 80);
 			$table->foreignId('project_id')->constrained('projects')->cascadeOnDelete()->cascadeOnUpdate();
+			$table->timestamps();
 		});
 	}
 
@@ -28,6 +27,6 @@ return new class extends Migration {
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('project_infos');
+		Schema::dropIfExists('project_files');
 	}
 };

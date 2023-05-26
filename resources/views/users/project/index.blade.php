@@ -13,6 +13,10 @@
 @section('content')
     <input type="hidden" value="{{ route('project.index_posts') }}" class="index_url">
 
+    <a class="btn btn-primary " href="{{ route('project.create') }}" style="margin-top: 25px" role="button">
+        add project
+    </a>
+
     <div class="card" style="margin-top: 25px">
         <div class="card-header">
             <h3>Jobs you might like</h3>
