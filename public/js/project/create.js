@@ -7,11 +7,11 @@ new Dropzone('#image_upload', {
 
     success:function(data){
         let response      = JSON.parse(data.xhr.response);
-        let image_name    = response.image_name;
+        let image_name    = response.file_name;
         let original_name = response.original_name;
         let form_ele      = document.getElementById('form');
 
-        const html = `<input type="hidden" id="${original_name}" name="files[]" value="${image_name}">`;
+        const html = `<input type="hidden" id="${original_name}" name="files[]" value="${'image_'+image_name}">`;
 
         form_ele.insertAdjacentHTML('beforeend',html);
     },
@@ -38,7 +38,7 @@ new Dropzone('#file_upload', {
         let original_name = response.original_name;
         let form_ele      = document.getElementById('form');
 
-        const html = `<input type="hidden" id="${original_name}" name="files[]" value="${file_name}">`;
+        const html = `<input type="hidden" id="${original_name}" name="files[]" value="${'files_'+file_name}">`;
 
         form_ele.insertAdjacentHTML('beforeend',html);
     },
@@ -64,7 +64,7 @@ new Dropzone('#video_upload', {
         let original_name = response.original_name;
         let form_ele      = document.getElementById('form');
 
-        const html = `<input type="hidden" id="${original_name}" name="files[]" value="${file_name}">`;
+        const html = `<input type="hidden" id="${original_name}" name="files[]" value="${'video_'+file_name}">`;
 
         form_ele.insertAdjacentHTML('beforeend',html);
     },

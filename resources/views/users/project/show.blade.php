@@ -49,6 +49,18 @@
         </div>
     </div>
 
+    @if ($project->files_names)
+        <h5 class="text-center" style="margin-top: 20px">project files</h5>
+
+        @foreach (explode(',', $project->files_names) as $file)
+            <div style="margin-top: 10px">
+                <a class="btn btn-primary" href="{{ route('project.download_file', $file) }}">
+                    download
+                </a>
+                <span class="text-muted">{{ substr($file, -10) }}</span>
+            </div>
+        @endforeach
+    @endif
     <hr>
 
     <h3 class="text-center">proposals</h3>
@@ -79,6 +91,9 @@
             </div>
         </div>
     @endif
+
+    <textarea name="content" id="" class="form-control" cols="30" rows="10"></textarea>
+    <a name="" id="" class="btn btn-primary" href="{{  }}" role="button">send</a>
 
 @endsection
 

@@ -33,4 +33,8 @@ Route::resource('skill','Users\SkillController')->except(['show','edit','update'
 ####################################   Project   #####################################
 Route::any('/project/index-projects','Users\ProjectController@index_projects')->name('project.index_posts');
 Route::post('/project/images','Users\ProjectController@upload_files')->name('project.upload_files');
+Route::get('/project/files/{file}','Users\ProjectController@download_file')->name('project.download_file');
 Route::resource('project','Users\ProjectController')->except(['index']);
+
+####################################   proposal   #####################################
+Route::resource('proposal','Users\ProposalController')->except(['index','create','show']);

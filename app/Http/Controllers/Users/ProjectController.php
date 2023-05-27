@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers\Users;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\DropzoneRequest;
-use App\Http\Requests\ProjectRequest;
-use App\Interfaces\Repository\ProjectRepositoryInterface;
+use Illuminate\View\View;
 use App\Traits\UploadFile;
 use App\Traits\UploadPhoto;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
+use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\ProjectRequest;
+use Illuminate\Http\RedirectResponse;
+use App\Http\Requests\DropzoneRequest;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use App\Interfaces\Repository\ProjectRepositoryInterface;
 
 class ProjectController extends Controller
 {
@@ -47,11 +49,17 @@ class ProjectController extends Controller
 	}
 
 	####################################   upload_images   #####################################
-	public function upload_files(DropzoneRequest $request)
+	public function upload_files(DropzoneRequest $request):JsonResponse
 	{
 		$file_names = $this->uploadAnyFile($request);
 
 		return response()->json(['file_name' => $file_names['file_name'], 'original_name' => $file_names['original_name']]);
+	}
+
+	####################################   upload_images   #####################################
+	public function download_file(string $file):StreamedResponse
+	{
+		return $this->ProjectRepository->download_file($file);
 	}
 
 	####################################   show   #####################################

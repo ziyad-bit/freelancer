@@ -2,14 +2,16 @@
 
 namespace App\Repositories;
 
-use App\Http\Requests\ProjectRequest;
-use App\Interfaces\Repository\ProjectRepositoryInterface;
 use App\Traits\GetCursor;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\ProjectRequest;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use App\Interfaces\Repository\ProjectRepositoryInterface;
 
 class ProjectRepository implements ProjectRepositoryInterface
 {
@@ -83,6 +85,25 @@ class ProjectRepository implements ProjectRepositoryInterface
 		}
 	}
 
+	####################################   storeProject   #####################################
+	public function download_file(string $file):StreamedResponse
+	{
+		$file_name = substr($file, strpos($file, "_") + 1);
+		$type=substr($file, 0, 5);
+		
+		if ($type === 'image') {
+			return Storage::download('images/projects/'.$file_name);
+		} 
+
+		if ($type === 'files') {
+			return Storage::download('files/'. $file_name);
+		} 
+
+		if ($type === 'video') {
+			return Storage::download('videos/'. $file_name);
+		} 
+	}
+
 	####################################   showProject   #####################################
 	public function showProject(int $id):object|null
 	{
@@ -94,14 +115,16 @@ class ProjectRepository implements ProjectRepositoryInterface
 					'project_infos.*',
 					'location',
 					'card_num',
-					'name',
+					'users.name',
 					'review',
 					DB::raw('GROUP_CONCAT(DISTINCT skill) as skills_names'),
+					DB::raw('GROUP_CONCAT(DISTINCT project_files.name) as files_names'),
 					DB::raw('COUNT(DISTINCT proposals.id) as proposals_count')
 				)
 				->join('project_skill', 'projects.id', '=', 'project_skill.project_id')
 				->join('skills', 'project_skill.skill_id', '=', 'skills.id')
 				->join('project_infos', 'projects.id', '=', 'project_infos.project_id')
+				->join('project_files', 'projects.id', '=', 'project_files.project_id')
 				->join('users', 'users.id', '=', 'projects.user_id')
 				->join('user_infos', 'users.id', '=', 'user_infos.user_id')
 				->join('proposals', 'projects.id', '=', 'proposals.project_id')
@@ -109,16 +132,19 @@ class ProjectRepository implements ProjectRepositoryInterface
 				->groupBy('projects.id')
 				->first();
 
-		if ($project) {
-			$auth_proposal = DB::table('proposals')
-						->select('proposals.*', 'location', 'card_num', 'name', 'review', )
-						->join('users', 'users.id', '=', 'proposals.user_id')
-						->join('user_infos', 'users.id', '=', 'user_infos.user_id')
-						->where(['project_id' => $project->id, 'proposals.user_id' => Auth::id()])
-						->first();
-
-			$project->proposal = $auth_proposal;
+		if (!$project) {
+			return to_route('project.index_posts')->with('error','project not found');
 		}
+		
+		$auth_proposal = DB::table('proposals')
+					->select('proposals.*', 'location', 'card_num', 'name', 'review', )
+					->join('users', 'users.id', '=', 'proposals.user_id')
+					->join('user_infos', 'users.id', '=', 'user_infos.user_id')
+					->where(['project_id' => $project->id, 'proposals.user_id' => Auth::id()])
+					->first();
+
+		$project->proposal = $auth_proposal;
+		
 
 		return $project;
 	}
