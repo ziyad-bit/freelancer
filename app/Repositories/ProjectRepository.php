@@ -2,16 +2,16 @@
 
 namespace App\Repositories;
 
-use App\Traits\GetCursor;
-use Illuminate\View\View;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ProjectRequest;
-use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Interfaces\Repository\ProjectRepositoryInterface;
+use App\Traits\GetCursor;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ProjectRepository implements ProjectRepositoryInterface
 {
@@ -65,7 +65,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 		$project_data = $request->safe()->only(['title', 'content']) + ['user_id' => Auth::id(), 'created_at' => now()];
 		$project_id   = DB::table('projects')->insertGetId($project_data);
 
-		$project_info_data = $request->safe()->except(['title', 'content']) + ['project_id' => $project_id];
+		$project_info_data = $request->safe()->except(['title', 'content', 'skills_name', 'num_input']) + ['project_id' => $project_id];
 
 		DB::table('project_infos')->insert($project_info_data);
 
@@ -83,25 +83,37 @@ class ProjectRepository implements ProjectRepositoryInterface
 
 			DB::table('project_files')->insert($files_arr);
 		}
+
+		$skills_arr = [];
+		$skills     = $request->input('skills_name');
+
+		foreach ($skills as $skill) {
+			$skills_arr[] = [
+				'skills_id'  => $skill,
+				'project_id' => $project_id,
+			];
+		}
+
+		DB::table('skills')->insert($skills_arr);
 	}
 
 	####################################   storeProject   #####################################
 	public function download_file(string $file):StreamedResponse
 	{
-		$file_name = substr($file, strpos($file, "_") + 1);
-		$type=substr($file, 0, 5);
-		
+		$file_name = substr($file, strpos($file, '_') + 1);
+		$type      = substr($file, 0, 5);
+
 		if ($type === 'image') {
-			return Storage::download('images/projects/'.$file_name);
-		} 
+			return Storage::download('images/projects/' . $file_name);
+		}
 
 		if ($type === 'files') {
-			return Storage::download('files/'. $file_name);
-		} 
+			return Storage::download('files/' . $file_name);
+		}
 
 		if ($type === 'video') {
-			return Storage::download('videos/'. $file_name);
-		} 
+			return Storage::download('videos/' . $file_name);
+		}
 	}
 
 	####################################   showProject   #####################################
@@ -133,9 +145,9 @@ class ProjectRepository implements ProjectRepositoryInterface
 				->first();
 
 		if (!$project) {
-			return to_route('project.index_posts')->with('error','project not found');
+			return to_route('project.index_posts')->with('error', 'project not found');
 		}
-		
+
 		$auth_proposal = DB::table('proposals')
 					->select('proposals.*', 'location', 'card_num', 'name', 'review', )
 					->join('users', 'users.id', '=', 'proposals.user_id')
@@ -144,9 +156,29 @@ class ProjectRepository implements ProjectRepositoryInterface
 					->first();
 
 		$project->proposal = $auth_proposal;
-		
+
 
 		return $project;
+	}
+
+	####################################   updateUserInfo   #####################################
+	public function editProject(int $id):object|null
+	{
+		return  DB::table('projects')
+				->select(
+					'title',
+					'content',
+					'project_infos.*',
+					DB::raw('GROUP_CONCAT(DISTINCT skill) as skills_names'),
+					DB::raw('GROUP_CONCAT(DISTINCT project_files.name) as files_names'),
+				)
+				->join('project_skill', 'projects.id', '=', 'project_skill.project_id')
+				->join('skills', 'project_skill.skill_id', '=', 'skills.id')
+				->join('project_infos', 'projects.id', '=', 'project_infos.project_id')
+				->join('project_files', 'projects.id', '=', 'project_files.project_id')
+				->where('projects.id', $id)
+				->groupBy('projects.id')
+				->first();
 	}
 
 	####################################   updateUserInfo   #####################################

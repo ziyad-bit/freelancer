@@ -14,7 +14,7 @@ trait UploadFile
 		$fileName = $file->hashName();
 
 		Storage::putFileAs($path, $file, $fileName);
-		
+
 		return $fileName;
 	}
 

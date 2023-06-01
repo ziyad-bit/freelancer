@@ -93,10 +93,10 @@
     @endif
 
     <textarea name="content" id="" class="form-control" cols="30" rows="10"></textarea>
-    <a name="" id="" class="btn btn-primary" href="{{  }}" role="button">send</a>
+    <a name="" id="" class="btn btn-primary" href="{{-- {{  }} --}}" role="button">send</a>
 
 @endsection
 
 @section('script')
-    <script src="{{ asset('js/project/index.js') }}"></script>
+    <script defer src="{{ asset('js/project/index.js') }}"></script>
 @endsection

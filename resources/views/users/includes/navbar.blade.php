@@ -1,4 +1,4 @@
-<div id="app">
+<div >
     <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm">
         <div class="container">
 
@@ -81,3 +81,4 @@
             </div>
         </div>
     </nav>
+</div>

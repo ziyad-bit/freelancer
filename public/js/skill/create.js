@@ -1,26 +1,3 @@
-//add skill input
-let number = 1;
-
-generalEventListener('click', '.add_button', e => {
-    number++;
-
-    let html = `<div class="form-group skills">
-                    <label for="exampleInputEmail1">
-                    ${number}- skill
-                    </label>
-                    <input list="skills" name="skills_name[${number}]" class="form-control input">
-
-                        <small style="color: red" class="errors" id="skills_name.${number}_err">
-                            
-                        </small>
-                    </datalist>
-                </div>`
-
-    const body = document.querySelector('.body');
-
-    body.insertAdjacentHTML('beforeend', html)
-})
-
 //store skill
 const button = document.querySelector('.submit_btn');
 button.onclick = function () {

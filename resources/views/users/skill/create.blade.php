@@ -14,8 +14,9 @@
     <form id="skill_form">
         <div class="card text-white bg-dark mb-3" style="max-width: 34rem;margin-top: 20px">
             <div class="card-header">add skills
-                <button type="button" class="btn btn-primary add_button" style="margin-left: 314px;">add more
-                    skill</button>
+                <button type="button" class="btn btn-primary add_button" style="margin-left: 314px;">
+                    add more skill
+                </button>
             </div>
 
             <div class="card-body body">
@@ -49,6 +50,7 @@
 @endsection
 
 @section('script')
-    <script src="{{ asset('js/general.js') }}"></script>
-    <script src="{{ asset('js/skill/create.js') }}"></script>
+    <script defer src="{{ asset('js/general.js') }}"></script>
+    <script defer src="{{ asset('js/skill/create.js') }}"></script>
+    <script defer src="{{ asset('js/skill/add.js') }}"></script>
 @endsection

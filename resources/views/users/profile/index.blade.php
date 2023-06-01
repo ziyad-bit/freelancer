@@ -127,5 +127,5 @@
 @endsection
 
 @section('script')
-    <script src="{{ asset('js/profile/index.js') }}"></script>
+    <script defer src="{{ asset('js/profile/index.js') }}"></script>
 @endsection

@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Users;
 
-use Illuminate\View\View;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\DropzoneRequest;
+use App\Http\Requests\ProjectRequest;
+use App\Interfaces\Repository\ProjectRepositoryInterface;
+use App\Interfaces\Repository\SkillRepositoryInterface;
 use App\Traits\UploadFile;
 use App\Traits\UploadPhoto;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\ProjectRequest;
 use Illuminate\Http\RedirectResponse;
-use App\Http\Requests\DropzoneRequest;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use App\Interfaces\Repository\ProjectRepositoryInterface;
 
 class ProjectController extends Controller
 {
@@ -21,11 +21,13 @@ class ProjectController extends Controller
 	use UploadFile;
 
 	private $ProjectRepository;
+	private $skillRepository;
 
-	public function __construct(ProjectRepositoryInterface $ProjectRepository)
+	public function __construct(ProjectRepositoryInterface $ProjectRepository, SkillRepositoryInterface $skillRepository)
 	{
 		$this->middleware('auth');
 
+		$this->skillRepository   = $skillRepository;
 		$this->ProjectRepository = $ProjectRepository;
 	}
 	####################################   index   #####################################
@@ -37,7 +39,9 @@ class ProjectController extends Controller
 	####################################   create   #####################################
 	public function create():View
 	{
-		return view('users.project.create');
+		$skills = $this->skillRepository->getSkills();
+
+		return view('users.project.create', compact('skills'));
 	}
 
 	####################################   store   #####################################
@@ -73,6 +77,8 @@ class ProjectController extends Controller
 	####################################   edit   #####################################
 	public function edit(int $id):View
 	{
+		$project = $this->ProjectRepository->showProject($id);
+
 		return view('');
 	}
 

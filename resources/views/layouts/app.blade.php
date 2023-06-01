@@ -3,7 +3,9 @@
 
 @include('users.includes.header')
 
-<body class="">
+@yield('script')
+
+<body>
     @include('users.includes.navbar')
 
     <main class="container">
@@ -11,9 +13,9 @@
     </main>
 
     @include('users.includes.footer')
-    
-    @yield('script')
-    
+
+
+
 </body>
 
 </html>

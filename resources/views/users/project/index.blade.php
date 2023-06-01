@@ -39,5 +39,5 @@
 @endsection
 
 @section('script')
-    <script src="{{ asset('js/project/index.js') }}"></script>
+    <script defer src="{{ asset('js/project/index.js') }}"></script>
 @endsection
