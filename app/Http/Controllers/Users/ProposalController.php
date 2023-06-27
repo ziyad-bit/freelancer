@@ -2,33 +2,45 @@
 
 namespace App\Http\Controllers\Users;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\ProposalRequest;
+use Illuminate\Http\RedirectResponse;
+use App\Interfaces\Repository\ProposalRepositoryInterface;
+use Illuminate\Http\JsonResponse;
 
 class ProposalController extends Controller
 {
-	####################################   store   #####################################
-	public function store($request):RedirectResponse
+	private $ProposalRepository;
+
+	public function __construct(ProposalRepositoryInterface $ProposalRepository)
 	{
-		return to_route('');
+		$this->middleware('auth');
+
+		$this->ProposalRepository = $ProposalRepository;
 	}
 
-	####################################   edit   #####################################
-	public function edit(int $id):View
+	####################################   store   #####################################
+	public function store(ProposalRequest $request):RedirectResponse
 	{
-		return view('');
+		$this->ProposalRepository->storeProposal($request);
+
+		return to_route('project.show',$request->input('project_id'))->with('success','you added proposal successfully');
 	}
 
 	####################################   update   #####################################
-	public function update($request, int $id):RedirectResponse
+	public function update(ProposalRequest $request, int $id):JsonResponse
 	{
-		return to_route('');
+		$this->ProposalRepository->updateProposal($request, $id);
+
+		return response()->json(['success'=>'you updated proposal successfully']);
 	}
 
 	####################################   destroy   #####################################
-	public function destroy(int $id):RedirectResponse
+	public function destroy(int $id):JsonResponse
 	{
-		return to_route('');
+		$this->ProposalRepository->deleteProposal($id);
+
+		return response()->json(['success'=>'you delete proposal successfully']);
 	}
 }

@@ -42,11 +42,11 @@ class ProjectRepository implements ProjectRepositoryInterface
 				->join('skills', 'project_skill.skill_id', '=', 'skills.id')
 				->join('users', 'users.id', '=', 'projects.user_id')
 				->join('user_infos', 'users.id', '=', 'user_infos.user_id')
-				->join('proposals', 'projects.id', '=', 'proposals.project_id')
+				->leftjoin('proposals', 'projects.id', '=', 'proposals.project_id')
 				->whereIn('projects.id', $projects_ids)
 				->groupBy('projects.id')
 				->latest()
-				->cursorPaginate(10);
+				->cursorPaginate(100);
 
 		$cursor = $this->getCursor($projects);
 
@@ -85,16 +85,18 @@ class ProjectRepository implements ProjectRepositoryInterface
 		}
 
 		$skills_arr = [];
-		$skills     = $request->input('skills_name');
+		$skills     = $request->input('skill_id');
 
-		foreach ($skills as $skill) {
-			$skills_arr[] = [
-				'skills_id'  => $skill,
-				'project_id' => $project_id,
-			];
+		if ($skills != []) {
+			foreach ($skills as $skill) {
+				$skills_arr[] = [
+					'skill_id'   => $skill,
+					'project_id' => $project_id,
+				];
+			}
+
+			DB::table('project_skill')->insert($skills_arr);
 		}
-
-		DB::table('skills')->insert($skills_arr);
 	}
 
 	####################################   storeProject   #####################################
@@ -136,10 +138,10 @@ class ProjectRepository implements ProjectRepositoryInterface
 				->join('project_skill', 'projects.id', '=', 'project_skill.project_id')
 				->join('skills', 'project_skill.skill_id', '=', 'skills.id')
 				->join('project_infos', 'projects.id', '=', 'project_infos.project_id')
-				->join('project_files', 'projects.id', '=', 'project_files.project_id')
+				->leftJoin('project_files', 'projects.id', '=', 'project_files.project_id')
 				->join('users', 'users.id', '=', 'projects.user_id')
 				->join('user_infos', 'users.id', '=', 'user_infos.user_id')
-				->join('proposals', 'projects.id', '=', 'proposals.project_id')
+				->leftJoin('proposals', 'projects.id', '=', 'proposals.project_id')
 				->where('projects.id', $id)
 				->groupBy('projects.id')
 				->first();
@@ -157,28 +159,33 @@ class ProjectRepository implements ProjectRepositoryInterface
 
 		$project->proposal = $auth_proposal;
 
-
-		return $project;
+		return view('users.project.show', compact('project'));
 	}
 
 	####################################   updateUserInfo   #####################################
-	public function editProject(int $id):object|null
+	public function editProject(int $id):object
 	{
-		return  DB::table('projects')
+		$project = DB::table('projects')
 				->select(
 					'title',
 					'content',
 					'project_infos.*',
-					DB::raw('GROUP_CONCAT(DISTINCT skill) as skills_names'),
 					DB::raw('GROUP_CONCAT(DISTINCT project_files.name) as files_names'),
 				)
-				->join('project_skill', 'projects.id', '=', 'project_skill.project_id')
-				->join('skills', 'project_skill.skill_id', '=', 'skills.id')
 				->join('project_infos', 'projects.id', '=', 'project_infos.project_id')
-				->join('project_files', 'projects.id', '=', 'project_files.project_id')
+				->leftJoin('project_files', 'projects.id', '=', 'project_files.project_id')
 				->where('projects.id', $id)
 				->groupBy('projects.id')
 				->first();
+
+		$skills = DB::table('skills')
+				->join('project_skill', 'skills.id', '=', 'project_skill.skill_id')
+				->where('project_skill.project_id', $id)
+				->get();
+
+		$project->skills = $skills;
+
+		return $project;
 	}
 
 	####################################   updateUserInfo   #####################################

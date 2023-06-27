@@ -13,9 +13,6 @@
     </main>
 
     @include('users.includes.footer')
-
-
-
 </body>
 
 </html>

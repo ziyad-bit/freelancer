@@ -20,7 +20,7 @@
                     <label for="exampleInputEmail1">
                         location
                     </label>
-                    <select class="form-select" name="location" aria-label="Default select example">
+                    <select required class="form-select" name="location" aria-label="Default select example">
                         <option value="">...</option>
                         @foreach ($countries as $country)
                             <option value="{{ $country }}">{{ $country }}</option>
@@ -38,7 +38,7 @@
                     <label for="exampleInputEmail1">
                         you will be
                     </label>
-                    <select class="form-select" name="type"  aria-label="Default select example">
+                    <select  required class="form-select" name="type"  aria-label="Default select example">
                         
                             <option value="">...</option>
                             <option value="freelancer">freelancer</option>
@@ -57,7 +57,7 @@
                     <label for="exampleInputPassword1">
                         job
                     </label>
-                    <input type="text" name="job" class="form-control">
+                    <input  required max="30" min="3" type="text" name="job" class="form-control">
                     @error('job')
                         <small style="color: red">
                             {{ $message }}
@@ -69,7 +69,7 @@
                     <label for="exampleInputPassword1">
                         overview
                     </label>
-                    <textarea type="text" name="overview" class="form-control"  cols="30" rows="4"></textarea>
+                    <textarea required maxlength="250" minlength="3" type="text" name="overview" class="form-control"  cols="30" rows="4"></textarea>
                     @error('overview')
                         <small style="color: red">
                             {{ $message }}
@@ -81,7 +81,7 @@
                     <label for="exampleInputEmail1">
                         {{ __('photo') }}
                     </label>
-                    <input type="file" name="image" class="form-control" aria-describedby="emailHelp">
+                    <input type="file" required name="image" class="form-control" aria-describedby="emailHelp">
                     @error('image')
                         <small style="color: red">
                             {{ $message }}

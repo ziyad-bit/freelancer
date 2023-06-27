@@ -3,9 +3,10 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rule;
 
-class ProjectRequest extends FormRequest
+class ProposalRequest extends FormRequest
 {
 	/**
 	 * Determine if the user is authorized to make this request.
@@ -24,16 +25,13 @@ class ProjectRequest extends FormRequest
 	 */
 	public function rules()
 	{
+		$route = Route::currentRouteName();
+
 		return [
-			'title'         => 'required|string|max:50|min:5',
 			'content'       => 'required|string|max:250|min:10',
 			'num_of_days'   => 'required|numeric|max:180|min:1',
-			'min_price'     => 'required|numeric|lt:max_price|min:5',
-			'max_price'     => 'required|numeric|max:10000|gt:min_price',
-			'exp'           => ['required', 'string', Rule::in(['beginer', 'intermediate', 'experienced'])],
-			'skills_name'   => 'required|array|min:1',
-			'skill_id.*' => ['distinct', 'exists:skills,id'],
-			'num_input'     => 'required|numeric',
+			'price'         => 'required|numeric|max:8000|min:5',
+			'project_id'    => $route !== 'proposal.update' ? 'required' :'' .'|numeric',
 		];
 	}
 
@@ -46,10 +44,6 @@ class ProjectRequest extends FormRequest
 	{
 		return [
 			'num_of_days'   => 'number of days',
-			'min_price'     => 'minimum price',
-			'max_price'     => 'maximum price',
-			'exp'           => 'experience',
-			'skill_id.*' => 'skill',
 		];
 	}
 }

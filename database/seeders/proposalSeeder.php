@@ -29,8 +29,8 @@ class proposalSeeder extends Seeder
 			DB::table('proposals')->insert([
 				'content'     => $faker->paragraph(),
 				'price'       => $faker->numberBetween(100, 200),
-				'approval'    => Arr::random(['approved', 'refused']),
-				'finished'    => Arr::random(['finished', 'unfinished']),
+				'approval'    => Arr::random(['approved', 'refused', 'pending']),
+				'finished'    => Arr::random(['finished', 'unfinished', null, 'in progress']),
 				'num_of_days' => rand(3, 9),
 				'user_id'     => $users->random(),
 				'project_id'  => $projects->random(),

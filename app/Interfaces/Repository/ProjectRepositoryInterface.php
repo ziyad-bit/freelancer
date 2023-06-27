@@ -13,7 +13,7 @@ interface ProjectRepositoryInterface
 	public function getProjects(Request $request):View|JsonResponse;
 	public function storeProject(ProjectRequest $request):void;
 	public function showProject(int $id):object|null;
-	public function editProject(int $id):object|null;
+	public function editProject(int $id):object;
 	public function download_file(string $file):StreamedResponse;
 	public function deleteProject(int $id):void;
 }

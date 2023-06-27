@@ -42,14 +42,14 @@
         @csrf
 
         <div class="card text-white bg-dark mb-3 " style="max-width: 34rem;margin-top: 20px">
-            <div class="card-header">{{ __('add group') }}</div>
+            <div class="card-header">{{ __('add project') }}</div>
             <div class="card-body ">
 
                 <div class="form-group">
                     <label for="exampleInputPassword1">
                         title
                     </label>
-                    <input type="text" value="{{ old('title') }}" name="title" class="form-control">
+                    <input type="text" required max="30" min="5"  value="{{ old('title') }}" name="title" class="form-control">
                     @error('title')
                         <small style="color: red">
                             {{ $message }}
@@ -62,7 +62,7 @@
                         content
                     </label>
 
-                    <textarea type="text" value="{{ old('content') }}" name="content" class="form-control"></textarea>
+                    <textarea type="text" required max="250" min="10"   name="content" class="form-control">{{ old('content') }}</textarea>
                     @error('content')
                         <small style="color: red">
                             {{ $message }}
@@ -75,7 +75,8 @@
                         minimum price
                     </label>
 
-                    <input type="text" value="{{ old('min_price') }}" name="min_price" class="form-control">
+                    <input type="number" required  min="5"  
+                    value="{{ old('min_price') }}" name="min_price" class="form-control">
                     @error('min_price')
                         <small style="color: red">
                             {{ $message }}
@@ -88,7 +89,7 @@
                         maximum price
                     </label>
 
-                    <input type="text" value="{{ old('max_price') }}" name="max_price" class="form-control">
+                    <input type="number"  required  max="10000" value="{{ old('max_price') }}" name="max_price" class="form-control">
                     @error('max_price')
                         <small style="color: red">
                             {{ $message }}
@@ -101,7 +102,7 @@
                         number of days
                     </label>
 
-                    <input type="text" value="{{ old('num_of_days') }}" name="num_of_days" class="form-control">
+                    <input type="number" required min="1" max="180" value="{{ old('num_of_days') }}" name="num_of_days" class="form-control">
                     @error('num_of_days')
                         <small style="color: red">
                             {{ $message }}
@@ -114,7 +115,7 @@
                     <label for="exampleInputEmail1">
                         experience
                     </label>
-                    <select class="form-select" name="exp" aria-label="Default select example">
+                    <select class="form-select" required name="exp" aria-label="Default select example">
 
                         <option value="">...</option>
                         <option @selected('beginer' == old('exp')) value="beginer">beginer</option>
@@ -135,6 +136,12 @@
                     <button type="button" class="btn btn-primary add_button" style="margin-left: 406px;margin-top: 14px;">
                         add skill
                     </button>
+                    <div>
+                        <small style="color: red;display: none" id="err_msg">
+                        
+                        </small>
+                    </div>
+                    
 
                     @if (old('num_input'))
                         @for ($i = 1; $i < old('num_input') + 1; $i++)
@@ -142,9 +149,9 @@
                                 {{ $i }}- skill
                             </label>
 
-                            <input list="skills" name="skills_name[{{ $i }}]" class="form-control input">
-
-                            @error("skills_name.$i")
+                            <input list="skills" id="{{$i}}"  name="skills_name[{{ $i }}]" class="form-control input">
+                            <input type="hidden" name="skill_id[{{$i}}]" id="skill_id_{{$i}}">
+                            @error("skill_id.$i")
                                 <div style="color: red;font-size: small">
                                     {{ $message }}
                                 </div>
@@ -155,9 +162,11 @@
                             1- skill
                         </label>
 
-                        <input list="skills" name="skills_name[1]" class="form-control input">
+                        <input list="skills" id="1" name="skills_name[1]" class="form-control input">
 
-                        @error('skills_name.1')
+                        <input type="hidden" name="skill_id[1]" id="skill_id_1">
+
+                        @error('skill_id.1')
                             <small style="color: red">
                                 {{ $message }}
                             </small>
@@ -166,7 +175,7 @@
 
                     <datalist id="skills">
                         @forelse ($skills as $skill)
-                            <option value="{{ $skill->skill }}">
+                            <option data-value="{{ $skill->id }}" >{{ $skill->skill }}</option>
                             @empty
                                 -
                         @endforelse
@@ -174,8 +183,8 @@
 
                 </div>
 
-                <input type="hidden" id="num_input" value="{{ old('num_input') ? old('num_input') : 1 }}" name="num_input">
-
+                <input type="hidden"  id="num_input"  required  max="20"
+                value="{{ old('num_input') ? old('num_input') : 1 }}" name="num_input">
 
                 <button type="submit" class="btn btn-primary" style="margin-top: 25px">
                     {{ __('add') }}
@@ -189,7 +198,7 @@
 @section('script')
     <script defer src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
 
-    <script defer src="{{ asset('js/project/create.js') }}"></script>
     <script defer src="{{ asset('js/general.js') }}"></script>
+    <script defer src="{{ asset('js/project/create.js') }}"></script>
     <script defer src="{{ asset('js/skill/add.js') }}"></script>
 @endsection

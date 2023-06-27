@@ -6,6 +6,7 @@ new Dropzone('#image_upload', {
     paramName: 'image',
     addRemoveLinks: true,
     maxFilesize: 8000,
+    maxFiles:2,
 
     success: function (data) {
         let response = JSON.parse(data.xhr.response);

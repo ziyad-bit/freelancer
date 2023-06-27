@@ -49,7 +49,7 @@ class ProjectController extends Controller
 	{
 		$this->ProjectRepository->storeProject($request);
 
-		return to_route('project.create')->with('success', 'you added successfully project');
+		return redirect()->back()->with('success', 'you added successfully project');
 	}
 
 	####################################   upload_images   #####################################
@@ -67,19 +67,17 @@ class ProjectController extends Controller
 	}
 
 	####################################   show   #####################################
-	public function show(int $id):View
+	public function show(int $id):View|RedirectResponse
 	{
-		$project = $this->ProjectRepository->showProject($id);
-
-		return view('users.project.show', compact('project'));
+		return $this->ProjectRepository->showProject($id);
 	}
 
 	####################################   edit   #####################################
 	public function edit(int $id):View
 	{
-		$project = $this->ProjectRepository->showProject($id);
+		$project = $this->ProjectRepository->editProject($id);
 
-		return view('');
+		return view('users.project.edit',compact('project'));
 	}
 
 	####################################   update   #####################################

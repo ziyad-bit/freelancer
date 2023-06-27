@@ -37,4 +37,5 @@ Route::get('/project/files/{file}','Users\ProjectController@download_file')->nam
 Route::resource('project','Users\ProjectController')->except(['index']);
 
 ####################################   proposal   #####################################
-Route::resource('proposal','Users\ProposalController')->except(['index','create','show']);
+Route::post('proposal/update/{id}','Users\ProposalController@update')->name('proposal.update');
+Route::resource('proposal','Users\ProposalController')->only(['store','destroy']);
