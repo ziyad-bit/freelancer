@@ -8,12 +8,12 @@ trait UploadFile
 {
 	use UploadPhoto;
 
-	public function uploadFile(object $request, string $path, string $input_name):string
+	public function uploadFile(object $request, string $path, string $input_name, string $type):string
 	{
 		$file     = $request->file($input_name);
 		$fileName = $file->hashName();
 
-		Storage::putFileAs($path, $file, $fileName);
+		Storage::putFileAs($path, $file, $type . $fileName);
 
 		return $fileName;
 	}
@@ -21,17 +21,17 @@ trait UploadFile
 	public function uploadAnyFile($request)
 	{
 		if ($request->has('image')) {
-			$file          = $this->uploadFile($request, 'images/projects', 'image');
+			$file          = $this->uploadFile($request, 'images/projects', 'image', 'image');
 			$original_name = $request->file('image')->getClientOriginalName();
 		}
 
 		if ($request->has('file')) {
-			$file          = $this->uploadFile($request, 'files', 'file');
+			$file          = $this->uploadFile($request, 'files', 'file', 'files');
 			$original_name = $request->file('file')->getClientOriginalName();
 		}
 
 		if ($request->has('video')) {
-			$file          = $this->uploadFile($request, 'videos', 'video');
+			$file          = $this->uploadFile($request, 'videos', 'video', 'video');
 			$original_name = $request->file('video')->getClientOriginalName();
 		}
 

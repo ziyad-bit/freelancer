@@ -3,23 +3,16 @@
 namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\DropzoneRequest;
 use App\Http\Requests\ProjectRequest;
 use App\Interfaces\Repository\ProjectRepositoryInterface;
 use App\Interfaces\Repository\SkillRepositoryInterface;
-use App\Traits\UploadFile;
-use App\Traits\UploadPhoto;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ProjectController extends Controller
 {
-	use UploadPhoto;
-	use UploadFile;
-
 	private $ProjectRepository;
 	private $skillRepository;
 
@@ -52,20 +45,6 @@ class ProjectController extends Controller
 		return redirect()->back()->with('success', 'you added successfully project');
 	}
 
-	####################################   upload_images   #####################################
-	public function upload_files(DropzoneRequest $request):JsonResponse
-	{
-		$file_names = $this->uploadAnyFile($request);
-
-		return response()->json(['file_name' => $file_names['file_name'], 'original_name' => $file_names['original_name']]);
-	}
-
-	####################################   upload_images   #####################################
-	public function download_file(string $file):StreamedResponse
-	{
-		return $this->ProjectRepository->download_file($file);
-	}
-
 	####################################   show   #####################################
 	public function show(int $id):View|RedirectResponse
 	{
@@ -76,8 +55,9 @@ class ProjectController extends Controller
 	public function edit(int $id):View
 	{
 		$project = $this->ProjectRepository->editProject($id);
+		$skills  = $this->skillRepository->getSkills();
 
-		return view('users.project.edit',compact('project'));
+		return view('users.project.edit', compact('project', 'skills'));
 	}
 
 	####################################   update   #####################################

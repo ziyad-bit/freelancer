@@ -32,9 +32,12 @@ Route::resource('skill','Users\SkillController')->except(['show','edit','update'
 
 ####################################   Project   #####################################
 Route::any('/project/index-projects','Users\ProjectController@index_projects')->name('project.index_posts');
-Route::post('/project/images','Users\ProjectController@upload_files')->name('project.upload_files');
-Route::get('/project/files/{file}','Users\ProjectController@download_file')->name('project.download_file');
 Route::resource('project','Users\ProjectController')->except(['index']);
+
+####################################   file   #####################################
+Route::post('/file/upload','Users\FileController@upload')->name('file.upload');
+Route::get('/files/{file}','Users\FileController@download')->name('file.download');
+Route::delete('/files/{file}','Users\FileController@destroy')->name('file.destroy');
 
 ####################################   proposal   #####################################
 Route::post('proposal/update/{id}','Users\ProposalController@update')->name('proposal.update');

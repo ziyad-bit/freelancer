@@ -3,19 +3,25 @@
 namespace App\Repositories;
 
 use App\Http\Requests\ProjectRequest;
+use App\Interfaces\Repository\FileRepositoryInterface;
 use App\Interfaces\Repository\ProjectRepositoryInterface;
 use App\Traits\GetCursor;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ProjectRepository implements ProjectRepositoryInterface
 {
 	use GetCursor;
+
+	private $fileRepository;
+
+	public function __construct(FileRepositoryInterface $fileRepository)
+	{
+		$this->fileRepository = $fileRepository;
+	}
 
 	####################################   getProjects   #####################################
 	public function getProjects(Request $request):View|JsonResponse
@@ -65,24 +71,11 @@ class ProjectRepository implements ProjectRepositoryInterface
 		$project_data = $request->safe()->only(['title', 'content']) + ['user_id' => Auth::id(), 'created_at' => now()];
 		$project_id   = DB::table('projects')->insertGetId($project_data);
 
-		$project_info_data = $request->safe()->except(['title', 'content', 'skills_name', 'num_input']) + ['project_id' => $project_id];
+		$project_info_data = $request->safe()->only(['num_of_days', 'min_price', 'max_price', 'exp']) + ['project_id' => $project_id];
 
 		DB::table('project_infos')->insert($project_info_data);
 
-		$files_arr = [];
-		$files     = $request->input('files');
-
-		if ($files != []) {
-			foreach ($files as $file) {
-				$files_arr[] = [
-					'name'       => $file,
-					'project_id' => $project_id,
-					'created_at' => now(),
-				];
-			}
-
-			DB::table('project_files')->insert($files_arr);
-		}
+		$this->fileRepository->insertAnyFile($request, $project_id);
 
 		$skills_arr = [];
 		$skills     = $request->input('skill_id');
@@ -96,25 +89,6 @@ class ProjectRepository implements ProjectRepositoryInterface
 			}
 
 			DB::table('project_skill')->insert($skills_arr);
-		}
-	}
-
-	####################################   storeProject   #####################################
-	public function download_file(string $file):StreamedResponse
-	{
-		$file_name = substr($file, strpos($file, '_') + 1);
-		$type      = substr($file, 0, 5);
-
-		if ($type === 'image') {
-			return Storage::download('images/projects/' . $file_name);
-		}
-
-		if ($type === 'files') {
-			return Storage::download('files/' . $file_name);
-		}
-
-		if ($type === 'video') {
-			return Storage::download('videos/' . $file_name);
 		}
 	}
 
@@ -132,7 +106,9 @@ class ProjectRepository implements ProjectRepositoryInterface
 					'users.name',
 					'review',
 					DB::raw('GROUP_CONCAT(DISTINCT skill) as skills_names'),
-					DB::raw('GROUP_CONCAT(DISTINCT project_files.name) as files_names'),
+					DB::raw('GROUP_CONCAT(DISTINCT project_files.file) as files_names'),
+					DB::raw('GROUP_CONCAT(DISTINCT project_files.video) as videos_names'),
+					DB::raw('GROUP_CONCAT(DISTINCT project_files.image) as images_names'),
 					DB::raw('COUNT(DISTINCT proposals.id) as proposals_count')
 				)
 				->join('project_skill', 'projects.id', '=', 'project_skill.project_id')
@@ -162,7 +138,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 		return view('users.project.show', compact('project'));
 	}
 
-	####################################   updateUserInfo   #####################################
+	####################################     editProject    #####################################
 	public function editProject(int $id):object
 	{
 		$project = DB::table('projects')
@@ -170,7 +146,9 @@ class ProjectRepository implements ProjectRepositoryInterface
 					'title',
 					'content',
 					'project_infos.*',
-					DB::raw('GROUP_CONCAT(DISTINCT project_files.name) as files_names'),
+					DB::raw('GROUP_CONCAT(DISTINCT project_files.file) as files_names'),
+					DB::raw('GROUP_CONCAT(DISTINCT project_files.video) as videos_names'),
+					DB::raw('GROUP_CONCAT(DISTINCT project_files.image) as images_names'),
 				)
 				->join('project_infos', 'projects.id', '=', 'project_infos.project_id')
 				->leftJoin('project_files', 'projects.id', '=', 'project_files.project_id')

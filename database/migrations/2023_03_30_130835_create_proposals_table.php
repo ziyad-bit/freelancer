@@ -16,8 +16,8 @@ return new class extends Migration {
 			$table->id();
 			$table->text('content');
 			$table->smallInteger('price', false, true);
-			$table->enum('approval', ['approved', 'refused','pending'])->default('pending');
-			$table->enum('finished', ['finished', 'unfinished','in progress'])->nullable();
+			$table->enum('approval', ['approved', 'refused', 'pending'])->default('pending');
+			$table->enum('finished', ['finished', 'unfinished', 'in progress'])->nullable();
 			$table->tinyInteger('num_of_days', false, true);
 			$table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
 			$table->foreignId('project_id')->constrained('projects')->cascadeOnDelete()->cascadeOnUpdate();

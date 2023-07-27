@@ -128,7 +128,8 @@
             <span style="margin-left: 10px">review: {{ $project->review }}</span>
         </div>
 
-        <a type="button" class="btn btn-primary" href="{{ route('project.edit',$project->id) }}">
+        <a type="button" class="btn btn-primary" 
+        href="{{ route('project.edit',$project->id) }}" style="margin-top: 5px">
             edit
         </a>
     </div>
@@ -138,10 +139,36 @@
 
         @foreach (explode(',', $project->files_names) as $file)
             <div style="margin-top: 10px">
-                <a class="btn btn-primary" href="{{ route('project.download_file', $file) }}">
+                <a class="btn btn-primary" href="{{ route('file.download', $file) }}">
                     download
                 </a>
                 <span class="text-muted">{{ substr($file, -10) }}</span>
+            </div>
+        @endforeach
+    @endif
+
+    @if ($project->videos_names)
+        <h5 class="text-center" style="margin-top: 20px">project videos</h5>
+
+        @foreach (explode(',', $project->videos_names) as $video)
+            <div style="margin-top: 10px">
+                <a class="btn btn-primary" href="{{ route('file.download', $video) }}">
+                    download
+                </a>
+                <span class="text-muted">{{ substr($video, -10) }}</span>
+            </div>
+        @endforeach
+    @endif
+
+    @if ($project->images_names)
+        <h5 class="text-center" style="margin-top: 20px">project images</h5>
+
+        @foreach (explode(',', $project->images_names) as $image)
+            <div style="margin-top: 10px">
+                <a class="btn btn-primary" href="{{ route('file.download', $image) }}">
+                    download
+                </a>
+                <span class="text-muted">{{ substr($image, -10) }}</span>
             </div>
         @endforeach
     @endif

@@ -15,7 +15,7 @@
 
     <div style="margin-top: 25px">
         <h4>upload images</h4>
-        <form action="{{ route('project.upload_files') }}" id="image_upload" method="post" enctype="multipart/form-data"
+        <form action="{{ route('file.upload') }}" id="image_upload" method="post" enctype="multipart/form-data"
             class="dropzone">
             @csrf
         </form>
@@ -23,7 +23,7 @@
 
     <div style="margin-top: 25px">
         <h4>upload files</h4>
-        <form action="{{ route('project.upload_files') }}" id="file_upload" method="post" enctype="multipart/form-data"
+        <form action="{{ route('file.upload') }}" id="file_upload" method="post" enctype="multipart/form-data"
             class="dropzone">
             @csrf
         </form>
@@ -31,7 +31,7 @@
 
     <div style="margin-top: 25px">
         <h4>upload videos</h4>
-        <form action="{{ route('project.upload_files') }}" id="video_upload" method="post" enctype="multipart/form-data"
+        <form action="{{ route('file.upload') }}" id="video_upload" method="post" enctype="multipart/form-data"
             class="dropzone">
             @csrf
         </form>

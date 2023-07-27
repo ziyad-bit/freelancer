@@ -13,9 +13,84 @@
         <div class="alert alert-danger text-center">{{ Session::get('error') }}</div>
     @endif
 
+    <!-- delete Modal -->
+    <div class="modal fade" id="delete_file" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">delete file</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div style="display: none" class="alert alert-success text-center delete_msg"></div>
+
+                    <div style="display: none" class="alert alert-success text-center delete_msg"></div>
+
+                    <h3>Are you want to delete this file?</h3>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" data-file="" class="btn btn-danger delete_btn">delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if ($project->images_names)
+        <h5 class="text-center" style="margin-top: 20px">project images</h5>
+        @foreach (explode(',', $project->images_names) as $image)
+            <span id="{{ $image }}">
+                <button type="button" class="btn-close close_btn" data-file="{{ $image }}" data-bs-toggle="modal"
+                    data-bs-target="#delete_file">
+                </button>
+                
+                <input type="hidden" class="{{ $image }}" value="{{ route('file.destroy', $image) }}">
+
+                <img src="{{ asset('storage/images/projects/' . $image) }}"
+                    style="width: 300px;margin-left: 10px;margin-top: 10px">
+            </span>
+        @endforeach
+    @endif
+
+    @if ($project->files_names)
+        <h5 class="text-center" style="margin-top: 20px">project files</h5>
+        <div>
+            @foreach (explode(',', $project->files_names) as $file)
+                <span id="{{ $file }}">
+                    <button type="button" class="btn-close close_btn" data-file="{{ $file }}"
+                        data-bs-toggle="modal" data-bs-target="#delete_file">
+                    </button>
+                    <input type="hidden" class="{{ $file }}" value="{{ route('file.destroy', $file) }}">
+
+                    <iframe src="{{ asset('storage/files/' . $file) }}"
+                        style="margin-left: 10px;margin-top: 10px"></iframe>
+                </span>
+            @endforeach
+        </div>
+    @endif
+
+    @if ($project->videos_names)
+        <h5 class="text-center" style="margin-top: 20px">project videos</h5>
+        <div>
+            @foreach (explode(',', $project->videos_names) as $video)
+                <span id="{{ $video }}">
+                    <button type="button" class="btn-close close_btn" data-file="{{ $video }}"
+                        data-bs-toggle="modal" data-bs-target="#delete_file">
+                    </button>
+                    <input type="hidden" class="{{ $video }}" value="{{ route('file.destroy', $video) }}">
+
+                    <video src="{{ asset('storage/videos/' . $video) }}" style="margin-left: 10px;margin-top: 10px">
+                </span>
+            @endforeach
+        </div>
+    @endif
+
+
     <div style="margin-top: 25px">
         <h4>upload images</h4>
-        <form action="{{ route('project.upload_files') }}" id="image_upload" method="post" enctype="multipart/form-data"
+        <form action="{{ route('file.upload') }}" id="image_upload" method="post" enctype="multipart/form-data"
             class="dropzone">
             @csrf
         </form>
@@ -23,7 +98,7 @@
 
     <div style="margin-top: 25px">
         <h4>upload files</h4>
-        <form action="{{ route('project.upload_files') }}" id="file_upload" method="post" enctype="multipart/form-data"
+        <form action="{{ route('file.upload') }}" id="file_upload" method="post" enctype="multipart/form-data"
             class="dropzone">
             @csrf
         </form>
@@ -31,7 +106,7 @@
 
     <div style="margin-top: 25px">
         <h4>upload videos</h4>
-        <form action="{{ route('project.upload_files') }}" id="video_upload" method="post" enctype="multipart/form-data"
+        <form action="{{ route('file.upload') }}" id="video_upload" method="post" enctype="multipart/form-data"
             class="dropzone">
             @csrf
         </form>
@@ -49,8 +124,8 @@
                     <label for="exampleInputPassword1">
                         title
                     </label>
-                    <input type="text" required max="30" min="5" value="{{ old('title') }}" name="title"
-                        class="form-control">
+                    <input type="text" required max="30" min="5" value="{{ $project->title }}"
+                        name="title" class="form-control">
                     @error('title')
                         <small style="color: red">
                             {{ $message }}
@@ -63,7 +138,7 @@
                         content
                     </label>
 
-                    <textarea type="text" required max="250" min="10" name="content" class="form-control">{{ old('content') }}</textarea>
+                    <textarea type="text" required max="250" min="10" name="content" class="form-control">{{ $project->content }}</textarea>
                     @error('content')
                         <small style="color: red">
                             {{ $message }}
@@ -76,7 +151,7 @@
                         minimum price
                     </label>
 
-                    <input type="number" required min="5" value="{{ old('min_price') }}" name="min_price"
+                    <input type="number" required min="5" value="{{ $project->min_price }}" name="min_price"
                         class="form-control">
                     @error('min_price')
                         <small style="color: red">
@@ -90,7 +165,7 @@
                         maximum price
                     </label>
 
-                    <input type="number" required max="10000" value="{{ old('max_price') }}" name="max_price"
+                    <input type="number" required max="10000" value="{{ $project->max_price }}" name="max_price"
                         class="form-control">
                     @error('max_price')
                         <small style="color: red">
@@ -104,7 +179,7 @@
                         number of days
                     </label>
 
-                    <input type="number" required min="1" max="180" value="{{ old('num_of_days') }}"
+                    <input type="number" required min="1" max="180" value="{{ $project->num_of_days }}"
                         name="num_of_days" class="form-control">
                     @error('num_of_days')
                         <small style="color: red">
@@ -121,9 +196,9 @@
                     <select class="form-select" required name="exp" aria-label="Default select example">
 
                         <option value="">...</option>
-                        <option @selected('beginer' == old('exp')) value="beginer">beginer</option>
-                        <option @selected('intermediate' == old('exp')) value="intermediate">intermediate</option>
-                        <option @selected('experienced' == old('exp')) value="experienced">experienced</option>
+                        <option @selected('beginer' == $project->exp) value="beginer">beginer</option>
+                        <option @selected('intermediate' == $project->exp) value="intermediate">intermediate</option>
+                        <option @selected('experienced' == $project->exp) value="experienced">experienced</option>
 
                     </select>
 
@@ -136,7 +211,8 @@
 
 
                 <div class="form-group skills " id="skills_input">
-                    <button type="button" class="btn btn-primary add_button" style="margin-left: 406px;margin-top: 14px;">
+                    <button type="button" class="btn btn-primary add_button"
+                        style="margin-left: 406px;margin-top: 14px;">
                         add skill
                     </button>
                     <div>
@@ -154,7 +230,8 @@
 
                             <input list="skills" id="{{ $i }}" name="skills_name[{{ $i }}]"
                                 class="form-control input">
-                            <input type="hidden" name="skill_id[{{ $i }}]" id="skill_id_{{ $i }}">
+                            <input type="hidden" name="skill_id[{{ $i }}]"
+                                id="skill_id_{{ $i }}">
                             @error("skill_id.$i")
                                 <div style="color: red;font-size: small">
                                     {{ $message }}
@@ -167,9 +244,10 @@
                                 1- skill
                             </label>
 
-                            <input list="skills" id="1" name="skills_name[1]" class="form-control input">
+                            <input list="skills" value="{{ $skill->skill }}" id="1" name="skills_name[1]"
+                                class="form-control input">
 
-                            <input type="hidden" name="skill_id[1]" id="skill_id_1">
+                            <input type="hidden" name="skill_id[1]" value="{{ $skill->id }}" id="skill_id_1">
 
                             @error('skill_id.1')
                                 <small style="color: red">
@@ -180,7 +258,7 @@
                     @endif
 
                     <datalist id="skills">
-                        @forelse ($project->skills as $skill)
+                        @forelse ($skills as $skill)
                             <option data-value="{{ $skill->id }}">{{ $skill->skill }}</option>
                         @empty
                             -
@@ -206,5 +284,6 @@
 
     <script defer src="{{ asset('js/general.js') }}"></script>
     <script defer src="{{ asset('js/project/create.js') }}"></script>
+    <script defer src="{{ asset('js/project/edit.js') }}"></script>
     <script defer src="{{ asset('js/skill/add.js') }}"></script>
 @endsection

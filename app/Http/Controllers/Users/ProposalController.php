@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Users;
 
-use Illuminate\View\View;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProposalRequest;
-use Illuminate\Http\RedirectResponse;
 use App\Interfaces\Repository\ProposalRepositoryInterface;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 
 class ProposalController extends Controller
 {
@@ -25,7 +24,7 @@ class ProposalController extends Controller
 	{
 		$this->ProposalRepository->storeProposal($request);
 
-		return to_route('project.show',$request->input('project_id'))->with('success','you added proposal successfully');
+		return to_route('project.show', $request->input('project_id'))->with('success', 'you added proposal successfully');
 	}
 
 	####################################   update   #####################################
@@ -33,7 +32,7 @@ class ProposalController extends Controller
 	{
 		$this->ProposalRepository->updateProposal($request, $id);
 
-		return response()->json(['success'=>'you updated proposal successfully']);
+		return response()->json(['success' => 'you updated proposal successfully']);
 	}
 
 	####################################   destroy   #####################################
@@ -41,6 +40,6 @@ class ProposalController extends Controller
 	{
 		$this->ProposalRepository->deleteProposal($id);
 
-		return response()->json(['success'=>'you delete proposal successfully']);
+		return response()->json(['success' => 'you delete proposal successfully']);
 	}
 }
