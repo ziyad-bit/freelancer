@@ -25,7 +25,7 @@ class DropzoneRequest extends FormRequest
 	{
 		return [
 			'image'    => 'nullable|image|mimes:jpg,gif,jpeg,png,webp|max:8000',
-			'file'     => 'nullable|file|mimes:pdf,ppt,doc,xls|max:20000',
+			'files'     => 'nullable|file|mimes:pdf,ppt,doc,xls|max:20000',
 			'video'    => 'nullable|file|mimes:mp4,mov,flv,avi|max:100000',
 		];
 	}

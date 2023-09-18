@@ -32,7 +32,8 @@ class ProjectRequest extends FormRequest
 			'max_price'     => 'required|numeric|max:10000|gt:min_price',
 			'exp'           => ['required', 'string', Rule::in(['beginer', 'intermediate', 'experienced'])],
 			'skills_name'   => 'required|array|min:1',
-			'skill_id.*'    => ['distinct', 'exists:skills,id'],
+			'skills_name.*' => 'nullable',
+			'skills_id.*'   => ['distinct', 'exists:skills,id'],
 			'num_input'     => 'required|numeric',
 		];
 	}
@@ -49,7 +50,7 @@ class ProjectRequest extends FormRequest
 			'min_price'     => 'minimum price',
 			'max_price'     => 'maximum price',
 			'exp'           => 'experience',
-			'skill_id.*'    => 'skill',
+			'skills_id.*'    => 'skill',
 		];
 	}
 }

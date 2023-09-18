@@ -28,6 +28,7 @@ Route::get('/profile/delete','Users\ProfileController@delete')->name('profile.de
 Route::resource('profile','Users\ProfileController')->except(['show']);
 
 ####################################   Skill   #####################################
+Route::delete('/project-skill/{skill_id}','Users\SkillController@destroy_project_skill')->name('project_skill.destroy');
 Route::resource('skill','Users\SkillController')->except(['show','edit','update']);
 
 ####################################   Project   #####################################

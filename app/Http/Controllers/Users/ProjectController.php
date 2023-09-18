@@ -2,25 +2,24 @@
 
 namespace App\Http\Controllers\Users;
 
+use Illuminate\View\View;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectRequest;
-use App\Interfaces\Repository\ProjectRepositoryInterface;
-use App\Interfaces\Repository\SkillRepositoryInterface;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\View\View;
+use App\Interfaces\Repository\FileRepositoryInterface;
+use App\Interfaces\Repository\SkillRepositoryInterface;
+use App\Interfaces\Repository\ProjectRepositoryInterface;
 
 class ProjectController extends Controller
 {
 	private $ProjectRepository;
-	private $skillRepository;
 
-	public function __construct(ProjectRepositoryInterface $ProjectRepository, SkillRepositoryInterface $skillRepository)
+	public function __construct(ProjectRepositoryInterface $ProjectRepository)
 	{
 		$this->middleware('auth');
 
-		$this->skillRepository   = $skillRepository;
 		$this->ProjectRepository = $ProjectRepository;
 	}
 	####################################   index   #####################################
@@ -30,17 +29,17 @@ class ProjectController extends Controller
 	}
 
 	####################################   create   #####################################
-	public function create():View
+	public function create(SkillRepositoryInterface $skillRepository):View
 	{
-		$skills = $this->skillRepository->getSkills();
+		$skills = $skillRepository->getSkills();
 
 		return view('users.project.create', compact('skills'));
 	}
 
 	####################################   store   #####################################
-	public function store(ProjectRequest $request):RedirectResponse
+	public function store(ProjectRequest $request,FileRepositoryInterface $fileRepository,SkillRepositoryInterface $skillRepository):RedirectResponse
 	{
-		$this->ProjectRepository->storeProject($request);
+		$this->ProjectRepository->storeProject($request,$fileRepository,$skillRepository);
 
 		return redirect()->back()->with('success', 'you added successfully project');
 	}
@@ -52,18 +51,17 @@ class ProjectController extends Controller
 	}
 
 	####################################   edit   #####################################
-	public function edit(int $id):View
+	public function edit(int $id,SkillRepositoryInterface $skillRepository):View|RedirectResponse
 	{
-		$project = $this->ProjectRepository->editProject($id);
-		$skills  = $this->skillRepository->getSkills();
+		$skills  = $skillRepository->getSkills();
 
-		return view('users.project.edit', compact('project', 'skills'));
+		return  $this->ProjectRepository->editProject($id,$skills);
 	}
 
 	####################################   update   #####################################
-	public function update($request, int $id):RedirectResponse
+	public function update(ProjectRequest $request, int $id,FileRepositoryInterface $fileRepository,SkillRepositoryInterface $skillRepository):RedirectResponse
 	{
-		return to_route('');
+		return $this->ProjectRepository->updateProject($request,$id,$fileRepository,$skillRepository);
 	}
 
 	####################################   destroy   #####################################

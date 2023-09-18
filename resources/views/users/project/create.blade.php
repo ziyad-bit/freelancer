@@ -115,7 +115,7 @@
                     <label for="exampleInputEmail1">
                         experience
                     </label>
-                    <select class="form-select" required name="exp" aria-label="Default select example">
+                    <select class="form-select"  name="exp" aria-label="Default select example">
 
                         <option value="">...</option>
                         <option @selected('beginer' == old('exp')) value="beginer">beginer</option>
@@ -146,12 +146,12 @@
                     @if (old('num_input'))
                         @for ($i = 1; $i < old('num_input') + 1; $i++)
                             <label for="exampleInputEmail1">
-                                {{ $i }}- skill
+                                - skill
                             </label>
 
-                            <input list="skills" id="{{$i}}"  name="skills_name[{{ $i }}]" class="form-control input">
-                            <input type="hidden" name="skill_id[{{$i}}]" id="skill_id_{{$i}}">
-                            @error("skill_id.$i")
+                            <input list="skills" id="{{$i}}" value='{{old("skills_name.$i")}}'  name="skills_name[{{ $i }}]" class="form-control input">
+                            <input type="hidden" name="skills_id[{{$i}}]" id="skill_id_{{$i}}">
+                            @error("skills_id.$i")
                                 <div style="color: red;font-size: small">
                                     {{ $message }}
                                 </div>
@@ -159,14 +159,14 @@
                         @endfor
                     @else
                         <label for="exampleInputEmail1">
-                            1- skill
+                            - skill
                         </label>
 
                         <input list="skills" id="1" name="skills_name[1]" class="form-control input">
 
-                        <input type="hidden" name="skill_id[1]" id="skill_id_1">
+                        <input type="hidden" name="skills_id[1]" id="skill_id_1">
 
-                        @error('skill_id.1')
+                        @error('skills_id.1')
                             <small style="color: red">
                                 {{ $message }}
                             </small>

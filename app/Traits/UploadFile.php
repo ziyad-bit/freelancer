@@ -2,15 +2,18 @@
 
 namespace App\Traits;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+
+use function PHPSTORM_META\type;
 
 trait UploadFile
 {
-	use UploadPhoto;
-
-	public function uploadFile(object $request, string $path, string $input_name, string $type):string
+	####################################     uploadFile    #####################################
+	public function uploadFile(object $request, string $path,  string $type):string
 	{
-		$file     = $request->file($input_name);
+		$file     = $request->file($type);
 		$fileName = $file->hashName();
 
 		Storage::putFileAs($path, $file, $type . $fileName);
@@ -18,23 +21,15 @@ trait UploadFile
 		return $fileName;
 	}
 
-	public function uploadAnyFile($request)
+	####################################    dropZoneUpload   #####################################
+	public function dropZoneUpload(Request $request, string $path,string $type):array
 	{
-		if ($request->has('image')) {
-			$file          = $this->uploadFile($request, 'images/projects', 'image', 'image');
-			$original_name = $request->file('image')->getClientOriginalName();
-		}
+		$file_name          = $this->uploadFile($request, $path, $type);
+		$original_name = $request->file($type)->getClientOriginalName();
 
-		if ($request->has('file')) {
-			$file          = $this->uploadFile($request, 'files', 'file', 'files');
-			$original_name = $request->file('file')->getClientOriginalName();
-		}
 
-		if ($request->has('video')) {
-			$file          = $this->uploadFile($request, 'videos', 'video', 'video');
-			$original_name = $request->file('video')->getClientOriginalName();
-		}
-
-		return ['file_name' => $file, 'original_name' => $original_name];
+		return ['file_name' => $file_name, 'original_name' => $original_name];
 	}
+
+	
 }

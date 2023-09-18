@@ -2,19 +2,18 @@
 
 namespace App\Repositories;
 
-use App\Http\Requests\ProfileRequest;
-use App\Interfaces\Repository\ProfileRepositoryInterface;
 use App\Traits\UploadPhoto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\ProfileRequest;
 use Illuminate\Support\Facades\Validator;
+use App\Classes\AbstractFactory\FileAbstractFactory;
+use App\Interfaces\Repository\ProfileRepositoryInterface;
 
 class ProfileRepository implements ProfileRepositoryInterface
 {
-	use UploadPhoto;
-
 	####################################   getUserSkills   #####################################
 	public function getUserSkills(): Collection
 	{
@@ -37,7 +36,7 @@ class ProfileRepository implements ProfileRepositoryInterface
 	{
 		$user_id = Auth::id();
 		$data    = $request->safe()->except('image') + ['user_id' => $user_id];
-		$image   = $this->uploadPhotoWithResize($request, 199, 'users');
+		$image   = (new FileAbstractFactory())->create_image()->uploadAndResize($request, 199, 'users');
 
 		DB::table('user_infos')->insert($data);
 
@@ -55,7 +54,7 @@ class ProfileRepository implements ProfileRepositoryInterface
 		if ($request->has('image')) {
 			$old_image = DB::table('users')->where('id', $user_id)->value('image');
 
-			$new_image = $this->updatePhoto($request, 199, $old_image);
+			$new_image =(new FileAbstractFactory())->create_image()->update($request, 199, $old_image);
 
 			DB::table('users')->where('id', $user_id)->update(['image' => $new_image]);
 		}

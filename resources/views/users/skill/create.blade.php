@@ -23,7 +23,7 @@
 
                 <div class="form-group skills">
                     <label for="exampleInputEmail1">
-                        1- skill
+                        - skill
                     </label>
                     <input list="skills" name="skills_name[1]" class="form-control input">
 

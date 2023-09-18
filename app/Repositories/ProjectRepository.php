@@ -2,26 +2,22 @@
 
 namespace App\Repositories;
 
-use App\Http\Requests\ProjectRequest;
-use App\Interfaces\Repository\FileRepositoryInterface;
-use App\Interfaces\Repository\ProjectRepositoryInterface;
 use App\Traits\GetCursor;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\ProjectRequest;
+use Illuminate\Http\RedirectResponse;
+use App\Interfaces\Repository\FileRepositoryInterface;
+use App\Interfaces\Repository\SkillRepositoryInterface;
+use App\Interfaces\Repository\ProjectRepositoryInterface;
+use Illuminate\Support\Collection;
 
 class ProjectRepository implements ProjectRepositoryInterface
 {
 	use GetCursor;
-
-	private $fileRepository;
-
-	public function __construct(FileRepositoryInterface $fileRepository)
-	{
-		$this->fileRepository = $fileRepository;
-	}
 
 	####################################   getProjects   #####################################
 	public function getProjects(Request $request):View|JsonResponse
@@ -66,7 +62,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 	}
 
 	####################################   storeProject   #####################################
-	public function storeProject(ProjectRequest $request):void
+	public function storeProject(ProjectRequest $request,FileRepositoryInterface $fileRepository,SkillRepositoryInterface $skillRepository):void
 	{
 		$project_data = $request->safe()->only(['title', 'content']) + ['user_id' => Auth::id(), 'created_at' => now()];
 		$project_id   = DB::table('projects')->insertGetId($project_data);
@@ -75,21 +71,9 @@ class ProjectRepository implements ProjectRepositoryInterface
 
 		DB::table('project_infos')->insert($project_info_data);
 
-		$this->fileRepository->insertAnyFile($request, $project_id);
+		$fileRepository->insertAnyFile($request, $project_id);
 
-		$skills_arr = [];
-		$skills     = $request->input('skill_id');
-
-		if ($skills != []) {
-			foreach ($skills as $skill) {
-				$skills_arr[] = [
-					'skill_id'   => $skill,
-					'project_id' => $project_id,
-				];
-			}
-
-			DB::table('project_skill')->insert($skills_arr);
-		}
+		$skillRepository->storeSkill($request,'project_skill','project_id',$project_id);
 	}
 
 	####################################   showProject   #####################################
@@ -139,10 +123,11 @@ class ProjectRepository implements ProjectRepositoryInterface
 	}
 
 	####################################     editProject    #####################################
-	public function editProject(int $id):object
+	public function editProject(int $id,Collection $skills):RedirectResponse|View
 	{
 		$project = DB::table('projects')
 				->select(
+					'projects.id',
 					'title',
 					'content',
 					'project_infos.*',
@@ -156,6 +141,10 @@ class ProjectRepository implements ProjectRepositoryInterface
 				->groupBy('projects.id')
 				->first();
 
+		if (!$project) {
+			return redirect()->back()->with('error','project not found');
+		}
+
 		$skills = DB::table('skills')
 				->join('project_skill', 'skills.id', '=', 'project_skill.skill_id')
 				->where('project_skill.project_id', $id)
@@ -163,12 +152,35 @@ class ProjectRepository implements ProjectRepositoryInterface
 
 		$project->skills = $skills;
 
-		return $project;
+		return view('users.project.edit',compact('project','skills'));
 	}
 
-	####################################   updateUserInfo   #####################################
+	####################################   updateProject   #####################################
+	public function updateProject(ProjectRequest $request,int $id,FileRepositoryInterface $fileRepository,SkillRepositoryInterface $skillRepository):RedirectResponse
+	{
+		$project_data = $request->safe()->only(['title', 'content']) + ['user_id' => Auth::id(), 'created_at' => now()];
+		$project_info_data = $request->safe()->only(['num_of_days', 'min_price', 'max_price', 'exp']);
+
+		$project=DB::table('projects')->where('id',$id)->first();
+
+		if (!$project) {
+			return redirect()->back()->with('error','project not found');
+		}
+
+		DB::table('projects')->where('id',$id)->update($project_data);
+
+		DB::table('project_infos')->where('project_id',$id)->update($project_info_data);
+
+		$fileRepository->insertAnyFile($request, $id);
+
+		$skillRepository->storeSkill($request,'project_skill','project_id',$id);
+
+		return redirect()->back()->with('success', 'you updated successfully project');
+	}
+
+	####################################   deleteProject   #####################################
 	public function deleteProject(int $id):void
 	{
-		DB::table('user_Project')->where('id', $id)->delete();
+		DB::table('projects')->where('id', $id)->delete();
 	}
 }

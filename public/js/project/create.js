@@ -31,7 +31,7 @@ new Dropzone('#image_upload', {
 new Dropzone('#file_upload', {
     thumbnailWidth: 200,
     acceptedFiles: '.pdf,.ppt.,.doc,.xls',
-    paramName: 'file',
+    paramName: 'files',
     addRemoveLinks: true,
     maxFilesize: 20000,
 

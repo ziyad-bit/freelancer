@@ -14,34 +14,40 @@ generalEventListener('click', '.add_button', e => {
         num_input_ele.value = number;
 
         let html = `<div class="form-group skills">
-                        <label for="exampleInputEmail1">
-                        ${number}- skill
-                        </label>
-                        <input list="skills" id="${number}" name="skills_name[${number}]" class="form-control input">
+                        <div id="input${number}}">
+                            <label for="exampleInputEmail1">
+                                - skill
+                            </label>
+
+                            <button type="button" class="btn-close  delete_skill" id="${number}">
+                            </button>
+
+                            <input list="skills" id="${number}"  name="skills_name[${number}]" class="form-control input" >
+                        </div>
     
                         <small style="color: red" class="errors" id="skills_name.${number}_err">
                             
                         </small>
     
-                        <input type="hidden" name="skill_id[${number}]" id="skill_id_${number}">
+                        <input type="hidden" name="skills_id[${number}]" id="skill_id_${number}">
                     </div>`;
-    
+
         const body = document.querySelector('#skills_input');
-    
+
         body.insertAdjacentHTML('beforeend', html);
-    }else{
-        const err_ele  = document.querySelector('#err_msg');
+    } else {
+        const err_ele = document.querySelector('#err_msg');
 
         err_ele.style.display = '';
-        err_ele.textContent   = "you can't add more than 19 inputs"
+        err_ele.textContent = "you can't add more than 19 inputs"
     }
 })
 
 generalEventListener('input', '.input', e => {
-    let input       = e.target,
-        options     = document.querySelectorAll('#skills option'),
-        hiddenInput = document.getElementById('skill_id_'+input.getAttribute('id')),
-        inputValue  = input.value;
+    let input = e.target,
+        options = document.querySelectorAll('#skills option'),
+        hiddenInput = document.getElementById('skill_id_' + input.getAttribute('id')),
+        inputValue = input.value;
 
     for (let i = 0; i < options.length; i++) {
         let option = options[i];

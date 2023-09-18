@@ -25,7 +25,7 @@
                 <div class="modal-body">
                     <div style="display: none" class="alert alert-success text-center delete_msg"></div>
 
-                    <div style="display: none" class="alert alert-success text-center delete_msg"></div>
+                    <div style="display: none" class="alert alert-danger text-center err_msg"></div>
 
                     <h3>Are you want to delete this file?</h3>
 
@@ -45,7 +45,7 @@
                 <button type="button" class="btn-close close_btn" data-file="{{ $image }}" data-bs-toggle="modal"
                     data-bs-target="#delete_file">
                 </button>
-                
+
                 <input type="hidden" class="{{ $image }}" value="{{ route('file.destroy', $image) }}">
 
                 <img src="{{ asset('storage/images/projects/' . $image) }}"
@@ -79,9 +79,11 @@
                     <button type="button" class="btn-close close_btn" data-file="{{ $video }}"
                         data-bs-toggle="modal" data-bs-target="#delete_file">
                     </button>
+
                     <input type="hidden" class="{{ $video }}" value="{{ route('file.destroy', $video) }}">
 
-                    <video src="{{ asset('storage/videos/' . $video) }}" style="margin-left: 10px;margin-top: 10px">
+                    <video src="{{ asset('storage/videos/' . $video) }}" controls
+                        style="margin-left: 10px;margin-top: 10px;width: 300px">
                 </span>
             @endforeach
         </div>
@@ -113,10 +115,11 @@
     </div>
 
 
-    <form method="POST" id="form" action="{{ route('project.store') }}" enctype="multipart/form-data">
+    <form method="POST" id="form" action="{{ route('project.update',$project->id) }}" enctype="multipart/form-data">
         @csrf
+        @method('put')
 
-        <div class="card text-white bg-dark mb-3 " style="max-width: 34rem;margin-top: 20px">
+        <div class="card text-white bg-success   mb-3 " style="max-width: 34rem;margin-top: 20px">
             <div class="card-header">{{ __('add project') }}</div>
             <div class="card-body ">
 
@@ -223,33 +226,71 @@
 
 
                     @if (old('num_input'))
-                        @for ($i = 1; $i < old('num_input') + 1; $i++)
-                            <label for="exampleInputEmail1">
-                                {{ $i }}- skill
-                            </label>
+                        <p style="display: none">{{$new_inputs = old('num_input') - $project->skills->count()}}</p>
 
-                            <input list="skills" id="{{ $i }}" name="skills_name[{{ $i }}]"
-                                class="form-control input">
-                            <input type="hidden" name="skill_id[{{ $i }}]"
+                        @for ($i = 1 +$project->skills->count(); $i < $new_inputs +$project->skills->count() + 1; $i++)
+                            <div id="input{{ $i }}">
+                                <label for="exampleInputEmail1">
+                                    - skill
+                                </label>
+
+                                <button type="button" class="btn-close  delete_skill" id="{{ $i }}">
+                                </button>
+
+                                <input list="skills" value='{{old("skills_name.$i")}}' id="{{ $i }}" name="skills_name[{{ $i }}]"
+                                    class="form-control input">
+                            </div>
+
+                            <input type="hidden" name="skills_id[{{ $i }}]"
                                 id="skill_id_{{ $i }}">
-                            @error("skill_id.$i")
+
+                            @error("skills_id.$i")
                                 <div style="color: red;font-size: small">
                                     {{ $message }}
                                 </div>
                             @enderror
                         @endfor
+
+                        @foreach ($project->skills as $i => $skill)
+                            <div id="input{{ $i }}">
+                                <label for="exampleInputEmail1">
+                                    - skill
+                                </label>
+
+                                <button type="button" class="btn-close  delete_skill" id="{{ $i }}">
+                                </button>
+
+                                <input list="skills" value="{{ $skill->skill }}" name="skills_name[1]"
+                                    class="form-control input">
+                            </div>
+
+                            <input type="hidden" value="{{ route('project_skill.destroy', $skill->id) }}"
+                                id="delete_skill_url{{ $i }}">
+
+                            @error("skills_id.$i")
+                                <small style="color: red">
+                                    {{ $message }}
+                                </small>
+                            @enderror
+                        @endforeach
                     @else
-                        @foreach ($project->skills as $skill)
-                            <label for="exampleInputEmail1">
-                                1- skill
-                            </label>
+                        @foreach ($project->skills as $i => $skill)
+                            <div id="input{{ $i }}">
+                                <label for="exampleInputEmail1">
+                                    - skill
+                                </label>
 
-                            <input list="skills" value="{{ $skill->skill }}" id="1" name="skills_name[1]"
-                                class="form-control input">
+                                <button type="button" class="btn-close  delete_skill" id="{{ $i }}">
+                                </button>
 
-                            <input type="hidden" name="skill_id[1]" value="{{ $skill->id }}" id="skill_id_1">
+                                <input list="skills" value="{{ $skill->skill }}" name="skills_name[1]"
+                                    class="form-control input">
+                            </div>
 
-                            @error('skill_id.1')
+                            <input type="hidden" value="{{ route('project_skill.destroy', $skill->id) }}"
+                                id="delete_skill_url{{ $i }}">
+
+                            @error("skills_id.$i")
                                 <small style="color: red">
                                     {{ $message }}
                                 </small>
@@ -267,11 +308,11 @@
 
                 </div>
 
-                <input type="hidden" id="num_input" required max="20"
-                    value="{{ old('num_input') ? old('num_input') : 1 }}" name="num_input">
+                <input type="hidden" id="num_input" required max="20" min="1"
+                    value="{{ old('num_input') ? old('num_input') : count($project->skills) }}" name="num_input">
 
                 <button type="submit" class="btn btn-primary" style="margin-top: 25px">
-                    {{ __('add') }}
+                    update 
                 </button>
 
             </div>
