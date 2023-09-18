@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Users;
 
-use App\Classes\AbstractFactory\FileAbstractFactory;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DropzoneRequest;
 use App\Interfaces\Repository\FileRepositoryInterface;
@@ -26,8 +25,8 @@ class FileController extends Controller
 	####################################    upload    #####################################
 	public function upload(DropzoneRequest $request):JsonResponse
 	{
-		$file_name=$this->fileRepository->upload_file($request);
-		
+		$file_name = $this->fileRepository->upload_file($request);
+
 		return response()->json(['file_name' => $file_name['file_name'], 'original_name' => $file_name['original_name']]);
 	}
 

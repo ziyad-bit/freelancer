@@ -2,15 +2,14 @@
 
 namespace App\Repositories;
 
-use App\Traits\UploadPhoto;
+use App\Classes\AbstractFactory\FileAbstractFactory;
+use App\Http\Requests\ProfileRequest;
+use App\Interfaces\Repository\ProfileRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\ProfileRequest;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use App\Classes\AbstractFactory\FileAbstractFactory;
-use App\Interfaces\Repository\ProfileRepositoryInterface;
 
 class ProfileRepository implements ProfileRepositoryInterface
 {
@@ -54,7 +53,7 @@ class ProfileRepository implements ProfileRepositoryInterface
 		if ($request->has('image')) {
 			$old_image = DB::table('users')->where('id', $user_id)->value('image');
 
-			$new_image =(new FileAbstractFactory())->create_image()->update($request, 199, $old_image);
+			$new_image = (new FileAbstractFactory())->create_image()->update($request, 199, $old_image);
 
 			DB::table('users')->where('id', $user_id)->update(['image' => $new_image]);
 		}

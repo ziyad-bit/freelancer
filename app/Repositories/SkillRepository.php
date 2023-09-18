@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Http\Requests\SkillRequest;
 use App\Interfaces\Repository\SkillRepositoryInterface;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +15,7 @@ class SkillRepository implements SkillRepositoryInterface
 	}
 
 	####################################   storeUserInfo   #####################################
-	public function storeSkill(object $request,string $table,string $column,string $value):void
+	public function storeSkill(object $request, string $table, string $column, string $value):void
 	{
 		$skills    = $request->input('skills_id');
 

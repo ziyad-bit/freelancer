@@ -8,8 +8,6 @@ use App\Traits\InsertAnyFile;
 use App\Traits\UploadFile;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileRepository implements FileRepositoryInterface
@@ -19,8 +17,8 @@ class FileRepository implements FileRepositoryInterface
 	####################################   download_file   #####################################
 	public function download_file(string $file):StreamedResponse
 	{
-		$type  = 'create_'.substr($file, 0, 5);
-		
+		$type  = 'create_' . substr($file, 0, 5);
+
 		return (new FileAbstractFactory())->$type()->download($file);
 	}
 
@@ -42,11 +40,11 @@ class FileRepository implements FileRepositoryInterface
 		}
 
 		if ($request->has('files')) {
-			$file_name = $this->dropZoneUpload($request,'files/','files');
+			$file_name = $this->dropZoneUpload($request, 'files/', 'files');
 		}
-		
+
 		if ($request->has('video')) {
-			$file_name = $this->dropZoneUpload($request,'videos/','video');
+			$file_name = $this->dropZoneUpload($request, 'videos/', 'video');
 		}
 
 		return $file_name;
@@ -55,7 +53,7 @@ class FileRepository implements FileRepositoryInterface
 	####################################   destroy_file   #####################################
 	public function destroy_file(string $file):JsonResponse
 	{
-		$type  ='create_' . substr($file, 0, 5);
+		$type  = 'create_' . substr($file, 0, 5);
 
 		return (new FileAbstractFactory())->$type()->destroy($file);
 	}

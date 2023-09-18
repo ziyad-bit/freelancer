@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Users;
 
-use Illuminate\View\View;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectRequest;
-use Illuminate\Http\RedirectResponse;
 use App\Interfaces\Repository\FileRepositoryInterface;
-use App\Interfaces\Repository\SkillRepositoryInterface;
 use App\Interfaces\Repository\ProjectRepositoryInterface;
+use App\Interfaces\Repository\SkillRepositoryInterface;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ProjectController extends Controller
 {
@@ -37,9 +37,9 @@ class ProjectController extends Controller
 	}
 
 	####################################   store   #####################################
-	public function store(ProjectRequest $request,FileRepositoryInterface $fileRepository,SkillRepositoryInterface $skillRepository):RedirectResponse
+	public function store(ProjectRequest $request, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):RedirectResponse
 	{
-		$this->ProjectRepository->storeProject($request,$fileRepository,$skillRepository);
+		$this->ProjectRepository->storeProject($request, $fileRepository, $skillRepository);
 
 		return redirect()->back()->with('success', 'you added successfully project');
 	}
@@ -51,17 +51,17 @@ class ProjectController extends Controller
 	}
 
 	####################################   edit   #####################################
-	public function edit(int $id,SkillRepositoryInterface $skillRepository):View|RedirectResponse
+	public function edit(int $id, SkillRepositoryInterface $skillRepository):View|RedirectResponse
 	{
 		$skills  = $skillRepository->getSkills();
 
-		return  $this->ProjectRepository->editProject($id,$skills);
+		return  $this->ProjectRepository->editProject($id, $skills);
 	}
 
 	####################################   update   #####################################
-	public function update(ProjectRequest $request, int $id,FileRepositoryInterface $fileRepository,SkillRepositoryInterface $skillRepository):RedirectResponse
+	public function update(ProjectRequest $request, int $id, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):RedirectResponse
 	{
-		return $this->ProjectRepository->updateProject($request,$id,$fileRepository,$skillRepository);
+		return $this->ProjectRepository->updateProject($request, $id, $fileRepository, $skillRepository);
 	}
 
 	####################################   destroy   #####################################

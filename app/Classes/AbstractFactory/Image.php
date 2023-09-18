@@ -3,7 +3,6 @@
 namespace App\Classes\AbstractFactory;
 
 use App\Interfaces\AbstractFactory\FileInterface;
-use App\Traits\UploadFile;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -47,7 +46,7 @@ class Image implements FileInterface
 	}
 
 	####################################    update   #####################################
-	public function download( string $file ):StreamedResponse
+	public function download(string $file):StreamedResponse
 	{
 		return Storage::download('images/projects/' . $file);
 	}

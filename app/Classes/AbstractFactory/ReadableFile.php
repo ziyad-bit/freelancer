@@ -2,12 +2,11 @@
 
 namespace App\Classes\AbstractFactory;
 
-use App\Traits\UploadFile;
-use Illuminate\Http\Request;
+use App\Interfaces\AbstractFactory\FileInterface;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use App\Interfaces\AbstractFactory\FileInterface;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ReadableFile implements FileInterface
@@ -32,7 +31,7 @@ class ReadableFile implements FileInterface
 	}
 
 	####################################    download   #####################################
-	function download(string $file): StreamedResponse
+	public function download(string $file): StreamedResponse
 	{
 		return Storage::download('files/' . $file);
 	}
@@ -40,19 +39,17 @@ class ReadableFile implements FileInterface
 	####################################    destroy   #####################################
 	public function destroy(string $file):JsonResponse
 	{
-		
-			$storage_file = Storage::has('files/' . $file);
-			$db_file      = DB::table('project_files')->where('file', $file)->first();
+		$storage_file = Storage::has('files/' . $file);
+		$db_file      = DB::table('project_files')->where('file', $file)->first();
 
-			if ($storage_file && $db_file) {
-				Storage::delete('files/' . $file);
+		if ($storage_file && $db_file) {
+			Storage::delete('files/' . $file);
 
-				DB::table('project_files')->where('file', $file)->delete();
+			DB::table('project_files')->where('file', $file)->delete();
 
-				return response()->json(['success' => 'you deleted successfully file']);
-			}
+			return response()->json(['success' => 'you deleted successfully file']);
+		}
 
-			return response()->json(['error' => 'not found'], 404);
-		
+		return response()->json(['error' => 'not found'], 404);
 	}
 }

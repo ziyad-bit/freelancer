@@ -46,10 +46,10 @@ class ProjectRequest extends FormRequest
 	public function attributes()
 	{
 		return [
-			'num_of_days'   => 'number of days',
-			'min_price'     => 'minimum price',
-			'max_price'     => 'maximum price',
-			'exp'           => 'experience',
+			'num_of_days'    => 'number of days',
+			'min_price'      => 'minimum price',
+			'max_price'      => 'maximum price',
+			'exp'            => 'experience',
 			'skills_id.*'    => 'skill',
 		];
 	}

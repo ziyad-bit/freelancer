@@ -34,7 +34,7 @@ class SkillController extends Controller
 	####################################   store   #####################################
 	public function store(SkillRequest $request):JsonResponse
 	{
-		$this->skillRepository->storeSkill($request,'user_skill','user_id',Auth::id());
+		$this->skillRepository->storeSkill($request, 'user_skill', 'user_id', Auth::id());
 
 		return response()->json(['success' => 'you added skills successfully']);
 	}
