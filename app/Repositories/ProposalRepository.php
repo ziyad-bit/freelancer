@@ -4,8 +4,7 @@ namespace App\Repositories;
 
 use App\Http\Requests\ProposalRequest;
 use App\Interfaces\Repository\ProposalRepositoryInterface;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\{Auth, DB};
 
 class ProposalRepository implements ProposalRepositoryInterface
 {

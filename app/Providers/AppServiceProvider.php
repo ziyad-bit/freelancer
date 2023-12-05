@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Classes\AbstractFactory\{ApplicationFile, FileAbstractFactory, Image, Video};
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,6 +14,9 @@ class AppServiceProvider extends ServiceProvider
 	 */
 	public function register()
 	{
+		$this->app->singleton(ApplicationFile::class);
+		$this->app->singleton(Image::class);
+		$this->app->singleton(Video::class);
 	}
 
 	/**

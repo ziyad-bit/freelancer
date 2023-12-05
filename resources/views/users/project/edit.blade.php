@@ -64,7 +64,7 @@
                     </button>
                     <input type="hidden" class="{{ $file }}" value="{{ route('file.destroy', $file) }}">
 
-                    <iframe src="{{ asset('storage/files/' . $file) }}"
+                    <iframe src="{{ asset('storage/applications/projects/' . $file) }}"
                         style="margin-left: 10px;margin-top: 10px"></iframe>
                 </span>
             @endforeach
@@ -82,7 +82,7 @@
 
                     <input type="hidden" class="{{ $video }}" value="{{ route('file.destroy', $video) }}">
 
-                    <video src="{{ asset('storage/videos/' . $video) }}" controls
+                    <video src="{{ asset('storage/videos/projects/' . $video) }}" controls
                         style="margin-left: 10px;margin-top: 10px;width: 300px">
                 </span>
             @endforeach
@@ -226,9 +226,7 @@
 
 
                     @if (old('num_input'))
-                        <p style="display: none">{{$new_inputs = old('num_input') - $project->skills->count()}}</p>
-
-                        @for ($i = 1 +$project->skills->count(); $i < $new_inputs +$project->skills->count() + 1; $i++)
+                        @for ($i = 1 +$project->skills->count(); $i < old('num_input') + 1; $i++)
                             <div id="input{{ $i }}">
                                 <label for="exampleInputEmail1">
                                     - skill

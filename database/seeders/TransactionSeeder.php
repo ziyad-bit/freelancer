@@ -4,9 +4,8 @@ namespace Database\Seeders;
 
 use App\Traits\DateRandom;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+use Illuminate\Support\{Arr, Str};
 
 class TransactionSeeder extends Seeder
 {

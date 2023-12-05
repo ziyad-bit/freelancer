@@ -5,14 +5,12 @@ namespace App\Http\Controllers\Users;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DropzoneRequest;
 use App\Interfaces\Repository\FileRepositoryInterface;
-use App\Traits\UploadFile;
+use App\Traits\{CrudFile, File, UploadFile};
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileController extends Controller
 {
-	use UploadFile;
-
 	private $fileRepository;
 
 	public function __construct(FileRepositoryInterface $fileRepository)
@@ -25,7 +23,7 @@ class FileController extends Controller
 	####################################    upload    #####################################
 	public function upload(DropzoneRequest $request):JsonResponse
 	{
-		$file_name = $this->fileRepository->upload_file($request);
+		$file_name = $this->fileRepository->upload_file($request, 'projects/');
 
 		return response()->json(['file_name' => $file_name['file_name'], 'original_name' => $file_name['original_name']]);
 	}
@@ -33,12 +31,12 @@ class FileController extends Controller
 	####################################   download   #####################################
 	public function download(string $file):StreamedResponse
 	{
-		return $this->fileRepository->download_file($file);
+		return $this->fileRepository->download_file($file, 'projects/');
 	}
 
 	####################################   destroy   #####################################
 	public function destroy(string $file):JsonResponse
 	{
-		return $this->fileRepository->destroy_file($file);
+		return $this->fileRepository->destroy_file($file, 'projects/');
 	}
 }

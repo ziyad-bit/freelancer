@@ -149,8 +149,9 @@
                                 - skill
                             </label>
 
-                            <input list="skills" id="{{$i}}" value='{{old("skills_name.$i")}}'  name="skills_name[{{ $i }}]" class="form-control input">
-                            <input type="hidden" name="skills_id[{{$i}}]" id="skill_id_{{$i}}">
+                            <input list="skills" id="{{$i}}" value='{{old("skills_name.$i")}}' name="skills_name[{{ $i }}]" class="form-control input">
+                            <input type="hidden" name="skills_id[{{$i}}]" id="skill_id_{{$i}}" value='{{old("skills_name.$i")}}'>
+                            
                             @error("skills_id.$i")
                                 <div style="color: red;font-size: small">
                                     {{ $message }}

@@ -3,16 +3,11 @@
 namespace App\Repositories;
 
 use App\Http\Requests\ProjectRequest;
-use App\Interfaces\Repository\FileRepositoryInterface;
-use App\Interfaces\Repository\ProjectRepositoryInterface;
-use App\Interfaces\Repository\SkillRepositoryInterface;
+use App\Interfaces\Repository\{FileRepositoryInterface, ProjectRepositoryInterface, SkillRepositoryInterface};
 use App\Traits\GetCursor;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\{Auth, DB};
 use Illuminate\View\View;
 
 class ProjectRepository implements ProjectRepositoryInterface
@@ -62,6 +57,12 @@ class ProjectRepository implements ProjectRepositoryInterface
 	}
 
 	####################################   storeProject   #####################################
+	public function createProject(Collection $skills):View
+	{
+		return view('users.project.create', compact('skills'));
+	}
+
+	####################################   storeProject   #####################################
 	public function storeProject(ProjectRequest $request, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):void
 	{
 		$project_data = $request->safe()->only(['title', 'content']) + ['user_id' => Auth::id(), 'created_at' => now()];
@@ -90,7 +91,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 					'users.name',
 					'review',
 					DB::raw('GROUP_CONCAT(DISTINCT skill) as skills_names'),
-					DB::raw('GROUP_CONCAT(DISTINCT project_files.file) as files_names'),
+					DB::raw('GROUP_CONCAT(DISTINCT project_files.application) as files_names'),
 					DB::raw('GROUP_CONCAT(DISTINCT project_files.video) as videos_names'),
 					DB::raw('GROUP_CONCAT(DISTINCT project_files.image) as images_names'),
 					DB::raw('COUNT(DISTINCT proposals.id) as proposals_count')
@@ -110,16 +111,20 @@ class ProjectRepository implements ProjectRepositoryInterface
 			return to_route('project.index_posts')->with('error', 'project not found');
 		}
 
-		$auth_proposal = DB::table('proposals')
+		$proposals = DB::table('proposals')
 					->select('proposals.*', 'location', 'card_num', 'name', 'review', )
 					->join('users', 'users.id', '=', 'proposals.user_id')
 					->join('user_infos', 'users.id', '=', 'user_infos.user_id')
-					->where(['project_id' => $project->id, 'proposals.user_id' => Auth::id()])
-					->first();
+					->where('project_id', $project->id)
+					->get();
 
-		$project->proposal = $auth_proposal;
+		$project->proposals = $proposals;
 
-		return view('users.project.show', compact('project'));
+		$auth_proposal = DB::table('proposals')
+					->where(['project_id' => $project->id, 'user_id' => Auth::id()])
+					->value('id');
+
+		return view('users.project.show', compact('project', 'auth_proposal'));
 	}
 
 	####################################     editProject    #####################################
@@ -131,7 +136,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 					'title',
 					'content',
 					'project_infos.*',
-					DB::raw('GROUP_CONCAT(DISTINCT project_files.file) as files_names'),
+					DB::raw('GROUP_CONCAT(DISTINCT project_files.application) as files_names'),
 					DB::raw('GROUP_CONCAT(DISTINCT project_files.video) as videos_names'),
 					DB::raw('GROUP_CONCAT(DISTINCT project_files.image) as images_names'),
 				)
@@ -179,8 +184,16 @@ class ProjectRepository implements ProjectRepositoryInterface
 	}
 
 	####################################   deleteProject   #####################################
-	public function deleteProject(int $id):void
+	public function deleteProject(int $id):RedirectResponse
 	{
+		$project = DB::table('projects')->where('id', $id)->first();
+
+		if (!$project) {
+			return redirect()->back()->with('error', 'project not found');
+		}
+
 		DB::table('projects')->where('id', $id)->delete();
+
+		return to_route('project.index_posts')->with('success', 'you deleted successfully project');
 	}
 }

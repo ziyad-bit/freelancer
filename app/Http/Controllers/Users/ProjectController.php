@@ -4,12 +4,9 @@ namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectRequest;
-use App\Interfaces\Repository\FileRepositoryInterface;
-use App\Interfaces\Repository\ProjectRepositoryInterface;
-use App\Interfaces\Repository\SkillRepositoryInterface;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use App\Interfaces\Repository\{FileRepositoryInterface, ProjectRepositoryInterface, SkillRepositoryInterface};
+use App\Traits\{GetId, GetUrlId};
+use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
 use Illuminate\View\View;
 
 class ProjectController extends Controller
@@ -21,6 +18,8 @@ class ProjectController extends Controller
 		$this->middleware('auth');
 
 		$this->ProjectRepository = $ProjectRepository;
+
+		$this->middleware('project')->only(['destroy', 'edit', 'update']);
 	}
 	####################################   index   #####################################
 	public function index_projects(Request $request):View|JsonResponse
@@ -31,9 +30,9 @@ class ProjectController extends Controller
 	####################################   create   #####################################
 	public function create(SkillRepositoryInterface $skillRepository):View
 	{
-		$skills = $skillRepository->getSkills();
+		$skills  = $skillRepository->getSkills();
 
-		return view('users.project.create', compact('skills'));
+		return  $this->ProjectRepository->createProject($skills);
 	}
 
 	####################################   store   #####################################
@@ -67,6 +66,6 @@ class ProjectController extends Controller
 	####################################   destroy   #####################################
 	public function destroy(int $id):RedirectResponse
 	{
-		return to_route('');
+		return $this->ProjectRepository->deleteProject($id);
 	}
 }

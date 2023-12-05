@@ -5,8 +5,7 @@ namespace App\Http\Controllers\Users;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProposalRequest;
 use App\Interfaces\Repository\ProposalRepositoryInterface;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\{JsonResponse, RedirectResponse};
 
 class ProposalController extends Controller
 {

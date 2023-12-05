@@ -5,8 +5,7 @@ namespace Database\Seeders;
 use App\Traits\DateRandom;
 use Faker\Factory;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\{DB, Hash};
 use Illuminate\Support\Str;
 
 class UserSeeder extends Seeder

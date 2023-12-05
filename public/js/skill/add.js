@@ -8,9 +8,8 @@ if (num_input_ele_val > 1) {
 }
 
 generalEventListener('click', '.add_button', e => {
-    number++;
-
     if (number < 20) {
+        number++;
         num_input_ele.value = number;
 
         let html = `<div class="form-group skills">
@@ -55,6 +54,8 @@ generalEventListener('input', '.input', e => {
         if (option.innerText === inputValue) {
             hiddenInput.value = option.getAttribute('data-value');
             break;
+        }else{
+            hiddenInput.value = 0;
         }
     }
 })

@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
-use App\Interfaces\Repository\AuthRepositoryInterface;
-use App\Interfaces\Repository\ProfileRepositoryInterface;
+use App\Interfaces\Repository\{AuthRepositoryInterface, ProfileRepositoryInterface};
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;

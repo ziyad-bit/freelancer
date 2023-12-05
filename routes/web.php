@@ -43,3 +43,6 @@ Route::delete('/files/{file}','Users\FileController@destroy')->name('file.destro
 ####################################   proposal   #####################################
 Route::post('proposal/update/{id}','Users\ProposalController@update')->name('proposal.update');
 Route::resource('proposal','Users\ProposalController')->only(['store','destroy']);
+
+####################################   message   #####################################
+Route::resource('message','Users\MessageController');

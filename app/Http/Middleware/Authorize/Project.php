@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
 
-class Skill
+class Project
 {
 	/**
 	 * Handle an incoming request.
@@ -16,11 +16,13 @@ class Skill
 	 *
 	 * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
 	 */
-	public function handle(Request $request, Closure $next, int $id)
+	public function handle(Request $request, Closure $next)
 	{
-		$user_id = DB::table('user_skill')->where('id', $id)->value('user_id');
+		$project_id = $request->route('project');
+		$user_id    = DB::table('projects')->where('id', $project_id)->value('user_id');
+
 		if ($user_id !== Auth::id()) {
-			return response()->json(['error' => 'something went wrong'], 500);
+			return to_route('project.index_posts')->with('error', 'something went wrong');
 		}
 
 		return $next($request);

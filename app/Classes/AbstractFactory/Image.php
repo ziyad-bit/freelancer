@@ -3,11 +3,8 @@
 namespace App\Classes\AbstractFactory;
 
 use App\Interfaces\AbstractFactory\FileInterface;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Illuminate\Http\{JsonResponse, Request};
+use Illuminate\Support\Facades\{DB, Storage};
 
 class Image implements FileInterface
 {
@@ -29,52 +26,35 @@ class Image implements FileInterface
 	####################################   insert   #####################################
 	public function insert(Request $request, int $project_id):void
 	{
-		$images_arr = [];
-		$images     = $request->input('images');
+		static $insert_called = false;
 
-		if ($images != []) {
-			foreach ($images as $image) {
-				$images_arr[] = [
-					'image'      => $image,
-					'project_id' => $project_id,
-					'created_at' => now(),
-				];
+		if (!$insert_called) {
+			$insert_called = true;
+
+			$images_arr    = [];
+			$images        = $request->input('images');
+
+			if ($images != []) {
+				foreach ($images as $image) {
+					$images_arr[] = [
+						'image'      => $image,
+						'project_id' => $project_id,
+						'created_at' => now(),
+					];
+				}
+
+				DB::table('project_files')->insert($images_arr);
 			}
-
-			DB::table('project_files')->insert($images_arr);
 		}
-	}
-
-	####################################    update   #####################################
-	public function download(string $file):StreamedResponse
-	{
-		return Storage::download('images/projects/' . $file);
 	}
 
 	####################################    update   #####################################
 	public function update(object $request, int $width = null, string $old_image, string $path = 'users', int $height = null):string
 	{
-		Storage::delete('images/' . $path . '/' . $old_image);
+		Storage::delete('image/' . $path . '/' . $old_image);
 
 		$image = $this->uploadAndResize($request, $width, $path, $height);
 
 		return $image;
-	}
-
-	####################################    destroy   #####################################
-	public function destroy(string $file):JsonResponse
-	{
-		$storage_file = Storage::has('images/projects/' . $file);
-		$db_file      = DB::table('project_files')->where('image', $file)->first();
-
-		if ($storage_file && $db_file) {
-			Storage::delete('images/projects/' . $file);
-
-			DB::table('project_files')->where('image', $file)->delete();
-
-			return response()->json(['success' => 'you deleted successfully image']);
-		}
-
-		return response()->json(['error' => 'not found'], 404);
 	}
 }

@@ -2,14 +2,13 @@
 
 namespace App\Interfaces\Repository;
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\{JsonResponse, Request};
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 interface FileRepositoryInterface
 {
-	public function download_file(string $file):StreamedResponse;
+	public function download_file(string $file, string $dir):StreamedResponse;
 	public function insertAnyFile(Request $request, int $project_id):void;
-	public function upload_file(Request $request):array;
-	public function destroy_file(string $file):JsonResponse;
+	public function upload_file(Request $request, string $dir):array;
+	public function destroy_file(string $file, string $dir):JsonResponse;
 }

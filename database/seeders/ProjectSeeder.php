@@ -2,8 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Project;
-use App\Models\skill;
+use App\Models\{Project, skill};
 use App\Traits\DateRandom;
 use Faker\Factory;
 use Illuminate\Database\Seeder;

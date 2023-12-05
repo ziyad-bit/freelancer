@@ -19,7 +19,7 @@ class SkillController extends Controller
 
 		$this->skillRepository = $skillRepository;
 
-		$id = basename(url()->full());
+		$id = request()->route('skill');
 		$this->middleware('skill:' . $id)->only('destroy');
 	}
 

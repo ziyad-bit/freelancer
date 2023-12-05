@@ -58,9 +58,6 @@ delete_skill_btns.forEach(delete_skill_btn => {
             const url = url_ele.value;
 
             axios.delete(url)
-                .then(res=>{
-                    
-                })
         }
 
         document.querySelector('#input' + skill_index).remove();

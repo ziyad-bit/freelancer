@@ -20,6 +20,8 @@ return $config
 		// for indentation to work: 1 of 2. Works!
 
         'ordered_imports' => ['sort_algorithm' => 'alpha'],
+		'single_import_per_statement'=>false,
+		'group_import'=>true,
 
 		'array_indentation' => true,
 		'array_syntax' => ['syntax' => 'short'],

@@ -3,10 +3,10 @@ Dropzone.autoDiscover = false;
 new Dropzone('#image_upload', {
     thumbnailWidth: 200,
     acceptedFiles: '.jpg,.png,.jepg,.gif,.webp',
-    paramName: 'image',
+    paramName: 'file',
     addRemoveLinks: true,
     maxFilesize: 8000,
-    maxFiles:2,
+    maxFiles: 4,
 
     success: function (data) {
         let response = JSON.parse(data.xhr.response);
@@ -14,14 +14,19 @@ new Dropzone('#image_upload', {
         let original_name = response.original_name;
         let form_ele = document.getElementById('form');
 
-        const html = `<input type="hidden" id="${original_name}" name="images[]" value="image${image_name}">`;
+        const html = `<input type="hidden" class="${original_name}" name="images[]" value="image-${image_name}">
+                    <input type="hidden" class="${original_name}" name="files[]" value="image-${image_name}">`;
 
         form_ele.insertAdjacentHTML('beforeend', html);
     },
     removedfile: function (file) {
         let image_name = file.name;
 
-        document.getElementById(`${image_name}`).remove();
+        const hiddenInputs = document.getElementsByClassName(`${image_name}`);
+
+        hiddenInputs.forEach(hiddenInput => {
+            hiddenInput.remove();
+        });
 
         file.previewElement.remove();
     }
@@ -31,7 +36,7 @@ new Dropzone('#image_upload', {
 new Dropzone('#file_upload', {
     thumbnailWidth: 200,
     acceptedFiles: '.pdf,.ppt.,.doc,.xls',
-    paramName: 'files',
+    paramName: 'file',
     addRemoveLinks: true,
     maxFilesize: 20000,
 
@@ -41,14 +46,19 @@ new Dropzone('#file_upload', {
         let original_name = response.original_name;
         let form_ele = document.getElementById('form');
 
-        const html = `<input type="hidden" id="${original_name}" name="files[]" value="files${file_name}">`;
+        const html = `<input type="hidden" class="${original_name}" name="applications[]" value="application-${file_name}">
+        <input type="hidden" class="${original_name}" name="files[]" value="application-${file_name}">`;
 
         form_ele.insertAdjacentHTML('beforeend', html);
     },
     removedfile: function (file) {
         let file_name = file.name;
 
-        document.getElementById(`${file_name}`).remove();
+        const hiddenInputs = document.getElementsByClassName(`${file_name}`);
+
+        hiddenInputs.forEach(hiddenInput => {
+            hiddenInput.remove();
+        });
 
         file.previewElement.remove();
     }
@@ -57,7 +67,7 @@ new Dropzone('#file_upload', {
 new Dropzone('#video_upload', {
     thumbnailWidth: 200,
     acceptedFiles: '.mp4,.mov,.flv,.avi',
-    paramName: 'video',
+    paramName: 'file',
     addRemoveLinks: true,
     maxFilesize: 100000,
 
@@ -67,14 +77,19 @@ new Dropzone('#video_upload', {
         let original_name = response.original_name;
         let form_ele = document.getElementById('form');
 
-        const html = `<input type="hidden" id="${original_name}" name="videos[]" value="video${file_name}">`;
+        const html = `<input type="hidden" class="${original_name}" name="videos[]" value="video-${file_name}">
+        <input type="hidden" class="${original_name}" name="files[]" value="video-${file_name}">`;
 
         form_ele.insertAdjacentHTML('beforeend', html);
     },
     removedfile: function (file) {
-        let file_name = file.name;
+        let video_name = file.name;
 
-        document.getElementById(`${file_name}`).remove();
+        const hiddenInputs = document.getElementsByClassName(`${video_name}`);
+
+        hiddenInputs.forEach(hiddenInput => {
+            hiddenInput.remove();
+        });
 
         file.previewElement.remove();
     }

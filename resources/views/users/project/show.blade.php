@@ -128,10 +128,20 @@
             <span style="margin-left: 10px">review: {{ $project->review }}</span>
         </div>
 
-        <a type="button" class="btn btn-primary" 
-        href="{{ route('project.edit',$project->id) }}" style="margin-top: 5px">
+        <a type="button" class="btn btn-primary" href="{{ route('project.edit', $project->id) }}"
+            style="margin-top: 5px">
             edit
         </a>
+
+        <form action="{{ route('project.destroy', $project->id) }}" method="POST" style="display: inline-block">
+            @csrf
+            @method('delete')
+
+            <button class="btn btn-danger left_btn" style="margin-top: 5px"
+                onclick="return confirm('Are you want to delete this project?')">
+                delete
+            </button>
+        </form>
     </div>
 
     @if ($project->files_names)
@@ -175,50 +185,22 @@
     <hr>
 
     <!-- proposal  -->
-    <h3 class="text-center">proposal</h3>
+    @forelse ($project->proposals as $proposal)
+        @if ($project->user_id === Auth::id())
+            @include('users.project.index_proposals')
+        @else
+            @if ($proposal->user_id === Auth::id())
+                @include('users.project.index_proposals')
+            @endif
+        @endif
 
-    @if ($project->proposal)
-        <input type="hidden" value="{{ route('proposal.update', $project->proposal->id) }}" id="update_url">
-        <input type="hidden" id="delete_url" value="{{ route('proposal.destroy',$project->proposal->id) }}">
+    @empty
+        <h3 class="text-center"> no proposals</h3>
+    @endforelse
 
-        <div class="card-body proposal" style="margin-top: 25px">
-            <div class="text-muted" style="margin-bottom: 15px">
-                <span> $<span class="price">{{ $project->proposal->price }}</span></span>
-                <span style="margin-left: 10px">time: <span
-                        class="num_of_days">{{ $project->proposal->num_of_days }}</span> days</span>
-                <span style="margin-left: 10px">posted:
-                    {{ \Carbon\Carbon::parse($project->proposal->created_at)->diffForhumans() }}</span>
-            </div>
+    @if ($project->user_id !== Auth::id() && !$auth_proposal)
+        <h3 class="text-center">Add proposal</h3>
 
-            <p class="card-text content">{{ $project->proposal->content }}</p>
-
-            <div class="text-muted" style="margin-top: 10px">
-                @if ($project->proposal->card_num)
-                    <span style="color: green">payment verified </span>
-                @else
-                    <span>payment unverified </span>
-                @endif
-
-                <span style="margin-left: 10px">location: {{ $project->proposal->location }}</span>
-
-                <span style="margin-left: 10px">name: {{ $project->proposal->name }}</span>
-
-                <span style="margin-left: 10px">review: {{ $project->proposal->review }}</span>
-            </div>
-
-            <!-- Button trigger edit modal -->
-            <button type="button" class="btn btn-primary edit_btn"
-                data-bs-toggle="modal" style="margin-top: 10px" data-bs-target="#edit_proposal">
-                edit proposal
-            </button>
-
-            <!-- Button trigger delete modal -->
-            <button type="button" class="btn btn-primary delete_btn"
-                data-bs-toggle="modal" style="margin-top: 10px" data-bs-target="#delete_proposal">
-                delete proposal
-            </button>
-        </div>
-    @else
         <form action="{{ route('proposal.store') }}" method="POST">
             @csrf
 
@@ -258,7 +240,9 @@
 
             <input type="hidden" required name="project_id" value="{{ $project->id }}">
 
-            <button type="submit" style="margin-top: 5px;" class="btn btn-primary" role="button">send</button>
+            <button type="submit" style="margin-top: 5px;" class="btn btn-primary" role="button">
+                send
+            </button>
         </form>
     @endif
 

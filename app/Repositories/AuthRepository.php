@@ -5,8 +5,7 @@ namespace App\Repositories;
 use App\Http\Requests\UserRequest;
 use App\Interfaces\Repository\AuthRepositoryInterface;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\{DB, Hash};
 
 class AuthRepository implements AuthRepositoryInterface
 {
