@@ -35,7 +35,7 @@ Route::resource('skill','Users\SkillController')->except(['show','edit','update'
 Route::any('/project/index-projects','Users\ProjectController@index_projects')->name('project.index_posts');
 Route::resource('project','Users\ProjectController')->except(['index']);
 
-####################################   file   #####################################
+####################################   file    #####################################
 Route::post('/file/upload','Users\FileController@upload')->name('file.upload');
 Route::get('/files/{file}','Users\FileController@download')->name('file.download');
 Route::delete('/files/{file}','Users\FileController@destroy')->name('file.destroy');
@@ -45,4 +45,5 @@ Route::post('proposal/update/{id}','Users\ProposalController@update')->name('pro
 Route::resource('proposal','Users\ProposalController')->only(['store','destroy']);
 
 ####################################   message   #####################################
+Route::get('chat-rooms/index/{id}','Users\MessageController@index_chatrooms')->name('chat-rooms.index');
 Route::resource('message','Users\MessageController');

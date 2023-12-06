@@ -43,13 +43,13 @@
         </button>
     @else
         @if ($project->user_id === Auth::id())
-            <button type="submit" style="margin-top: 5px;" class="btn btn-success" role="button">
+            <button type="submit" style="margin-top: 5px;" class="btn btn-success">
                 accept
             </button>
 
-            <button type="submit" style="margin-top: 5px;" class="btn btn-primary" role="button">
+            <a href="{{ route('chat-rooms.index',$proposal->user_id) }}" style="margin-top: 5px;" class="btn btn-primary" >
                 chat
-            </button>
+            </a>
         @endif
     @endif
 
