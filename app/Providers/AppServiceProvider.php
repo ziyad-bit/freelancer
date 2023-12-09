@@ -3,9 +3,10 @@
 namespace App\Providers;
 
 use App\Classes\AbstractFactory\{ApplicationFile, FileAbstractFactory, Image, Video};
+use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 
-class AppServiceProvider extends ServiceProvider
+class AppServiceProvider extends ServiceProvider implements DeferrableProvider
 {
 	/**
 	 * Register any application services.
@@ -17,6 +18,15 @@ class AppServiceProvider extends ServiceProvider
 		$this->app->singleton(ApplicationFile::class);
 		$this->app->singleton(Image::class);
 		$this->app->singleton(Video::class);
+	}
+
+	public function provides():array
+	{
+		return [
+			ApplicationFile::class,
+			Image::class,
+			Video::class,
+		];
 	}
 
 	/**
