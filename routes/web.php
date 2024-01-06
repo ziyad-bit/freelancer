@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Users\FileController;
+use App\Http\Controllers\Users\MessageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,35 +17,40 @@ use Illuminate\Support\Facades\Route;
 
 ####################################   Auth   #####################################
 Route::namespace('Users')->controller('AuthController')->group(function(){
-    Route::get('/login','getLogin')->name('login');
-    Route::post('/login','postLogin')->name('login');
-    Route::get('/','index')->name('home');
-    Route::post('/logout','logout')->name('logout');
-    Route::get('/signup','create')->name('signup');
-    Route::post('/signup','store')->name('signup');
+    Route::get('/login'   ,'getLogin')->name('login');
+    Route::post('/login'  ,'postLogin')->name('login');
+    Route::get('/'        ,'index')->name('home');
+    Route::post('/logout' ,'logout')->name('logout');
+    Route::get('/signup'  ,'create')->name('signup');
+    Route::post('/signup' ,'store')->name('signup');
 });
 
 ####################################   Profile   #####################################
 Route::get('/profile/delete','Users\ProfileController@delete')->name('profile.delete');
-Route::resource('profile','Users\ProfileController')->except(['show']);
+Route::resource('profile'   ,'Users\ProfileController')->except(['show']);
 
 ####################################   Skill   #####################################
 Route::delete('/project-skill/{skill_id}','Users\SkillController@destroy_project_skill')->name('project_skill.destroy');
-Route::resource('skill','Users\SkillController')->except(['show','edit','update']);
+Route::resource('skill'                  ,'Users\SkillController')->except(['show','edit','update']);
 
 ####################################   Project   #####################################
 Route::any('/project/index-projects','Users\ProjectController@index_projects')->name('project.index_posts');
-Route::resource('project','Users\ProjectController')->except(['index']);
+Route::resource('project'           ,'Users\ProjectController')->except(['index']);
 
 ####################################   file    #####################################
-Route::post('/file/upload','Users\FileController@upload')->name('file.upload');
-Route::get('/files/{file}','Users\FileController@download')->name('file.download');
-Route::delete('/files/{file}','Users\FileController@destroy')->name('file.destroy');
+Route::namespace('Users')->controller(FileController::class)->group(function(){
+    Route::post('/file/upload'   ,'upload')->name('file.upload');
+    Route::get('/files/{file}'   ,'download')->name('file.download');
+    Route::delete('/files/{file}','destroy')->name('file.destroy');
+});
 
 ####################################   proposal   #####################################
 Route::post('proposal/update/{id}','Users\ProposalController@update')->name('proposal.update');
-Route::resource('proposal','Users\ProposalController')->only(['store','destroy']);
+Route::resource('proposal'        ,'Users\ProposalController')->only(['store','destroy']);
 
 ####################################   message   #####################################
-Route::get('chat-rooms/index/{id}','Users\MessageController@index_chatrooms')->name('chat-rooms.index');
-Route::resource('message','Users\MessageController');
+Route::namespace('Users')->controller(MessageController::class)->group(function(){
+    Route::get('message/index/{id}'   ,'index_chatrooms')->name('chat-rooms.index');
+    Route::put('message/show-old/{id}','show_old')->name('message.show_old');
+    Route::post('message'             ,'store')->name('message.store');
+});

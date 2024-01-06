@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\MessageRequest;
 use App\Interfaces\Repository\MessageRepositoryInterface;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
 use Illuminate\Support\Facades\{Auth, DB};
 use Illuminate\View\View;
 
@@ -27,14 +28,18 @@ class MessageController extends Controller
 	}
 
 	####################################   store   #####################################
-	public function store($request):RedirectResponse
+	public function store(MessageRequest $request):JsonResponse
 	{
-		return to_route('');
+		$this->messageRepository->storeMessage($request);
+
+		return response()->json();
 	}
 
-	####################################   show   #####################################
-	public function show(int $id):View
+	####################################   show_old   #####################################
+	public function show_old(Request $request, int $chat_box_id):JsonResponse
 	{
-		return view('');
+		$view = $this->messageRepository->showOldMessage($request, $chat_box_id);
+
+		return response()->json(['view' => $view]);
 	}
 }

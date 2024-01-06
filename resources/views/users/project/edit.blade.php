@@ -2,6 +2,14 @@
 
 @section('header')
     <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+
+
+    <script defer src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+
+    <script defer src="{{ asset('js/general.js')}}?v={{ filemtime(public_path('js/general.js')) }}"></script>
+    <script defer src="{{ asset('js/project/create.js')}}?v={{ filemtime(public_path('js/project/create.js')) }}"></script>
+    <script defer src="{{ asset('js/project/edit.js')}}?v={{ filemtime(public_path('js/project/edit.js')) }}"></script>
+    <script defer src="{{ asset('js/skill/add.js')}}?v={{ filemtime(public_path('js/skill/add.js')) }}"></script>
 @endsection
 
 @section('content')
@@ -316,13 +324,4 @@
             </div>
         </div>
     </form>
-@endsection
-
-@section('script')
-    <script defer src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
-
-    <script defer src="{{ asset('js/general.js') }}"></script>
-    <script defer src="{{ asset('js/project/create.js') }}"></script>
-    <script defer src="{{ asset('js/project/edit.js') }}"></script>
-    <script defer src="{{ asset('js/skill/add.js') }}"></script>
 @endsection

@@ -1,5 +1,11 @@
 @extends('layouts.app')
 
+@section('header')
+    <script defer src="{{ asset('js/general.js')}}?v={{ filemtime(public_path('js/general.js')) }}"></script>
+    <script defer src="{{ asset('js/skill/create.js')}}?v={{ filemtime(public_path('js/skill/create.js')) }}"></script>
+    <script defer src="{{ asset('js/skill/add.js')}}?v={{ filemtime(public_path('js/skill/add.js')) }}"></script>
+@endsection
+
 @section('content')
     <input type="hidden" value="{{ route('skill.store') }}" id="store_route">
 
@@ -47,10 +53,4 @@
         <button type="button" class="btn btn-primary submit_btn" style="margin-top: 10px;margin-bottom: 10px"> submit
         </button>
     </form>
-@endsection
-
-@section('script')
-    <script defer src="{{ asset('js/general.js') }}"></script>
-    <script defer src="{{ asset('js/skill/create.js') }}"></script>
-    <script defer src="{{ asset('js/skill/add.js') }}"></script>
 @endsection

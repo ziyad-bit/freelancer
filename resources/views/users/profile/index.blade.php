@@ -3,6 +3,8 @@
 @section('header')
     <link rel="stylesheet" href="{{ asset('css/users/profile/index.css') }}">
 
+    <script defer src="{{ asset('js/profile/index.js')}}?v={{ filemtime(public_path('js/profile/index.js')) }}"></script>
+
     <title>
         {{ ucfirst(Auth::user()->name) . ' - ' . config('app.name') }}
     </title>
@@ -124,8 +126,4 @@
         </ol>
     @endif
 
-@endsection
-
-@section('script')
-    <script defer src="{{ asset('js/profile/index.js') }}"></script>
 @endsection

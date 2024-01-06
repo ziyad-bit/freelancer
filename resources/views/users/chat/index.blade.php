@@ -3,13 +3,11 @@
 @section('header')
     <link rel="stylesheet" href="{{ asset('css/chat/index.css') }}" type="text/css" />
 
-    <script defer src="{{ asset('js/general.js') }}"></script>
-    <script defer src="{{ asset('js/chat/index.js') }}"></script>
-    
+    <script defer src="{{ asset('js/general.js')}}?v={{ filemtime(public_path('js/general.js')) }}"></script>
+    <script defer src="{{ asset('js/chat/index.js')}}?v={{ filemtime(public_path('js/chat/index.js')) }}"></script>
+
     <title>
-
         {{ 'Chat - ' . config('app.name') }}
-
     </title>
 
     <meta name="keywords" content="chat page contain all all_chat_rooms from your friends ">
@@ -36,13 +34,13 @@
 
                             @forelse ($all_chat_rooms as $i => $chat_room)
                                 @if ($chat_room->sender_id !== Auth::id())
-                                    @include('users.chat.index_chat_rooms', [
+                                    @include('users.includes.chat.index_chat_rooms', [
                                         'receiver_id' => $chat_room->sender_id,
                                         'receiver_image' => $chat_room->sender_image,
                                         'receiver_name' => $chat_room->sender_name,
                                     ])
                                 @else
-                                    @include('users.chat.index_chat_rooms', [
+                                    @include('users.includes.chat.index_chat_rooms', [
                                         'receiver_id' => $chat_room->receiver_id,
                                         'receiver_image' => $chat_room->receiver_image,
                                         'receiver_name' => $chat_room->receiver_name,
@@ -60,11 +58,11 @@
 
                             @forelse ($all_chat_rooms as $i => $chat_room)
                                 @if ($chat_room->sender_id !== Auth::id())
-                                    @include('users.chat.index_chat_boxs', [
+                                    @include('users.includes.chat.index_chat_boxs', [
                                         'receiver_id' => $chat_room->sender_id,
                                     ])
                                 @else
-                                    @include('users.chat.index_chat_boxs', [
+                                    @include('users.includes.chat.index_chat_boxs', [
                                         'receiver_id' => $chat_room->receiver_id,
                                     ])
                                 @endif

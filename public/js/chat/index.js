@@ -10,43 +10,45 @@ if (chat_room_id) {
     scrollableDiv.scrollTop = offsetTop;
 }
 
-
-let old_msg = 1;
-var users_box = document.querySelector('.list_tab_users');
 //load old messages
+let old_msg = true;
+
 function loadOldMessages() {
     const chat_box = document.getElementsByClassName('chat_body')
+
     for (let i = 0; i < chat_box.length; i++) {
+        chat_box[i].scrollTo({
+            top: 1000,
+            behavior: 'smooth'
+        })
+
         chat_box[i].onscroll = function () {
             if (chat_box[i].scrollTop == 0) {
-                if (old_msg == 1) {
+                if (old_msg == true) {
                     let first_msg_id = this.firstElementChild.id,
-                        reveiver_id = this.getAttribute('data-user_id');
+                        chat_room_id = this.getAttribute('data-chat_room_id');
 
-                    const box = document.getElementsByClassName('box' + reveiver_id);
+                    const box = document.getElementsByClassName('box' + chat_room_id)[0];
 
-                    axios.put("/message/" + reveiver_id, { 'first_msg_id': first_msg_id })
+                    axios.put("/message/show-old/" + chat_room_id, { 'first_msg_id': first_msg_id })
                         .then(res => {
                             if (res.status == 200) {
                                 let view = res.data.view;
 
+                                if (view !== '') {
+                                    box.insertAdjacentHTML('afterbegin', view);
 
-                                for (let index = 0; index < box.length; index++) {
-                                    const each_box = box[index];
-
-                                    each_box.insertAdjacentHTML('afterbegin', view);
-
-                                    each_box.scrollTo({
+                                    box.scrollTo({
                                         top: 100,
                                         behavior: 'smooth'
                                     })
+                                } else {
+                                    old_msg = false;
                                 }
-
-
                             }
                         })
                         .catch(err => {
-                            old_msg = 0;
+                            old_msg = false;
                         })
                 }
             }
@@ -57,8 +59,11 @@ function loadOldMessages() {
 
 loadOldMessages()
 
+
 //load friends by infinite scrolling
+const users_box = document.querySelector('.list_tab_users');
 let next_friends_page = 1;
+
 function loadPages(page) {
     axios.post("?page=" + page)
         .then(res => {
@@ -124,55 +129,50 @@ function loadPages(page) {
         })
 }
 
+//store message
 function storeMsg(e) {
     e.preventDefault();
 
-    let receiver_id = e.target.getAttribute('data-receiver_id'),
-        message = document.getElementsByClassName('msg' + receiver_id)[0].value;
+    let chat_room_id = e.target.getAttribute('data-chat_room_id'),
+        form = document.querySelector('#form' + chat_room_id),
+        formData = new FormData(form);
 
-    if (message) {
-        message = document.getElementsByClassName('msg' + receiver_id)[0].value;
-    } else {
-        message = document.getElementsByClassName('msg' + receiver_id)[1].value;
-    }
+    const msg_err = document.getElementsByClassName(`msg_err${chat_room_id}`)[0];
 
-    axios.post('/message', { 'text': message, 'receiver_id': receiver_id })
+    axios.post('/message', formData)
         .then(res => {
             if (res.status == 200) {
-                let auth_name = document.getElementById('auth_name').value,
-                    auth_photo = document.getElementById('auth_photo').value;
+                let auth_name  = document.getElementById('auth_name').value,
+                    auth_photo = document.getElementById('auth_photo').value,
+                    message    = document.getElementById(`msg${chat_room_id}`).value;
 
-                const box = document.getElementsByClassName('box' + receiver_id),
-                    msg_err = document.getElementsByClassName(`msg_err${receiver_id}`)[0];
+                const box = document.getElementsByClassName('box' + chat_room_id)[0];
+                
+                msg_err.textContent='';
 
-                if (msg_err) {
-                    msg_err.remove();
-                }
+                document.getElementById('msg' + chat_room_id).value = '';
+                
+                box.insertAdjacentHTML('beforeend',
+                    `
+                <img class="rounded-circle image" src="/storage/images/users/${auth_photo}" alt="loading">
+                    <span class="user_name">${auth_name}</span>
+                    <p class="user_message">${message}</p>
+                    `
+                )
 
-                document.getElementById('msg' + receiver_id).value = '';
-
-                for (let i = 0; i < box.length; i++) {
-                    let each_box = box[i];
-
-                    each_box.insertAdjacentHTML('beforeend',
-                        `
-                        <img class="rounded-circle image" src="/images/users/${auth_photo}" alt="loading">
-                            <span class="user_name">${auth_name}</span>
-                            <p class="user_message">${message}</p>
-                            `
-                    )
-
-                    each_box.scrollTo({
-                        top: 10000,
-                        behavior: 'smooth'
-                    })
-                }
-
+                box.scrollTo({
+                    top: 10000,
+                    behavior: 'smooth'
+                })
             }
         })
+        .catch(err => {
+            let error = err.response.data.error;
+
+            msg_err.textContent=error;
+        });
 }
 
-//store message
 generalEventListener('click', '.send_btn', e => {
     storeMsg(e);
 })

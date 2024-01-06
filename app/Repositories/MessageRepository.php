@@ -31,6 +31,8 @@ class MessageRepository implements MessageRepositoryInterface
 			->orWhere(function ($query) {
 				$query->where(['messages.receiver_id' => Auth::id(), 'last' => 1]);
 			})
+			->latest()
+			->limit(3)
 			->get();
 
 		$chat_room_id = DB::table('chat_rooms')
@@ -58,21 +60,60 @@ class MessageRepository implements MessageRepositoryInterface
 					'receiver.name  as receiver_name'
 				)
 				->where('chat_room_id', $chat_room_id)
-				->limit(10)
+				->orderBy('id', 'desc')
+				->limit(3)
 				->get();
 		}
 
-		return ['messages' => $messages, 'chat_room_id' => $chat_room_id, 'all_chat_rooms' => $all_chat_rooms];
+		return [
+			'messages'       => $messages,
+			'chat_room_id'   => $chat_room_id,
+			'all_chat_rooms' => $all_chat_rooms,
+		];
 	}
 
 	####################################   storeMessage   #####################################
-	public function storeMessage(MessageRequest $request, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):void
+	public function storeMessage(MessageRequest $request):void
 	{
+		$data = $request->validated() + ['created_at' => now(), 'sender_id' => Auth::id()];
+
+		DB::table('messages')
+			->where([
+				'sender_id'   => Auth::id(),
+				'receiver_id' => $request->receiver_id,
+				'last'        => 1,
+			])
+			->orWhere(function ($query) use ($request) {
+				$query->where([
+					'receiver_id' => Auth::id(),
+					'sender_id'   => $request->sender_id,
+					'last'        => 1,
+				]);
+			})
+			->update(['last' => 0]);
+
+		DB::table('messages')->insert($data);
 	}
 
 	####################################   showMessage   #####################################
-	public function showMessage(int $id):object|null
+	public function showOldMessage(Request $request, int $chat_box_id):string
 	{
-		return view();
+		$messages = DB::table('messages')
+				->join('users as sender', 'messages.sender_id', '=', 'sender.id')
+				->join('users as receiver', 'messages.receiver_id', '=', 'receiver.id')
+				->select(
+					'messages.*',
+					'sender.image   as sender_image',
+					'receiver.image as receiver_image',
+					'sender.name    as sender_name',
+					'receiver.name  as receiver_name'
+				)
+				->where('messages.id', '<', $request->first_msg_id)
+				->where('messages.chat_room_id', $chat_box_id)
+				->orderBy('id', 'desc')
+				->limit(3)
+				->get();
+
+		return $view = view('users.includes.chat.index_msgs', compact('messages'))->render();
 	}
 }

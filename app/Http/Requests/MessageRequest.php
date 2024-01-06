@@ -24,11 +24,9 @@ class MessageRequest extends FormRequest
 	public function rules()
 	{
 		return [
-			'location'  => 'required|string',
-			'type'      => 'required|string',
-			'job'       => 'required|string|max:30|min:3',
-			'overview'  => 'required|string|max:250|min:3',
-			'image'     => $this->method() === 'PUT' ? 'nullable' : 'required' . '|image|mimes:jpg,gif,jpeg,png,webp|max:8000',
+			'chat_room_id' => 'required|numeric',
+			'receiver_id'  => 'required|numeric',
+			'text'         => 'required|string|max:250',
 		];
 	}
 
