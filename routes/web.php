@@ -50,7 +50,9 @@ Route::resource('proposal'        ,'Users\ProposalController')->only(['store','d
 
 ####################################   message   #####################################
 Route::namespace('Users')->controller(MessageController::class)->group(function(){
-    Route::get('message/index/{id}'   ,'index_chatrooms')->name('chat-rooms.index');
-    Route::put('message/show-old/{id}','show_old')->name('message.show_old');
-    Route::post('message'             ,'store')->name('message.store');
+    Route::get('message/index/{id}'      ,'index_chatrooms')->name('chat-rooms.index');
+    Route::put('message/show-old/{id}'   ,'show_old')->name('message.show_old');
+    Route::post('message'                ,'store')->name('message.store');
+    Route::get('message/{id}'            ,'show')->name('message.show');
+    Route::get('message/chat-rooms/{id}' ,'show_chat_rooms')->name('message.show_chat_rooms');
 });

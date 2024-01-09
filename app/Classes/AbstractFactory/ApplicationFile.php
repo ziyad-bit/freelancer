@@ -3,8 +3,8 @@
 namespace App\Classes\AbstractFactory;
 
 use App\Interfaces\AbstractFactory\FileInterface;
-use Illuminate\Http\{JsonResponse, Request};
-use Illuminate\Support\Facades\{DB, Storage};
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ApplicationFile implements FileInterface
 {

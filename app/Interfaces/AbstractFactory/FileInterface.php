@@ -2,7 +2,7 @@
 
 namespace App\Interfaces\AbstractFactory;
 
-use Illuminate\Http\{JsonResponse, Request};
+use Illuminate\Http\Request;
 
 interface FileInterface
 {

@@ -3,7 +3,7 @@
 namespace App\Classes\AbstractFactory;
 
 use App\Interfaces\AbstractFactory\FileInterface;
-use Illuminate\Http\{JsonResponse, Request};
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{DB, Storage};
 
 class Image implements FileInterface

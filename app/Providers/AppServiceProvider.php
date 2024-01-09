@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Classes\AbstractFactory\{ApplicationFile, FileAbstractFactory, Image, Video};
+use App\Classes\AbstractFactory\{ApplicationFile, Image, Video};
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 

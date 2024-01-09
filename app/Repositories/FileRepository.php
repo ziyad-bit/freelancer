@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Classes\AbstractFactory\FileAbstractFactory;
 use App\Interfaces\Repository\FileRepositoryInterface;
-use App\Traits\{CrudFile, File, InsertAnyFile, UploadFile};
+use App\Traits\{File, InsertAnyFile};
 use Illuminate\Http\{JsonResponse, Request};
 use Symfony\Component\HttpFoundation\StreamedResponse;
 

@@ -1,4 +1,5 @@
-const chat_room_id = document.getElementById('chat_room_id').getAttribute('data-chat_room_id');
+const chat_room_id = document.querySelector('.user_btn').getAttribute('data-selected_chat_room_id');
+
 if (chat_room_id) {
     const scrollableDiv = document.querySelector('.list_tab_users');
     const elementToScrollTo = document.querySelector('.chat_room_' + chat_room_id);
@@ -60,73 +61,34 @@ function loadOldMessages() {
 loadOldMessages()
 
 
-//load friends by infinite scrolling
-const users_box = document.querySelector('.list_tab_users');
-let next_friends_page = 1;
+//load chat_room_box by infinite scrolling
+const chat_room_box = document.querySelector('.list_tab_users');
+let data_status = true;
 
-function loadPages(page) {
-    axios.post("?page=" + page)
-        .then(res => {
-            if (res.status == 200) {
-                let users = res.data.auth_friends.data,
-                    next_page = res.data.auth_friends.next_page_url;
+function loadPages() {
+    let message_id = chat_room_box.lastElementChild.getAttribute('data-message_id');
+    
+    if (data_status) {
+        console.log('data_status: ', data_status);
+        axios.get("/message/chat-rooms/" + message_id)
+            .then(res => {
+                if (res.status == 200) {
+                    let chat_room_view = res.data.chat_room_view,
+                        chat_box_view  = res.data.chat_box_view;
+                        
+                    if (chat_room_view !== '' ) {
+                        chat_room_box.insertAdjacentHTML('beforeend',chat_room_view);
 
-                if (next_page == null) {
-                    next_friends_page = 0;
-                }
+                        document.querySelector('.box_msgs')
+                            .insertAdjacentHTML('beforeend',chat_box_view)
 
-                if (users.length > 0) {
-                    for (let i = 0; i < users.length; i++) {
-                        const user = users[i];
-
-                        users_box.insertAdjacentHTML('beforeend',
-                            `
-                                <button
-                                    class=" friend_btn user_btn nav-link list-group-item list-group-item-action "
-                                    id="list-home-list" data-bs-toggle="pill" data-bs-target= '#chat_box${user.id} '   role="tab"
-                                    data-id="${user.id}" aria-controls="home"  data-status="0">
-
-                                    <img class="rounded-circle image" src="/images/users/${user.photo}"    alt="loading">
-
-                                    ${user.online == 1 ? '<div class="rounded-circle dot"></div>' : ''}
-
-                                    <span style="font-weight: bold">${user.name}</span>
-                                </button>
-                                `
-                        );
-
-                        document.querySelector('.tab-content')
-                            .insertAdjacentHTML('beforeend',
-                                `
-                            <div class="tab-pane fade  " id="chat_box${user.id}"
-                                role="tabpanel" aria-labelledby="list-home-list">
-                                <form id="form${user.id}"  >
-            
-                                    <div class="card" style="height: 300px">
-                                        <h5 class="card-header">chat<span id="loading${user.id}"
-                                                style="margin-left: 50px;display:none">loading old messages</span>
-                                        </h5>
-
-                                        <div class="card-body " id="box${user.id}" data-user_id="${user.id}" data-old_msg='1'>
-                                            
-                                        </div>
-                                        <input type="hidden" name="receiver_id" class="receiver_id"
-                                            value="${user.id}">
-                                        <input type="text" name="message" id="msg${user.id}" class="form-control"
-                                            data-id="${user.id}">
-                                        
-                                        <button type="button" class="btn btn-success send_btn"
-                                            data-receiver_id="${user.id}">Send</button>
-                                    </div>
-                                </form>
-                            </div>
-                            `)
+                        loadOldMessages()
+                    }else{
+                        data_status = false;
                     }
-
-                    loadOldMessages()
                 }
-            }
-        })
+            })
+    }
 }
 
 //store message
@@ -142,16 +104,16 @@ function storeMsg(e) {
     axios.post('/message', formData)
         .then(res => {
             if (res.status == 200) {
-                let auth_name  = document.getElementById('auth_name').value,
+                let auth_name = document.getElementById('auth_name').value,
                     auth_photo = document.getElementById('auth_photo').value,
-                    message    = document.getElementById(`msg${chat_room_id}`).value;
+                    message = document.getElementById(`msg${chat_room_id}`).value;
 
                 const box = document.getElementsByClassName('box' + chat_room_id)[0];
-                
-                msg_err.textContent='';
+
+                msg_err.textContent = '';
 
                 document.getElementById('msg' + chat_room_id).value = '';
-                
+
                 box.insertAdjacentHTML('beforeend',
                     `
                 <img class="rounded-circle image" src="/storage/images/users/${auth_photo}" alt="loading">
@@ -169,7 +131,7 @@ function storeMsg(e) {
         .catch(err => {
             let error = err.response.data.error;
 
-            msg_err.textContent=error;
+            msg_err.textContent = error;
         });
 }
 
@@ -184,52 +146,45 @@ generalEventListener('keypress', '.send_input', e => {
 })
 
 //get messages for users
-function getNewMessages(receiver_id) {
-    const box = document.getElementsByClassName('box' + receiver_id),
-        data_status_ele = document.querySelector(`[data-id="${receiver_id}"]`);
+function getNewMessages(chat_room_id) {
+    const box = document.getElementsByClassName('box' + chat_room_id)[0];
 
-    let data_status = data_status_ele.getAttribute('data-status');
-    if (data_status == '0') {
-        axios.get("/message/" + receiver_id)
+    let data_status_ele = document.querySelector('.chat_room_' + chat_room_id);
+    let data_status     = data_status_ele.getAttribute('data-status');
+
+    if (data_status == 'false') {
+        axios.get("/message/" + chat_room_id)
             .then(res => {
                 if (res.status == 200) {
                     let view = res.data.view;
 
-                    for (let index = 0; index < box.length; index++) {
-                        box[index].insertAdjacentHTML('afterbegin', view);
+                    if (view !== '') {
+                        box.insertAdjacentHTML('afterbegin', view);
 
-                        box[index].scrollTo({
-                            top: 10000,
+                        box.scrollTo({
+                            top: 100,
                             behavior: 'smooth'
-                        });
+                        })
                     }
 
-                    data_status_ele.setAttribute('data-status', '1');
+                    data_status_ele.setAttribute('data-status', 'true');
                 }
             }).catch(err => {
                 let error = err.response.data.error;
 
-                for (let i = 0; i < box.length; i++) {
-                    box[i].insertAdjacentHTML('beforeend',
-                        `
-                        <h3 class="msg_err${receiver_id}">${error}</h3>
+                box.insertAdjacentHTML('beforeend',
                     `
-                    );
-                }
-
-                data_status_ele.setAttribute('data-status', '1');
+                    <h3 class="msg_err${chat_room_id}">${error}</h3>
+                `
+                );
             });
     }
 }
 
-//get messages for other users
 generalEventListener('click', '.user_btn', e => {
-    let id = e.target.getAttribute('data-id');
-    let data_status = document.querySelector(`[data-id="${id}"]`).getAttribute('data-status');
+    let chat_room_id = e.target.getAttribute('data-chat_room_id');
 
-    if (data_status == '0') {
-        getNewMessages(id);
-    }
+    getNewMessages(chat_room_id);
 })
 
 
@@ -285,7 +240,7 @@ function load_search_pages(page, search_input_val) {
                     friends_tab_view = res.data.friends_tab_view;
 
                 if (friends_view != '') {
-                    users_box.insertAdjacentHTML('beforeend', friends_view);
+                    chat_room_box.insertAdjacentHTML('beforeend', friends_view);
                     document.querySelector('.box_msgs').insertAdjacentHTML('beforeend', friends_tab_view);
                 } else {
                     pages_friends_status = false;
@@ -321,10 +276,10 @@ function search_friends(page) {
                     hide_results();
 
                     if (friends_view != '') {
-                        users_box.insertAdjacentHTML('beforeend', friends_view);
+                        chat_room_box.insertAdjacentHTML('beforeend', friends_view);
                         document.querySelector('.box_msgs').insertAdjacentHTML('beforeend', friends_tab_view);
                     } else {
-                        users_box.insertAdjacentHTML('beforeend', `<h3 class="no_results">no matched results</h3>`);
+                        chat_room_box.insertAdjacentHTML('beforeend', `<h3 class="no_results">no matched results</h3>`);
                     }
                 }
             })
@@ -348,12 +303,11 @@ search_input_ele.addEventListener('input', debounce(() => {
 )
 
 let page = 1;
-users_box.onscroll = function () {
-    if (users_box.offsetHeight == users_box.scrollHeight - users_box.scrollTop) {
-        if (next_friends_page == 1 && search_friends_status == false) {
-            page++;
-            loadPages(page);
-        }
+chat_room_box.onscroll = function () {
+    if (chat_room_box.offsetHeight == chat_room_box.scrollHeight - chat_room_box.scrollTop) {
+        
+            loadPages();
+        
 
 
         if (search_friends_status == true && pages_friends_status == true) {

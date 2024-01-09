@@ -3,8 +3,7 @@
 namespace App\Providers;
 
 use App\Interfaces\Repository\{AuthRepositoryInterface, FileRepositoryInterface, MessageRepositoryInterface, ProfileRepositoryInterface, ProjectRepositoryInterface, ProposalRepositoryInterface, SkillRepositoryInterface};
-use App\Repositories\MessageRepository;
-use App\Repositories\{AuthRepository, FileRepository, ProfileRepository, ProjectRepository, ProposalRepository, SkillRepository};
+use App\Repositories\{AuthRepository, FileRepository, MessageRepository, ProfileRepository, ProjectRepository, ProposalRepository, SkillRepository};
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 

@@ -2,10 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Classes\Messages\Messages;
 use App\Http\Requests\MessageRequest;
-use App\Interfaces\Repository\{FileRepositoryInterface, MessageRepositoryInterface, SkillRepositoryInterface};
+use App\Interfaces\Repository\MessageRepositoryInterface;
 use App\Traits\GetCursor;
-use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
 
 class MessageRepository implements MessageRepositoryInterface
@@ -15,6 +16,23 @@ class MessageRepository implements MessageRepositoryInterface
 	####################################   getMessages   #####################################
 	public function getMessages(int $receiver_id):array
 	{
+		$selected_chat_room = DB::table('messages')
+			->join('users as sender', 'messages.sender_id', '=', 'sender.id')
+			->join('users as receiver', 'messages.receiver_id', '=', 'receiver.id')
+			->join('chat_rooms', 'messages.chat_room_id', '=', 'chat_rooms.id')
+			->select(
+				'messages.*',
+				'sender.name as sender_name',
+				'sender.image as sender_image',
+				'receiver.name as receiver_name',
+				'receiver.image as receiver_image',
+				'chat_rooms.id as chat_room_id'
+			)
+			->where(['messages.sender_id' => Auth::id(), 'messages.receiver_id' => $receiver_id, 'last' => 1])
+			->orWhere(function ($query) use ($receiver_id) {
+				$query->where(['messages.receiver_id' => Auth::id(), 'messages.sender_id' => $receiver_id, 'last' => 1]);
+			});
+
 		$all_chat_rooms = DB::table('messages')
 			->join('users as sender', 'messages.sender_id', '=', 'sender.id')
 			->join('users as receiver', 'messages.receiver_id', '=', 'receiver.id')
@@ -25,20 +43,22 @@ class MessageRepository implements MessageRepositoryInterface
 				'sender.image as sender_image',
 				'receiver.name as receiver_name',
 				'receiver.image as receiver_image',
-				'chat_rooms.id'
+				'chat_rooms.id as chatroom_id'
 			)
 			->where(['messages.sender_id' => Auth::id(), 'last' => 1])
 			->orWhere(function ($query) {
 				$query->where(['messages.receiver_id' => Auth::id(), 'last' => 1]);
 			})
-			->latest()
-			->limit(3)
-			->get();
+			->latest('messages.id')
+			->limit(3);
 
-		$chat_room_id = DB::table('chat_rooms')
-			->where('owner_id', Auth::id())
-			->orwhere('receiver_id', $receiver_id)
-			->value('id');
+		$all_chat_rooms=$all_chat_rooms->union($selected_chat_room)->get();
+
+		foreach ($all_chat_rooms as  $chat_room) {
+			if ($chat_room->receiver_id === $receiver_id) {
+				$chat_room_id = $chat_room->chat_room_id;
+			}
+		}
 
 		$messages = null;
 
@@ -49,17 +69,7 @@ class MessageRepository implements MessageRepositoryInterface
 				'created_at'  => now(),
 			]);
 		} else {
-			$messages = DB::table('messages')
-				->join('users as sender', 'messages.sender_id', '=', 'sender.id')
-				->join('users as receiver', 'messages.receiver_id', '=', 'receiver.id')
-				->select(
-					'messages.*',
-					'sender.image   as sender_image',
-					'receiver.image as receiver_image',
-					'sender.name    as sender_name',
-					'receiver.name  as receiver_name'
-				)
-				->where('chat_room_id', $chat_room_id)
+			$messages = Messages::get($chat_room_id)
 				->orderBy('id', 'desc')
 				->limit(3)
 				->get();
@@ -96,20 +106,21 @@ class MessageRepository implements MessageRepositoryInterface
 	}
 
 	####################################   showMessage   #####################################
-	public function showOldMessage(Request $request, int $chat_box_id):string
+	public function showMessages(int $chat_room_id):string
 	{
-		$messages = DB::table('messages')
-				->join('users as sender', 'messages.sender_id', '=', 'sender.id')
-				->join('users as receiver', 'messages.receiver_id', '=', 'receiver.id')
-				->select(
-					'messages.*',
-					'sender.image   as sender_image',
-					'receiver.image as receiver_image',
-					'sender.name    as sender_name',
-					'receiver.name  as receiver_name'
-				)
+		$messages = Messages::get($chat_room_id)
+				->orderBy('messages.id', 'desc')
+				->limit(3)
+				->get();
+
+		return $view = view('users.includes.chat.index_msgs', compact('messages'))->render();
+	}
+
+	####################################   showMessage   #####################################
+	public function showOldMessages(Request $request, int $chat_room_id):string
+	{
+		$messages = Messages::get($chat_room_id)
 				->where('messages.id', '<', $request->first_msg_id)
-				->where('messages.chat_room_id', $chat_box_id)
 				->orderBy('id', 'desc')
 				->limit(3)
 				->get();

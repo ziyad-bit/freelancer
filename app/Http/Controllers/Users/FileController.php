@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Users;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DropzoneRequest;
 use App\Interfaces\Repository\FileRepositoryInterface;
-use App\Traits\{CrudFile, File, UploadFile};
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 

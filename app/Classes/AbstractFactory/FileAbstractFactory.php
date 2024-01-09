@@ -2,8 +2,6 @@
 
 namespace App\Classes\AbstractFactory;
 
-use App\Classes\AbstractFactory\{ApplicationFile, Image, Video};
-
 class FileAbstractFactory
 {
 	####################################    dropZoneUpload   #####################################
