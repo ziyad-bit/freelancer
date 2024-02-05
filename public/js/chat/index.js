@@ -1,17 +1,17 @@
 const chat_room_id = document.querySelector('.user_btn').getAttribute('data-selected_chat_room_id');
 
 if (chat_room_id) {
-    const scrollableDiv = document.querySelector('.list_tab_users');
+    const scrollableDiv     = document.querySelector('.list_tab_users');
     const elementToScrollTo = document.querySelector('.chat_room_' + chat_room_id);
 
-    // Calculate the distance from the top of the scrollable div to the top of the element
+      // Calculate the distance from the top of the scrollable div to the top of the element
     const offsetTop = elementToScrollTo.offsetTop;
 
-    // Scroll the div to the calculated offset
+      // Scroll the div to the calculated offset
     scrollableDiv.scrollTop = offsetTop;
 }
 
-//load old messages
+  //load old messages
 let old_msg = true;
 
 function loadOldMessages() {
@@ -19,7 +19,7 @@ function loadOldMessages() {
 
     for (let i = 0; i < chat_box.length; i++) {
         chat_box[i].scrollTo({
-            top: 1000,
+            top     : 1000,
             behavior: 'smooth'
         })
 
@@ -40,7 +40,7 @@ function loadOldMessages() {
                                     box.insertAdjacentHTML('afterbegin', view);
 
                                     box.scrollTo({
-                                        top: 100,
+                                        top     : 100,
                                         behavior: 'smooth'
                                     })
                                 } else {
@@ -61,13 +61,13 @@ function loadOldMessages() {
 loadOldMessages()
 
 
-//load chat_room_box by infinite scrolling
+  //load chat_room_box by infinite scrolling
 const chat_room_box = document.querySelector('.list_tab_users');
-let data_status = true;
+let   data_status   = true;
 
 function loadPages() {
     let message_id = chat_room_box.lastElementChild.getAttribute('data-message_id');
-    
+
     if (data_status) {
         console.log('data_status: ', data_status);
         axios.get("/message/chat-rooms/" + message_id)
@@ -75,15 +75,15 @@ function loadPages() {
                 if (res.status == 200) {
                     let chat_room_view = res.data.chat_room_view,
                         chat_box_view  = res.data.chat_box_view;
-                        
-                    if (chat_room_view !== '' ) {
-                        chat_room_box.insertAdjacentHTML('beforeend',chat_room_view);
+
+                    if (chat_room_view !== '') {
+                        chat_room_box.insertAdjacentHTML('beforeend', chat_room_view);
 
                         document.querySelector('.box_msgs')
-                            .insertAdjacentHTML('beforeend',chat_box_view)
+                            .insertAdjacentHTML('beforeend', chat_box_view)
 
                         loadOldMessages()
-                    }else{
+                    } else {
                         data_status = false;
                     }
                 }
@@ -91,22 +91,22 @@ function loadPages() {
     }
 }
 
-//store message
+  //store message
 function storeMsg(e) {
     e.preventDefault();
 
     let chat_room_id = e.target.getAttribute('data-chat_room_id'),
-        form = document.querySelector('#form' + chat_room_id),
-        formData = new FormData(form);
+        form         = document.querySelector('#form' + chat_room_id),
+        formData     = new FormData(form);
 
     const msg_err = document.getElementsByClassName(`msg_err${chat_room_id}`)[0];
 
     axios.post('/message', formData)
         .then(res => {
             if (res.status == 200) {
-                let auth_name = document.getElementById('auth_name').value,
+                let auth_name  = document.getElementById('auth_name').value,
                     auth_photo = document.getElementById('auth_photo').value,
-                    message = document.getElementById(`msg${chat_room_id}`).value;
+                    message    = document.getElementById(`msg${chat_room_id}`).value;
 
                 const box = document.getElementsByClassName('box' + chat_room_id)[0];
 
@@ -116,14 +116,14 @@ function storeMsg(e) {
 
                 box.insertAdjacentHTML('beforeend',
                     `
-                <img class="rounded-circle image" src="/storage/images/users/${auth_photo}" alt="loading">
-                    <span class="user_name">${auth_name}</span>
-                    <p class="user_message">${message}</p>
+                <img  class = "rounded-circle image" src = "/storage/images/users/${auth_photo}" alt = "loading">
+                <span class = "user_name">${auth_name}</span>
+                <p    class = "user_message">${message}</p>
                     `
                 )
 
                 box.scrollTo({
-                    top: 10000,
+                    top     : 10000,
                     behavior: 'smooth'
                 })
             }
@@ -145,7 +145,7 @@ generalEventListener('keypress', '.send_input', e => {
     }
 })
 
-//get messages for users
+  //get messages for users
 function getNewMessages(chat_room_id) {
     const box = document.getElementsByClassName('box' + chat_room_id)[0];
 
@@ -162,7 +162,7 @@ function getNewMessages(chat_room_id) {
                         box.insertAdjacentHTML('afterbegin', view);
 
                         box.scrollTo({
-                            top: 100,
+                            top     : 100,
                             behavior: 'smooth'
                         })
                     }
@@ -174,9 +174,31 @@ function getNewMessages(chat_room_id) {
 
                 box.insertAdjacentHTML('beforeend',
                     `
-                    <h3 class="msg_err${chat_room_id}">${error}</h3>
+                    <h3 class = "msg_err${chat_room_id}">${error}</h3>
                 `
                 );
+            });
+
+        //subscribe chat channel and listen to event after click
+        Echo.join(`chat-room.` + chat_room_id)
+            .listen('MessageEvent', (e) => {
+                const sender_id = e.sender_id;
+                const box       = document.querySelector('.box' + e.chat_room_id);
+                const name      = document.getElementById('name' + sender_id).textContent;
+                const image     = document.getElementById('image' + sender_id).getAttribute('src');
+
+                box.insertAdjacentHTML('beforeend',
+                `
+                    <img  class = "rounded-circle image" src = "${image}" alt = "loading">
+                    <span class = "user_name">${name}</span>
+                    <p    class = "user_message">${e.text}</p>
+                `
+                )
+
+                box.scrollTo({
+                    top     : 10000,
+                    behavior: 'smooth'
+                })
             });
     }
 }
@@ -187,34 +209,34 @@ generalEventListener('click', '.user_btn', e => {
     getNewMessages(chat_room_id);
 })
 
+//subscribe chat channel and listen to event after click
+let selected_chat_room_id = document.querySelector('.user_btn.active').getAttribute('data-chat_room_id');
 
+Echo.join(`chat-room.` + selected_chat_room_id)
+    .listen('MessageEvent', (e) => {
+        const sender_id = e.sender_id;
+        const box       = document.querySelector('.box' + e.chat_room_id);
+        const name      = document.getElementById('name' + sender_id).textContent;
+        const image     = document.getElementById('image' + sender_id).getAttribute('src');
 
-//subscribe chat channel and listen to event
-/*  let auth_id = document.getElementById('auth_id').value;
- Echo.private(`chat.${auth_id}`)
-     .listen('MessageSend', (e) => {
-         const box = document.getElementById('box' + e.sender_id);
- 
-         box.insertAdjacentHTML('beforeend',
-             `
-             <img  class="rounded-circle image" src="/images/users/${e.user_photo}" alt="loading">
-             <span class="user_name">${e.user_name}</span>
-             <p class="user_message">${e.text}</p>
-             `
-         )
- 
-         box.scrollTo({
-             top: 10000,
-             left: 0,
-             behavior: 'smooth'
-         })
-     }); */
+        box.insertAdjacentHTML('beforeend',
+        `
+            <img  class = "rounded-circle image" src = "${image}" alt = "loading">
+            <span class = "user_name">${name}</span>
+            <p    class = "user_message">${e.text}</p>
+        `
+        )
 
+        box.scrollTo({
+            top     : 10000,
+            behavior: 'smooth'
+        })
+    });
 
-//search friends
+  //search friends
 function hide_results() {
-    const friend_btn = document.getElementsByClassName('friend_btn'),
-        no_results_ele = document.getElementsByClassName('no_results');
+    const friend_btn     = document.getElementsByClassName('friend_btn'),
+          no_results_ele = document.getElementsByClassName('no_results');
 
     for (let i = 0; i < friend_btn.length; i++) {
         friend_btn[i].style.display = 'none';
@@ -228,15 +250,15 @@ function hide_results() {
 
 const search_input_ele = document.querySelector('.search_friends');
 
-let search_friends_arr = [],
-    pages_friends_status = true,
+let search_friends_arr    = [],
+    pages_friends_status  = true,
     search_friends_status = false;
 
 function load_search_pages(page, search_input_val) {
     axios.post('/message/search-friends?page=' + page, { 'search': search_input_val })
         .then((res) => {
             if (res.status == 200) {
-                let friends_view = res.data.friends_view,
+                let friends_view     = res.data.friends_view,
                     friends_tab_view = res.data.friends_tab_view;
 
                 if (friends_view != '') {
@@ -270,7 +292,7 @@ function search_friends(page) {
         axios.post('/message/search-friends?page=' + page, { 'search': search_input_val })
             .then((res) => {
                 if (res.status == 200) {
-                    let friends_view = res.data.friends_view,
+                    let friends_view     = res.data.friends_view,
                         friends_tab_view = res.data.friends_tab_view;
 
                     hide_results();
@@ -302,12 +324,12 @@ search_input_ele.addEventListener('input', debounce(() => {
 }, 1000)
 )
 
-let page = 1;
-chat_room_box.onscroll = function () {
+let page                   = 1;
+    chat_room_box.onscroll = function () {
     if (chat_room_box.offsetHeight == chat_room_box.scrollHeight - chat_room_box.scrollTop) {
-        
-            loadPages();
-        
+
+        loadPages();
+
 
 
         if (search_friends_status == true && pages_friends_status == true) {
@@ -320,13 +342,13 @@ chat_room_box.onscroll = function () {
 }
 
 
-//search last messages
-const search_friends_chat = document.querySelector('.search_friends_chat');
-let search_last_msgs_arr = [];
+  //search last messages
+const search_friends_chat  = document.querySelector('.search_friends_chat');
+let   search_last_msgs_arr = [];
 
 function hide_results_last_msgs() {
-    const friend_btn = document.getElementsByClassName('users_chat'),
-        no_results_ele = document.getElementsByClassName('no_results_last_msgs');
+    const friend_btn     = document.getElementsByClassName('users_chat'),
+          no_results_ele = document.getElementsByClassName('no_results_last_msgs');
 
     for (let i = 0; i < friend_btn.length; i++) {
         friend_btn[i].style.display = 'none';
@@ -357,7 +379,7 @@ function search_last_msgs(page) {
         axios.post('/message/search-last-msgs?page=' + page, { 'search': search_input_val })
             .then((res) => {
                 if (res.status == 200) {
-                    let last_msgs_view = res.data.last_msgs_view,
+                    let last_msgs_view     = res.data.last_msgs_view,
                         last_msgs_tab_view = res.data.last_msgs_tab_view;
 
                     hide_results_last_msgs();

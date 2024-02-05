@@ -8,12 +8,10 @@
     <!-- Styles -->
     <link  rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}" type="text/css" />
 
-    @yield('header')
-
     <!-- Scripts -->
-    <script defer src="{{ asset('js/app.js') }}"></script>
+    <script defer src="{{ asset('js/app.js')}} ?v={{ filemtime(public_path('js/general.js')) }}"></script>
     <script defer src="{{asset('js/bootstrap.bundle.min.js')}}" crossorigin="anonymous">
     </script>
 
-    
+    @yield('header')
 </head>

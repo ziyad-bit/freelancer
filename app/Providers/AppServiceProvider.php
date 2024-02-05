@@ -2,9 +2,10 @@
 
 namespace App\Providers;
 
-use App\Classes\AbstractFactory\{ApplicationFile, Image, Video};
-use Illuminate\Contracts\Support\DeferrableProvider;
+use GuzzleHttp\Client;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Support\DeferrableProvider;
+use App\Classes\AbstractFactory\{ApplicationFile, Image, Video};
 
 class AppServiceProvider extends ServiceProvider implements DeferrableProvider
 {

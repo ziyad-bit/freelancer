@@ -22,6 +22,10 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('project.index_posts') }}">projects</a>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('chat-rooms.index') }}">chat</a>
+                        </li>
                     </ul>
                 @endauth
 

@@ -7,6 +7,9 @@
         }
 
         $is_selected_chat_room = $chat_room->chat_room_id === $chat_room_id;
+        if (! $is_selected_chat_room) {
+            $is_selected_chat_room = $i == 0;
+        }
     @endphp
 
     <div class="tab-pane fade friends_1_page  {{ $is_selected_chat_room ? 'show active' : null }}"
@@ -45,3 +48,5 @@
 @empty
 
 @endforelse
+
+

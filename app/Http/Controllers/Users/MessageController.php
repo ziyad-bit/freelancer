@@ -13,10 +13,11 @@ class MessageController extends Controller
 {
 	public function __construct(private MessageRepositoryInterface $messageRepository)
 	{
+		$this->middleware('auth');
 	}
 
 	####################################   index   #####################################
-	public function index_chatrooms(int $receiver_id):View
+	public function index_chatrooms(int $receiver_id= null):View
 	{
 		$messages = $this->messageRepository->getMessages($receiver_id);
 
@@ -58,11 +59,11 @@ class MessageController extends Controller
 				'receiver.image as receiver_image',
 				'chat_rooms.id as chat_room_id'
 			)
-			->where(function ($query) use($message_id){
+			->where(function ($query) use ($message_id) {
 				$query->where(['messages.sender_id' => Auth::id(), 'last' => 1])
 					->where('messages.id', '<', $message_id);
 			})
-			->orWhere(function ($query) use($message_id){
+			->orWhere(function ($query) use ($message_id) {
 				$query->where(['messages.receiver_id' => Auth::id(), 'last' => 1])
 					->where('messages.id', '<', $message_id);
 			})
@@ -72,8 +73,8 @@ class MessageController extends Controller
 
 		$chat_room_id = null;
 
-		$chat_room_view = view('users.includes.chat.index_chat_rooms', compact('all_chat_rooms','chat_room_id'))->render();
-		$chat_box_view  = view('users.includes.chat.index_chat_boxs', compact('all_chat_rooms','chat_room_id'))->render();
+		$chat_room_view = view('users.includes.chat.index_chat_rooms', compact('all_chat_rooms', 'chat_room_id'))->render();
+		$chat_box_view  = view('users.includes.chat.index_chat_boxs', compact('all_chat_rooms', 'chat_room_id'))->render();
 
 		return response()->json([
 			'chat_room_view' => $chat_room_view,

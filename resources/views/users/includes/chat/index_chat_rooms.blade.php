@@ -1,5 +1,6 @@
 @forelse ($all_chat_rooms as $i => $message)
     @php
+
         if ($message->sender_id !== Auth::id()) {
             $receiver_name  = $message->sender_name;
             $receiver_id    = $message->sender_id;
@@ -11,6 +12,9 @@
         }
 
         $is_selected_chat_room = $message->chat_room_id === $chat_room_id;
+        if (! $is_selected_chat_room) {
+            $is_selected_chat_room = $i == 0;
+        }
     @endphp
 
     <button
@@ -23,13 +27,16 @@
         data-selected_chat_room_id="{{$chat_room_id}}">
 
         <div style="pointer-events: none">
-            <img class="rounded-circle image" src="{{ asset('storage/images/users/' . $receiver_image) }}" alt="loading">
+            <img class="rounded-circle image"  alt="loading" id="image{{$receiver_id}}"
+            src="{{ asset('storage/images/users/' . $receiver_image) }}" >
 
             {{--  @if ($user->online == 1)
     <div class="rounded-circle dot"></div>
 @endif --}}
 
-            <span style="font-weight: bold;">{{ $receiver_name }}</span>
+            <span style="font-weight: bold;" id="name{{$receiver_id}}">
+                {{ $receiver_name }}
+            </span>
 
 
             <p style="margin-left: 30px;">
