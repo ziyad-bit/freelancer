@@ -39,16 +39,19 @@
             </span>
 
 
-            <p style="margin-left: 30px;">
+            <p style="margin-left: 30px;" >
                 <span>
                     @if ($message->sender_id !== Auth::id())
-                        {{ Str::limit($message->sender_name, 10) }} :
+                        {{ Str::limit($message->sender_name, 10,'...') }} :
                     @else
                         you :
                     @endif
 
                 </span>
-                {{ Str::limit($message->text, 15) }}
+                
+                <span class="msg_text">
+                    {{ Str::limit($message->text, 15,'...') }}
+                </span>
             </p>
         </div>
     </button>

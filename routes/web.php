@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Users\FileController;
 use App\Http\Controllers\Users\MessageController;
+use App\Http\Controllers\Users\NotificationsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,9 +51,15 @@ Route::resource('proposal'        ,'Users\ProposalController')->only(['store','d
 
 ####################################   message   #####################################
 Route::namespace('Users')->controller(MessageController::class)->group(function(){
-    Route::get ('message/index/{id?}'      ,'index_chatrooms')->name('chat-rooms.index');
+    Route::get ('message/index/{id?}'     ,'index_chatrooms')->name('chat-rooms.index');
     Route::put ('message/show-old/{id}'   ,'show_old')->name('message.show_old');
     Route::post('message'                 ,'store')->name('message.store');
     Route::get ('message/{id}'            ,'show')->name('message.show');
     Route::get ('message/chat-rooms/{id}' ,'show_chat_rooms')->name('message.show_chat_rooms');
+});
+
+####################################   notifications   #####################################
+Route::namespace('Users')->controller(NotificationsController::class)->group(function(){
+    Route::put ('notifications/update'          ,'update')->name('notifications.update');
+    Route::get ('notifications/show-old/{id}'   ,'show_old')->name('notifications.show_old');
 });

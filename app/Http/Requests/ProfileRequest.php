@@ -32,7 +32,7 @@ class ProfileRequest extends FormRequest
 		];
 	}
 
-		/**
+	/**
 	 * Get custom attributes for validator errors.
 	 *
 	 * @return array

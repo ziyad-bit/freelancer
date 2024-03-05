@@ -7,11 +7,14 @@
     
     <!-- Styles -->
     <link  rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}" type="text/css" />
+    <link  rel="stylesheet" href="{{asset('css/navbar.css')}}" type="text/css" />
 
     <!-- Scripts -->
     <script defer src="{{ asset('js/app.js')}} ?v={{ filemtime(public_path('js/general.js')) }}"></script>
+    <script defer src="{{ asset('js/navbar.js')}} ?v={{ filemtime(public_path('js/navbar.js')) }}"></script>
     <script defer src="{{asset('js/bootstrap.bundle.min.js')}}" crossorigin="anonymous">
     </script>
+    <script src="https://kit.fontawesome.com/dc24edae72.js" crossorigin="anonymous"></script>
 
     @yield('header')
 </head>

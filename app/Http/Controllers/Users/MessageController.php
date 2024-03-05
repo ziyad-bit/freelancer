@@ -17,14 +17,16 @@ class MessageController extends Controller
 	}
 
 	####################################   index   #####################################
-	public function index_chatrooms(int $receiver_id= null):View
+	public function index_chatrooms(int $receiver_id = null):View
 	{
-		$messages = $this->messageRepository->getMessages($receiver_id);
+		$data = $this->messageRepository->getMessages($receiver_id);
 
 		return view('users.chat.index', [
-			'all_chat_rooms' => $messages['all_chat_rooms'],
-			'chat_room_id'   => $messages['chat_room_id'],
-			'messages'       => $messages['messages'],
+			'all_chat_rooms'      => $data['all_chat_rooms'],
+			'chat_room_id'        => $data['chat_room_id'],
+			'messages'            => $data['messages'],
+			'user_notifs'         => $data['user_notifs'],
+			'unread_notifs_count' => $data['unread_notifs_count'],
 		]);
 	}
 

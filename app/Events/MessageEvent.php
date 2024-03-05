@@ -2,10 +2,8 @@
 
 namespace App\Events;
 
-use Illuminate\Broadcasting\{Channel, InteractsWithSockets, PresenceChannel, PrivateChannel};
+use Illuminate\Broadcasting\{InteractsWithSockets, PresenceChannel};
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -20,13 +18,8 @@ class MessageEvent implements ShouldBroadcast
 	 *
 	 * @return void
 	 */
-	public function __construct(
-        public string $text,
-        public int $receiver_id,
-		public int $sender_id,
-		public int $chat_room_id,
-	) {
-
+	public function __construct(public array $data)
+	{
 	}
 
 	/**
@@ -36,6 +29,6 @@ class MessageEvent implements ShouldBroadcast
 	 */
 	public function broadcastOn()
 	{
-		return new PresenceChannel('chat-room.'.$this->chat_room_id);
+		return new PresenceChannel('chat-room.' . $this->data['chat_room_id']);
 	}
 }

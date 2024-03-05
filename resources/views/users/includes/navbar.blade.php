@@ -1,4 +1,4 @@
-<div >
+<div>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm">
         <div class="container">
 
@@ -55,8 +55,13 @@
                             <button class="btn btn-outline-success" id="search_btn" type="submit">Search</button>
                         </form>
 
-                        <i class="fas fa-bell" style="color: white;font-size: larger;position: relative;" id="bell">
-                            <span id="notifs_count" class="rounded-circle" style="display: none"></span>
+                        <i class="fas fa-bell"
+                            style="top: 12px;margin-right: 10px; margin-left: 20px;
+                            color: white;font-size: larger;position: relative;"
+                            id="bell">
+                            <span id="notifs_count" class="rounded-circle" style="display: none">
+                                {{ $unread_notifs_count }}
+                            </span>
                         </i>
 
 
@@ -82,6 +87,14 @@
                         </li>
                     @endguest
                 </ul>
+
+                <div>
+                    @auth
+                        <div class="card notif " style="width: 26rem;display: none " id="notif">
+                            @include('users.includes.notifications.index')
+                        </div>
+                    @endauth
+                </div>
             </div>
         </div>
     </nav>

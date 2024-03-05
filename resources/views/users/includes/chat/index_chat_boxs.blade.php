@@ -35,12 +35,19 @@
                 <input type="hidden" name="chat_room_id" value="{{ $chat_room->chat_room_id }}">
                 <input type="hidden" name="receiver_id" value="{{ $receiver_id }}">
 
-                <input type="text" name="text" class="form-control send_input" id="msg{{ $chat_room->chat_room_id }}">
+                <textarea name="text"  cols="30" rows="5" 
+                    class="form-control send_input" data-chat_room_id="{{ $chat_room->chat_room_id }}"
+                    id="msg{{ $chat_room->chat_room_id }}" ></textarea>
 
                 <button type="button" class="btn btn-success send_btn" data-chat_room_id="{{ $chat_room->chat_room_id }}">
                     Send
                 </button>
-                <small class="msg_err{{ $chat_room->chat_room_id }}"></small>
+
+                <small style="color: red;margin-left: 5px" class="msg_err{{ $chat_room->chat_room_id }}">
+                </small>
+
+                <small style="margin-left: 5px" class="typing{{ $chat_room->chat_room_id }}">
+                </small>
             </div>
         </form>
     </div>

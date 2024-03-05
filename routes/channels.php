@@ -27,3 +27,7 @@ Broadcast::channel('chat-room.{chat_room_id}', function ($user,int $chat_room_id
         return false;
     }
 });
+
+Broadcast::channel('App.Models.User.{user_id}', function ($user,int $user_id) {
+    return $user->id === $user_id;
+});

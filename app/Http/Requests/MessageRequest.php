@@ -30,7 +30,7 @@ class MessageRequest extends FormRequest
 		];
 	}
 
-		/**
+	/**
 	 * Get custom attributes for validator errors.
 	 *
 	 * @return array
