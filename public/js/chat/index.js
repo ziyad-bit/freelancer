@@ -219,7 +219,7 @@ subscribeChannel(selected_chat_room_id);
 generalEventListener('input', '.send_input', e => {
     let chat_room_id = e.target.getAttribute('data-chat_room_id');
 
-    sub_chat_roon.whisper('typing', {
+    Echo.join(`chat-room.` + chat_room_id).whisper('typing', {
         chat_room_id   : chat_room_id,
         msg_input_value: document.querySelector('#msg' + chat_room_id).value
     });

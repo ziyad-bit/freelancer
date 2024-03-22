@@ -10,7 +10,7 @@ use App\Models\User;
 use App\Notifications\NewMessageNotification;
 use App\Traits\GetCursor;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{Auth, DB, Notification};
+use Illuminate\Support\Facades\{Auth, Cache, DB, Notification};
 
 class MessageRepository implements MessageRepositoryInterface
 {
@@ -102,17 +102,18 @@ class MessageRepository implements MessageRepositoryInterface
 	{
 		$auth_user = Auth::user();
 		$data      = $request->validated() + ['created_at' => now(), 'sender_id' => $auth_user->id];
+		$receiver_id = $request->receiver_id;
 
 		DB::table('messages')
 			->where([
 				'sender_id'   => $auth_user->id,
-				'receiver_id' => $request->receiver_id,
+				'receiver_id' => $receiver_id,
 				'last'        => 1,
 			])
-			->orWhere(function ($query) use ($request, $auth_user) {
+			->orWhere(function ($query) use ($receiver_id, $auth_user) {
 				$query->where([
 					'receiver_id' => $auth_user->id,
-					'sender_id'   => $request->receiver_id,
+					'sender_id'   => $receiver_id,
 					'last'        => 1,
 				]);
 			})
@@ -122,11 +123,14 @@ class MessageRepository implements MessageRepositoryInterface
 
 		broadcast(new MessageEvent($data))->toOthers();
 
-
 		$notif_view = view('users.includes.notifications.send', compact('data'))->render();
 		$user       = User::find($request->receiver_id);
 
 		Notification::send($user, new NewMessageNotification($data, $auth_user->name, $auth_user->image, $notif_view));
+
+		if (Cache::has('notifs_' . $receiver_id)) {
+			Cache::forget('notifs_' . $receiver_id);
+		}
 	}
 
 	####################################   showMessage   #####################################
