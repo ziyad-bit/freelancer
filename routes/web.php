@@ -19,11 +19,11 @@ use App\Http\Controllers\Users\NotificationsController;
 ####################################   Auth   #####################################
 Route::namespace('Users')->controller('AuthController')->group(function(){
     Route::get ('/login'   ,'getLogin')->name('login');
-    Route::post('/login'   ,'postLogin')->name('login');
+    Route::post('/login'   ,'postLogin')->name('post.login');
     Route::get ('/'        ,'index')->name('home');
     Route::post('/logout'  ,'logout')->name('logout');
     Route::get ('/signup'  ,'create')->name('signup');
-    Route::post('/signup'  ,'store')->name('signup');
+    Route::post('/signup'  ,'store')->name('post.signup');
 });
 
 ####################################   Profile   #####################################

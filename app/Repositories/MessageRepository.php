@@ -90,17 +90,10 @@ class MessageRepository implements MessageRepositoryInterface
 				->get();
 		}
 
-		$auth_user = User::find(Auth::id());
-
-		$notifs              = $auth_user->notifications;
-		$unread_notifs_count = $auth_user->unreadnotifications->count();
-
 		return [
 			'messages'              => $messages,
 			'chat_room_id'          => $chat_room_id,
 			'all_chat_rooms'        => $all_chat_rooms,
-			'user_notifs'           => $notifs,
-			'unread_notifs_count'   => $unread_notifs_count,
 		];
 	}
 
@@ -157,5 +150,43 @@ class MessageRepository implements MessageRepositoryInterface
 				->get();
 
 		return $view = view('users.includes.chat.index_msgs', compact('messages'))->render();
+	}
+
+	####################################   get chat rooms   #####################################
+	public function getChatRooms(int $message_id):array
+	{
+		$all_chat_rooms = DB::table('messages')
+			->join('users as sender', 'messages.sender_id', '=', 'sender.id')
+			->join('users as receiver', 'messages.receiver_id', '=', 'receiver.id')
+			->join('chat_rooms', 'messages.chat_room_id', '=', 'chat_rooms.id')
+			->select(
+				'messages.*',
+				'sender.name as sender_name',
+				'sender.image as sender_image',
+				'receiver.name as receiver_name',
+				'receiver.image as receiver_image',
+				'chat_rooms.id as chat_room_id'
+			)
+			->where(function ($query) use ($message_id) {
+				$query->where(['messages.sender_id' => Auth::id(), 'last' => 1])
+					->where('messages.id', '<', $message_id);
+			})
+			->orWhere(function ($query) use ($message_id) {
+				$query->where(['messages.receiver_id' => Auth::id(), 'last' => 1])
+					->where('messages.id', '<', $message_id);
+			})
+			->latest('messages.id')
+			->limit(3)
+			->get();
+
+		$chat_room_id = null;
+
+		$chat_room_view = view('users.includes.chat.index_chat_rooms', compact('all_chat_rooms', 'chat_room_id'))->render();
+		$chat_box_view  = view('users.includes.chat.index_chat_boxs', compact('all_chat_rooms', 'chat_room_id'))->render();
+
+		return [
+			'chat_rooms_view'=>$chat_room_view ,
+			'chat_box_view'=>$chat_box_view ,
+		];
 	}
 }

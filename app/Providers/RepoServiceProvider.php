@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Interfaces\Repository\{AuthRepositoryInterface, FileRepositoryInterface, MessageRepositoryInterface, ProfileRepositoryInterface, ProjectRepositoryInterface, ProposalRepositoryInterface, SkillRepositoryInterface};
-use App\Repositories\{AuthRepository, FileRepository, MessageRepository, ProfileRepository, ProjectRepository, ProposalRepository, SkillRepository};
+use App\Interfaces\Repository\{NotificationRepositoryInterface,AuthRepositoryInterface, FileRepositoryInterface, MessageRepositoryInterface, ProfileRepositoryInterface, ProjectRepositoryInterface, ProposalRepositoryInterface, SkillRepositoryInterface};
+use App\Repositories\{AuthRepository, FileRepository, MessageRepository, NotificationRepository, ProfileRepository, ProjectRepository, ProposalRepository, SkillRepository};
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 
@@ -23,6 +23,7 @@ class RepoServiceProvider extends ServiceProvider implements DeferrableProvider
 		$this->app->bind(ProposalRepositoryInterface::class, ProposalRepository::class);
 		$this->app->bind(FileRepositoryInterface::class, FileRepository::class);
 		$this->app->bind(MessageRepositoryInterface::class, MessageRepository::class);
+		$this->app->bind(NotificationRepositoryInterface::class, NotificationRepository::class);
 	}
 
 
@@ -36,6 +37,7 @@ class RepoServiceProvider extends ServiceProvider implements DeferrableProvider
 			ProposalRepositoryInterface::class,
 			FileRepositoryInterface::class,
 			MessageRepositoryInterface::class,
+			NotificationRepositoryInterface::class,
 		];
 	}
 
