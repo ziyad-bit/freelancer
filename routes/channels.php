@@ -15,10 +15,9 @@ use Illuminate\Support\Facades\Broadcast;
 */
 
 Broadcast::channel('chat-room.{chat_room_id}', function ($user,int $chat_room_id) {
-    $joined_chat_rooms_ids=DB::table('chat_rooms')
-                            ->where('owner_id' , $user->id)
-                            ->orWhere('receiver_id' , $user->id)
-                            ->pluck('id')
+    $joined_chat_rooms_ids=DB::table('chat_room_user')
+                            ->where('user_id' , $user->id)
+                            ->pluck('chat_room_id')
                             ->toArray();
 
     if (in_array($chat_room_id,$joined_chat_rooms_ids)) {

@@ -36,5 +36,6 @@ class AppServiceProvider extends ServiceProvider implements DeferrableProvider
 	 */
 	public function boot()
 	{
+		
 	}
 }

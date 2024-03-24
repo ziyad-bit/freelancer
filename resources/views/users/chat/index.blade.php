@@ -21,11 +21,10 @@
                 <div class="row" style="margin-top: 50px">
                     <div class="col-4 ">
                         <input type="hidden" value="{{ Auth::user()->name }}" id="auth_name">
-                        <input type="hidden" value="{{ Auth::id() }}" id="auth_id">
                         <input type="hidden" value="{{ Auth::user()->image }}" id="auth_photo">
 
                         <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon1">search</span>
+                            <span class="input-group-text" id="basic-addon1" >search</span>
                             <input type="text" class="form-control search_friends" name="search"
                                 placeholder="friend name" aria-label="Username" aria-describedby="basic-addon1">
                         </div>

@@ -192,7 +192,7 @@ search_ele.onfocus=function(){
     }
 }
 
-//subscribe chat channel and listen to event
+//subscribe notification channel and listen to event
 const notif_ele        = document.querySelector('.notif');
 const notifs_count_ele = document.querySelector('#notifs_count');
 

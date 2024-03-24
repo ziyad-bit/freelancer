@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Notification;
 
 class NewMessageNotification extends Notification implements ShouldQueue
@@ -30,25 +31,25 @@ class NewMessageNotification extends Notification implements ShouldQueue
 	 *
 	 * @return array
 	 */
-	public function via($notifiable)
+	public function via()
 	{
 		return ['database', 'broadcast'];
 	}
 
-	/**
-	 * Get the array representation of the notification.
-	 *
-	 * @param  mixed  $notifiable
-	 *
-	 * @return array
-	 */
-	public function toArray($notifiable)
+
+	public function toBroadcast():BroadcastMessage
+	{
+		return new BroadcastMessage([
+			'view'         => $this->view,
+		]);
+	}
+
+	public function toDatabase():array
 	{
 		return [
 			'text'         => $this->data['text'],
 			'sender_name'  => $this->user_name,
 			'sender_image' => $this->user_image,
-			'view'         => $this->view,
 		];
 	}
 

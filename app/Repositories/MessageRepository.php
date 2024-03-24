@@ -19,6 +19,7 @@ class MessageRepository implements MessageRepositoryInterface
 	####################################   getMessages   #####################################
 	public function getMessages(int $receiver_id = null):array
 	{
+		$auth_id = Auth::id();
 		$all_chat_rooms = DB::table('messages')
 			->join('users as sender', 'messages.sender_id', '=', 'sender.id')
 			->join('users as receiver', 'messages.receiver_id', '=', 'receiver.id')
@@ -31,9 +32,9 @@ class MessageRepository implements MessageRepositoryInterface
 				'receiver.image as receiver_image',
 				'chat_rooms.id as chatroom_id'
 			)
-			->where(['messages.sender_id' => Auth::id(), 'last' => 1])
-			->orWhere(function ($query) {
-				$query->where(['messages.receiver_id' => Auth::id(), 'last' => 1]);
+			->where(['messages.sender_id' => $auth_id, 'last' => 1])
+			->orWhere(function ($query) use($auth_id){
+				$query->where(['messages.receiver_id' => $auth_id, 'last' => 1]);
 			})
 			->latest('messages.id')
 			->limit(3);
@@ -52,9 +53,9 @@ class MessageRepository implements MessageRepositoryInterface
 					'receiver.image as receiver_image',
 					'chat_rooms.id as chat_room_id'
 				)
-				->where(['messages.sender_id' => Auth::id(), 'messages.receiver_id' => $receiver_id, 'last' => 1])
-				->orWhere(function ($query) use ($receiver_id) {
-					$query->where(['messages.receiver_id' => Auth::id(), 'messages.sender_id' => $receiver_id, 'last' => 1]);
+				->where(['messages.sender_id' => $auth_id, 'messages.receiver_id' => $receiver_id, 'last' => 1])
+				->orWhere(function ($query) use ($receiver_id,$auth_id) {
+					$query->where(['messages.receiver_id' => $auth_id, 'messages.sender_id' => $receiver_id, 'last' => 1]);
 				});
 
 			$all_chat_rooms = $all_chat_rooms->union($selected_chat_room)->get();
@@ -74,8 +75,7 @@ class MessageRepository implements MessageRepositoryInterface
 
 		if (!$chat_room_id && $receiver_id) {
 			$chat_room_id = DB::table('chat_rooms')->insertGetId([
-				'owner_id'    => Auth::id(),
-				'receiver_id' => $receiver_id,
+				'owner_id'    => $auth_id,
 				'created_at'  => now(),
 			]);
 		} elseif ($chat_room_id) {
@@ -130,6 +130,7 @@ class MessageRepository implements MessageRepositoryInterface
 
 		if (Cache::has('notifs_' . $receiver_id)) {
 			Cache::forget('notifs_' . $receiver_id);
+			Cache::increment('notifs_count_' . $receiver_id);
 		}
 	}
 
@@ -159,6 +160,7 @@ class MessageRepository implements MessageRepositoryInterface
 	####################################   get chat rooms   #####################################
 	public function getChatRooms(int $message_id):array
 	{
+		$auth_id =Auth::id();
 		$all_chat_rooms = DB::table('messages')
 			->join('users as sender', 'messages.sender_id', '=', 'sender.id')
 			->join('users as receiver', 'messages.receiver_id', '=', 'receiver.id')
@@ -171,12 +173,12 @@ class MessageRepository implements MessageRepositoryInterface
 				'receiver.image as receiver_image',
 				'chat_rooms.id as chat_room_id'
 			)
-			->where(function ($query) use ($message_id) {
-				$query->where(['messages.sender_id' => Auth::id(), 'last' => 1])
+			->where(function ($query) use ($message_id,$auth_id) {
+				$query->where(['messages.sender_id' => $auth_id, 'last' => 1])
 					->where('messages.id', '<', $message_id);
 			})
-			->orWhere(function ($query) use ($message_id) {
-				$query->where(['messages.receiver_id' => Auth::id(), 'last' => 1])
+			->orWhere(function ($query) use ($message_id,$auth_id) {
+				$query->where(['messages.receiver_id' => $auth_id, 'last' => 1])
 					->where('messages.id', '<', $message_id);
 			})
 			->latest('messages.id')

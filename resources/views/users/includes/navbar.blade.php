@@ -1,4 +1,5 @@
 <div>
+    <input type="hidden" value="{{ Auth::id() }}" id="auth_id">
     <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm">
         <div class="container">
 
