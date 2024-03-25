@@ -3,7 +3,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">delete file</h1>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">add user</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
@@ -11,11 +11,6 @@
                 <div style="display: none" class="alert alert-success text-center delete_msg"></div>
 
                 <div style="display: none" class="alert alert-danger text-center err_msg"></div>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" data-file="" class="btn btn-danger delete_btn">delete</button>
             </div>
         </div>
     </div>
@@ -47,7 +42,8 @@
         data-index="{{ $i }}" data-status={{ $is_selected_chat_room ? 'true' : 'false' }}
         data-selected_chat_room_id="{{ $chat_room_id }}">
 
-        <i class="fa-solid fa-plus plus" data-bs-toggle="modal" data-bs-target="#add_user">
+        <i class="fa-solid fa-plus plus" data-bs-toggle="modal"
+            data-bs-target="#add_user" data-receiver_id="{{$receiver_id}}" data-chat_room_id="{{ $message->chat_room_id }}" >
         </i>
 
         <div style="pointer-events: none">

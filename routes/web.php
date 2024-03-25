@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Users\ChatRoomController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Users\FileController;
 use App\Http\Controllers\Users\MessageController;
@@ -62,4 +63,10 @@ Route::namespace('Users')->controller(MessageController::class)->group(function(
 Route::namespace('Users')->controller(NotificationsController::class)->group(function(){
     Route::put ('notifications/update'          ,'update')->name('notifications.update');
     Route::get ('notifications/show-old/{id}'   ,'show_old')->name('notifications.show_old');
+});
+
+####################################   chat room   #####################################
+Route::namespace('Users')->controller(ChatRoomController::class)->group(function(){
+    Route::post('chat-room/add-user/{receiver_id}/{chat_room_id}'        ,'add_user')->name('chat-room.add_user');
+    Route::get ('chat-room/show-old/{id}'   ,'show_old')->name('chat-room.show_old');
 });

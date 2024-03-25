@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('chat_room_id')->constrained('chat_rooms')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->enum('approval',['approved','refused'])->default('refused');
             $table->timestamp('created_at');
         });
     }

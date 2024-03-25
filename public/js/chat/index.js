@@ -243,23 +243,32 @@ Echo.join(`chat-room.` + selected_chat_room_id).listenForWhisper('typing', (e) =
 
 let is_modal_clicked = false;
 
-
 generalEventListener('click', '.plus', e => {
     if (!is_modal_clicked) {
         let user_names = document.querySelectorAll('.name');
         let user_images = document.querySelectorAll('.image');
+        let users_ids = document.querySelectorAll('.plus');
+        let chat_room_id = e.target.getAttribute('data-chat_room_id');
         const add_body_modal = document.querySelector('.add_body');
 
         for (let i = 0; i < user_names.length; i++) {
             let user_name = user_names[i].textContent;
             let user_image = user_images[i].getAttribute('src');
+            let user_id = users_ids[i].getAttribute('data-receiver_id');
 
             add_body_modal.insertAdjacentHTML('beforeend',
                 `
                     <li class="list-group-item">
-                    <img class="rounded-circle image" alt="loading" "
-                    src="${user_image}">
-                        ${user_name}
+
+                        <img class="rounded-circle image" alt="loading"
+                            src="${user_image}">
+                                ${user_name}
+
+                        <button
+                            type="button" data-chat_room_id="${chat_room_id}"
+                            class="btn btn-primary add_btn" data-receiver_id="${user_id}">
+                            add
+                        </button>
                     </li>
                 `);
         }
@@ -268,6 +277,17 @@ generalEventListener('click', '.plus', e => {
     }
 })
 
+generalEventListener('click', '.add_btn', e => {
+    let receiver_id = e.target.getAttribute('data-receiver_id');
+    let chat_room_id = e.target.getAttribute('data-chat_room_id');
+
+    axios.post(`/chat-room/add-user/${receiver_id}/${chat_room_id}`)
+            .then(res => {
+                if (res.status == 200) {
+                    console.log('200: ', 200);
+                }
+            })
+})
 
 
 //search friends

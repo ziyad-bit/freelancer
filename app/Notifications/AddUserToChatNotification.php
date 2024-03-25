@@ -4,10 +4,10 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\BroadcastMessage;
+use Illuminate\Notifications\Messages\{BroadcastMessage};
 use Illuminate\Notifications\Notification;
 
-class NewMessageNotification extends Notification implements ShouldQueue
+class AddUserToChatNotification extends Notification implements ShouldQueue
 {
 	use Queueable;
 
@@ -17,9 +17,8 @@ class NewMessageNotification extends Notification implements ShouldQueue
 	 * @return void
 	 */
 	public function __construct(
-		public array $data,
-		public string $user_name,
-		public string $user_image,
+		public string $chat_room_id,
+		public string $receiver_id,
 		public string $view,
 	) {
 	}
@@ -40,28 +39,27 @@ class NewMessageNotification extends Notification implements ShouldQueue
 	public function toBroadcast():BroadcastMessage
 	{
 		return new BroadcastMessage([
-			'view'         => $this->view,
-		]);
+			'view'  => $this->view,
+        ]);
 	}
 
 	public function toDatabase():array
 	{
 		return [
-			'text'         => $this->data['text'],
-			'sender_name'  => $this->user_name,
-			'sender_image' => $this->user_image,
+			'user_id'      => $this->receiver_id,
+			'chat_room_id' => $this->chat_room_id,
 		];
 	}
 
 	public function databaseType():string
 	{
-		return 'message';
+		return 'add_user_to_chat';
 	}
 
-	public function viaQueues():array
+	public function viaQueues()
 	{
 		return [
-			'database'   => 'messageNotif',
+			'database' => 'addUserNotify',
 		];
 	}
 }
