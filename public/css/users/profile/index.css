@@ -1,0 +1,58 @@
+
+.image-profile{
+    min-height: 208px;
+}
+
+.name_profile{
+    color       : #27ae60;
+    font-weight : bold;
+    margin-right: 34px;
+}
+
+.email{
+    color       : #27ae60;
+    font-weight : bold;
+    margin-right: 34px;
+}
+
+.created_at{
+    color      : #27ae60;
+    font-weight: bold;
+    
+}
+
+.card_profile{
+    margin    : auto;
+    width: 36rem;
+}
+
+@media(max-width:768px){
+    .card_profile{
+        width: 20rem;
+    }
+}
+
+.card-img-top{
+    min-height: 207px;
+    max-height: 210px;
+    width     : 200px;
+}
+
+.edit_photo{
+    margin-right: 383px;
+}
+
+@media(max-width:768px){
+    .edit_photo{
+        margin-right: 100px;
+    }
+}
+
+li .email a{
+    color:#27ae60 !important;
+}
+
+.profile_btn{
+    margin-left: 269px;
+    margin-top : 20px;
+}

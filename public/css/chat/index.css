@@ -1,0 +1,70 @@
+#list-tab {
+    max-height: 150px;
+    overflow-y: scroll;
+    position: relative;
+    min-height: 100px;
+}
+
+.image {
+    width: 40px;
+}
+
+.card-body {
+    overflow-y: scroll;
+}
+
+.nav-pill {
+    border: 1px !important;
+}
+
+div .list_search {
+    position: absolute;
+    top: 50px;
+    right: 291px;
+    z-index: 6;
+    width: 200px;
+}
+
+.dot {
+    height: 10px !important;
+    width: 10px !important;
+    background-color: green;
+    float: right;
+    position: relative !important;
+    right: 232px;
+    top: 32px;
+}
+
+.user_name {
+    font-weight: bold;
+}
+
+.user_message {
+    margin-left: 52px;
+}
+
+div .send_input {
+    position: relative;
+    top: 22px;
+    left: 5px;
+    width: 85%;
+}
+
+.send_btn {
+    width: 80px;
+    margin-left: 634px;
+    position: relative;
+    bottom: 15px;
+}
+
+.chat_msg {
+    margin-left: 50px;
+}
+
+.plus{
+    float:right;
+}
+
+.add_btn{
+    float: right;
+}
