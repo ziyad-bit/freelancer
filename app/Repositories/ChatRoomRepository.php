@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Classes\Messages\Messages;
+use App\Classes\Messages;
 use App\Events\MessageEvent;
 use App\Http\Requests\ChatRoomRequest;
 use App\Http\Requests\MessageRequest;

@@ -20,6 +20,10 @@ class MessageController extends Controller
 	{
 		$data = $this->messageRepository->getMessages($receiver_id,$chat_room_id);
 
+		if (!is_array($data)) {
+			return $data;
+		}
+
 		return view('users.chat.index', [
 			'all_chat_rooms'      => $data['all_chat_rooms'],
 			'chat_room_id'        => $data['chat_room_id'],

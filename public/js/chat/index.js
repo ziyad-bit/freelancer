@@ -1,10 +1,8 @@
 const chat_room_id = document.querySelector('.user_btn').getAttribute('data-selected_chat_room_id');
-console.log('chat_room_id: ', chat_room_id);
 
 if (chat_room_id) {
     const scrollableDiv = document.querySelector('.list_tab_users');
     const elementToScrollTo = document.querySelector('.chat_room_' + chat_room_id);
-    console.log('elementToScrollTo: ', elementToScrollTo);
 
     // Calculate the distance from the top of the scrollable div to the top of the element
     const offsetTop = elementToScrollTo.offsetTop;
@@ -71,7 +69,6 @@ function loadPages() {
     let message_id = chat_room_box.lastElementChild.getAttribute('data-message_id');
 
     if (data_status) {
-        console.log('data_status: ', data_status);
         axios.get("/message/chat-rooms/" + message_id)
             .then(res => {
                 if (res.status == 200) {
@@ -159,10 +156,10 @@ generalEventListener('keypress', '.send_input', e => {
 function subscribeChatChannel(chat_room_id) {
     Echo.join(`chat-room.` + chat_room_id)
         .joining((data) => {
-            const plus_ele =document.querySelector('.chat_room_id'+chat_room_id).nextElementSibling;
-            let chat_room_users_ids = plus_ele.getAttribute('data-chat_room_ids');
+            const plus_ele =document.querySelector('.plus'+data.chat_room_id);
+            let chat_room_users_ids = plus_ele.getAttribute('data-chat_room_users_ids');
+
             chat_room_users_ids = chat_room_users_ids +','+ data.user_id;
-            console.log('chat_room_users_ids: ', chat_room_users_ids);
             
             plus_ele.setAttribute('data-chat_room_users_ids',chat_room_users_ids);
         })
@@ -241,15 +238,16 @@ generalEventListener('input', '.send_input', e => {
     });
 })
 
-Echo.join(`chat-room.` + selected_chat_room_id).listenForWhisper('typing', (e) => {
-    const typing_ele = document.querySelector('.typing' + e.chat_room_id);
+Echo.join(`chat-room.` + selected_chat_room_id)
+    .listenForWhisper('typing', (e) => {
+        const typing_ele = document.querySelector('.typing' + e.chat_room_id);
 
-    if (e.msg_input_value !== '') {
-        typing_ele.textContent = 'typing';
-    } else {
-        typing_ele.textContent = '';
-    }
-});
+        if (e.msg_input_value !== '') {
+            typing_ele.textContent = 'typing';
+        } else {
+            typing_ele.textContent = '';
+        }
+    });
 
 
 generalEventListener('click', '.plus', e => {

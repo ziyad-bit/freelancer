@@ -14,6 +14,10 @@
 @endsection
 
 @section('content')
+    @if (Session::has('error'))
+        <div class="alert alert-danger text-center">{{ Session::get('error') }}</div>
+    @endif
+
     <div class="tab-content" id="nav-tabContent">
         <div class="tab-pane fade show active" id="nav-friends" role="tabpanel" aria-labelledby="nav-friends-tab">
 
