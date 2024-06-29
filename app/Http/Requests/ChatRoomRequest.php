@@ -25,7 +25,7 @@ class ChatRoomRequest extends FormRequest
 	{
 		return [
 			'chat_room_id' => 'required|numeric',
-			'user_id'  => 'required|numeric',
+			'user_id'      => 'required|numeric',
 		];
 	}
 }

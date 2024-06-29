@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\{DB, Storage};
 
 class Video implements FileInterface
 {
-	####################################   insert   #####################################
+	// insert   #####################################
 	public function insert(Request $request, int $project_id):void
 	{
 		static $insert_called = false;
@@ -35,7 +35,7 @@ class Video implements FileInterface
 
 
 
-	####################################    destroy   #####################################
+	// destroy   #####################################
 	public function destroy(string $video):JsonResponse
 	{
 		$storage_video = Storage::has('video/' . $video);

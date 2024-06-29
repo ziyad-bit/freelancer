@@ -19,7 +19,7 @@ class test
 	/**
 	 * Handle the event.
 	 *
-	 * @param  object  $event
+	 * @param object $event
 	 *
 	 * @return void
 	 */

@@ -23,19 +23,19 @@ class AuthController extends Controller
 		$this->profileRepository = $profileRepository;
 	}
 
-	####################################   getLogin   #####################################
+	// getLogin   #####################################
 	public function getLogin():View
 	{
 		return view('users.auth.login');
 	}
 
-	####################################   postLogin   #####################################
+	// postLogin   #####################################
 	public function postLogin(UserRequest $request):RedirectResponse
 	{
 		return $this->authRepository->login($request);
 	}
 
-	####################################   index   #####################################
+	// index   #####################################
 	public function index():View
 	{
 		$user_info = $this->profileRepository->getUserInfo();
@@ -43,13 +43,13 @@ class AuthController extends Controller
 		return view('users.auth.home', compact('user_info'));
 	}
 
-	####################################   create   #####################################
+	// create   #####################################
 	public function create():View
 	{
 		return view('users.auth.signup');
 	}
 
-	####################################   store   #####################################
+	// store   #####################################
 	public function store(UserRequest $request):RedirectResponse
 	{
 		$user_id = $this->authRepository->storeUser($request);
@@ -59,7 +59,7 @@ class AuthController extends Controller
 		return to_route('home');
 	}
 
-	####################################   logout   #####################################
+	// logout   #####################################
 	public function logout():RedirectResponse
 	{
 		Auth::logout();

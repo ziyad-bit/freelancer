@@ -2,7 +2,6 @@
 
 namespace App\Notifications;
 
-use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\{BroadcastMessage};
@@ -28,7 +27,7 @@ class AddUserToChatNotification extends Notification implements ShouldQueue
 	/**
 	 * Get the notification's delivery channels.
 	 *
-	 * @param  mixed  $notifiable
+	 * @param mixed $notifiable
 	 *
 	 * @return array
 	 */
@@ -40,9 +39,11 @@ class AddUserToChatNotification extends Notification implements ShouldQueue
 
 	public function toBroadcast():BroadcastMessage
 	{
-		return new BroadcastMessage([
-			'view'  => $this->view,
-        ]);
+		return new BroadcastMessage(
+			[
+				'view'  => $this->view,
+			]
+		);
 	}
 
 	public function toDatabase():array
@@ -50,7 +51,7 @@ class AddUserToChatNotification extends Notification implements ShouldQueue
 		return [
 			'chat_room_id' => $this->chat_room_id,
 			'sender_image' => $this->image,
-			'sender_name' => $this->name,
+			'sender_name'  => $this->name,
 		];
 	}
 

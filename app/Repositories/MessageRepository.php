@@ -16,7 +16,7 @@ class MessageRepository implements MessageRepositoryInterface
 {
 	use GetCursor;
 
-	####################################   getMessages   #####################################
+	// MARK: getMessages
 	public function getMessages(int $receiver_id = null, int $chat_room_id = null):array|RedirectResponse
 	{
 		if ($receiver_id > 0 && $chat_room_id !== null) {
@@ -28,15 +28,15 @@ class MessageRepository implements MessageRepositoryInterface
 			['messages.sender_id' => $auth_id, 'last' => 1],
 			['messages.receiver_id' => $auth_id, 'last' => 1]
 		)
-		->latest('messages.id')
-		->limit(3);
-			
+			->latest('messages.id')
+			->limit(3);
+
 		if ($receiver_id > 0) {
 			$selected_chat_room = ChatRooms::index(
 				['messages.sender_id' => $auth_id, 'messages.receiver_id' => $receiver_id, 'last' => 1],
 				['messages.receiver_id' => $auth_id, 'messages.sender_id' => $receiver_id, 'last' => 1]
 			);
-				
+
 			$all_chat_rooms = $all_chat_rooms->union($selected_chat_room)->get();
 
 			foreach ($all_chat_rooms as  $chat_room) {
@@ -52,20 +52,24 @@ class MessageRepository implements MessageRepositoryInterface
 		$new_receiver = null;
 
 		if ($chat_room_id === null && $receiver_id > 0) {
-			$chat_room_id = DB::table('chat_rooms')->insertGetId([
-				'owner_id'    => $auth_id,
-				'created_at'  => now(),
-			]);
+			$chat_room_id = DB::table('chat_rooms')->insertGetId(
+				[
+					'owner_id'    => $auth_id,
+					'created_at'  => now(),
+				]
+			);
 
 			$new_receiver = DB::table('users')->find($receiver_id, ['name', 'image', 'id']);
 			if (!$new_receiver) {
 				return to_route('chat-rooms.index')->with('error', 'user not found');
 			}
 
-			DB::table('chat_room_user')->insert([
-				['chat_room_id' => $chat_room_id, 'user_id' => $auth_id],
-				['chat_room_id' => $chat_room_id, 'user_id' => $receiver_id],
-			]);
+			DB::table('chat_room_user')->insert(
+				[
+					['chat_room_id' => $chat_room_id, 'user_id' => $auth_id],
+					['chat_room_id' => $chat_room_id, 'user_id' => $receiver_id],
+				]
+			);
 		} elseif ($chat_room_id !== null && $receiver_id === 0) {
 			$chat_room = DB::table('chat_room_user')
 				->where(['chat_room_id' => $chat_room_id, 'user_id' => $auth_id])->first();
@@ -75,10 +79,7 @@ class MessageRepository implements MessageRepositoryInterface
 				->insert(['chat_room_id' => $chat_room_id, 'user_id' => $auth_id]);
 			}
 
-			$messages = Messages::index($chat_room_id)
-				->orderBy('id', 'desc')
-				->limit(3)
-				->get();
+			$messages = Messages::index($chat_room_id);
 
 			$selected_chat_room = ChatRooms::index(
 				['messages.chat_room_id' => $chat_room_id, 'last' => 1],
@@ -91,10 +92,7 @@ class MessageRepository implements MessageRepositoryInterface
 				$all_chat_rooms = $all_chat_rooms->get();
 			}
 
-			$messages = Messages::index($all_chat_rooms[0]->chat_room_id)
-				->orderBy('id', 'desc')
-				->limit(3)
-				->get();
+			$messages = Messages::index($all_chat_rooms[0]->chat_room_id);
 		}
 
 		return [
@@ -105,7 +103,7 @@ class MessageRepository implements MessageRepositoryInterface
 		];
 	}
 
-	####################################   storeMessage   #####################################
+	// storeMessage   #####################################
 	public function storeMessage(MessageRequest $request):void
 	{
 		$auth_user   = Auth::user();
@@ -113,19 +111,25 @@ class MessageRepository implements MessageRepositoryInterface
 		$receiver_id = $request->receiver_id;
 
 		DB::table('messages')
-			->where([
-				'sender_id'   => $auth_user->id,
-				'receiver_id' => $receiver_id,
-				'last'        => 1,
-			])
-			->orWhere(function ($query) use ($receiver_id, $auth_user) {
-				$query->where([
-					'receiver_id' => $auth_user->id,
-					'sender_id'   => $receiver_id,
+			->where(
+				[
+					'sender_id'   => $auth_user->id,
+					'receiver_id' => $receiver_id,
 					'last'        => 1,
-				]);
-			})
-			->update(['last' => 0]);
+				]
+			)
+			->orWhere(
+				function ($query) use ($receiver_id, $auth_user) {
+					$query->where(
+						[
+							'receiver_id' => $auth_user->id,
+							'sender_id'   => $receiver_id,
+							'last'        => 1,
+						]
+					);
+				}
+			)
+		->update(['last' => 0]);
 
 		DB::table('messages')->insert($data);
 
@@ -142,30 +146,15 @@ class MessageRepository implements MessageRepositoryInterface
 		}
 	}
 
-	####################################   showMessage   #####################################
+	// showMessage   #####################################
 	public function showMessages(int $chat_room_id):string
 	{
-		$messages = Messages::index($chat_room_id)
-				->orderBy('messages.id', 'desc')
-				->limit(3)
-				->get();
+		$messages = Messages::index($chat_room_id);
 
-		return $view = view('users.includes.chat.index_msgs', compact('messages'))->render();
+		return view('users.includes.chat.index_msgs', compact('messages'))->render();
 	}
 
-	####################################   showMessage   #####################################
-	public function showOldMessages(Request $request, int $chat_room_id):string
-	{
-		$messages = Messages::index($chat_room_id)
-				->where('messages.id', '<', $request->first_msg_id)
-				->orderBy('id', 'desc')
-				->limit(3)
-				->get();
-
-		return $view = view('users.includes.chat.index_msgs', compact('messages'))->render();
-	}
-
-	####################################   get chat rooms   #####################################
+	// get chat rooms   #####################################
 	public function getChatRooms(int $message_id):array
 	{
 		$auth_id        = Auth::id();
@@ -173,34 +162,50 @@ class MessageRepository implements MessageRepositoryInterface
 			->join('users as sender', 'messages.sender_id', '=', 'sender.id')
 			->join('users as receiver', 'messages.receiver_id', '=', 'receiver.id')
 			->join('chat_rooms', 'messages.chat_room_id', '=', 'chat_rooms.id')
+			->join('chat_room_user', 'messages.chat_room_id', '=', 'chat_room_user.chat_room_id')
 			->select(
 				'messages.*',
 				'sender.name as sender_name',
 				'sender.image as sender_image',
 				'receiver.name as receiver_name',
 				'receiver.image as receiver_image',
-				'chat_rooms.id as chat_room_id'
+				'chat_rooms.id as chat_room_id',
+				DB::raw('GROUP_CONCAT(DISTINCT chat_room_user.user_id) as chat_room_users_ids'),
 			)
-			->where(function ($query) use ($message_id, $auth_id) {
-				$query->where(['messages.sender_id' => $auth_id, 'last' => 1])
-					->where('messages.id', '<', $message_id);
-			})
-			->orWhere(function ($query) use ($message_id, $auth_id) {
+			->where(
+				function ($query) use ($message_id, $auth_id) {
+					$query->where(['messages.sender_id' => $auth_id, 'last' => 1])
+						->where('messages.id', '<', $message_id);
+				}
+			)
+		->orWhere(
+			function ($query) use ($message_id, $auth_id) {
 				$query->where(['messages.receiver_id' => $auth_id, 'last' => 1])
 					->where('messages.id', '<', $message_id);
-			})
-			->latest('messages.id')
-			->limit(3)
-			->get();
+			}
+		)
+		->groupBy('messages.id')
+		->latest('messages.id')
+		->limit(3)
+		->get();
 
 		$chat_room_id = null;
+		$new_receiver =null;
 
 		$chat_room_view = view('users.includes.chat.index_chat_rooms', compact('all_chat_rooms', 'chat_room_id'))->render();
-		$chat_box_view  = view('users.includes.chat.index_chat_boxes', compact('all_chat_rooms', 'chat_room_id'))->render();
+		$chat_box_view  = view('users.includes.chat.index_chat_boxes', compact('all_chat_rooms', 'chat_room_id','new_receiver'))->render();
 
 		return [
 			'chat_rooms_view' => $chat_room_view,
 			'chat_box_view'   => $chat_box_view,
 		];
+	}
+
+	// showMessage   #####################################
+	public function showOldMessages(Request $request, int $chat_room_id):string
+	{
+		$messages = Messages::index($chat_room_id,$request,true);
+
+		return view('users.includes.chat.index_msgs', compact('messages'))->render();
 	}
 }

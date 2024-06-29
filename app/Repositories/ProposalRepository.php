@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\{Auth, DB};
 
 class ProposalRepository implements ProposalRepositoryInterface
 {
-	####################################   storeProject   #####################################
+	// storeProject   #####################################
 	public function storeProposal(ProposalRequest $request): void
 	{
 		$data = $request->validated() + ['user_id' => Auth::id(), 'created_at' => now()];
@@ -16,7 +16,7 @@ class ProposalRepository implements ProposalRepositoryInterface
 		DB::table('proposals')->insert($data);
 	}
 
-	####################################    updateProposal   #####################################
+	// updateProposal   #####################################
 	public function updateProposal(ProposalRequest $request, int $id): void
 	{
 		$data = $request->validated();
@@ -24,7 +24,7 @@ class ProposalRepository implements ProposalRepositoryInterface
 		DB::table('proposals')->where('id', $id)->update($data);
 	}
 
-	####################################    deleteProposal   #####################################
+	// deleteProposal   #####################################
 	public function deleteProposal(int $id): void
 	{
 		DB::table('proposals')->where('id', $id)->delete();

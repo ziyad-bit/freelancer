@@ -18,7 +18,7 @@ class ProposalController extends Controller
 		$this->ProposalRepository = $ProposalRepository;
 	}
 
-	####################################   store   #####################################
+	// store   #####################################
 	public function store(ProposalRequest $request):RedirectResponse
 	{
 		$this->ProposalRepository->storeProposal($request);
@@ -26,7 +26,7 @@ class ProposalController extends Controller
 		return to_route('project.show', $request->input('project_id'))->with('success', 'you added proposal successfully');
 	}
 
-	####################################   update   #####################################
+	// update   #####################################
 	public function update(ProposalRequest $request, int $id):JsonResponse
 	{
 		$this->ProposalRepository->updateProposal($request, $id);
@@ -34,7 +34,7 @@ class ProposalController extends Controller
 		return response()->json(['success' => 'you updated proposal successfully']);
 	}
 
-	####################################   destroy   #####################################
+	// destroy   #####################################
 	public function destroy(int $id):JsonResponse
 	{
 		$this->ProposalRepository->deleteProposal($id);

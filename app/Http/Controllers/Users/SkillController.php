@@ -23,7 +23,7 @@ class SkillController extends Controller
 		$this->middleware('skill:' . $id)->only('destroy');
 	}
 
-	####################################   create   #####################################
+	// create   #####################################
 	public function create():View
 	{
 		$skills = $this->skillRepository->getSkills();
@@ -31,7 +31,7 @@ class SkillController extends Controller
 		return view('users.skill.create', compact('skills'));
 	}
 
-	####################################   store   #####################################
+	// store   #####################################
 	public function store(SkillRequest $request):JsonResponse
 	{
 		$this->skillRepository->storeSkill($request, 'user_skill', 'user_id', Auth::id());
@@ -39,7 +39,7 @@ class SkillController extends Controller
 		return response()->json(['success' => 'you added skills successfully']);
 	}
 
-	####################################   destroy   #####################################
+	// destroy   #####################################
 	public function destroy_project_skill(int $skill_id):JsonResponse
 	{
 		$this->skillRepository->delete_project_skill($skill_id);
@@ -47,7 +47,7 @@ class SkillController extends Controller
 		return response()->json();
 	}
 
-	####################################   destroy   #####################################
+	// destroy   #####################################
 	public function destroy(int $id):JsonResponse
 	{
 		$this->skillRepository->deleteSkill($id);

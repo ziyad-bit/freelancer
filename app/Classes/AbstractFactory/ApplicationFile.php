@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class ApplicationFile implements FileInterface
 {
-	####################################   insert   #####################################
+	// insert   #####################################
 	public function insert(Request $request, int $project_id):void
 	{
 		static $insert_called = false;

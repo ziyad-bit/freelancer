@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Interfaces\Repository\{NotificationRepositoryInterface,AuthRepositoryInterface, ChatRoomRepositoryInterface, FileRepositoryInterface, MessageRepositoryInterface, ProfileRepositoryInterface, ProjectRepositoryInterface, ProposalRepositoryInterface, SkillRepositoryInterface};
+use App\Interfaces\Repository\{AuthRepositoryInterface, ChatRoomRepositoryInterface, FileRepositoryInterface, MessageRepositoryInterface, NotificationRepositoryInterface, ProfileRepositoryInterface, ProjectRepositoryInterface, ProposalRepositoryInterface, SkillRepositoryInterface};
 use App\Repositories\{AuthRepository, ChatRoomRepository, FileRepository, MessageRepository, NotificationRepository, ProfileRepository, ProjectRepository, ProposalRepository, SkillRepository};
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
@@ -39,7 +39,7 @@ class RepoServiceProvider extends ServiceProvider implements DeferrableProvider
 			FileRepositoryInterface::class,
 			MessageRepositoryInterface::class,
 			NotificationRepositoryInterface::class,
-			ChatRoomRepositoryInterface::class
+			ChatRoomRepositoryInterface::class,
 		];
 	}
 

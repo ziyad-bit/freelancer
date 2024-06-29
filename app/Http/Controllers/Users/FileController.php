@@ -19,7 +19,7 @@ class FileController extends Controller
 		$this->fileRepository = $fileRepository;
 	}
 
-	####################################    upload    #####################################
+	// upload    #####################################
 	public function upload(DropzoneRequest $request):JsonResponse
 	{
 		$file_name = $this->fileRepository->upload_file($request, 'projects/');
@@ -27,13 +27,13 @@ class FileController extends Controller
 		return response()->json(['file_name' => $file_name['file_name'], 'original_name' => $file_name['original_name']]);
 	}
 
-	####################################   download   #####################################
+	// download   #####################################
 	public function download(string $file):StreamedResponse
 	{
 		return $this->fileRepository->download_file($file, 'projects/');
 	}
 
-	####################################   destroy   #####################################
+	// destroy   #####################################
 	public function destroy(string $file):JsonResponse
 	{
 		return $this->fileRepository->destroy_file($file, 'projects/');

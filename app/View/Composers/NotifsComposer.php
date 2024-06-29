@@ -17,24 +17,32 @@ class NotifsComposer
 		if (Auth::check()) {
 			$auth_id         = Auth::id();
 			$this->auth_user = User::find($auth_id);
-Cache::flush();
-			$notifs = Cache::remember('notifs_' . $auth_id, now()->addHours(2), function (){
-				return $this->auth_user->notifications->take(5);
-			});
+			Cache::flush();
+			$notifs = Cache::remember(
+				'notifs_' . $auth_id,
+				now()->addHours(2),
+				function () {
+					return $this->auth_user->notifications->take(5);
+				}
+			);
 
-			$unread_notifs_count = Cache::remember('notifs_count_' . $auth_id, now()->addHours(2), function(){
-				return $this->auth_user->unreadnotifications->count();
-			});
+			$unread_notifs_count = Cache::remember(
+				'notifs_count_' . $auth_id,
+				now()->addHours(2),
+				function () {
+					return $this->auth_user->unreadnotifications->count();
+				}
+			);
 
-			$this->notifs = $notifs;
-			$this->unread_notifs_count =$unread_notifs_count;
+			$this->notifs              = $notifs;
+			$this->unread_notifs_count = $unread_notifs_count;
 		}
 	}
 
 	/**
 	 * Bind data to the view.
 	 *
-	 * @param  \Illuminate\View\View  $view
+	 * @param \Illuminate\View\View $view
 	 *
 	 * @return void
 	 */

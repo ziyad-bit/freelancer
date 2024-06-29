@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 trait File
 {
-	####################################     uploadFile    #####################################
+	// uploadFile    #####################################
 	public function upload(object $request, string $path, string $type):string
 	{
 		$file     = $request->file('file');
@@ -19,7 +19,7 @@ trait File
 		return $fileName;
 	}
 
-	####################################    dropZoneUpload   #####################################
+	// dropZoneUpload   #####################################
 	public function dropZoneUpload(Request $request, string $path, string $type):array
 	{
 		$file_name          = $this->upload($request, $path, $type);
@@ -28,13 +28,13 @@ trait File
 		return ['file_name' => $file_name, 'original_name' => $original_name];
 	}
 
-	####################################    download   #####################################
+	// download   #####################################
 	public function download(string $file, string $path): StreamedResponse
 	{
 		return Storage::download($path . $file);
 	}
 
-	####################################    destroy   #####################################
+	// destroy   #####################################
 	public function destroy(string $file, string $type, $dir):JsonResponse
 	{
 		$path = $type . 's/' . $dir;

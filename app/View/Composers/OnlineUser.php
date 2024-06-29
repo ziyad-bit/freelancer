@@ -2,8 +2,7 @@
 
 namespace App\View\Composers;
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\{Auth, Cache};
 
 class OnlineUser
 {

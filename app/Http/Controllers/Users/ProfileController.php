@@ -23,7 +23,7 @@ class ProfileController extends Controller
 		$this->profileRepository = $profileRepository;
 	}
 
-	####################################   index   #####################################
+	// index   #####################################
 	public function index():View
 	{
 		$user_info   = $this->profileRepository->getUserInfo();
@@ -32,7 +32,7 @@ class ProfileController extends Controller
 		return view('users.profile.index', compact('user_info', 'user_skills'));
 	}
 
-	####################################   create   #####################################
+	// create   #####################################
 	public function create():View
 	{
 		$countries = $this->getCountries();
@@ -40,7 +40,7 @@ class ProfileController extends Controller
 		return view('users.profile.create', compact('countries'));
 	}
 
-	####################################   store   #####################################
+	// store   #####################################
 	public function store(ProfileRequest $request):RedirectResponse
 	{
 		$this->profileRepository->storeUserInfo($request);
@@ -48,7 +48,7 @@ class ProfileController extends Controller
 		return to_route('profile.index')->with('success', 'you add data successfully');
 	}
 
-	####################################   edit   #####################################
+	// edit   #####################################
 	public function edit():View
 	{
 		$countries   = $this->getCountries();
@@ -57,7 +57,7 @@ class ProfileController extends Controller
 		return view('users.profile.edit', compact('user_info', 'countries'));
 	}
 
-	####################################   update   #####################################
+	// update   #####################################
 	public function update(ProfileRequest $request):RedirectResponse
 	{
 		$this->profileRepository->updateUserInfo($request);
@@ -65,13 +65,13 @@ class ProfileController extends Controller
 		return to_route('profile.edit', 'auth')->with('success', 'you updated profile successfully');
 	}
 
-	####################################   show   #####################################
+	// show   #####################################
 	public function delete():View
 	{
 		return view('users.profile.delete');
 	}
 
-	####################################   destroy   #####################################
+	// destroy   #####################################
 	public function destroy(Request $request):RedirectResponse
 	{
 		$this->profileRepository->deleteUserInfo($request);

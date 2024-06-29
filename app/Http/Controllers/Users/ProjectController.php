@@ -20,13 +20,13 @@ class ProjectController extends Controller
 
 		$this->middleware('project')->only(['destroy', 'edit', 'update']);
 	}
-	####################################   index   #####################################
+	// index   #####################################
 	public function index_projects(Request $request):View|JsonResponse
 	{
 		return $this->ProjectRepository->getProjects($request);
 	}
 
-	####################################   create   #####################################
+	// create   #####################################
 	public function create(SkillRepositoryInterface $skillRepository):View
 	{
 		$skills  = $skillRepository->getSkills();
@@ -34,7 +34,7 @@ class ProjectController extends Controller
 		return  $this->ProjectRepository->createProject($skills);
 	}
 
-	####################################   store   #####################################
+	// store   #####################################
 	public function store(ProjectRequest $request, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):RedirectResponse
 	{
 		$this->ProjectRepository->storeProject($request, $fileRepository, $skillRepository);
@@ -42,13 +42,13 @@ class ProjectController extends Controller
 		return redirect()->back()->with('success', 'you added successfully project');
 	}
 
-	####################################   show   #####################################
+	// show   #####################################
 	public function show(int $id):View|RedirectResponse
 	{
 		return $this->ProjectRepository->showProject($id);
 	}
 
-	####################################   edit   #####################################
+	// edit   #####################################
 	public function edit(int $id, SkillRepositoryInterface $skillRepository):View|RedirectResponse
 	{
 		$skills  = $skillRepository->getSkills();
@@ -56,13 +56,13 @@ class ProjectController extends Controller
 		return  $this->ProjectRepository->editProject($id, $skills);
 	}
 
-	####################################   update   #####################################
+	// update   #####################################
 	public function update(ProjectRequest $request, int $id, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):RedirectResponse
 	{
 		return $this->ProjectRepository->updateProject($request, $id, $fileRepository, $skillRepository);
 	}
 
-	####################################   destroy   #####################################
+	// destroy   #####################################
 	public function destroy(int $id):RedirectResponse
 	{
 		return $this->ProjectRepository->deleteProject($id);

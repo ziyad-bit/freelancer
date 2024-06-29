@@ -1,20 +1,23 @@
+
+@if ($all_chat_rooms->count() > 0)
 <!-- add user to chat room Modal -->
-<div class="modal fade" id="send_user_invitation" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">add user</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+    <div class="modal fade" id="send_user_invitation" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">add user</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
 
-            <div class="modal-body add_body">
-                <div style="display: none" class="alert alert-success text-center delete_msg"></div>
+                <div class="modal-body add_body">
+                    <div style="display: none" class="alert alert-success text-center delete_msg"></div>
 
-                <div style="display: none" class="alert alert-danger text-center err_msg"></div>
+                    <div style="display: none" class="alert alert-danger text-center err_msg"></div>
+                </div>
             </div>
         </div>
     </div>
-</div>
+@endif
 
 @forelse ($all_chat_rooms as $i => $message)
     @php
@@ -82,5 +85,3 @@
 
 @empty
 @endforelse
-
-

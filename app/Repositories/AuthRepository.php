@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\{DB, Hash};
 
 class AuthRepository implements AuthRepositoryInterface
 {
-	####################################   login   #####################################
+	// login   #####################################
 	public function login(UserRequest $request):RedirectResponse
 	{
 		$credentials = $request->only('email', 'password');
@@ -21,7 +21,7 @@ class AuthRepository implements AuthRepositoryInterface
 		}
 	}
 
-	####################################   storeUser   #####################################
+	// storeUser   #####################################
 	public function storeUser(UserRequest $request):int
 	{
 		$data = $request->safe()->except('password') + ['password' => Hash::make($request->password), 'created_at' => now()];

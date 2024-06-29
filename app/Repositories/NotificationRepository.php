@@ -2,13 +2,9 @@
 
 namespace App\Repositories;
 
-
 use App\Interfaces\Repository\NotificationRepositoryInterface;
 use App\Models\User;
-use Illuminate\Contracts\View\View;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\{Auth};
 
 class NotificationRepository implements NotificationRepositoryInterface
 {

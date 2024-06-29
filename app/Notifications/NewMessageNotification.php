@@ -27,7 +27,7 @@ class NewMessageNotification extends Notification implements ShouldQueue
 	/**
 	 * Get the notification's delivery channels.
 	 *
-	 * @param  mixed  $notifiable
+	 * @param mixed $notifiable
 	 *
 	 * @return array
 	 */
@@ -39,9 +39,11 @@ class NewMessageNotification extends Notification implements ShouldQueue
 
 	public function toBroadcast():BroadcastMessage
 	{
-		return new BroadcastMessage([
-			'view'         => $this->view,
-		]);
+		return new BroadcastMessage(
+			[
+				'view'         => $this->view,
+			]
+		);
 	}
 
 	public function toDatabase():array

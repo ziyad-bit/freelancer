@@ -4,20 +4,20 @@ namespace App\Classes\AbstractFactory;
 
 class FileAbstractFactory
 {
-	####################################    dropZoneUpload   #####################################
+	// dropZoneUpload   #####################################
 	public function create_application():ApplicationFile
 	{
 		return app(ApplicationFile::class);
 	}
 
-	####################################     uploadAndResize    #####################################
+	// uploadAndResize    #####################################
 	public function create_image():Photo
 	{
 		return app(Photo::class);
 	}
 
 
-	####################################   insert   #####################################
+	// insert   #####################################
 	public function create_video():Video
 	{
 		return app(Video::class);

@@ -11,24 +11,24 @@ use Illuminate\Support\Facades\{Auth, DB, Validator};
 
 class ProfileRepository implements ProfileRepositoryInterface
 {
-	####################################   getUserSkills   #####################################
+	// getUserSkills   #####################################
 	public function getUserSkills(): Collection
 	{
 		return DB::table('users')
-				->select('user_skill.id', 'skills.skill')
-				->where('users.id', Auth::id())
-				->join('user_skill', 'users.id', '=', 'user_skill.user_id')
-				->join('skills', 'skills.id', '=', 'user_skill.skill_id')
-				->get();
+			->select('user_skill.id', 'skills.skill')
+			->where('users.id', Auth::id())
+			->join('user_skill', 'users.id', '=', 'user_skill.user_id')
+			->join('skills', 'skills.id', '=', 'user_skill.skill_id')
+			->get();
 	}
 
-	####################################   getUserInfo   #####################################
+	// getUserInfo   #####################################
 	public function getUserInfo():object|null
 	{
 		return DB::table('user_infos')->where('user_id', Auth::id())->first();
 	}
 
-	####################################   storeUserInfo   #####################################
+	// storeUserInfo   #####################################
 	public function storeUserInfo(ProfileRequest $request):void
 	{
 		$user_id = Auth::id();
@@ -40,7 +40,7 @@ class ProfileRepository implements ProfileRepositoryInterface
 		DB::table('users')->where('id', $user_id)->update(['image' => $image]);
 	}
 
-	####################################   updateUserInfo   #####################################
+	// updateUserInfo   #####################################
 	public function updateUserInfo(ProfileRequest $request):void
 	{
 		$user_id = Auth::id();
@@ -57,12 +57,15 @@ class ProfileRepository implements ProfileRepositoryInterface
 		}
 	}
 
-	####################################   updateUserInfo   #####################################
+	// updateUserInfo   #####################################
 	public function deleteUserInfo(Request $request):void
 	{
-		Validator::make($request->only('password'), [
-			'password' => 'required|current_password|string',
-		])->validate();
+		Validator::make(
+			$request->only('password'),
+			[
+				'password' => 'required|current_password|string',
+			]
+		)->validate();
 
 		DB::table('users')->where('id', Auth::id())->delete();
 

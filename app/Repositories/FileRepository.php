@@ -12,7 +12,7 @@ class FileRepository implements FileRepositoryInterface
 {
 	use File;
 
-	####################################   download_file   #####################################
+	// download_file   #####################################
 	public function download_file(string $file, string $dir):StreamedResponse
 	{
 		$position  = strpos($file, '-');
@@ -22,7 +22,7 @@ class FileRepository implements FileRepositoryInterface
 		return $this->download($file, $path);
 	}
 
-	####################################   insertAnyFile   #####################################
+	// insertAnyFile   #####################################
 	public function insertAnyFile(Request $request, int $project_id):void
 	{
 		$files       = $request->input('files');
@@ -38,7 +38,7 @@ class FileRepository implements FileRepositoryInterface
 		}
 	}
 
-	####################################   upload_file   #####################################
+	// upload_file   #####################################
 	public function upload_file(Request $request, string $dir):array
 	{
 		$file_name = $request->file('file')->getMimeType();
@@ -51,7 +51,7 @@ class FileRepository implements FileRepositoryInterface
 		return $file_name;
 	}
 
-	####################################   destroy_file   #####################################
+	// destroy_file   #####################################
 	public function destroy_file(string $file, string $dir):JsonResponse
 	{
 		$position  = strpos($file, '-');
