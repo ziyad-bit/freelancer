@@ -9,7 +9,7 @@ use App\Interfaces\Repository\MessageRepositoryInterface;
 use App\Models\User;
 use App\Notifications\NewMessageNotification;
 use App\Traits\GetCursor;
-use Illuminate\Http\{RedirectResponse, Request};
+use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
 use Illuminate\Support\Facades\{Auth, Cache, DB, Notification};
 
 class MessageRepository implements MessageRepositoryInterface
@@ -17,7 +17,7 @@ class MessageRepository implements MessageRepositoryInterface
 	use GetCursor;
 
 	// MARK: getMessages
-	public function getMessages(int $receiver_id = null, int $chat_room_id = null):array|RedirectResponse
+	public function getMessages(int $receiver_id = null, int $chat_room_id = null):array|RedirectResponse|JsonResponse 
 	{
 		if ($receiver_id > 0 && $chat_room_id !== null) {
 			return to_route('chat-rooms.index')->with('error', 'something went wrong');
@@ -25,9 +25,9 @@ class MessageRepository implements MessageRepositoryInterface
 
 		$auth_id        = Auth::id();
 		$all_chat_rooms = ChatRooms::index(
-			['messages.sender_id' => $auth_id, 'last' => 1],
-			['messages.receiver_id' => $auth_id, 'last' => 1]
-		)
+				['messages.sender_id' => $auth_id, 'last' => 1],
+				['messages.receiver_id' => $auth_id, 'last' => 1]
+			)
 			->latest('messages.id')
 			->limit(3);
 
@@ -94,7 +94,7 @@ class MessageRepository implements MessageRepositoryInterface
 
 			$messages = Messages::index($all_chat_rooms[0]->chat_room_id);
 		}
-
+		
 		return [
 			'messages'       => $messages,
 			'chat_room_id'   => $chat_room_id,
@@ -158,42 +158,17 @@ class MessageRepository implements MessageRepositoryInterface
 	public function getChatRooms(int $message_id):array
 	{
 		$auth_id        = Auth::id();
-		$all_chat_rooms = DB::table('messages')
-			->join('users as sender', 'messages.sender_id', '=', 'sender.id')
-			->join('users as receiver', 'messages.receiver_id', '=', 'receiver.id')
-			->join('chat_rooms', 'messages.chat_room_id', '=', 'chat_rooms.id')
-			->join('chat_room_user', 'messages.chat_room_id', '=', 'chat_room_user.chat_room_id')
-			->select(
-				'messages.*',
-				'sender.name as sender_name',
-				'sender.image as sender_image',
-				'receiver.name as receiver_name',
-				'receiver.image as receiver_image',
-				'chat_rooms.id as chat_room_id',
-				DB::raw('GROUP_CONCAT(DISTINCT chat_room_user.user_id) as chat_room_users_ids'),
-			)
-			->where(
-				function ($query) use ($message_id, $auth_id) {
-					$query->where(['messages.sender_id' => $auth_id, 'last' => 1])
-						->where('messages.id', '<', $message_id);
-				}
-			)
-		->orWhere(
-			function ($query) use ($message_id, $auth_id) {
-				$query->where(['messages.receiver_id' => $auth_id, 'last' => 1])
-					->where('messages.id', '<', $message_id);
-			}
-		)
-		->groupBy('messages.id')
-		->latest('messages.id')
-		->limit(3)
-		->get();
+		$all_chat_rooms = ChatRooms::index(['messages.sender_id' => $auth_id, 'last' => 1],['messages.receiver_id' => $auth_id, 'last' => 1],$message_id)
+			->latest('messages.id')
+			->limit(3)
+			->get();
 
 		$chat_room_id = null;
 		$new_receiver =null;
+		$messages =[];
 
 		$chat_room_view = view('users.includes.chat.index_chat_rooms', compact('all_chat_rooms', 'chat_room_id'))->render();
-		$chat_box_view  = view('users.includes.chat.index_chat_boxes', compact('all_chat_rooms', 'chat_room_id','new_receiver'))->render();
+		$chat_box_view  = view('users.includes.chat.index_chat_boxes', compact('all_chat_rooms', 'chat_room_id','new_receiver','messages'))->render();
 
 		return [
 			'chat_rooms_view' => $chat_room_view,

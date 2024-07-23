@@ -3,11 +3,11 @@
 namespace App\Interfaces\Repository;
 
 use App\Http\Requests\MessageRequest;
-use Illuminate\Http\{RedirectResponse, Request};
+use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
 
 interface MessageRepositoryInterface
 {
-	public function getMessages(int $receiver_id):array|RedirectResponse;
+	public function getMessages(int $receiver_id = null, int $chat_room_id = null):array|RedirectResponse|JsonResponse ;
 	public function storeMessage(MessageRequest $request):void;
 	public function showMessages(int $chat_box_id):string;
 	public function getChatRooms(int $message_id):array;

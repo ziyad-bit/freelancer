@@ -1,13 +1,21 @@
 const chat_room_id = document.querySelector('.user_btn').getAttribute('data-selected_chat_room_id');
 
+//leave all channels
+let subscribedChatChannels = new Set();
+
+window.onbeforeunload = function(){
+    subscribedChatChannels.forEach(key=>{
+        Echo.leaveChannel(`chat-room.${key}`);
+    })
+}
+
+//scroll to selected chatroom
 if (chat_room_id) {
     const scrollableDiv = document.querySelector('.list_tab_users');
     const elementToScrollTo = document.querySelector('.chat_room_' + chat_room_id);
 
-    // Calculate the distance from the top of the scrollable div to the top of the element
     const offsetTop = elementToScrollTo.offsetTop;
 
-    // Scroll the div to the calculated offset
     scrollableDiv.scrollTop = offsetTop;
 }
 
@@ -63,12 +71,12 @@ loadOldMessages()
 
 //load chat_rooms by infinite scrolling
 const chat_room_box = document.querySelector('.list_tab_users');
-let data_status = true;
+let data_chat_rooms_status = true;
 
 function loadPages() {
     let message_id = chat_room_box.lastElementChild.getAttribute('data-message_id');
 
-    if (data_status) {
+    if (data_chat_rooms_status) {
         axios.get("/message/chat-rooms/" + message_id)
             .then(res => {
                 if (res.status == 200) {
@@ -81,9 +89,9 @@ function loadPages() {
                         document.querySelector('.box_msgs')
                             .insertAdjacentHTML('beforeend', chat_box_view)
 
-                        loadOldMessages()
+                        loadOldMessages();
                     } else {
-                        data_status = false;
+                        data_chat_rooms_status = false;
                     }
                 }
             })
@@ -142,6 +150,18 @@ function storeMsg(e) {
         });
 }
 
+generalEventListener('input', '#file-upload', e => {
+    let file_input = document.querySelector('#file-upload');
+    let form_upload = new FormData(document.querySelector('#form_upload_app'))
+    let upload_url = document.querySelector('#upload_url').value;
+
+    if (file_input.value) {
+        axios.post(upload_url, form_upload)
+    }
+})
+
+
+
 generalEventListener('click', '.send_btn', e => {
     storeMsg(e);
 })
@@ -151,6 +171,27 @@ generalEventListener('keypress', '.send_input', e => {
         storeMsg(e);
     }
 })
+
+//show typing
+let typing_users_ids =new Set();
+
+function is_typing(e){
+    let user_id = Number(e.user_id);
+    
+    const typing_ele = document.querySelector('.typing' + e.chat_room_id);
+
+    if (e.msg_input_value !== '') {
+        typing_users_ids.add(user_id);
+    }else{
+        typing_users_ids.delete(user_id);
+    }
+
+    if (typing_users_ids.size !== 0) {
+        typing_ele.textContent = 'typing';
+    } else {
+        typing_ele.textContent = '';
+    }
+}
 
 //subscribe chat channel and listen to event
 function subscribeChatChannel(chat_room_id) {
@@ -184,8 +225,21 @@ function subscribeChatChannel(chat_room_id) {
             });
 
             document.querySelector('.chat_room_' + data.chat_room_id + ' div p .msg_text').textContent = data.text;
+        }).listenForWhisper('typing', (e) => {
+            is_typing(e);
+        }).leaving((e)=>{
+            typing_users_ids.delete(e.user_id);
+            
+            const typing_ele = document.querySelector('.typing' + e.chat_room_id);
+            
+            if (typing_users_ids.size !== 0) {
+                typing_ele.textContent = 'typing';
+            } else {
+                typing_ele.textContent = '';
+            }
         });
 }
+
 
 //get messages for chat_rooms
 function getNewMessages(chat_room_id) {
@@ -220,36 +274,32 @@ function getNewMessages(chat_room_id) {
 
 generalEventListener('click', '.user_btn', e => {
     let chat_room_id = e.target.getAttribute('data-chat_room_id');
+    selected_chat_room_id = chat_room_id;
+    subscribedChatChannels.add(Number(chat_room_id));
+    
 
     getNewMessages(chat_room_id);
 })
 
-//subscribe chat channel and listen to event 
+
 let selected_chat_room_id = document.querySelector('.user_btn.active').getAttribute('data-chat_room_id');
 
 subscribeChatChannel(selected_chat_room_id);
+subscribedChatChannels.add(selected_chat_room_id)
 
 generalEventListener('input', '.send_input', e => {
-    let chat_room_id = e.target.getAttribute('data-chat_room_id');
+    let card = e.target.parentElement;
+    let chat_room_id = card.getAttribute('data-chat_room_id');
+    let user_id = document.getElementById('auth_id').value;
 
     Echo.join(`chat-room.` + chat_room_id).whisper('typing', {
         chat_room_id: chat_room_id,
+        user_id: user_id,
         msg_input_value: document.querySelector('#msg' + chat_room_id).value
     });
 })
 
-Echo.join(`chat-room.` + selected_chat_room_id)
-    .listenForWhisper('typing', (e) => {
-        const typing_ele = document.querySelector('.typing' + e.chat_room_id);
-
-        if (e.msg_input_value !== '') {
-            typing_ele.textContent = 'typing';
-        } else {
-            typing_ele.textContent = '';
-        }
-    });
-
-
+//send chatroom invitation to user
 generalEventListener('click', '.plus', e => {
         let user_names_ele = document.querySelectorAll('.user_names');
 
@@ -399,9 +449,8 @@ let page = 1;
 chat_room_box.onscroll = function () {
     if (chat_room_box.offsetHeight == chat_room_box.scrollHeight - chat_room_box.scrollTop) {
 
+        page++
         loadPages();
-
-
 
         if (search_friends_status == true && pages_friends_status == true) {
             let search_input_val = search_input_ele.value;

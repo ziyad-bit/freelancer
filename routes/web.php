@@ -52,7 +52,7 @@ Route::resource('proposal'        ,'Users\ProposalController')->only(['store','d
 
 ####################################   message   #####################################
 Route::namespace('Users')->controller(MessageController::class)->group(function(){
-    Route::get ('message/index/{receiver_id?}/{chat_room_id?}'     ,'index_chatrooms')->name('chat-rooms.index');
+    Route::get ('message/index/{receiver_id?}/{chat_room_id?}','index_chatrooms')->name('chat-rooms.index');
     Route::put ('message/show-old/{id}'   ,'show_old')->name('message.show_old');
     Route::post('message'                 ,'store')->name('message.store');
     Route::get ('message/{id}'            ,'show')->name('message.show');

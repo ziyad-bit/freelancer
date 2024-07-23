@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Users;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MessageRequest;
 use App\Interfaces\Repository\MessageRepositoryInterface;
-use Illuminate\Http\{JsonResponse, Request};
+use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
+use Illuminate\View\View;
 
 class MessageController extends Controller
 {
@@ -15,7 +16,7 @@ class MessageController extends Controller
 	}
 
 	// index   #####################################
-	public function index_chatrooms(int $receiver_id = null, int $chat_room_id = null)
+	public function index_chatrooms(int $receiver_id = null, int $chat_room_id = null):View|RedirectResponse|JsonResponse
 	{
 		$data = $this->messageRepository->getMessages($receiver_id, $chat_room_id);
 

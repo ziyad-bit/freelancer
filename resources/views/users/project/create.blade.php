@@ -24,6 +24,8 @@
         <h4>upload images</h4>
         <form action="{{ route('file.upload') }}" id="image_upload" method="post" enctype="multipart/form-data"
             class="dropzone">
+            <input type="hidden" name="dir" value="projects/">
+            <input type="hidden" name="type" value="image">
             @csrf
         </form>
     </div>
@@ -32,6 +34,8 @@
         <h4>upload files</h4>
         <form action="{{ route('file.upload') }}" id="file_upload" method="post" enctype="multipart/form-data"
             class="dropzone">
+            <input type="hidden" name="dir" value="projects/">
+            <input type="hidden" name="type" value="application">
             @csrf
         </form>
     </div>
@@ -40,6 +44,8 @@
         <h4>upload videos</h4>
         <form action="{{ route('file.upload') }}" id="video_upload" method="post" enctype="multipart/form-data"
             class="dropzone">
+            <input type="hidden" name="dir" value="projects/">
+            <input type="hidden" name="type" value="video">
             @csrf
         </form>
     </div>

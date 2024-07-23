@@ -11,7 +11,7 @@ trait File
 	// uploadFile    #####################################
 	public function upload(object $request, string $path, string $type):string
 	{
-		$file     = $request->file('file');
+		$file     = $request->file($type);
 		$fileName = $file->hashName();
 
 		Storage::putFileAs($path, $file, $type . '-' . $fileName);
@@ -23,7 +23,7 @@ trait File
 	public function dropZoneUpload(Request $request, string $path, string $type):array
 	{
 		$file_name          = $this->upload($request, $path, $type);
-		$original_name      = $request->file('file')->getClientOriginalName();
+		$original_name      = $request->file($type)->getClientOriginalName();
 
 		return ['file_name' => $file_name, 'original_name' => $original_name];
 	}

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class DropzoneRequest extends FormRequest
 {
@@ -25,8 +26,10 @@ class DropzoneRequest extends FormRequest
 	{
 		return [
 			'image'     => 'nullable|image|mimes:jpg,gif,jpeg,png,webp|max:8000',
-			'files'     => 'nullable|file|mimes:pdf,ppt,doc,xls|max:20000',
-			'video'     => 'nullable|file|mimes:mp4,mov,flv,avi|max:100000',
+			'application'     => 'nullable|file|mimes:pdf,ppt,doc,xls|max:20000',
+			'video'     => 'nullable|video|mimes:mp4,mov,flv,avi|max:100000',
+			'dir'     => ['required', 'string', Rule::in(['projects/','messages/'])],
+			'type'     => ['required', 'string', Rule::in(['image','video','application'])],
 		];
 	}
 }

@@ -3,7 +3,7 @@ Dropzone.autoDiscover = false;
 new Dropzone('#image_upload', {
     thumbnailWidth: 200,
     acceptedFiles: '.jpg,.png,.jepg,.gif,.webp',
-    paramName: 'file',
+    paramName: 'image',
     addRemoveLinks: true,
     maxFilesize: 8000,
     maxFiles: 4,
@@ -36,7 +36,7 @@ new Dropzone('#image_upload', {
 new Dropzone('#file_upload', {
     thumbnailWidth: 200,
     acceptedFiles: '.pdf,.ppt.,.doc,.xls',
-    paramName: 'file',
+    paramName: 'application',
     addRemoveLinks: true,
     maxFilesize: 20000,
 
@@ -67,7 +67,7 @@ new Dropzone('#file_upload', {
 new Dropzone('#video_upload', {
     thumbnailWidth: 200,
     acceptedFiles: '.mp4,.mov,.flv,.avi',
-    paramName: 'file',
+    paramName: 'video',
     addRemoveLinks: true,
     maxFilesize: 100000,
 

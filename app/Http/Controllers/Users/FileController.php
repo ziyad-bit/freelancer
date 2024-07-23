@@ -22,7 +22,7 @@ class FileController extends Controller
 	// upload    #####################################
 	public function upload(DropzoneRequest $request):JsonResponse
 	{
-		$file_name = $this->fileRepository->upload_file($request, 'projects/');
+		$file_name = $this->fileRepository->upload_file($request);
 
 		return response()->json(['file_name' => $file_name['file_name'], 'original_name' => $file_name['original_name']]);
 	}

@@ -26,6 +26,7 @@
                     <div class="col-4 ">
                         <input type="hidden" value="{{ Auth::user()->name }}" id="auth_name">
                         <input type="hidden" value="{{ Auth::user()->image }}" id="auth_photo">
+                        <input type="hidden" value="{{ Auth::id() }}" id="auth_id">
 
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1" >search</span>

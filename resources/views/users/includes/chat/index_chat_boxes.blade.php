@@ -1,3 +1,5 @@
+<input type="hidden" id="upload_url" value="{{route('file.upload')}}">
+
 @forelse ($all_chat_rooms as $i => $chat_room)
     @php
         if ($chat_room->sender_id !== Auth::id()) {
@@ -17,8 +19,10 @@
 
         <div style="display: none" id="chat_room_id" data-chat_room_id="{{ $chat_room_id }}"></div>
 
-        <form id={{ 'form' . $chat_room->chat_room_id }}>
-            <div class="card" style="height: 316px">
+        <form id={{ 'form' . $chat_room->chat_room_id }} >
+            <div class="card" style="height: 316px" 
+                data-chat_room_id="{{ $chat_room->chat_room_id }}">
+
                 <h5 class="card-header">chat
                     <span id="loading{{ $receiver_id }}" style="margin-left: 50px;display:none">loading old
                         all_chat_rooms
@@ -38,10 +42,16 @@
                 <textarea name="text" cols="30" rows="5" class="form-control send_input"
                     data-chat_room_id="{{ $chat_room->chat_room_id }}" id="msg{{ $chat_room->chat_room_id }}"></textarea>
 
-                <button type="button" class="btn btn-success send_btn"
-                    data-chat_room_id="{{ $chat_room->chat_room_id }}">
+                    
+                <button type="button" class="btn btn-success send_btn">
                     Send
                 </button>
+            
+                <label for="file-upload" style="  margin-left: 608px;margin-top: -38px;" 
+                    class="custom-file-upload ">
+                    <i class="fa-solid fa-file fa-lg" ></i>
+                </label>
+                
 
                 <small style="color: red;margin-left: 5px" class="msg_err{{ $chat_room->chat_room_id }}">
                 </small>
@@ -50,6 +60,13 @@
                 </small>
             </div>
         </form>
+
+        <form id="form_upload_app" enctype="multipart/form-data">
+            <input id="file-upload" name="application" style="display: none" type="file" />
+            <input type="hidden" name="dir" value="messages/">
+            <input type="hidden" name="type" value="application">
+        </form>
+        
     </div>
 
 @empty

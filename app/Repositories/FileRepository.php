@@ -39,11 +39,10 @@ class FileRepository implements FileRepositoryInterface
 	}
 
 	// upload_file   #####################################
-	public function upload_file(Request $request, string $dir):array
+	public function upload_file(Request $request):array
 	{
-		$file_name = $request->file('file')->getMimeType();
-		$position  = strpos($file_name, '/');
-		$type      = substr($file_name, 0, $position);
+		$dir =$request->dir;
+		$type = $request->type;
 		$path      = $type . 's/' . $dir;
 
 		$file_name = $this->dropZoneUpload($request, $path, $type);
