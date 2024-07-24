@@ -68,7 +68,6 @@ class MessageController extends Controller
 	// show_old   #####################################
 	public function show_old(Request $request, int $chat_box_id):JsonResponse
 	{
-		
 		$view = $this->messageRepository->showOldMessages($request, $chat_box_id);
 
 		return response()->json(['view' => $view]);

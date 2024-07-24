@@ -150,17 +150,82 @@ function storeMsg(e) {
         });
 }
 
-generalEventListener('input', '#file-upload', e => {
-    let file_input = document.querySelector('#file-upload');
-    let form_upload = new FormData(document.querySelector('#form_upload_app'))
+//file upload
+function upload_file(path,type,form_upload,e){
     let upload_url = document.querySelector('#upload_url').value;
+        
+    axios.post(upload_url, form_upload)
+        .then(res=>{
+            if (res.status == 200) {
+                let file_name = res.data.file_name;
 
+                if (type === 'app') {
+                    var file_ele = `<iframe class="file_uploaded" src="${path + file_name}"></iframe>`;
+                } else if(type === 'image') {
+                    var file_ele = `<img class="file_uploaded" src="${path + file_name}"></img>`;
+                }else{
+                    var file_ele = `<video class="file_uploaded" src="${path + file_name}"></video>`;
+                }
+
+                document.querySelector('.accordion-body')
+                    .insertAdjacentHTML('afterbegin',file_ele);
+                
+                document.querySelector('.accordion').style.display = '';
+            }
+        })
+        .catch(err => {
+            let error = err.response;
+            if (error.status == 422) {
+                let err_msgs = error.data.errors;
+                let chatroom_id = e.target.getAttribute('data-chat_room_id');
+                const msg_ele =document.querySelector(`.msg_err${chatroom_id}`);
+
+                for (const [key, value] of Object.entries(err_msgs)) {
+                    msg_ele.textContent = value[0];
+                    msg_ele.style.display = '';
+                }
+            }
+        });
+}
+
+generalEventListener('input', '#app_input', e => {
+    let file_input = document.querySelector('#app_input');
+    let form = document.querySelector('#form_upload_app');
+    let form_upload = new FormData(form);
+    
     if (file_input.value) {
-        axios.post(upload_url, form_upload)
+        let type = 'app';
+        let path='/storage/applications/messages/application-';
+
+        upload_file(path,type,form_upload,e);
     }
 })
 
+generalEventListener('input', '#image_input', e => {
+    let file_input = document.querySelector('#image_input');
+    let form = document.querySelector('#form_upload_image');
+    let form_upload = new FormData(form);
 
+    if (file_input.value) {
+        let type = 'image';
+        let path='/storage/images/messages/image-';
+
+        upload_file(path,type,form_upload,e);
+    }
+})
+
+generalEventListener('input', '#video_input', e => {
+    let file_input = document.querySelector('#video_input');
+    let form = document.querySelector('#form_upload_video');
+    let form_upload = new FormData(form);
+
+    if (file_input.value) {
+        let type = 'video';
+        let path='/storage/videos/messages/video-';
+
+        upload_file(path,type,form_upload,e);
+    }
+})
 
 generalEventListener('click', '.send_btn', e => {
     storeMsg(e);

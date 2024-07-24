@@ -47,7 +47,37 @@ div .send_input {
     position: relative;
     top: 22px;
     left: 5px;
-    width: 81%;
+    width: 75%;
+}
+
+.app_upload{
+    margin-left: 614px;
+    margin-top: -38px;
+    width: 8px;
+}
+
+.image_upload{
+    margin-left: 591px;
+    margin-top:-23px;
+    width: 8px;
+}
+
+.video_upload{
+    margin-left: 565px;
+    margin-top: -23px;
+    width: 8px;
+}
+
+.accordion{
+    margin-top: 5px;
+}
+
+.file_uploaded{
+    width: 200px;
+}
+
+.fa-solid{
+    cursor: pointer;
 }
 
 .send_btn {

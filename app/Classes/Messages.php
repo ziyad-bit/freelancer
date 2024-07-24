@@ -2,14 +2,13 @@
 
 namespace App\Classes;
 
-use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class Messages
 {
 	// get    #####################################
-	public static function index(int $chat_box_id,$request=null,bool $oldMsgs=false):Collection
+	public static function index(int $chat_box_id, $request = null, bool $oldMsgs = false):Collection
 	{
 		return DB::table('messages')
 			->join('users as sender', 'messages.sender_id', '=', 'sender.id')
@@ -34,6 +33,7 @@ class Messages
 			)
 			->orderBy('id', 'desc')
 			->limit(3)
-			->get();;
+			->get();
+		;
 	}
 }

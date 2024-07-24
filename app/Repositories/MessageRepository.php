@@ -17,7 +17,7 @@ class MessageRepository implements MessageRepositoryInterface
 	use GetCursor;
 
 	// MARK: getMessages
-	public function getMessages(int $receiver_id = null, int $chat_room_id = null):array|RedirectResponse|JsonResponse 
+	public function getMessages(int $receiver_id = null, int $chat_room_id = null):array|RedirectResponse|JsonResponse
 	{
 		if ($receiver_id > 0 && $chat_room_id !== null) {
 			return to_route('chat-rooms.index')->with('error', 'something went wrong');
@@ -25,9 +25,9 @@ class MessageRepository implements MessageRepositoryInterface
 
 		$auth_id        = Auth::id();
 		$all_chat_rooms = ChatRooms::index(
-				['messages.sender_id' => $auth_id, 'last' => 1],
-				['messages.receiver_id' => $auth_id, 'last' => 1]
-			)
+			['messages.sender_id' => $auth_id, 'last' => 1],
+			['messages.receiver_id' => $auth_id, 'last' => 1]
+		)
 			->latest('messages.id')
 			->limit(3);
 
@@ -94,7 +94,7 @@ class MessageRepository implements MessageRepositoryInterface
 
 			$messages = Messages::index($all_chat_rooms[0]->chat_room_id);
 		}
-		
+
 		return [
 			'messages'       => $messages,
 			'chat_room_id'   => $chat_room_id,
@@ -158,17 +158,17 @@ class MessageRepository implements MessageRepositoryInterface
 	public function getChatRooms(int $message_id):array
 	{
 		$auth_id        = Auth::id();
-		$all_chat_rooms = ChatRooms::index(['messages.sender_id' => $auth_id, 'last' => 1],['messages.receiver_id' => $auth_id, 'last' => 1],$message_id)
+		$all_chat_rooms = ChatRooms::index(['messages.sender_id' => $auth_id, 'last' => 1], ['messages.receiver_id' => $auth_id, 'last' => 1], $message_id)
 			->latest('messages.id')
 			->limit(3)
 			->get();
 
 		$chat_room_id = null;
-		$new_receiver =null;
-		$messages =[];
+		$new_receiver = null;
+		$messages     = [];
 
 		$chat_room_view = view('users.includes.chat.index_chat_rooms', compact('all_chat_rooms', 'chat_room_id'))->render();
-		$chat_box_view  = view('users.includes.chat.index_chat_boxes', compact('all_chat_rooms', 'chat_room_id','new_receiver','messages'))->render();
+		$chat_box_view  = view('users.includes.chat.index_chat_boxes', compact('all_chat_rooms', 'chat_room_id', 'new_receiver', 'messages'))->render();
 
 		return [
 			'chat_rooms_view' => $chat_room_view,
@@ -179,7 +179,7 @@ class MessageRepository implements MessageRepositoryInterface
 	// showMessage   #####################################
 	public function showOldMessages(Request $request, int $chat_room_id):string
 	{
-		$messages = Messages::index($chat_room_id,$request,true);
+		$messages = Messages::index($chat_room_id, $request, true);
 
 		return view('users.includes.chat.index_msgs', compact('messages'))->render();
 	}
