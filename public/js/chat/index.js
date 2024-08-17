@@ -3,8 +3,8 @@ const chat_room_id = document.querySelector('.user_btn').getAttribute('data-sele
 //leave all channels
 let subscribedChatChannels = new Set();
 
-window.onbeforeunload = function(){
-    subscribedChatChannels.forEach(key=>{
+window.onbeforeunload = function () {
+    subscribedChatChannels.forEach(key => {
         Echo.leaveChannel(`chat-room.${key}`);
     })
 }
@@ -102,7 +102,7 @@ function loadPages() {
 function storeMsg(e) {
     e.preventDefault();
 
-    let chat_room_id = e.target.getAttribute('data-chat_room_id'),
+    let chat_room_id = e.target.parentElement.getAttribute('data-chat_room_id'),
         form = document.querySelector('#form' + chat_room_id),
         formData = new FormData(form);
 
@@ -116,7 +116,7 @@ function storeMsg(e) {
                     message = document.getElementById(`msg${chat_room_id}`).value;
 
                 const box = document.getElementsByClassName('box' + chat_room_id)[0];
-
+                
                 msg_err.textContent = '';
 
                 document.getElementById('msg' + chat_room_id).value = '';
@@ -129,12 +129,54 @@ function storeMsg(e) {
                     `
                 )
 
+                const uploaded_files_ele = document.querySelectorAll('.file_uploaded');
+
+                uploaded_files_ele.forEach(function(file_ele){
+                    let file_src = file_ele.src;
+                    let type = file_ele.tagName;
+
+                    if (type === 'img') {
+                        box.insertAdjacentHTML('beforeend',
+                            `
+                        <img class ="rounded-circle image" src ="${file_src}" alt = "loading">
+                            `
+                        )
+                    }else if(type === 'video'){
+                        box.insertAdjacentHTML('beforeend',
+                            `
+                            <video class="file_sent" src="${file_src}"></video>
+                            `
+                        )
+                        
+                    }else{
+                        box.insertAdjacentHTML('beforeend',
+                            `
+                            <iframe class="file_sent" src="${file_src}"></iframe>
+                            `
+                        )
+                    }
+                })
+
                 box.scrollTo({
                     top: 10000,
                     behavior: 'smooth'
                 })
 
-                document.querySelector('.chat_room_' + chat_room_id + ' div p .msg_text').textContent = message;
+                const input_files = document.querySelectorAll('.input_files');
+                input_files.forEach(function(input_file){
+                    input_file.remove();
+                })
+
+                const files_uploaded=document.querySelectorAll(`.files_container${chat_room_id} .file_uploaded`);
+                files_uploaded.forEach(function(file_uploaded){
+                    file_uploaded.remove();
+                })
+
+                document.querySelector(`.files_container${chat_room_id}`).style.display = 'none';
+                document.querySelector(`.chat_room_${chat_room_id} div p .msg_text`).textContent = message;
+                document.querySelector(`#form${chat_room_id} #all_apps_count`).value = 0;
+                document.querySelector(`#form${chat_room_id} #all_videos_count`).value = 0;
+                document.querySelector(`#form${chat_room_id} #all_images_count`).value = 0;
             }
         })
         .catch(err => {
@@ -151,26 +193,46 @@ function storeMsg(e) {
 }
 
 //file upload
-function upload_file(path,type,form_upload,e){
+let all_images_count = 0;
+let all_videos_count = 0;
+let all_apps_count = 0;
+
+function upload_file(path, type, form_upload, e) {
     let upload_url = document.querySelector('#upload_url').value;
-        
+
     axios.post(upload_url, form_upload)
-        .then(res=>{
+        .then(res => {
             if (res.status == 200) {
                 let file_name = res.data.file_name;
+                let chat_room_id = e.target.getAttribute('data-chat_room_id');
 
                 if (type === 'app') {
+                    all_apps_count++;
+                    document.querySelector(`#form${chat_room_id} #all_apps_count`).value = all_apps_count;
+
                     var file_ele = `<iframe class="file_uploaded" src="${path + file_name}"></iframe>`;
-                } else if(type === 'image') {
+                    var input = `<input type="hidden" class="input_files" name="files[]" value="application-${file_name}">`;
+                } else if (type === 'image') {
+                    all_images_count++;
+                    document.querySelector(`#form${chat_room_id} #all_images_count`).value = all_images_count;
+
                     var file_ele = `<img class="file_uploaded" src="${path + file_name}"></img>`;
-                }else{
+                    var input = `<input type="hidden" class="input_files" name="files[]" value="image-${file_name}">`;
+                } else {
+                    all_videos_count++;
+                    document.querySelector(`#form${chat_room_id} #all_videos_count`).value = all_videos_count;
+
                     var file_ele = `<video class="file_uploaded" src="${path + file_name}"></video>`;
+                    var input = `<input type="hidden" class="input_files" name="files[]" value="video-${file_name}">`;
                 }
 
-                document.querySelector('.accordion-body')
-                    .insertAdjacentHTML('afterbegin',file_ele);
-                
-                document.querySelector('.accordion').style.display = '';
+                document.querySelector(`#form${chat_room_id}`)
+                    .insertAdjacentHTML('afterbegin', input);
+
+                document.querySelector('.body_container')
+                    .insertAdjacentHTML('afterbegin', file_ele);
+
+                document.querySelector(`.files_container${chat_room_id}`).style.display = '';
             }
         })
         .catch(err => {
@@ -178,7 +240,7 @@ function upload_file(path,type,form_upload,e){
             if (error.status == 422) {
                 let err_msgs = error.data.errors;
                 let chatroom_id = e.target.getAttribute('data-chat_room_id');
-                const msg_ele =document.querySelector(`.msg_err${chatroom_id}`);
+                const msg_ele = document.querySelector(`.msg_err${chatroom_id}`);
 
                 for (const [key, value] of Object.entries(err_msgs)) {
                     msg_ele.textContent = value[0];
@@ -192,12 +254,12 @@ generalEventListener('input', '#app_input', e => {
     let file_input = document.querySelector('#app_input');
     let form = document.querySelector('#form_upload_app');
     let form_upload = new FormData(form);
-    
+
     if (file_input.value) {
         let type = 'app';
-        let path='/storage/applications/messages/application-';
+        let path = '/storage/applications/messages/application-';
 
-        upload_file(path,type,form_upload,e);
+        upload_file(path, type, form_upload, e);
     }
 })
 
@@ -208,9 +270,9 @@ generalEventListener('input', '#image_input', e => {
 
     if (file_input.value) {
         let type = 'image';
-        let path='/storage/images/messages/image-';
+        let path = '/storage/images/messages/image-';
 
-        upload_file(path,type,form_upload,e);
+        upload_file(path, type, form_upload, e);
     }
 })
 
@@ -221,9 +283,9 @@ generalEventListener('input', '#video_input', e => {
 
     if (file_input.value) {
         let type = 'video';
-        let path='/storage/videos/messages/video-';
+        let path = '/storage/videos/messages/video-';
 
-        upload_file(path,type,form_upload,e);
+        upload_file(path, type, form_upload, e);
     }
 })
 
@@ -238,16 +300,16 @@ generalEventListener('keypress', '.send_input', e => {
 })
 
 //show typing
-let typing_users_ids =new Set();
+let typing_users_ids = new Set();
 
-function is_typing(e){
+function is_typing(e) {
     let user_id = Number(e.user_id);
-    
+
     const typing_ele = document.querySelector('.typing' + e.chat_room_id);
 
     if (e.msg_input_value !== '') {
         typing_users_ids.add(user_id);
-    }else{
+    } else {
         typing_users_ids.delete(user_id);
     }
 
@@ -262,12 +324,12 @@ function is_typing(e){
 function subscribeChatChannel(chat_room_id) {
     Echo.join(`chat-room.` + chat_room_id)
         .joining((data) => {
-            const plus_ele =document.querySelector('.plus'+data.chat_room_id);
+            const plus_ele = document.querySelector('.plus' + data.chat_room_id);
             let chat_room_users_ids = plus_ele.getAttribute('data-chat_room_users_ids');
 
-            chat_room_users_ids = chat_room_users_ids +','+ data.user_id;
-            
-            plus_ele.setAttribute('data-chat_room_users_ids',chat_room_users_ids);
+            chat_room_users_ids = chat_room_users_ids + ',' + data.user_id;
+
+            plus_ele.setAttribute('data-chat_room_users_ids', chat_room_users_ids);
         })
         .listen('MessageEvent', (e) => {
             const data = e.data;
@@ -292,11 +354,11 @@ function subscribeChatChannel(chat_room_id) {
             document.querySelector('.chat_room_' + data.chat_room_id + ' div p .msg_text').textContent = data.text;
         }).listenForWhisper('typing', (e) => {
             is_typing(e);
-        }).leaving((e)=>{
+        }).leaving((e) => {
             typing_users_ids.delete(e.user_id);
-            
+
             const typing_ele = document.querySelector('.typing' + e.chat_room_id);
-            
+
             if (typing_users_ids.size !== 0) {
                 typing_ele.textContent = 'typing';
             } else {
@@ -341,7 +403,7 @@ generalEventListener('click', '.user_btn', e => {
     let chat_room_id = e.target.getAttribute('data-chat_room_id');
     selected_chat_room_id = chat_room_id;
     subscribedChatChannels.add(Number(chat_room_id));
-    
+
 
     getNewMessages(chat_room_id);
 })
@@ -366,29 +428,29 @@ generalEventListener('input', '.send_input', e => {
 
 //send chatroom invitation to user
 generalEventListener('click', '.plus', e => {
-        let user_names_ele = document.querySelectorAll('.user_names');
+    let user_names_ele = document.querySelectorAll('.user_names');
 
-        user_names_ele.forEach(user_name => {
-            user_name.style.display = 'none';
-        });
+    user_names_ele.forEach(user_name => {
+        user_name.style.display = 'none';
+    });
 
-        let user_names = document.querySelectorAll('.name');
-        let user_images = document.querySelectorAll('.image');
-        let users_ids = document.querySelectorAll('.plus');
-        let chat_room_id = e.target.getAttribute('data-chat_room_id');
-        let chat_room_users_ids = e.target.getAttribute('data-chat_room_users_ids').split(',');
-        
-        const add_body_modal = document.querySelector('.add_body');
+    let user_names = document.querySelectorAll('.name');
+    let user_images = document.querySelectorAll('.image');
+    let users_ids = document.querySelectorAll('.plus');
+    let chat_room_id = e.target.getAttribute('data-chat_room_id');
+    let chat_room_users_ids = e.target.getAttribute('data-chat_room_users_ids').split(',');
 
-        for (let i = 0; i < user_names.length; i++) {
-            let user_id = users_ids[i].getAttribute('data-receiver_id');
-            
-            if (!chat_room_users_ids.includes(user_id)) {
-                let user_name = user_names[i].textContent;
-                let user_image = user_images[i].getAttribute('src');
+    const add_body_modal = document.querySelector('.add_body');
 
-                add_body_modal.insertAdjacentHTML('beforeend',
-                    `
+    for (let i = 0; i < user_names.length; i++) {
+        let user_id = users_ids[i].getAttribute('data-receiver_id');
+
+        if (!chat_room_users_ids.includes(user_id)) {
+            let user_name = user_names[i].textContent;
+            let user_image = user_images[i].getAttribute('src');
+
+            add_body_modal.insertAdjacentHTML('beforeend',
+                `
                     <li class="list-group-item user_names">
 
                         <img class="rounded-circle image" alt="loading"
@@ -402,14 +464,14 @@ generalEventListener('click', '.plus', e => {
                         </button>
                     </li>
                 `);
-            }
         }
+    }
 })
 
 generalEventListener('click', '.add_btn', e => {
     let receiver_id = e.target.getAttribute('data-receiver_id');
     let chat_room_id = e.target.getAttribute('data-chat_room_id');
-    
+
     axios.post(`/chat-room/send-user-invitation/${receiver_id}/${chat_room_id}`)
         .then(res => {
             if (res.status == 200) {

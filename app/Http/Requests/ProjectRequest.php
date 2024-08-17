@@ -35,6 +35,7 @@ class ProjectRequest extends FormRequest
 			'skills_name.*' => 'nullable',
 			'skills_id.*'   => ['distinct', 'exists:skills,id'],
 			'num_input'     => 'required|numeric',
+			'files'     => 'nullable|array',
 		];
 	}
 

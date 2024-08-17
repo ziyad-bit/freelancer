@@ -9,27 +9,18 @@ use Illuminate\Support\Facades\{DB, Storage};
 class Video implements FileInterface
 {
 	// insert   #####################################
-	public function insert(Request $request, int $project_id):void
+	public function insert(Request $request,string $table_name ,string $column_name , int $column_value,string $file):void
 	{
-		static $insert_called = false;
+		static $videos_arr = [];
 
-		if (!$insert_called) {
-			$insert_called = true;
+		$videos_arr[] = [
+			'video'      => $file,
+			$column_name => $column_value,
+			'created_at' => now(),
+		];
 
-			$videos_arr = [];
-			$videos     = $request->input('videos');
-
-			if ($videos != []) {
-				foreach ($videos as $video) {
-					$videos_arr[] = [
-						'video'      => $video,
-						'project_id' => $project_id,
-						'created_at' => now(),
-					];
-				}
-
-				DB::table('project_files')->insert($videos_arr);
-			}
+		if (count($videos_arr) == $request->all_videos_count) {
+			DB::table($table_name)->insert($videos_arr);
 		}
 	}
 

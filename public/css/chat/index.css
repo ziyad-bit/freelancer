@@ -76,6 +76,12 @@ div .send_input {
     width: 200px;
 }
 
+.file_sent{
+    width: 200px;
+    display: block;
+    margin-bottom: 5px;
+}
+
 .fa-solid{
     cursor: pointer;
 }

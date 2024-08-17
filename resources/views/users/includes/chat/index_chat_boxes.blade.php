@@ -19,7 +19,7 @@
 
         <div style="display: none" id="chat_room_id" data-chat_room_id="{{ $chat_room_id }}"></div>
 
-        <form id={{ 'form' . $chat_room->chat_room_id }}>
+        <form id={{ 'form' . $chat_room->chat_room_id }} enctype="multipart/form-data">
             <div class="card" style="height: 316px" data-chat_room_id="{{ $chat_room->chat_room_id }}">
 
                 <h5 class="card-header">chat
@@ -38,8 +38,12 @@
                 <input type="hidden" name="chat_room_id" value="{{ $chat_room->chat_room_id }}">
                 <input type="hidden" name="receiver_id" value="{{ $receiver_id }}">
 
+                <input type="hidden" name="all_images_count" id="all_images_count" value="0">
+                <input type="hidden" name="all_videos_count" id="all_videos_count" value="0">
+                <input type="hidden" name="all_apps_count" id="all_apps_count" value="0">
+
                 <textarea name="text" cols="30" rows="5" class="form-control send_input"
-                    data-chat_room_id="{{ $chat_room->chat_room_id }}" id="msg{{ $chat_room->chat_room_id }}"></textarea>
+                    id="msg{{ $chat_room->chat_room_id }}"></textarea>
 
                 <button type="button" class="btn btn-success send_btn">
                     Send
@@ -83,27 +87,28 @@
             <input type="hidden" name="type" value="video">
         </form>
 
-    </div>
-
-@empty
-@endforelse
-
-<div class="accordion" style="display: none" id="accordionExample">
-    <div class="accordion-item">
-        <h2 class="accordion-header">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
-                aria-expanded="true" aria-controls="collapseOne">
-                uploaded files
-            </button>
-        </h2>
-
-        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
-            <div class="accordion-body">
-                
+        <div class="accordion files_container{{$chat_room->chat_room_id}}" style="display: none" id="accordionExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                        aria-expanded="true" aria-controls="collapseOne">
+                        uploaded files
+                    </button>
+                </h2>
+        
+                <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                    <div class="accordion-body body_container">
+                        
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
+
+    
+
+@empty
+@endforelse
 
     @if ($new_receiver)
         <div class="tab-pane fade friends_1_page  show active" id={{ 'chat_box' . $new_receiver->id }} role="tabpanel"

@@ -6,5 +6,11 @@ use Illuminate\Http\Request;
 
 interface FileInterface
 {
-	public function insert(Request $request, int $project_id):void;
+	public function insert(
+		Request $request,
+		string $table_name,
+		string $column_name,
+		int $column_value,
+		string $file,
+	):void;
 }

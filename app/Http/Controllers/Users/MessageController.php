@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MessageRequest;
+use App\Interfaces\Repository\FileRepositoryInterface;
 use App\Interfaces\Repository\MessageRepositoryInterface;
 use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
 use Illuminate\View\View;
@@ -18,27 +19,27 @@ class MessageController extends Controller
 	// index   #####################################
 	public function index_chatrooms(int $receiver_id = null, int $chat_room_id = null):View|RedirectResponse|JsonResponse
 	{
-		$data = $this->messageRepository->getMessages($receiver_id, $chat_room_id);
+		$data_or_redirect = $this->messageRepository->getMessages($receiver_id, $chat_room_id);
 
-		if (!is_array($data)) {
-			return $data;
+		if (!is_array($data_or_redirect)) {
+			return $data_or_redirect;
 		}
 
 		return view(
 			'users.chat.index',
 			[
-				'all_chat_rooms'      => $data['all_chat_rooms'],
-				'chat_room_id'        => $data['chat_room_id'],
-				'messages'            => $data['messages'],
-				'new_receiver'        => $data['new_receiver'],
+				'all_chat_rooms'      => $data_or_redirect['all_chat_rooms'],
+				'chat_room_id'        => $data_or_redirect['chat_room_id'],
+				'messages'            => $data_or_redirect['messages'],
+				'new_receiver'        => $data_or_redirect['new_receiver'],
 			]
 		);
 	}
 
 	// store   #####################################
-	public function store(MessageRequest $request):JsonResponse
+	public function store(MessageRequest $request,FileRepositoryInterface $fileRepository):JsonResponse
 	{
-		$this->messageRepository->storeMessage($request);
+		$this->messageRepository->storeMessage($request,$fileRepository);
 
 		return response()->json();
 	}

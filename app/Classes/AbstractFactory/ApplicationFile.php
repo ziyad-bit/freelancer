@@ -9,27 +9,18 @@ use Illuminate\Support\Facades\DB;
 class ApplicationFile implements FileInterface
 {
 	// insert   #####################################
-	public function insert(Request $request, int $project_id):void
+	public function insert(Request $request,string $table_name ,string $column_name , int $column_value,string $file):void
 	{
-		static $insert_called = false;
+		static $files_arr     = [];
 
-		if (!$insert_called) {
-			$insert_called = true;
+		$files_arr[] = [
+			'file' => $file,
+			$column_name  => $column_value,
+			'created_at'  => now(),
+		];
 
-			$files_arr     = [];
-			$files         = $request->input('applications');
-
-			if ($files != []) {
-				foreach ($files as $file) {
-					$files_arr[] = [
-						'application' => $file,
-						'project_id'  => $project_id,
-						'created_at'  => now(),
-					];
-				}
-
-				DB::table('project_files')->insert($files_arr);
-			}
+		if (count($files_arr) == $request->all_apps_count) {
+			DB::table($table_name)->insert($files_arr);
 		}
 	}
 }

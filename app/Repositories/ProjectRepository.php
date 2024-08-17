@@ -72,7 +72,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 
 		DB::table('project_infos')->insert($project_info_data);
 
-		$fileRepository->insertAnyFile($request, $project_id);
+		$fileRepository->insertAnyFile($request,'project_files', 'project_id',$project_id);
 
 		$skillRepository->storeSkill($request, 'project_skill', 'project_id', $project_id);
 	}
@@ -176,7 +176,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 
 		DB::table('project_infos')->where('project_id', $id)->update($project_info_data);
 
-		$fileRepository->insertAnyFile($request, $id);
+		$fileRepository->insertAnyFile($request,'project_files','project_id' ,$id);
 
 		$skillRepository->storeSkill($request, 'project_skill', 'project_id', $id);
 

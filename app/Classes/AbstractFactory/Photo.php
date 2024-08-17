@@ -29,27 +29,18 @@ class Photo implements FileInterface
 	}
 
 	// insert   #####################################
-	public function insert(Request $request, int $project_id):void
+	public function insert(Request $request,string $table_name,string $column_name , int $column_value,string $file):void
 	{
-		static $insert_called = false;
+		static $images_arr    = [];
 
-		if (!$insert_called) {
-			$insert_called = true;
-
-			$images_arr    = [];
-			$images        = $request->input('images');
-
-			if ($images != []) {
-				foreach ($images as $image) {
-					$images_arr[] = [
-						'image'      => $image,
-						'project_id' => $project_id,
-						'created_at' => now(),
-					];
-				}
-
-				DB::table('project_files')->insert($images_arr);
-			}
+		$images_arr[] = [
+			'image'      => $file,
+			$column_name => $column_value,
+			'created_at' => now(),
+		];
+	
+		if (count($images_arr) == $request->all_images_count) {
+			DB::table($table_name)->insert($images_arr);
 		}
 	}
 

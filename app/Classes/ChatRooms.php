@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 class ChatRooms
 {
 	// get    #####################################
-	public static function index(array $last_sender_msg, array $last_receiver_msg, int $message_id = null):Builder
+	public static function fetch(array $last_sender_msg, array $last_receiver_msg, int $message_id = null):Builder
 	{
 		return DB::table('messages')
 			->join('users as sender', 'messages.sender_id', '=', 'sender.id')
@@ -51,6 +51,6 @@ class ChatRooms
 					);
 				}
 			)
-		->groupBy('messages.id');
+			->groupBy('messages.id');
 	}
 }

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 class Messages
 {
 	// get    #####################################
-	public static function index(int $chat_box_id, $request = null, bool $oldMsgs = false):Collection
+	public static function index(int $chat_room_id, $request = null, bool $oldMsgs = false):Collection
 	{
 		return DB::table('messages')
 			->join('users as sender', 'messages.sender_id', '=', 'sender.id')
@@ -20,15 +20,11 @@ class Messages
 				'sender.name    as sender_name',
 				'receiver.name  as receiver_name'
 			)
-			->where('messages.chat_room_id', $chat_box_id)
+			->where('messages.chat_room_id', $chat_room_id)
 			->when(
 				$oldMsgs,
 				function ($query) use ($request) {
-					$query->orWhere(
-						function ($query) use ($request) {
-							$query->where('messages.id', '<', $request->first_msg_id);
-						}
-					);
+					$query->Where('messages.id', '<', $request->first_msg_id);
 				}
 			)
 			->orderBy('id', 'desc')
