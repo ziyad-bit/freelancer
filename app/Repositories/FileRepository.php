@@ -6,7 +6,6 @@ use App\Classes\AbstractFactory\FileAbstractFactory;
 use App\Interfaces\Repository\FileRepositoryInterface;
 use App\Traits\{File, InsertAnyFile};
 use Illuminate\Http\{JsonResponse, Request};
-use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileRepository implements FileRepositoryInterface
@@ -24,7 +23,7 @@ class FileRepository implements FileRepositoryInterface
 	}
 
 	// insertAnyFile   #####################################
-	public function insertAnyFile(Request $request,string $table_name,string $column_name ,int $column_value):void
+	public function insertAnyFile(Request $request, string $table_name, string $column_name, int $column_value):void
 	{
 		$files       = $request->input('files');
 		$fileFactory = new FileAbstractFactory();
@@ -33,8 +32,8 @@ class FileRepository implements FileRepositoryInterface
 			foreach ($files as  $file) {
 				$position  = strpos($file, '-');
 				$type      = 'create_' . substr($file, 0, $position);
-				
-				$fileFactory->$type()->insert($request,$table_name, $column_name,$column_value,$file);
+
+				$fileFactory->$type()->insert($request, $table_name, $column_name, $column_value, $file);
 			}
 		}
 	}

@@ -11,14 +11,12 @@ class MessageEvent implements ShouldBroadcast
 {
 	use Dispatchable, InteractsWithSockets, SerializesModels;
 
-	public $queue = 'message';
-
 	/**
 	 * Create a new event instance.
 	 *
 	 * @return void
 	 */
-	public function __construct(public array $data)
+	public function __construct(public array $data, public array $files)
 	{
 	}
 

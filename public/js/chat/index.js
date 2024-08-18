@@ -116,7 +116,7 @@ function storeMsg(e) {
                     message = document.getElementById(`msg${chat_room_id}`).value;
 
                 const box = document.getElementsByClassName('box' + chat_room_id)[0];
-                
+
                 msg_err.textContent = '';
 
                 document.getElementById('msg' + chat_room_id).value = '';
@@ -131,7 +131,7 @@ function storeMsg(e) {
 
                 const uploaded_files_ele = document.querySelectorAll('.file_uploaded');
 
-                uploaded_files_ele.forEach(function(file_ele){
+                uploaded_files_ele.forEach(function (file_ele) {
                     let file_src = file_ele.src;
                     let type = file_ele.tagName;
 
@@ -141,14 +141,14 @@ function storeMsg(e) {
                         <img class ="rounded-circle image" src ="${file_src}" alt = "loading">
                             `
                         )
-                    }else if(type === 'video'){
+                    } else if (type === 'video') {
                         box.insertAdjacentHTML('beforeend',
                             `
                             <video class="file_sent" src="${file_src}"></video>
                             `
                         )
-                        
-                    }else{
+
+                    } else {
                         box.insertAdjacentHTML('beforeend',
                             `
                             <iframe class="file_sent" src="${file_src}"></iframe>
@@ -163,12 +163,12 @@ function storeMsg(e) {
                 })
 
                 const input_files = document.querySelectorAll('.input_files');
-                input_files.forEach(function(input_file){
+                input_files.forEach(function (input_file) {
                     input_file.remove();
                 })
 
-                const files_uploaded=document.querySelectorAll(`.files_container${chat_room_id} .file_uploaded`);
-                files_uploaded.forEach(function(file_uploaded){
+                const files_uploaded = document.querySelectorAll(`.files_container${chat_room_id} .file_uploaded`);
+                files_uploaded.forEach(function (file_uploaded) {
                     file_uploaded.remove();
                 })
 
@@ -197,14 +197,17 @@ let all_images_count = 0;
 let all_videos_count = 0;
 let all_apps_count = 0;
 
-function upload_file(path, type, form_upload, e) {
+function upload_file(path, type, form_upload, chat_room_id) {
     let upload_url = document.querySelector('#upload_url').value;
+
+    document.querySelector(`#app_input${chat_room_id}`).value = '';
+    document.querySelector(`#video_input${chat_room_id}`).value = '';
+    document.querySelector(`#image_input${chat_room_id}`).value = '';
 
     axios.post(upload_url, form_upload)
         .then(res => {
             if (res.status == 200) {
                 let file_name = res.data.file_name;
-                let chat_room_id = e.target.getAttribute('data-chat_room_id');
 
                 if (type === 'app') {
                     all_apps_count++;
@@ -229,7 +232,7 @@ function upload_file(path, type, form_upload, e) {
                 document.querySelector(`#form${chat_room_id}`)
                     .insertAdjacentHTML('afterbegin', input);
 
-                document.querySelector('.body_container')
+                document.querySelector(`.files_container${chat_room_id} .body_container`)
                     .insertAdjacentHTML('afterbegin', file_ele);
 
                 document.querySelector(`.files_container${chat_room_id}`).style.display = '';
@@ -250,42 +253,45 @@ function upload_file(path, type, form_upload, e) {
         });
 }
 
-generalEventListener('input', '#app_input', e => {
-    let file_input = document.querySelector('#app_input');
-    let form = document.querySelector('#form_upload_app');
+generalEventListener('input', '.file_input', e => {
+    let chat_room_id = e.target.getAttribute('data-chat_room_id');
+    let file_input = document.querySelector(`#app_input${chat_room_id}`);
+    let form = document.querySelector(`#form_upload_app${chat_room_id}`);
     let form_upload = new FormData(form);
 
     if (file_input.value) {
         let type = 'app';
         let path = '/storage/applications/messages/application-';
 
-        upload_file(path, type, form_upload, e);
+        upload_file(path, type, form_upload, chat_room_id);
     }
 })
 
-generalEventListener('input', '#image_input', e => {
-    let file_input = document.querySelector('#image_input');
-    let form = document.querySelector('#form_upload_image');
+generalEventListener('input', '.file_input', e => {
+    let chat_room_id = e.target.getAttribute('data-chat_room_id');
+    let file_input = document.querySelector(`#image_input${chat_room_id}`);
+    let form = document.querySelector(`#form_upload_image${chat_room_id}`);
     let form_upload = new FormData(form);
 
     if (file_input.value) {
         let type = 'image';
         let path = '/storage/images/messages/image-';
 
-        upload_file(path, type, form_upload, e);
+        upload_file(path, type, form_upload, chat_room_id);
     }
 })
 
-generalEventListener('input', '#video_input', e => {
-    let file_input = document.querySelector('#video_input');
-    let form = document.querySelector('#form_upload_video');
+generalEventListener('input', '.file_input', e => {
+    let chat_room_id = e.target.getAttribute('data-chat_room_id');
+    let file_input = document.querySelector(`#video_input${chat_room_id}`);
+    let form = document.querySelector(`#form_upload_video${chat_room_id}`);
     let form_upload = new FormData(form);
 
     if (file_input.value) {
         let type = 'video';
         let path = '/storage/videos/messages/video-';
 
-        upload_file(path, type, form_upload, e);
+        upload_file(path, type, form_upload, chat_room_id);
     }
 })
 
@@ -333,7 +339,10 @@ function subscribeChatChannel(chat_room_id) {
         })
         .listen('MessageEvent', (e) => {
             const data = e.data;
+            console.log('data: ', data);
             const sender_id = data.sender_id;
+            const files = e.files;
+            console.log('files: ', files);
             const box = document.querySelector('.box' + data.chat_room_id);
             const name = document.getElementById('name' + sender_id).textContent;
             const image = document.getElementById('image' + sender_id).getAttribute('src');
@@ -345,6 +354,31 @@ function subscribeChatChannel(chat_room_id) {
                     <p    class = "user_message">${data.text}</p>
                 `
             )
+
+            files.forEach(function (file) {
+                let type = file.split('-')[0];
+
+                if (type === 'image') {
+                    box.insertAdjacentHTML('beforeend',
+                        `
+                    <img class ="rounded-circle image" src ="/storage/images/messages/${file}" alt = "loading">
+                        `
+                    )
+                } else if (type === 'video') {
+                    box.insertAdjacentHTML('beforeend',
+                        `
+                        <video class="file_sent" src="/storage/videos/messages/${file}"></video>
+                        `
+                    )
+
+                } else {
+                    box.insertAdjacentHTML('beforeend',
+                        `
+                        <iframe class="file_sent" src="/storage/applications/messages/${file}"></iframe>
+                        `
+                    )
+                }
+            })
 
             box.scrollTo({
                 top: 10000,

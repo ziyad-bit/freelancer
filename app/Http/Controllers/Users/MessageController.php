@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MessageRequest;
-use App\Interfaces\Repository\FileRepositoryInterface;
-use App\Interfaces\Repository\MessageRepositoryInterface;
+use App\Interfaces\Repository\{FileRepositoryInterface, MessageRepositoryInterface};
 use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
 use Illuminate\View\View;
 
@@ -37,9 +36,9 @@ class MessageController extends Controller
 	}
 
 	// store   #####################################
-	public function store(MessageRequest $request,FileRepositoryInterface $fileRepository):JsonResponse
+	public function store(MessageRequest $request, FileRepositoryInterface $fileRepository):JsonResponse
 	{
-		$this->messageRepository->storeMessage($request,$fileRepository);
+		$this->messageRepository->storeMessage($request, $fileRepository);
 
 		return response()->json();
 	}

@@ -29,7 +29,7 @@ class Photo implements FileInterface
 	}
 
 	// insert   #####################################
-	public function insert(Request $request,string $table_name,string $column_name , int $column_value,string $file):void
+	public function insert(Request $request, string $table_name, string $column_name, int $column_value, string $file):void
 	{
 		static $images_arr    = [];
 
@@ -38,7 +38,7 @@ class Photo implements FileInterface
 			$column_name => $column_value,
 			'created_at' => now(),
 		];
-	
+
 		if (count($images_arr) == $request->all_images_count) {
 			DB::table($table_name)->insert($images_arr);
 		}

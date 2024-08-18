@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\{DB, Storage};
 class Video implements FileInterface
 {
 	// insert   #####################################
-	public function insert(Request $request,string $table_name ,string $column_name , int $column_value,string $file):void
+	public function insert(Request $request, string $table_name, string $column_name, int $column_value, string $file):void
 	{
 		static $videos_arr = [];
 

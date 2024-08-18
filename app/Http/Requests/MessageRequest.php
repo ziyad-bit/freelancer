@@ -24,13 +24,13 @@ class MessageRequest extends FormRequest
 	public function rules()
 	{
 		return [
-			'chat_room_id' => 'required|numeric',
-			'receiver_id'  => 'required|numeric',
-			'text'         => 'required|string|max:250',
-			'*.files'=> 'nullable|string',
-			'all_images_count' => 'nullable|numeric',
+			'chat_room_id'             => 'required|numeric',
+			'receiver_id'              => 'required|numeric',
+			'text'                     => 'required|string|max:250',
+			'*.files'                  => 'nullable|string',
+			'all_images_count'         => 'nullable|numeric',
 			'all_videos_count'         => 'nullable|numeric',
-			'all_apps_count'         => 'nullable|numeric',
+			'all_apps_count'           => 'nullable|numeric',
 		];
 	}
 }

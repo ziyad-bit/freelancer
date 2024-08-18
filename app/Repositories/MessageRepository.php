@@ -5,8 +5,7 @@ namespace App\Repositories;
 use App\Classes\{ChatRooms, Messages};
 use App\Events\MessageEvent;
 use App\Http\Requests\MessageRequest;
-use App\Interfaces\Repository\FileRepositoryInterface;
-use App\Interfaces\Repository\MessageRepositoryInterface;
+use App\Interfaces\Repository\{FileRepositoryInterface, MessageRepositoryInterface};
 use App\Models\User;
 use App\Notifications\NewMessageNotification;
 use App\Traits\GetCursor;
@@ -26,11 +25,11 @@ class MessageRepository implements MessageRepositoryInterface
 
 		$auth_id        = Auth::id();
 		$all_chat_rooms = ChatRooms::fetch(
-				['messages.sender_id' => $auth_id, 'last' => 1],
-				['messages.receiver_id' => $auth_id, 'last' => 1]
-			)
+			['messages.sender_id' => $auth_id, 'last' => 1],
+			['messages.receiver_id' => $auth_id, 'last' => 1]
+		)
 			->latest('messages.id')
-			->limit(3);
+			->limit(7);
 
 		if ($receiver_id > 0) {
 			$selected_chat_room = ChatRooms::fetch(
@@ -93,7 +92,9 @@ class MessageRepository implements MessageRepositoryInterface
 				$all_chat_rooms = $all_chat_rooms->get();
 			}
 
-			$messages = Messages::index($all_chat_rooms[0]->chat_room_id);
+			if ($all_chat_rooms->count() > 0) {
+				$messages = Messages::index($all_chat_rooms[0]->chat_room_id);
+			}
 		}
 
 		return [
@@ -105,10 +106,10 @@ class MessageRepository implements MessageRepositoryInterface
 	}
 
 	// storeMessage   #####################################
-	public function storeMessage(MessageRequest $request,FileRepositoryInterface $fileRepository):void
+	public function storeMessage(MessageRequest $request, FileRepositoryInterface $fileRepository):void
 	{
 		$auth_user   = Auth::user();
-		$data        = $request->safe()->only(['chat_room_id','text','receiver_id']) + 
+		$data        = $request->safe()->only(['chat_room_id', 'text', 'receiver_id']) +
 						['created_at' => now(), 'sender_id' => $auth_user->id];
 
 		$receiver_id = $request->receiver_id;
@@ -117,16 +118,21 @@ class MessageRepository implements MessageRepositoryInterface
 			->where(
 				[
 					'chat_room_id' => $request->chat_room_id,
-					'last'        => 1,
+					'last'         => 1,
 				]
 			)
 			->update(['last' => 0]);
 
-		$message_id=DB::table('messages')->insertGetId($data);
+		$message_id = DB::table('messages')->insertGetId($data);
 
-		$fileRepository->insertAnyFile($request,'message_files','message_id' ,$message_id);
+		$files = [];
+		if ($request->has('files')) {
+			$files = $request->input('files');
+		}
 
-		broadcast(new MessageEvent($data))->toOthers();
+		$fileRepository->insertAnyFile($request, 'message_files', 'message_id', $message_id);
+
+		broadcast(new MessageEvent($data, $files))->toOthers();
 
 		$notif_view = view('users.includes.notifications.send', compact('data'))->render();
 		$user       = User::find($request->receiver_id);
@@ -151,8 +157,11 @@ class MessageRepository implements MessageRepositoryInterface
 	public function getChatRooms(int $message_id):array
 	{
 		$auth_id        = Auth::id();
-		$all_chat_rooms = ChatRooms::fetch(['messages.sender_id' => $auth_id, 'last' => 1], 
-							['messages.receiver_id' => $auth_id, 'last' => 1], $message_id)
+		$all_chat_rooms = ChatRooms::fetch(
+			['messages.sender_id' => $auth_id, 'last' => 1],
+			['messages.receiver_id' => $auth_id, 'last' => 1],
+			$message_id
+		)
 			->latest('messages.id')
 			->limit(3)
 			->get();

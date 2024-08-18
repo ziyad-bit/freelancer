@@ -49,15 +49,15 @@
                     Send
                 </button>
 
-                <label for="app_input" class="app_upload ">
-                    <i class="fa-solid fa-file fa-lg"></i>
+                <label for="app_input{{ $chat_room->chat_room_id }}" class="app_upload ">
+                    <i class="fa-solid fa-file fa-lg" ></i>
                 </label>
 
-                <label for="image_input" class="image_upload ">
+                <label for="image_input{{ $chat_room->chat_room_id }}" class="image_upload ">
                     <i class="fa-solid fa-image fa-lg"></i>
                 </label>
 
-                <label for="video_input" class="video_upload ">
+                <label for="video_input{{ $chat_room->chat_room_id }}" class="video_upload ">
                     <i class="fa-solid fa-video fa-lg"></i>
                 </label>
 
@@ -69,20 +69,20 @@
             </div>
         </form>
 
-        <form id="form_upload_app" enctype="multipart/form-data">
-            <input id="app_input" data-chat_room_id="{{$chat_room->chat_room_id}}" name="application" style="display: none" type="file" />
+        <form id="form_upload_app{{ $chat_room->chat_room_id }}" enctype="multipart/form-data">
+            <input id="app_input{{ $chat_room->chat_room_id }}" class="file_input" data-chat_room_id="{{$chat_room->chat_room_id}}" name="application" style="display: none" type="file" />
             <input type="hidden" name="dir" value="messages/">
             <input type="hidden" name="type" value="application">
         </form>
 
-        <form id="form_upload_image" enctype="multipart/form-data">
-            <input id="image_input" data-chat_room_id="{{$chat_room->chat_room_id}}" name="image" style="display: none" type="file" />
+        <form id="form_upload_image{{ $chat_room->chat_room_id }}" enctype="multipart/form-data">
+            <input id="image_input{{ $chat_room->chat_room_id }}"  class="file_input" data-chat_room_id="{{$chat_room->chat_room_id}}" name="image" style="display: none" type="file" />
             <input type="hidden" name="dir" value="messages/">
             <input type="hidden" name="type" value="image">
         </form>
 
-        <form id="form_upload_video" enctype="multipart/form-data">
-            <input id="video_input" data-chat_room_id="{{$chat_room->chat_room_id}}" name="video" style="display: none" type="file" />
+        <form id="form_upload_video{{ $chat_room->chat_room_id }}" enctype="multipart/form-data">
+            <input id="video_input{{ $chat_room->chat_room_id }}" class="file_input" data-chat_room_id="{{$chat_room->chat_room_id}}" name="video" style="display: none" type="file" />
             <input type="hidden" name="dir" value="messages/">
             <input type="hidden" name="type" value="video">
         </form>
