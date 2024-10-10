@@ -31,9 +31,15 @@
             $receiver_image = $message->receiver_image;
         }
 
-        $is_selected_chat_room = $message->chat_room_id === $chat_room_id;
-        if ($chat_room_id === null) {
-            $is_selected_chat_room = $i == 0;
+        
+        if ($chat_room_id === null ) {
+            if ($show_chatroom === true) {
+                $is_selected_chat_room = $i == 0;
+            }
+        }else {
+            if ($show_chatroom === true) {
+                $is_selected_chat_room = $message->chat_room_id === $chat_room_id;
+            }
         }
     @endphp
 

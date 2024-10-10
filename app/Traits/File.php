@@ -3,18 +3,20 @@
 namespace App\Traits;
 
 use Illuminate\Http\{JsonResponse, Request};
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\{DB, Storage};
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 trait File
 {
+	public $files_arr = [];
 	// uploadFile    #####################################
 	public function upload(object $request, string $path, string $type):string
 	{
 		$file     = $request->file($type);
 		$fileName = $file->hashName();
 
-		Storage::putFileAs($path, $file, $type . '-' . $fileName);
+		Storage::putFileAs($path, $file,$fileName);
 
 		return $fileName;
 	}

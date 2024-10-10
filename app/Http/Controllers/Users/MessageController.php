@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MessageRequest;
 use App\Interfaces\Repository\{FileRepositoryInterface, MessageRepositoryInterface};
 use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class MessageController extends Controller
@@ -16,7 +17,45 @@ class MessageController extends Controller
 	}
 
 	// index   #####################################
-	public function index_chatrooms(int $receiver_id = null, int $chat_room_id = null):View|RedirectResponse|JsonResponse
+	public function index_chatrooms():View
+	{
+		$data = $this->messageRepository->indexMessages();
+
+		return view(
+			'users.chat.index',
+			[
+				'all_chat_rooms'      => $data['all_chat_rooms'],
+				'chat_room_id'        => $data['chat_room_id'],
+				'messages'            => $data['messages'],
+				'new_receiver'        => $data['new_receiver'],
+				'show_chatroom'       => $data['show_chatroom'],
+			]
+		);
+
+		 
+	}
+
+	public function fetch_chatrooms(int $receiver_id):View|RedirectResponse
+	{
+		$data_or_redirect = $this->messageRepository->fetchMessages($receiver_id);
+
+		if (!is_array($data_or_redirect)) {
+			return $data_or_redirect;
+		}
+		
+		return view(
+			'users.chat.index',
+			[
+				'all_chat_rooms'      => $data_or_redirect['all_chat_rooms'],
+				'chat_room_id'        => $data_or_redirect['chat_room_id'],
+				'messages'            => $data_or_redirect['messages'],
+				'new_receiver'        => $data_or_redirect['new_receiver'],
+				'show_chatroom'       => $data_or_redirect['show_chatroom'],
+			]
+		);
+	}
+
+	public function get_chatrooms(int $receiver_id = null, int $chat_room_id = null):View|RedirectResponse
 	{
 		$data_or_redirect = $this->messageRepository->getMessages($receiver_id, $chat_room_id);
 
@@ -31,15 +70,19 @@ class MessageController extends Controller
 				'chat_room_id'        => $data_or_redirect['chat_room_id'],
 				'messages'            => $data_or_redirect['messages'],
 				'new_receiver'        => $data_or_redirect['new_receiver'],
+				'show_chatroom'       => $data_or_redirect['show_chatroom'],
 			]
 		);
 	}
 
-	// store   #####################################
-	public function store(MessageRequest $request, FileRepositoryInterface $fileRepository):JsonResponse
-	{
-		$this->messageRepository->storeMessage($request, $fileRepository);
 
+	// store   #####################################
+	public function store(MessageRequest $request, FileRepositoryInterface $fileRepository)//:JsonResponse
+	{
+		DB::enableQueryLog();
+		$this->messageRepository->storeMessage($request, $fileRepository);
+		
+		
 		return response()->json();
 	}
 

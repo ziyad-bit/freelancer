@@ -193,9 +193,7 @@ function storeMsg(e) {
 }
 
 //file upload
-let all_images_count = 0;
-let all_videos_count = 0;
-let all_apps_count = 0;
+let file_number = 0;
 
 function upload_file(path, type, form_upload, chat_room_id) {
     let upload_url = document.querySelector('#upload_url').value;
@@ -209,28 +207,30 @@ function upload_file(path, type, form_upload, chat_room_id) {
             if (res.status == 200) {
                 let file_name = res.data.file_name;
 
+                file_number++;
+
                 if (type === 'app') {
-                    all_apps_count++;
                     document.querySelector(`#form${chat_room_id} #all_apps_count`).value = all_apps_count;
 
                     var file_ele = `<iframe class="file_uploaded" src="${path + file_name}"></iframe>`;
-                    var input = `<input type="hidden" class="input_files" name="files[]" value="application-${file_name}">`;
+                    var file_inputs = `<input type="hidden" class="input_files" name="files[${file_number}][name]" value="${file_name}">
+                        <input type="hidden" class="input_files" name="files[${file_number}][type]" value="application">`;
                 } else if (type === 'image') {
-                    all_images_count++;
                     document.querySelector(`#form${chat_room_id} #all_images_count`).value = all_images_count;
 
                     var file_ele = `<img class="file_uploaded" src="${path + file_name}"></img>`;
-                    var input = `<input type="hidden" class="input_files" name="files[]" value="image-${file_name}">`;
+                    var file_inputs = `<input type="hidden" class="input_files" name="files[${file_number}][name]" value="${file_name}">
+                        <input type="hidden" class="input_files" name="files[${file_number}][type]" value="image">`;
                 } else {
-                    all_videos_count++;
                     document.querySelector(`#form${chat_room_id} #all_videos_count`).value = all_videos_count;
 
                     var file_ele = `<video class="file_uploaded" src="${path + file_name}"></video>`;
-                    var input = `<input type="hidden" class="input_files" name="files[]" value="video-${file_name}">`;
+                    var file_inputs = `<input type="hidden" class="input_files" name="files[${file_number}][name]" value="${file_name}">
+                        <input type="hidden" class="input_files" name="files[${file_number}][type]" value="video">`;
                 }
 
                 document.querySelector(`#form${chat_room_id}`)
-                    .insertAdjacentHTML('afterbegin', input);
+                    .insertAdjacentHTML('afterbegin', file_inputs);
 
                 document.querySelector(`.files_container${chat_room_id} .body_container`)
                     .insertAdjacentHTML('afterbegin', file_ele);
@@ -261,7 +261,7 @@ generalEventListener('input', '.file_input', e => {
 
     if (file_input.value) {
         let type = 'app';
-        let path = '/storage/applications/messages/application-';
+        let path = '/storage/applications/messages/';
 
         upload_file(path, type, form_upload, chat_room_id);
     }
@@ -275,7 +275,7 @@ generalEventListener('input', '.file_input', e => {
 
     if (file_input.value) {
         let type = 'image';
-        let path = '/storage/images/messages/image-';
+        let path = '/storage/images/messages/';
 
         upload_file(path, type, form_upload, chat_room_id);
     }
@@ -289,7 +289,7 @@ generalEventListener('input', '.file_input', e => {
 
     if (file_input.value) {
         let type = 'video';
-        let path = '/storage/videos/messages/video-';
+        let path = '/storage/videos/messages/';
 
         upload_file(path, type, form_upload, chat_room_id);
     }

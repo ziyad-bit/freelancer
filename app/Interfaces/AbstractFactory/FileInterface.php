@@ -12,5 +12,6 @@ interface FileInterface
 		string $column_name,
 		int $column_value,
 		string $file,
+		string $type,
 	):void;
 }

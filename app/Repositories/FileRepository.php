@@ -6,6 +6,7 @@ use App\Classes\AbstractFactory\FileAbstractFactory;
 use App\Interfaces\Repository\FileRepositoryInterface;
 use App\Traits\{File, InsertAnyFile};
 use Illuminate\Http\{JsonResponse, Request};
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileRepository implements FileRepositoryInterface
@@ -23,19 +24,32 @@ class FileRepository implements FileRepositoryInterface
 	}
 
 	// insertAnyFile   #####################################
-	public function insertAnyFile(Request $request, string $table_name, string $column_name, int $column_value):void
+	public function insertFiles(Request $request, string $table_name, string $column_name, int $column_value):array
 	{
-		$files       = $request->input('files');
-		$fileFactory = new FileAbstractFactory();
+		if ($request->has('files')) {
+			$files  = $request->input('files');
 
-		if ($files != []) {
-			foreach ($files as  $file) {
-				$position  = strpos($file, '-');
-				$type      = 'create_' . substr($file, 0, $position);
+			$files_arr = [];
+			if ($files != []) {
+				for ($i=1; $i < count($files)+1; $i++) { 
+					$type = $files[$i]['type'];
+					$name = $files[$i]['name'];
 
-				$fileFactory->$type()->insert($request, $table_name, $column_name, $column_value, $file);
+					$files_arr[]=[
+						'file'=>$name,
+						'type'=>$type,
+						$column_name=>$column_value,
+						'created_at'=>now()
+					];
+				}
+
+				DB::table($table_name)->insert($files_arr);
 			}
+
+			return $files;
 		}
+
+		return [];
 	}
 
 	// upload_file   #####################################
