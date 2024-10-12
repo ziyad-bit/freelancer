@@ -72,7 +72,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 
 		DB::table('project_infos')->insert($project_info_data);
 
-		$fileRepository->insertAnyFile($request, 'project_files', 'project_id', $project_id);
+		$fileRepository->insert_file($request, 'project_files', 'project_id', $project_id);
 
 		$skillRepository->storeSkill($request, 'project_skill', 'project_id', $project_id);
 	}
@@ -84,17 +84,14 @@ class ProjectRepository implements ProjectRepositoryInterface
 				->select(
 					'projects.*',
 					'projects.content as project_body',
-					'project_infos.num_of_days as time',
 					'project_infos.*',
+					'project_infos.num_of_days as time',
 					'location',
 					'card_num',
 					'users.name',
 					'review',
 					DB::raw('GROUP_CONCAT(DISTINCT skill) as skills_names'),
-					DB::raw('GROUP_CONCAT(DISTINCT project_files.application) as files_names'),
-					DB::raw('GROUP_CONCAT(DISTINCT project_files.video) as videos_names'),
-					DB::raw('GROUP_CONCAT(DISTINCT project_files.image) as images_names'),
-					DB::raw('COUNT(DISTINCT proposals.id) as proposals_count')
+					DB::raw('GROUP_CONCAT(DISTINCT file)  as files_name'),
 				)
 				->join('project_skill', 'projects.id', '=', 'project_skill.project_id')
 				->join('skills', 'project_skill.skill_id', '=', 'skills.id')
@@ -102,7 +99,6 @@ class ProjectRepository implements ProjectRepositoryInterface
 				->leftJoin('project_files', 'projects.id', '=', 'project_files.project_id')
 				->join('users', 'users.id', '=', 'projects.user_id')
 				->join('user_infos', 'users.id', '=', 'user_infos.user_id')
-				->leftJoin('proposals', 'projects.id', '=', 'proposals.project_id')
 				->where('projects.id', $id)
 				->groupBy('projects.id')
 				->first();
@@ -118,13 +114,11 @@ class ProjectRepository implements ProjectRepositoryInterface
 					->where('project_id', $project->id)
 					->get();
 
-		$project->proposals = $proposals;
-
 		$auth_proposal = DB::table('proposals')
 					->where(['project_id' => $project->id, 'user_id' => Auth::id()])
 					->value('id');
 
-		return view('users.project.show', compact('project', 'auth_proposal'));
+		return view('users.project.show', compact('project', 'auth_proposal', 'proposals'));
 	}
 
 	####################################     editProject    #####################################
@@ -176,7 +170,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 
 		DB::table('project_infos')->where('project_id', $id)->update($project_info_data);
 
-		$fileRepository->insertAnyFile($request, 'project_files', 'project_id', $id);
+		$fileRepository->insert_file($request, 'project_files', 'project_id', $id);
 
 		$skillRepository->storeSkill($request, 'project_skill', 'project_id', $id);
 

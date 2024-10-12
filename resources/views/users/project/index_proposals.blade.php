@@ -1,5 +1,3 @@
-<h3 class="text-center">proposals</h3>
-
 <input type="hidden" value="{{ route('proposal.update', $proposal->id) }}" id="update_url">
 <input type="hidden" id="delete_url" value="{{ route('proposal.destroy', $proposal->id) }}">
 

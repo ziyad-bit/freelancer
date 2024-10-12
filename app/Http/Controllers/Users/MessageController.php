@@ -31,8 +31,6 @@ class MessageController extends Controller
 				'show_chatroom'       => $data['show_chatroom'],
 			]
 		);
-
-		 
 	}
 
 	public function fetch_chatrooms(int $receiver_id):View|RedirectResponse
@@ -42,7 +40,7 @@ class MessageController extends Controller
 		if (!is_array($data_or_redirect)) {
 			return $data_or_redirect;
 		}
-		
+
 		return view(
 			'users.chat.index',
 			[
@@ -81,8 +79,8 @@ class MessageController extends Controller
 	{
 		DB::enableQueryLog();
 		$this->messageRepository->storeMessage($request, $fileRepository);
-		
-		
+
+
 		return response()->json();
 	}
 

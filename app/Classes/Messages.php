@@ -18,8 +18,8 @@ class Messages
 				'messages.*',
 				'sender.image   as sender_image',
 				'sender.name    as sender_name',
-				DB::raw('GROUP_CONCAT(DISTINCT message_files.file order by messages.id DESC) as files_name'),
-				DB::raw('GROUP_CONCAT(DISTINCT message_files.type order by messages.id DESC) as files_type'),
+				DB::raw('GROUP_CONCAT(message_files.file order by message_files.file) as files_name'),
+				DB::raw('GROUP_CONCAT(message_files.type order by message_files.file) as files_type'),
 			)
 			->where('messages.chat_room_id', $chat_room_id)
 			->when(

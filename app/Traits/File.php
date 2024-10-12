@@ -3,7 +3,6 @@
 namespace App\Traits;
 
 use Illuminate\Http\{JsonResponse, Request};
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\{DB, Storage};
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -16,7 +15,7 @@ trait File
 		$file     = $request->file($type);
 		$fileName = $file->hashName();
 
-		Storage::putFileAs($path, $file,$fileName);
+		Storage::putFileAs($path, $file, $fileName);
 
 		return $fileName;
 	}

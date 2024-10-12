@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Classes\AbstractFactory\FileAbstractFactory;
 use App\Interfaces\Repository\FileRepositoryInterface;
 use App\Traits\{File, InsertAnyFile};
 use Illuminate\Http\{JsonResponse, Request};
@@ -24,22 +23,22 @@ class FileRepository implements FileRepositoryInterface
 	}
 
 	// insertAnyFile   #####################################
-	public function insertFiles(Request $request, string $table_name, string $column_name, int $column_value):array
+	public function insert_file(Request $request, string $table_name, string $column_name, int $column_value):array
 	{
 		if ($request->has('files')) {
 			$files  = $request->input('files');
 
 			$files_arr = [];
 			if ($files != []) {
-				for ($i=1; $i < count($files)+1; $i++) { 
+				for ($i = 1; $i < count($files) + 1; $i++) {
 					$type = $files[$i]['type'];
 					$name = $files[$i]['name'];
 
-					$files_arr[]=[
-						'file'=>$name,
-						'type'=>$type,
-						$column_name=>$column_value,
-						'created_at'=>now()
+					$files_arr[] = [
+						'file'       => $name,
+						'type'       => $type,
+						$column_name => $column_value,
+						'created_at' => now(),
 					];
 				}
 

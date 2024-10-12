@@ -3,7 +3,7 @@
 @section('header')
     <link rel="stylesheet" href="{{ asset('css/users/profile/index.css') }}">
 
-    <script defer src="{{ asset('js/project/show.js')}}?v={{ filemtime(public_path('js/project/show.js')) }}"></script>
+    <script defer src="{{ asset('js/project/show.js') }}?v={{ filemtime(public_path('js/project/show.js')) }}"></script>
 
     <title>
         {{ ucfirst(Auth::user()->name) . ' - ' . config('app.name') }}
@@ -113,7 +113,7 @@
         @endforeach
 
         <div class="text-muted" style="margin-top: 10px">
-            {{ $project->proposals_count }} proposals
+            {{ count($proposals) }} proposals
         </div>
 
         <div class="text-muted" style="margin-top: 10px">
@@ -146,10 +146,10 @@
         </form>
     </div>
 
-    @if ($project->files_names)
-        <h5 class="text-center" style="margin-top: 20px">project files</h5>
+    @if ($project->files_name != null)
+        <h5 class="text-center" style="margin-top: 20px"> project files </h5>
 
-        @foreach (explode(',', $project->files_names) as $file)
+        @foreach (explode(',', $project->files_name) as $file)
             <div style="margin-top: 10px">
                 <a class="btn btn-primary" href="{{ route('file.download', $file) }}">
                     download
@@ -159,93 +159,64 @@
         @endforeach
     @endif
 
-    @if ($project->videos_names)
-        <h5 class="text-center" style="margin-top: 20px">project videos</h5>
-
-        @foreach (explode(',', $project->videos_names) as $video)
-            <div style="margin-top: 10px">
-                <a class="btn btn-primary" href="{{ route('file.download', $video) }}">
-                    download
-                </a>
-                <span class="text-muted">{{ substr($video, -10) }}</span>
-            </div>
-        @endforeach
-    @endif
-
-    @if ($project->images_names)
-        <h5 class="text-center" style="margin-top: 20px">project images</h5>
-
-        @foreach (explode(',', $project->images_names) as $image)
-            <div style="margin-top: 10px">
-                <a class="btn btn-primary" href="{{ route('file.download', $image) }}">
-                    download
-                </a>
-                <span class="text-muted">{{ substr($image, -10) }}</span>
-            </div>
-        @endforeach
-    @endif
     <hr>
 
     <!-- proposal  -->
-    @forelse ($project->proposals as $proposal)
+    <h3 class="text-center">proposals</h3>
+
+    @forelse ($proposals as $proposal)
         @if ($project->user_id === Auth::id())
             @include('users.project.index_proposals')
+        @elseif ($proposal->user_id === Auth::id())
+            @include('users.project.index_proposals')
         @else
-            @if ($proposal->user_id === Auth::id())
-                @include('users.project.index_proposals')
-            @endif
+            <h3 class="text-center">Add proposal</h3>
+
+            <form action="{{ route('proposal.store') }}" method="POST">
+                @csrf
+
+                <textarea name="content" required maxlength="250" minlength="10" class="form-control " cols="30"
+                    rows="5"></textarea>
+                @error('content')
+                    <small style="color: red">
+                        {{ $message }}
+                    </small>
+                @enderror
+
+                <div class="mb-3 row">
+                    <label for="inputPassword" class="col-sm-2 col-form-label">number of days</label>
+                    <div class="col-sm-10">
+                        <input type="number" required max="180" min="1" style="margin-top: 5px;width: 25%"
+                            class="form-control " name="num_of_days">
+                        @error('num_of_days')
+                            <small style="color: red">
+                                {{ $message }}
+                            </small>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="inputPassword" class="col-sm-2 col-form-label">price</label>
+                    <div class="col-sm-10">
+                        <input type="number" required max="8000" min="5" style="margin-top: 5px;width: 25%"
+                            class="form-control " name="price">
+                        @error('price')
+                            <small style="color: red">
+                                {{ $message }}
+                            </small>
+                        @enderror
+                    </div>
+                </div>
+
+                <input type="hidden" required name="project_id" value="{{ $project->id }}">
+
+                <button type="submit" style="margin-top: 5px;" class="btn btn-primary" role="button">
+                    send
+                </button>
+            </form>
         @endif
-
     @empty
-        <h3 class="text-center"> no proposals</h3>
+        <h3 class="text-center"> empty </h3>
     @endforelse
-
-    @if ($project->user_id !== Auth::id() && !$auth_proposal)
-        <h3 class="text-center">Add proposal</h3>
-
-        <form action="{{ route('proposal.store') }}" method="POST">
-            @csrf
-
-            <textarea name="content" required maxlength="250" minlength="10" class="form-control " cols="30"
-                rows="5"></textarea>
-            @error('content')
-                <small style="color: red">
-                    {{ $message }}
-                </small>
-            @enderror
-
-            <div class="mb-3 row">
-                <label for="inputPassword" class="col-sm-2 col-form-label">number of days</label>
-                <div class="col-sm-10">
-                    <input type="number" required max="180" min="1" style="margin-top: 5px;width: 25%"
-                        class="form-control " name="num_of_days">
-                    @error('num_of_days')
-                        <small style="color: red">
-                            {{ $message }}
-                        </small>
-                    @enderror
-                </div>
-            </div>
-
-            <div class="mb-3 row">
-                <label for="inputPassword" class="col-sm-2 col-form-label">price</label>
-                <div class="col-sm-10">
-                    <input type="number" required max="8000" min="5" style="margin-top: 5px;width: 25%"
-                        class="form-control " name="price">
-                    @error('price')
-                        <small style="color: red">
-                            {{ $message }}
-                        </small>
-                    @enderror
-                </div>
-            </div>
-
-            <input type="hidden" required name="project_id" value="{{ $project->id }}">
-
-            <button type="submit" style="margin-top: 5px;" class="btn btn-primary" role="button">
-                send
-            </button>
-        </form>
-    @endif
-
 @endsection

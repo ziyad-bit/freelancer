@@ -131,7 +131,7 @@
                     <select class="form-select"  name="exp" aria-label="Default select example">
 
                         <option value="">...</option>
-                        <option @selected('beginer' == old('exp')) value="beginer">beginer</option>
+                        <option @selected('beginner' == old('exp')) value="beginner">beginner</option>
                         <option @selected('intermediate' == old('exp')) value="intermediate">intermediate</option>
                         <option @selected('experienced' == old('exp')) value="experienced">experienced</option>
 

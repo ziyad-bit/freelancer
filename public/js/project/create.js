@@ -1,5 +1,7 @@
 Dropzone.autoDiscover = false;
 
+let files_number = 0;
+
 new Dropzone('#image_upload', {
     thumbnailWidth: 200,
     acceptedFiles: '.jpg,.png,.jepg,.gif,.webp',
@@ -10,12 +12,14 @@ new Dropzone('#image_upload', {
 
     success: function (data) {
         let response = JSON.parse(data.xhr.response);
-        let image_name = response.file_name;
+        let file_name = response.file_name;
         let original_name = response.original_name;
         let form_ele = document.getElementById('form');
 
-        const html = `<input type="hidden" class="${original_name}" name="images[]" value="image-${image_name}">
-                    <input type="hidden" class="${original_name}" name="files[]" value="image-${image_name}">`;
+        files_number++;
+
+        const html = `<input type="hidden" class="${original_name}" name="files[${files_number}][name]" value="${file_name}">
+                        <input type="hidden" class="${original_name}" name="files[${files_number}][type]" value="image">`;
 
         form_ele.insertAdjacentHTML('beforeend', html);
     },
@@ -46,8 +50,10 @@ new Dropzone('#file_upload', {
         let original_name = response.original_name;
         let form_ele = document.getElementById('form');
 
-        const html = `<input type="hidden" class="${original_name}" name="applications[]" value="application-${file_name}">
-        <input type="hidden" class="${original_name}" name="files[]" value="application-${file_name}">`;
+        files_number++;
+
+        const html = `<input type="hidden" class="${original_name}" name="files[${files_number}][name]" value="${file_name}">
+                        <input type="hidden" class="${original_name}" name="files[${files_number}][type]" value="application">`;
 
         form_ele.insertAdjacentHTML('beforeend', html);
     },
@@ -77,8 +83,10 @@ new Dropzone('#video_upload', {
         let original_name = response.original_name;
         let form_ele = document.getElementById('form');
 
-        const html = `<input type="hidden" class="${original_name}" name="videos[]" value="video-${file_name}">
-        <input type="hidden" class="${original_name}" name="files[]" value="video-${file_name}">`;
+        files_number++;
+
+        const html = `<input type="hidden" class="${original_name}" name="files[${files_number}][name]" value="${file_name}">
+                        <input type="hidden" class="${original_name}" name="files[${files_number}][type]" value="video">`;
 
         form_ele.insertAdjacentHTML('beforeend', html);
     },

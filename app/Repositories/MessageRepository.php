@@ -9,7 +9,7 @@ use App\Interfaces\Repository\{FileRepositoryInterface, MessageRepositoryInterfa
 use App\Models\User;
 use App\Notifications\NewMessageNotification;
 use App\Traits\GetCursor;
-use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
+use Illuminate\Http\{RedirectResponse, Request};
 use Illuminate\Support\Facades\{Auth, Cache, DB, Notification};
 
 class MessageRepository implements MessageRepositoryInterface
@@ -31,17 +31,17 @@ class MessageRepository implements MessageRepositoryInterface
 		$messages     = [];
 		$new_receiver = null;
 		$chat_room_id = null;
-		
+
 		if ($all_chat_rooms->count() > 0) {
 			$messages = Messages::index($all_chat_rooms[0]->chat_room_id);
 		}
-		
+
 		return [
 			'messages'       => $messages,
 			'chat_room_id'   => $chat_room_id,
 			'all_chat_rooms' => $all_chat_rooms,
 			'new_receiver'   => $new_receiver,
-			'show_chatroom' => true
+			'show_chatroom'  => true,
 		];
 	}
 
@@ -62,18 +62,18 @@ class MessageRepository implements MessageRepositoryInterface
 
 		$all_chat_rooms = $all_chat_rooms->union($selected_chat_room)->get();
 
-		$messages = [];
+		$messages     = [];
 		$chat_room_id = null;
 		$new_receiver = null;
 
-		foreach ($all_chat_rooms as  $chat_room) {
+		foreach ($all_chat_rooms as $chat_room) {
 			if ($chat_room->receiver_id === $receiver_id) {
 				$chat_room_id = $chat_room->chat_room_id;
 
 				break;
 			}
 		}
-		
+
 		if (!$chat_room_id) {
 			$chat_room_id = DB::table('chat_rooms')->insertGetId(
 				[
@@ -81,12 +81,12 @@ class MessageRepository implements MessageRepositoryInterface
 					'created_at'  => now(),
 				]
 			);
-	
+
 			$new_receiver = DB::table('users')->find($receiver_id, ['name', 'image', 'id']);
 			if (!$new_receiver) {
 				return to_route('chat-rooms.index')->with('error', 'user not found');
 			}
-	
+
 			DB::table('chat_room_user')
 				->insert(
 					[
@@ -94,7 +94,7 @@ class MessageRepository implements MessageRepositoryInterface
 						['chat_room_id' => $chat_room_id, 'user_id' => $receiver_id],
 					]
 				);
-		}else{
+		} else {
 			$messages = Messages::index($chat_room_id);
 		}
 
@@ -103,7 +103,7 @@ class MessageRepository implements MessageRepositoryInterface
 			'chat_room_id'   => $chat_room_id,
 			'all_chat_rooms' => $all_chat_rooms,
 			'new_receiver'   => $new_receiver,
-			'show_chatroom' => true
+			'show_chatroom'  => true,
 		];
 	}
 
@@ -141,7 +141,7 @@ class MessageRepository implements MessageRepositoryInterface
 			'chat_room_id'   => $chat_room_id,
 			'all_chat_rooms' => $all_chat_rooms,
 			'new_receiver'   => $new_receiver,
-			'show_chatroom' => true
+			'show_chatroom'  => true,
 		];
 	}
 
@@ -165,7 +165,7 @@ class MessageRepository implements MessageRepositoryInterface
 
 		$message_id = DB::table('messages')->insertGetId($data);
 
-		$files = $fileRepository->insertFiles($request,'message_files','message_id',$message_id);
+		$files = $fileRepository->insert_file($request, 'message_files', 'message_id', $message_id);
 
 		broadcast(new MessageEvent($data, $files))->toOthers();
 
@@ -201,13 +201,13 @@ class MessageRepository implements MessageRepositoryInterface
 		->limit(3)
 		->get();
 
-		$chat_room_id = null;
-		$new_receiver = null;
-		$messages     = [];
-		$show_chatroom =false;
+		$chat_room_id  = null;
+		$new_receiver  = null;
+		$messages      = [];
+		$show_chatroom = false;
 
-		$chat_room_view = view('users.includes.chat.index_chat_rooms', compact('show_chatroom','all_chat_rooms', 'chat_room_id'))->render();
-		$chat_box_view  = view('users.includes.chat.index_chat_boxes', compact('show_chatroom','all_chat_rooms', 'chat_room_id', 'new_receiver', 'messages'))->render();
+		$chat_room_view = view('users.includes.chat.index_chat_rooms', compact('show_chatroom', 'all_chat_rooms', 'chat_room_id'))->render();
+		$chat_box_view  = view('users.includes.chat.index_chat_boxes', compact('show_chatroom', 'all_chat_rooms', 'chat_room_id', 'new_receiver', 'messages'))->render();
 
 		return [
 			'chat_rooms_view' => $chat_room_view,
