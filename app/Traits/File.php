@@ -5,6 +5,7 @@ namespace App\Traits;
 use Illuminate\Http\{JsonResponse, Request};
 use Illuminate\Support\Facades\{DB, Storage};
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Intervention\Image\Facades\Image;
 
 trait File
 {
@@ -18,6 +19,31 @@ trait File
 		Storage::putFileAs($path, $file, $fileName);
 
 		return $fileName;
+	}
+
+	// uploadAndResize   #####################################
+	public function uploadAndResize(object $request, int $width = null, string $path, int $height = null):string
+	{
+		$file = $request->file('image');
+		$name = $file->hashName();
+
+		$img = Image::make($file)->resize($width, $height, function ($constraint) {
+			$constraint->aspectRatio();
+		})->encode();
+
+		Storage::put('images/' . $path . '/' . $name, $img);
+
+		return $name;
+	}
+
+	// update   #####################################
+	public function updateImage(object $request, int $width = null, string $old_image, string $path = 'users', int $height = null):string
+	{
+		Storage::delete('image/' . $path . '/' . $old_image);
+
+		$image = $this->uploadAndResize($request, $width, $path, $height);
+
+		return $image;
 	}
 
 	// dropZoneUpload   #####################################

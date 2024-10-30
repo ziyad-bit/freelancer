@@ -7,6 +7,7 @@ use App\Http\Requests\ProfileRequest;
 use App\Interfaces\Repository\ProfileRepositoryInterface;
 use App\Traits\GetCountries;
 use Illuminate\Http\{RedirectResponse, Request};
+use Illuminate\Support\Facades\Redis;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -24,9 +25,9 @@ class ProfileController extends Controller
 	}
 
 	// index   #####################################
-	public function index():View
+	public function index(Request $request):View
 	{
-		$user_info   = $this->profileRepository->getUserInfo();
+		$user_info   = $this->profileRepository->getUserInfo($request);
 		$user_skills = $this->profileRepository->getUserSkills();
 
 		return view('users.profile.index', compact('user_info', 'user_skills'));
@@ -49,10 +50,10 @@ class ProfileController extends Controller
 	}
 
 	// edit   #####################################
-	public function edit():View
+	public function edit(Request $request):View
 	{
 		$countries   = $this->getCountries();
-		$user_info   = $this->profileRepository->getUserInfo();
+		$user_info   = $this->profileRepository->getUserInfo($request);
 
 		return view('users.profile.edit', compact('user_info', 'countries'));
 	}

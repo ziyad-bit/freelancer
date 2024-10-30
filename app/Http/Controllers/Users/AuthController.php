@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
 use App\Interfaces\Repository\{AuthRepositoryInterface, ProfileRepositoryInterface};
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
@@ -36,9 +37,9 @@ class AuthController extends Controller
 	}
 
 	// index   #####################################
-	public function index():View
+	public function index(Request $request):View
 	{
-		$user_info = $this->profileRepository->getUserInfo();
+		$user_info = $this->profileRepository->getUserInfo($request);
 
 		return view('users.auth.home', compact('user_info'));
 	}
@@ -60,9 +61,9 @@ class AuthController extends Controller
 	}
 
 	// logout   #####################################
-	public function logout():RedirectResponse
+	public function logout(Request $request):RedirectResponse
 	{
-		Auth::logout();
+		$this->authRepository->logoutUser($request);
 
 		return to_route('login');
 	}

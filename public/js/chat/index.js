@@ -115,6 +115,8 @@ function storeMsg(e) {
                     auth_photo = document.getElementById('auth_photo').value,
                     message = document.getElementById(`msg${chat_room_id}`).value;
 
+                console.log(auth_name)
+
                 const box = document.getElementsByClassName('box' + chat_room_id)[0];
 
                 msg_err.textContent = '';
@@ -191,6 +193,7 @@ function storeMsg(e) {
             }
         });
 }
+
 
 //file upload
 let file_number = 0;

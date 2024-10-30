@@ -5,12 +5,14 @@ namespace App\Repositories;
 use App\Classes\AbstractFactory\FileAbstractFactory;
 use App\Http\Requests\ProfileRequest;
 use App\Interfaces\Repository\ProfileRepositoryInterface;
+use App\Traits\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\{Auth, DB, Validator};
 
 class ProfileRepository implements ProfileRepositoryInterface
 {
+	use File;
 	// getUserSkills   #####################################
 	public function getUserSkills(): Collection
 	{
@@ -23,8 +25,10 @@ class ProfileRepository implements ProfileRepositoryInterface
 	}
 
 	// getUserInfo   #####################################
-	public function getUserInfo():object|null
+	public function getUserInfo(Request $request):object|null
 	{
+		$request->session()->regenerate();
+
 		return DB::table('user_infos')->where('user_id', Auth::id())->first();
 	}
 
@@ -33,11 +37,13 @@ class ProfileRepository implements ProfileRepositoryInterface
 	{
 		$user_id = Auth::id();
 		$data    = $request->safe()->except('image') + ['user_id' => $user_id];
-		$image   = (new FileAbstractFactory())->create_image()->uploadAndResize($request, 199, 'users');
+		$image   = $this->uploadAndResize($request, 199, 'users');
 
 		DB::table('user_infos')->insert($data);
 
 		DB::table('users')->where('id', $user_id)->update(['image' => $image]);
+
+		$request->session()->regenerate();
 	}
 
 	// updateUserInfo   #####################################
@@ -51,10 +57,12 @@ class ProfileRepository implements ProfileRepositoryInterface
 		if ($request->has('image')) {
 			$old_image = DB::table('users')->where('id', $user_id)->value('image');
 
-			$new_image = (new FileAbstractFactory())->create_image()->update($request, 199, $old_image);
+			$new_image = $this->updateImage($request, 199, $old_image);
 
 			DB::table('users')->where('id', $user_id)->update(['image' => $new_image]);
 		}
+
+		$request->session()->regenerate();
 	}
 
 	// updateUserInfo   #####################################
@@ -70,5 +78,9 @@ class ProfileRepository implements ProfileRepositoryInterface
 		DB::table('users')->where('id', Auth::id())->delete();
 
 		Auth::logout();
+
+		$request->session()->invalidate();
+
+		$request->session()->regenerateToken();
 	}
 }
