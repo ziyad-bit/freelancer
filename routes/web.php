@@ -52,9 +52,6 @@ Route::resource('proposal'        ,'Users\ProposalController')->only(['store','d
 
 ####################################   message   #####################################
 Route::namespace('Users')->controller(MessageController::class)->group(function(){
-    Route::get ('message/index','index_chatrooms')->name('chat-rooms.index');
-    Route::get ('message/fetch/{receiver_id}' ,'fetch_chatrooms')->name('chat-rooms.fetch');
-    Route::get ('message/get/{chat_room_id}','get_chatrooms')->name('chat-rooms.get');
     Route::put ('message/show-old/{id}'   ,'show_old')->name('message.show_old');
     Route::post('message'                 ,'store')->name('message.store');
     Route::get ('message/{id}'            ,'show')->name('message.show');
@@ -69,6 +66,9 @@ Route::namespace('Users')->controller(NotificationsController::class)->group(fun
 
 ####################################   chat room   #####################################
 Route::namespace('Users')->controller(ChatRoomController::class)->group(function(){
+    Route::get ('chat-room/index','index')->name('chat-rooms.index');
+    Route::get ('chat-room/fetch/{receiver_id}' ,'fetch')->name('chat-rooms.fetch');
+    Route::get ('chat-room/acceptInvitation/{chat_room_id}','acceptInvitation')->name('chat-rooms.acceptInvitation');
     Route::post('chat-room/send-user-invitation/{receiver_id}/{chat_room_id}'        ,'send_user_invitation')->name('chat-room.send_user_invitation');
     Route::post ('chat-room/add_user'   ,'add_user')->name('chat-room.add_user');
 });

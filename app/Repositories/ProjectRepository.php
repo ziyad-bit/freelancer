@@ -17,33 +17,30 @@ class ProjectRepository implements ProjectRepositoryInterface
 	####################################   getProjects   #####################################
 	public function getProjects(Request $request):View|JsonResponse
 	{
-		$projects_ids = DB::table('projects')
-				->join('project_skill', 'projects.id', '=', 'project_skill.project_id')
-				->join('user_skill', 'project_skill.skill_id', '=', 'user_skill.skill_id')
-				->where('user_skill.user_id', Auth::user()->id)
-				->pluck('projects.id')
-				->toArray();
-
 		$projects = DB::table('projects')
-				->select(
-					'projects.*',
-					'project_infos.*',
-					'location',
-					'card_num',
-					'review',
-					DB::raw('GROUP_CONCAT(DISTINCT skill) as skills_names'),
-					DB::raw('COUNT(DISTINCT proposals.id) as proposals_count')
-				)
-				->join('project_infos', 'projects.id', '=', 'project_infos.project_id')
-				->join('project_skill', 'projects.id', '=', 'project_skill.project_id')
-				->join('skills', 'project_skill.skill_id', '=', 'skills.id')
-				->join('users', 'users.id', '=', 'projects.user_id')
-				->join('user_infos', 'users.id', '=', 'user_infos.user_id')
-				->leftjoin('proposals', 'projects.id', '=', 'proposals.project_id')
-				->whereIn('projects.id', $projects_ids)
-				->groupBy('projects.id')
-				->latest()
-				->cursorPaginate(100);
+			->select(
+				'projects.*',
+				'project_infos.*',
+				'location',
+				'card_num',
+				'review',
+				DB::raw('GROUP_CONCAT(DISTINCT skills.skill) as skills_names'),
+				DB::raw('COUNT(DISTINCT proposals.id) as proposals_count')
+			)
+			->join('project_infos', 'projects.id', '=', 'project_infos.project_id')
+			->join('project_skill', 'projects.id', '=', 'project_skill.project_id')
+			->join('skills', 'project_skill.skill_id', '=', 'skills.id')
+			->join('users', 'users.id', '=', 'projects.user_id')
+			->join('user_infos', 'users.id', '=', 'user_infos.user_id')
+			->leftJoin('proposals', 'projects.id', '=', 'proposals.project_id')
+			->join('user_skill', function ($join) {
+				$join->on('project_skill.skill_id', '=', 'user_skill.skill_id')
+					->where('user_skill.user_id', '=', Auth::id());
+			})
+			->groupBy('projects.id')
+			->latest()
+			->cursorPaginate(10);
+
 
 		$cursor = $this->getCursor($projects);
 
