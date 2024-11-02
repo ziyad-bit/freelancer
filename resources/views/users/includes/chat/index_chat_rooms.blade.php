@@ -1,4 +1,3 @@
-
 @if ($all_chat_rooms->count() > 0)
 <!-- add user to chat room Modal -->
     <div class="modal fade" id="send_user_invitation" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -31,7 +30,7 @@
             $receiver_image = $message->receiver_image;
         }
 
-        
+        $is_selected_chat_room = false;
         if ($chat_room_id === null ) {
             if ($show_chatroom === true) {
                 $is_selected_chat_room = $i == 0;
@@ -44,7 +43,7 @@
     @endphp
 
     <button
-        class="friends_1_page friend_btn user_btn nav-link {{ 'chat_room_' . $message->chat_room_id }}  
+        class="{{$is_chatroom_page_1 ? 'chatroom_page_1' : ''}} search_{{$searchName}}  chatroom_btn user_btn nav-link {{ 'chat_room_' . $message->chat_room_id }}  
         list-group-item list-group-item-action {{ $is_selected_chat_room ? 'active index_0' : null }}"
         id="list-home-list" data-bs-toggle="pill" data-bs-target={{ '#chat_box' . $receiver_id }} role="tab"
         data-chat_room_id="{{ $message->chat_room_id }}" data-message_id="{{ $message->id }}" aria-controls="home"

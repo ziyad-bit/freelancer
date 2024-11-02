@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ChatRoomRequest;
-use App\Interfaces\Repository\{ChatRoomRepositoryInterface, MessageRepositoryInterface};
+use App\Interfaces\Repository\ChatRoomRepositoryInterface;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\{JsonResponse, RedirectResponse};
 
@@ -14,7 +14,7 @@ class ChatRoomController extends Controller
 	{
 	}
 
-	// index   #####################################
+	// MARK:index
 	public function index():View
 	{
 		$data = $this->chatRoomRepository->indexChatroom();
@@ -22,11 +22,13 @@ class ChatRoomController extends Controller
 		return view(
 			'users.chat.index',
 			[
-				'all_chat_rooms'      => $data['all_chat_rooms'],
-				'chat_room_id'        => $data['chat_room_id'],
-				'messages'            => $data['messages'],
-				'new_receiver'        => $data['new_receiver'],
-				'show_chatroom'       => $data['show_chatroom'],
+				'all_chat_rooms'           => $data['all_chat_rooms'],
+				'chat_room_id'             => $data['chat_room_id'],
+				'messages'                 => $data['messages'],
+				'new_receiver'             => $data['new_receiver'],
+				'show_chatroom'            => $data['show_chatroom'],
+				'searchName'               => null,
+				'is_chatroom_page_1'       => true,
 			]
 		);
 	}
@@ -42,11 +44,13 @@ class ChatRoomController extends Controller
 		return view(
 			'users.chat.index',
 			[
-				'all_chat_rooms'      => $data_or_redirect['all_chat_rooms'],
-				'chat_room_id'        => $data_or_redirect['chat_room_id'],
-				'messages'            => $data_or_redirect['messages'],
-				'new_receiver'        => $data_or_redirect['new_receiver'],
-				'show_chatroom'       => $data_or_redirect['show_chatroom'],
+				'all_chat_rooms'           => $data_or_redirect['all_chat_rooms'],
+				'chat_room_id'             => $data_or_redirect['chat_room_id'],
+				'messages'                 => $data_or_redirect['messages'],
+				'new_receiver'             => $data_or_redirect['new_receiver'],
+				'show_chatroom'            => $data_or_redirect['show_chatroom'],
+				'searchName'               => null,
+				'is_chatroom_page_1'       => true,
 			]
 		);
 	}
@@ -62,15 +66,17 @@ class ChatRoomController extends Controller
 		return view(
 			'users.chat.index',
 			[
-				'all_chat_rooms'      => $data_or_redirect['all_chat_rooms'],
-				'chat_room_id'        => $data_or_redirect['chat_room_id'],
-				'messages'            => $data_or_redirect['messages'],
-				'new_receiver'        => $data_or_redirect['new_receiver'],
-				'show_chatroom'       => $data_or_redirect['show_chatroom'],
+				'all_chat_rooms'           => $data_or_redirect['all_chat_rooms'],
+				'chat_room_id'             => $data_or_redirect['chat_room_id'],
+				'messages'                 => $data_or_redirect['messages'],
+				'new_receiver'             => $data_or_redirect['new_receiver'],
+				'show_chatroom'            => $data_or_redirect['show_chatroom'],
+				'searchName'               => null,
+				'is_chatroom_page_1'       => true,
 			]
 		);
 	}
-	
+
 	public function send_user_invitation(int $receiver_id, int $chat_room_id) : JsonResponse
 	{
 		return $this->chatRoomRepository->sendInvitation($receiver_id, $chat_room_id);

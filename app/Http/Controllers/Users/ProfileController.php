@@ -7,7 +7,6 @@ use App\Http\Requests\ProfileRequest;
 use App\Interfaces\Repository\ProfileRepositoryInterface;
 use App\Traits\GetCountries;
 use Illuminate\Http\{RedirectResponse, Request};
-use Illuminate\Support\Facades\Redis;
 use Illuminate\View\View;
 
 class ProfileController extends Controller

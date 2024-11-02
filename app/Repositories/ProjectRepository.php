@@ -41,7 +41,6 @@ class ProjectRepository implements ProjectRepositoryInterface
 			->latest()
 			->cursorPaginate(10);
 
-
 		$cursor = $this->getCursor($projects);
 
 		if ($request->ajax()) {

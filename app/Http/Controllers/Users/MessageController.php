@@ -5,9 +5,7 @@ namespace App\Http\Controllers\Users;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MessageRequest;
 use App\Interfaces\Repository\{FileRepositoryInterface, MessageRepositoryInterface};
-use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
-use Illuminate\Support\Facades\DB;
-use Illuminate\View\View;
+use Illuminate\Http\{JsonResponse, Request};
 
 class MessageController extends Controller
 {
@@ -19,9 +17,7 @@ class MessageController extends Controller
 	// store   #####################################
 	public function store(MessageRequest $request, FileRepositoryInterface $fileRepository)//:JsonResponse
 	{
-		DB::enableQueryLog();
 		$this->messageRepository->storeMessage($request, $fileRepository);
-
 
 		return response()->json();
 	}

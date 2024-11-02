@@ -3,7 +3,7 @@
 namespace App\Interfaces\Repository;
 
 use App\Http\Requests\MessageRequest;
-use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
+use Illuminate\Http\Request;
 
 interface MessageRepositoryInterface
 {

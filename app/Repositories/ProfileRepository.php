@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Classes\AbstractFactory\FileAbstractFactory;
 use App\Http\Requests\ProfileRequest;
 use App\Interfaces\Repository\ProfileRepositoryInterface;
 use App\Traits\File;

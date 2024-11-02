@@ -2,8 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Classes\ChatRooms;
-use App\Classes\Messages;
+use App\Classes\{ChatRooms, Messages};
 use App\Http\Requests\{ChatRoomRequest};
 use App\Interfaces\Repository\ChatRoomRepositoryInterface;
 use App\Models\User;
@@ -16,7 +15,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 {
 	use GetCursor;
 
-	// MARK: index
+	// MARK: indexChatroom
 	public function indexChatroom():array
 	{
 		$auth_id        = Auth::id();
@@ -24,6 +23,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			['messages.sender_id' => $auth_id, 'last' => 1],
 			['messages.receiver_id' => $auth_id, 'last' => 1]
 		)
+		->groupBy('messages.id')
 		->latest('messages.id')
 		->limit(3)
 		->get();
@@ -52,13 +52,15 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			['messages.sender_id' => $auth_id, 'last' => 1],
 			['messages.receiver_id' => $auth_id, 'last' => 1]
 		)
+		->groupBy('messages.id')
 		->latest('messages.id')
 		->limit(3);
 
 		$selected_chat_room = ChatRooms::fetch(
 			['messages.sender_id' => $auth_id, 'messages.receiver_id' => $receiver_id, 'last' => 1],
 			['messages.receiver_id' => $auth_id, 'messages.sender_id' => $receiver_id, 'last' => 1]
-		);
+		)
+		->groupBy('messages.id');
 
 		$all_chat_rooms = $all_chat_rooms->union($selected_chat_room)->get();
 
@@ -114,6 +116,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			['messages.sender_id' => $auth_id, 'last' => 1],
 			['messages.receiver_id' => $auth_id, 'last' => 1]
 		)
+		->groupBy('messages.id')
 		->latest('messages.id')
 		->limit(3);
 
@@ -132,7 +135,8 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		$selected_chat_room = ChatRooms::fetch(
 			['messages.chat_room_id' => $chat_room_id, 'last' => 1],
 			[]
-		);
+		)
+		->groupBy('messages.id');
 
 		$all_chat_rooms = $all_chat_rooms->union($selected_chat_room)->get();
 

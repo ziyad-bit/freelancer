@@ -20,7 +20,7 @@
         }
     @endphp
 
-    <div class="tab-pane fade friends_1_page  {{ $is_selected_chat_room ? 'show active' : null }}"
+    <div class="tab-pane fade friends_1_page search_{{$searchName}}  {{ $is_selected_chat_room ? 'show active' : null }}"
         id={{ 'chat_box' . $receiver_id }} role="tabpanel" aria-labelledby="list-home-list">
 
         <div style="display: none" id="chat_room_id" data-chat_room_id="{{ $chat_room_id }}"></div>

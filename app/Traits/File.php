@@ -4,8 +4,8 @@ namespace App\Traits;
 
 use Illuminate\Http\{JsonResponse, Request};
 use Illuminate\Support\Facades\{DB, Storage};
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use Intervention\Image\Facades\Image;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 trait File
 {

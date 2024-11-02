@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Users\FileController;
 use App\Http\Controllers\Users\MessageController;
 use App\Http\Controllers\Users\NotificationsController;
+use App\Http\Controllers\Users\SearchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,9 +67,14 @@ Route::namespace('Users')->controller(NotificationsController::class)->group(fun
 
 ####################################   chat room   #####################################
 Route::namespace('Users')->controller(ChatRoomController::class)->group(function(){
-    Route::get ('chat-room/index','index')->name('chat-rooms.index');
-    Route::get ('chat-room/fetch/{receiver_id}' ,'fetch')->name('chat-rooms.fetch');
+    Route::get ('chat-room/index'                          ,'index')->name('chat-rooms.index');
+    Route::get ('chat-room/fetch/{receiver_id}'            ,'fetch')->name('chat-rooms.fetch');
     Route::get ('chat-room/acceptInvitation/{chat_room_id}','acceptInvitation')->name('chat-rooms.acceptInvitation');
-    Route::post('chat-room/send-user-invitation/{receiver_id}/{chat_room_id}'        ,'send_user_invitation')->name('chat-room.send_user_invitation');
-    Route::post ('chat-room/add_user'   ,'add_user')->name('chat-room.add_user');
+    Route::post('chat-room/add_user'                       ,'add_user')->name('chat-room.add_user');
+    Route::post('chat-room/send-user-invitation/{receiver_id}/{chat_room_id}','send_user_invitation')->name('chat-room.send_user_invitation');
+});
+
+####################################   search   #####################################
+Route::namespace('Users')->controller(SearchController::class)->group(function(){
+    Route::post('search/chat-room' ,'index_chatrooms')->name('search.indexChatrooms');
 });

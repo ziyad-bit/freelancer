@@ -9,7 +9,7 @@ use App\Interfaces\Repository\{FileRepositoryInterface, MessageRepositoryInterfa
 use App\Models\User;
 use App\Notifications\NewMessageNotification;
 use App\Traits\GetCursor;
-use Illuminate\Http\{RedirectResponse, Request};
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, Cache, DB, Notification};
 
 class MessageRepository implements MessageRepositoryInterface
@@ -68,17 +68,20 @@ class MessageRepository implements MessageRepositoryInterface
 			['messages.receiver_id' => $auth_id, 'last' => 1],
 			$message_id
 		)
+		->groupBy('messages.id')
 		->latest('messages.id')
 		->limit(3)
 		->get();
 
-		$chat_room_id  = null;
-		$new_receiver  = null;
-		$messages      = [];
-		$show_chatroom = false;
+		$chat_room_id       = null;
+		$new_receiver       = null;
+		$messages           = [];
+		$show_chatroom      = false;
+		$searchName         = null;
+		$is_chatroom_page_1 = true;
 
-		$chat_room_view = view('users.includes.chat.index_chat_rooms', compact('show_chatroom', 'all_chat_rooms', 'chat_room_id'))->render();
-		$chat_box_view  = view('users.includes.chat.index_chat_boxes', compact('show_chatroom', 'all_chat_rooms', 'chat_room_id', 'new_receiver', 'messages'))->render();
+		$chat_room_view = view('users.includes.chat.index_chat_rooms', compact('show_chatroom', 'all_chat_rooms', 'chat_room_id', 'searchName', 'is_chatroom_page_1'))->render();
+		$chat_box_view  = view('users.includes.chat.index_chat_boxes', compact('show_chatroom', 'all_chat_rooms', 'chat_room_id', 'searchName', 'new_receiver', 'messages'))->render();
 
 		return [
 			'chat_rooms_view' => $chat_room_view,

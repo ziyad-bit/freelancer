@@ -4,8 +4,7 @@ namespace App\Repositories;
 
 use App\Http\Requests\UserRequest;
 use App\Interfaces\Repository\AuthRepositoryInterface;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\{RedirectResponse, Request};
 use Illuminate\Support\Facades\{Auth, DB, Hash};
 
 class AuthRepository implements AuthRepositoryInterface
@@ -18,7 +17,7 @@ class AuthRepository implements AuthRepositoryInterface
 		if (auth()->attempt($credentials, $request->filled('remember_me'))) {
 			$request->session()->regenerate();
 
-            return redirect()->intended();
+			return redirect()->intended();
 		} else {
 			return to_route('get.login')->with(['error' => 'incorrect password or email']);
 		}
