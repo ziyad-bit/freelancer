@@ -14,7 +14,7 @@ class MessageController extends Controller
 		$this->middleware('auth');
 	}
 
-	// store   #####################################
+	//MARK: store   
 	public function store(MessageRequest $request, FileRepositoryInterface $fileRepository)//:JsonResponse
 	{
 		$this->messageRepository->storeMessage($request, $fileRepository);
@@ -22,7 +22,7 @@ class MessageController extends Controller
 		return response()->json();
 	}
 
-	// show    #####################################
+	//MARK: show    
 	public function show(int $chat_box_id):JsonResponse
 	{
 		$view = $this->messageRepository->showMessages($chat_box_id);
@@ -30,21 +30,7 @@ class MessageController extends Controller
 		return response()->json(['view' => $view]);
 	}
 
-	// show_chat_rooms    #####################################
-	public function show_chat_rooms(int $message_id):JsonResponse
-	{
-		$chat = $this->messageRepository->getChatRooms($message_id);
-
-		return response()->json(
-			[
-				'chat_room_view' => $chat['chat_rooms_view'],
-				'chat_box_view'  => $chat['chat_box_view'],
-			]
-		);
-	}
-
-
-	// show_old   #####################################
+	//MARK: show_old   
 	public function show_old(Request $request, int $chat_box_id):JsonResponse
 	{
 		$view = $this->messageRepository->showOldMessages($request, $chat_box_id);

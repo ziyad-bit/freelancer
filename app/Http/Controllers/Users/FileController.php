@@ -10,16 +10,12 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileController extends Controller
 {
-	private $fileRepository;
-
-	public function __construct(FileRepositoryInterface $fileRepository)
+	public function __construct(private FileRepositoryInterface $fileRepository)
 	{
 		$this->middleware('auth');
-
-		$this->fileRepository = $fileRepository;
 	}
 
-	// upload    #####################################
+	//MARK: upload 
 	public function upload(DropzoneRequest $request):JsonResponse
 	{
 		$file_name = $this->fileRepository->upload_file($request);
@@ -27,13 +23,13 @@ class FileController extends Controller
 		return response()->json(['file_name' => $file_name['file_name'], 'original_name' => $file_name['original_name']]);
 	}
 
-	// download   #####################################
+	//MARK: download   
 	public function download(string $file):StreamedResponse
 	{
 		return $this->fileRepository->download_file($file, 'projects/');
 	}
 
-	// destroy   #####################################
+	//MARK: destroy  
 	public function destroy(string $file):JsonResponse
 	{
 		return $this->fileRepository->destroy_file($file, 'projects/');

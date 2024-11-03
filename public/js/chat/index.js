@@ -76,7 +76,7 @@ function loadPages() {
     let message_id = chat_room_box.lastElementChild.getAttribute('data-message_id');
 
     if (data_chat_rooms_status) {
-        axios.get("/message/chat-rooms/" + message_id)
+        axios.get("/chat-room/show-more/" + message_id)
             .then(res => {
                 if (res.status == 200) {
                     let chat_room_view = res.data.chat_room_view,

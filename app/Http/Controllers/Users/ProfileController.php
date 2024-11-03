@@ -13,17 +13,13 @@ class ProfileController extends Controller
 {
 	use GetCountries;
 
-	private $profileRepository;
-
-	public function __construct(ProfileRepositoryInterface $profileRepository)
+	public function __construct(private ProfileRepositoryInterface $profileRepository)
 	{
 		$this->middleware('auth');
 		$this->middleware('profile')->only(['create', 'store']);
-
-		$this->profileRepository = $profileRepository;
 	}
 
-	// index   #####################################
+	//MARK: index  
 	public function index(Request $request):View
 	{
 		$user_info   = $this->profileRepository->getUserInfo($request);
@@ -32,7 +28,7 @@ class ProfileController extends Controller
 		return view('users.profile.index', compact('user_info', 'user_skills'));
 	}
 
-	// create   #####################################
+	//MARK: create   
 	public function create():View
 	{
 		$countries = $this->getCountries();
@@ -40,7 +36,7 @@ class ProfileController extends Controller
 		return view('users.profile.create', compact('countries'));
 	}
 
-	// store   #####################################
+	//MARK: store   
 	public function store(ProfileRequest $request):RedirectResponse
 	{
 		$this->profileRepository->storeUserInfo($request);
@@ -48,7 +44,7 @@ class ProfileController extends Controller
 		return to_route('profile.index')->with('success', 'you add data successfully');
 	}
 
-	// edit   #####################################
+	//MARK: edit   
 	public function edit(Request $request):View
 	{
 		$countries   = $this->getCountries();
@@ -57,7 +53,7 @@ class ProfileController extends Controller
 		return view('users.profile.edit', compact('user_info', 'countries'));
 	}
 
-	// update   #####################################
+	//MARK: update  
 	public function update(ProfileRequest $request):RedirectResponse
 	{
 		$this->profileRepository->updateUserInfo($request);
@@ -65,13 +61,13 @@ class ProfileController extends Controller
 		return to_route('profile.edit', 'auth')->with('success', 'you updated profile successfully');
 	}
 
-	// show   #####################################
+	//MARK: show  
 	public function delete():View
 	{
 		return view('users.profile.delete');
 	}
 
-	// destroy   #####################################
+	//MARK: destroy  
 	public function destroy(Request $request):RedirectResponse
 	{
 		$this->profileRepository->deleteUserInfo($request);

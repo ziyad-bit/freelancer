@@ -9,8 +9,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 trait File
 {
-	public $files_arr = [];
-	// uploadFile    #####################################
+	//MARK: uploadFile    
 	public function upload(object $request, string $path, string $type):string
 	{
 		$file     = $request->file($type);
@@ -21,7 +20,7 @@ trait File
 		return $fileName;
 	}
 
-	// uploadAndResize   #####################################
+	//MARK: uploadAndResize   
 	public function uploadAndResize(object $request, int $width = null, string $path, int $height = null):string
 	{
 		$file = $request->file('image');
@@ -36,7 +35,7 @@ trait File
 		return $name;
 	}
 
-	// update   #####################################
+	//MARK: update   
 	public function updateImage(object $request, int $width = null, string $old_image, string $path = 'users', int $height = null):string
 	{
 		Storage::delete('image/' . $path . '/' . $old_image);
@@ -46,7 +45,7 @@ trait File
 		return $image;
 	}
 
-	// dropZoneUpload   #####################################
+	//MARK: dropZoneUpload   
 	public function dropZoneUpload(Request $request, string $path, string $type):array
 	{
 		$file_name          = $this->upload($request, $path, $type);
@@ -55,13 +54,13 @@ trait File
 		return ['file_name' => $file_name, 'original_name' => $original_name];
 	}
 
-	// download   #####################################
+	//MARK: download   
 	public function download(string $file, string $path): StreamedResponse
 	{
 		return Storage::download($path . $file);
 	}
 
-	// destroy   #####################################
+	//MARK: destroy   
 	public function destroy(string $file, string $type, $dir):JsonResponse
 	{
 		$path = $type . 's/' . $dir;

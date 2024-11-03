@@ -116,8 +116,8 @@
 @empty
 @endforelse
 
-    @if ($new_receiver)
-        <div class="tab-pane fade friends_1_page  show active" id={{ 'chat_box' . $new_receiver->id }} role="tabpanel"
+    @if ($receiver)
+        <div class="tab-pane fade friends_1_page  show active" id={{ 'chat_box' . $receiver->id }} role="tabpanel"
             aria-labelledby="list-home-list">
 
             <div style="display: none" id="chat_room_id" data-chat_room_id="{{ $chat_room_id }}"></div>
@@ -125,7 +125,7 @@
             <form id={{ 'form' . $chat_room_id }}>
                 <div class="card" style="height: 316px">
                     <h5 class="card-header">chat
-                        <span id="loading{{ $new_receiver->id }}" style="margin-left: 50px;display:none">
+                        <span id="loading{{ $receiver->id }}" style="margin-left: 50px;display:none">
                             loading old
 
                         </span>
@@ -137,7 +137,7 @@
                     </div>
 
                     <input type="hidden" name="chat_room_id" value="{{ $chat_room_id }}">
-                    <input type="hidden" name="receiver_id" value="{{ $new_receiver->id }}">
+                    <input type="hidden" name="receiver_id" value="{{ $receiver->id }}">
 
                     <textarea name="text" cols="30" rows="5" class="form-control send_input"
                         data-chat_room_id="{{ $chat_room_id }}" id="msg{{ $chat_room_id }}"></textarea>

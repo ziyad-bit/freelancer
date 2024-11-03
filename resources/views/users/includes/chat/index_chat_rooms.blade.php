@@ -1,5 +1,5 @@
 @if ($all_chat_rooms->count() > 0)
-<!-- add user to chat room Modal -->
+    <!-- add user to chat room Modal -->
     <div class="modal fade" id="send_user_invitation" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -31,11 +31,11 @@
         }
 
         $is_selected_chat_room = false;
-        if ($chat_room_id === null ) {
+        if ($chat_room_id === null) {
             if ($show_chatroom === true) {
                 $is_selected_chat_room = $i == 0;
             }
-        }else {
+        } else {
             if ($show_chatroom === true) {
                 $is_selected_chat_room = $message->chat_room_id === $chat_room_id;
             }
@@ -43,7 +43,7 @@
     @endphp
 
     <button
-        class="{{$is_chatroom_page_1 ? 'chatroom_page_1' : ''}} search_{{$searchName}}  chatroom_btn user_btn nav-link {{ 'chat_room_' . $message->chat_room_id }}  
+        class="{{ $is_chatroom_page_1 ? 'chatroom_page_1' : '' }} search_{{ $searchName }}  chatroom_btn user_btn nav-link {{ 'chat_room_' . $message->chat_room_id }}  
         list-group-item list-group-item-action {{ $is_selected_chat_room ? 'active index_0' : null }}"
         id="list-home-list" data-bs-toggle="pill" data-bs-target={{ '#chat_box' . $receiver_id }} role="tab"
         data-chat_room_id="{{ $message->chat_room_id }}" data-message_id="{{ $message->id }}" aria-controls="home"
@@ -72,16 +72,21 @@
 
             <p style="margin-left: 30px;">
                 <span>
-                    @if ($message->sender_id !== Auth::id())
-                        {{ Str::limit($message->sender_name, 10, '...') }} :
-                    @else
-                        you :
+                    @if ($message->text != 'new_chat_room%')
+                        @if ($message->sender_id !== Auth::id())
+                            {{ Str::limit($message->sender_name, 10, '...') }} :
+                        @else
+                            you :
+                        @endif
                     @endif
 
                 </span>
 
                 <span class="msg_text">
-                    {{ Str::limit($message->text, 15, '...') }}
+                    @if ($message->text != 'new_chat_room%')
+                        {{ Str::limit($message->text, 15, '...') }}
+                    @endif
+
                 </span>
             </p>
         </div>
@@ -90,3 +95,46 @@
 
 @empty
 @endforelse
+
+
+@if ($receiver)
+    <button
+        class="{{ $is_chatroom_page_1 ? 'chatroom_page_1' : '' }} search_{{ $searchName }}  chatroom_btn user_btn nav-link {{ 'chat_room_' . $chat_room_id }}  
+list-group-item list-group-item-action {{ $is_selected_chat_room ? 'active index_0' : null }}"
+        id="list-home-list" data-bs-toggle="pill" data-bs-target={{ '#chat_box' . $receiver_id }} role="tab"
+        data-chat_room_id="{{ $chat_room_id }}" aria-controls="home" data-index="{{ $i }}"
+        data-status={{ $is_selected_chat_room ? 'true' : 'false' }} data-selected_chat_room_id="{{ $chat_room_id }}">
+
+        <i class="fa-solid fa-plus plus plus{{ $chat_room_id }}" data-bs-toggle="modal"
+            data-bs-target="#send_user_invitation" data-receiver_id="{{ $receiver->id }}"
+            data-chat_room_id="{{ $chat_room_id }}">
+        </i>
+
+        @csrf
+
+        <div style="pointer-events: none">
+            <img class="rounded-circle image" alt="loading" id="image{{ $receiver->id }}"
+                src="{{ asset('storage/images/users/' . $receiver->image) }}">
+
+            @if (Cache::has('online_' . $receiver->id))
+                <div class="rounded-circle dot"></div>
+            @endif
+
+            <span style="font-weight: bold;" class="name" id="name{{ $receiver->id }}">
+                {{ $receiver->name }}
+            </span>
+
+            <p style="margin-left: 30px;">
+                <span>
+
+
+                </span>
+
+                <span class="msg_text">
+
+                </span>
+            </p>
+        </div>
+
+    </button>
+@endif

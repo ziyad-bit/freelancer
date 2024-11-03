@@ -10,23 +10,19 @@ use Illuminate\View\View;
 
 class ProjectController extends Controller
 {
-	private $ProjectRepository;
-
-	public function __construct(ProjectRepositoryInterface $ProjectRepository)
+	public function __construct(private ProjectRepositoryInterface $ProjectRepository)
 	{
 		$this->middleware('auth');
-
-		$this->ProjectRepository = $ProjectRepository;
-
 		$this->middleware('project')->only(['destroy', 'edit', 'update']);
 	}
-	// index   #####################################
+
+	//MARK: index   
 	public function index_projects(Request $request):View|JsonResponse
 	{
 		return $this->ProjectRepository->getProjects($request);
 	}
 
-	// create   #####################################
+	//MARK: create  
 	public function create(SkillRepositoryInterface $skillRepository):View
 	{
 		$skills  = $skillRepository->getSkills();
@@ -34,7 +30,7 @@ class ProjectController extends Controller
 		return  $this->ProjectRepository->createProject($skills);
 	}
 
-	// store   #####################################
+	//MARK: store   
 	public function store(ProjectRequest $request, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):RedirectResponse
 	{
 		$this->ProjectRepository->storeProject($request, $fileRepository, $skillRepository);
@@ -42,13 +38,13 @@ class ProjectController extends Controller
 		return redirect()->back()->with('success', 'you added successfully project');
 	}
 
-	// show   #####################################
+	//MARK: show  
 	public function show(int $id):View|RedirectResponse
 	{
 		return $this->ProjectRepository->showProject($id);
 	}
 
-	// edit   #####################################
+	//MARK: edit   
 	public function edit(int $id, SkillRepositoryInterface $skillRepository):View|RedirectResponse
 	{
 		$skills  = $skillRepository->getSkills();
@@ -56,13 +52,13 @@ class ProjectController extends Controller
 		return  $this->ProjectRepository->editProject($id, $skills);
 	}
 
-	// update   #####################################
+	//MARK: update   
 	public function update(ProjectRequest $request, int $id, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):RedirectResponse
 	{
 		return $this->ProjectRepository->updateProject($request, $id, $fileRepository, $skillRepository);
 	}
 
-	// destroy   #####################################
+	//MARK: destroy   
 	public function destroy(int $id):RedirectResponse
 	{
 		return $this->ProjectRepository->deleteProject($id);

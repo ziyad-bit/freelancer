@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\{Auth, DB, Validator};
 class ProfileRepository implements ProfileRepositoryInterface
 {
 	use File;
-	// getUserSkills   #####################################
+
+	// MARK: getUserSkills
 	public function getUserSkills(): Collection
 	{
 		return DB::table('users')
@@ -23,7 +24,7 @@ class ProfileRepository implements ProfileRepositoryInterface
 			->get();
 	}
 
-	// getUserInfo   #####################################
+	//MARK: getUserInfo 
 	public function getUserInfo(Request $request):object|null
 	{
 		$request->session()->regenerate();
@@ -31,7 +32,7 @@ class ProfileRepository implements ProfileRepositoryInterface
 		return DB::table('user_infos')->where('user_id', Auth::id())->first();
 	}
 
-	// storeUserInfo   #####################################
+	//MARK: storeUserInfo   
 	public function storeUserInfo(ProfileRequest $request):void
 	{
 		$user_id = Auth::id();
@@ -45,7 +46,7 @@ class ProfileRepository implements ProfileRepositoryInterface
 		$request->session()->regenerate();
 	}
 
-	// updateUserInfo   #####################################
+	//MARK: updateUserInfo   
 	public function updateUserInfo(ProfileRequest $request):void
 	{
 		$user_id = Auth::id();
@@ -64,7 +65,7 @@ class ProfileRepository implements ProfileRepositoryInterface
 		$request->session()->regenerate();
 	}
 
-	// updateUserInfo   #####################################
+	//MARK: deleteUserInfo   
 	public function deleteUserInfo(Request $request):void
 	{
 		Validator::make(

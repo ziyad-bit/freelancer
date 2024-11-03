@@ -13,13 +13,13 @@ class NotificationsController extends Controller
 		$this->middleware('auth');
 	}
 
-	// update   #####################################
+	//MARK: update   
 	public function update() : void
 	{
 		$this->notificationsRepository->update();
 	}
 
-	// show_old   #####################################
+	//MARK: show_old   
 	public function show_old(string $created_at):JsonResponse
 	{
 		$view = $this->notificationsRepository->show_old_notifs($created_at);

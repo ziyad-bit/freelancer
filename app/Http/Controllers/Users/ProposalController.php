@@ -9,16 +9,12 @@ use Illuminate\Http\{JsonResponse, RedirectResponse};
 
 class ProposalController extends Controller
 {
-	private $ProposalRepository;
-
-	public function __construct(ProposalRepositoryInterface $ProposalRepository)
+	public function __construct(private ProposalRepositoryInterface $ProposalRepository)
 	{
 		$this->middleware('auth');
-
-		$this->ProposalRepository = $ProposalRepository;
 	}
 
-	// store   #####################################
+	//MARK: store  
 	public function store(ProposalRequest $request):RedirectResponse
 	{
 		$this->ProposalRepository->storeProposal($request);
@@ -26,7 +22,7 @@ class ProposalController extends Controller
 		return to_route('project.show', $request->input('project_id'))->with('success', 'you added proposal successfully');
 	}
 
-	// update   #####################################
+	//MARK: update   
 	public function update(ProposalRequest $request, int $id):JsonResponse
 	{
 		$this->ProposalRepository->updateProposal($request, $id);
@@ -34,7 +30,7 @@ class ProposalController extends Controller
 		return response()->json(['success' => 'you updated proposal successfully']);
 	}
 
-	// destroy   #####################################
+	//MARK: destroy  
 	public function destroy(int $id):JsonResponse
 	{
 		$this->ProposalRepository->deleteProposal($id);

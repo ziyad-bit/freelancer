@@ -56,6 +56,7 @@ class ChatRooms
 						}
 					);
 				}
-			);
+			)
+			->groupBy('messages.id');
 	}
 }

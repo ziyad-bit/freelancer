@@ -8,13 +8,13 @@ use Illuminate\Support\Facades\DB;
 
 class SkillRepository implements SkillRepositoryInterface
 {
-	// storeUserInfo   #####################################
+	//MARK: getSkills  
 	public function getSkills():Collection
 	{
-		return DB::table('skills')->get();
+		return DB::table('skills')->limit(50)->get();
 	}
 
-	// storeUserInfo   #####################################
+	//MARK: storeSkill   
 	public function storeSkill(object $request, string $table, string $column, string $value):void
 	{
 		$skills    = $request->input('skills_id');
@@ -30,13 +30,13 @@ class SkillRepository implements SkillRepositoryInterface
 		DB::table($table)->insert($skills_arr);
 	}
 
-	// updateUserInfo   #####################################
+	//MARK: delete_project_Skill   
 	public function delete_project_Skill(int $skill_id):void
 	{
 		DB::table('project_skill')->where(['id' => $skill_id])->delete();
 	}
 
-	// updateUserInfo   #####################################
+	//MARK: deleteSkill   
 	public function deleteSkill(int $id):void
 	{
 		DB::table('user_skill')->where('id', $id)->delete();

@@ -11,31 +11,27 @@ use Illuminate\View\View;
 
 class AuthController extends Controller
 {
-	private $authRepository;
-	private $profileRepository;
-
-	public function __construct(AuthRepositoryInterface $authRepository, ProfileRepositoryInterface $profileRepository)
-	{
+	public function __construct(
+		private AuthRepositoryInterface $authRepository,
+		private ProfileRepositoryInterface $profileRepository
+	) {
 		$this->middleware('auth')->only(['logout', 'index']);
 		$this->middleware('guest')->except(['logout', 'index']);
-
-		$this->authRepository    = $authRepository;
-		$this->profileRepository = $profileRepository;
 	}
 
-	// getLogin   #####################################
+	//MARK: getLogin
 	public function getLogin():View
 	{
 		return view('users.auth.login');
 	}
 
-	// postLogin   #####################################
+	//MARK: postLogin
 	public function postLogin(UserRequest $request):RedirectResponse
 	{
 		return $this->authRepository->login($request);
 	}
 
-	// index   #####################################
+	//MARK: index
 	public function index(Request $request):View
 	{
 		$user_info = $this->profileRepository->getUserInfo($request);
@@ -43,13 +39,13 @@ class AuthController extends Controller
 		return view('users.auth.home', compact('user_info'));
 	}
 
-	// create   #####################################
+	//MARK: create
 	public function create():View
 	{
 		return view('users.auth.signup');
 	}
 
-	// store   #####################################
+	//MARK: store
 	public function store(UserRequest $request):RedirectResponse
 	{
 		$user_id = $this->authRepository->storeUser($request);
@@ -59,7 +55,7 @@ class AuthController extends Controller
 		return to_route('home');
 	}
 
-	// logout   #####################################
+	//MARK: logout
 	public function logout(Request $request):RedirectResponse
 	{
 		$this->authRepository->logoutUser($request);

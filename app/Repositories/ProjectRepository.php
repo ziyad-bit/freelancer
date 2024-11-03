@@ -14,7 +14,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 {
 	use GetCursor;
 
-	####################################   getProjects   #####################################
+	//MARK:   getProjects  
 	public function getProjects(Request $request):View|JsonResponse
 	{
 		$projects = DB::table('projects')
@@ -52,13 +52,13 @@ class ProjectRepository implements ProjectRepositoryInterface
 		return view('users.project.index', compact('projects', 'cursor'));
 	}
 
-	####################################   storeProject   #####################################
+	//MARK:  createProject  
 	public function createProject(Collection $skills):View
 	{
 		return view('users.project.create', compact('skills'));
 	}
 
-	####################################   storeProject   #####################################
+	//MARK:   storeProject  
 	public function storeProject(ProjectRequest $request, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):void
 	{
 		$project_data = $request->safe()->only(['title', 'content']) + ['user_id' => Auth::id(), 'created_at' => now()];
@@ -73,7 +73,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 		$skillRepository->storeSkill($request, 'project_skill', 'project_id', $project_id);
 	}
 
-	####################################   showProject   #####################################
+	//MARK: showProject   
 	public function showProject(int $id):object|null
 	{
 		$project = DB::table('projects')
@@ -117,7 +117,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 		return view('users.project.show', compact('project', 'auth_proposal', 'proposals'));
 	}
 
-	####################################     editProject    #####################################
+	//MARK:   editProject   
 	public function editProject(int $id, Collection $skills):RedirectResponse|View
 	{
 		$project = DB::table('projects')
@@ -150,7 +150,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 		return view('users.project.edit', compact('project', 'skills'));
 	}
 
-	####################################   updateProject   #####################################
+	//MARK:   updateProject  
 	public function updateProject(ProjectRequest $request, int $id, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):RedirectResponse
 	{
 		$project_data      = $request->safe()->only(['title', 'content']) + ['user_id' => Auth::id(), 'created_at' => now()];
@@ -173,7 +173,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 		return redirect()->back()->with('success', 'you updated successfully project');
 	}
 
-	####################################   deleteProject   #####################################
+	//MARK: deleteProject   
 	public function deleteProject(int $id):RedirectResponse
 	{
 		$project = DB::table('projects')->where('id', $id)->first();

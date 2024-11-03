@@ -11,19 +11,15 @@ use Illuminate\View\View;
 
 class SkillController extends Controller
 {
-	private $skillRepository;
-
-	public function __construct(SkillRepositoryInterface $skillRepository)
+	public function __construct(private SkillRepositoryInterface $skillRepository)
 	{
 		$this->middleware('auth');
-
-		$this->skillRepository = $skillRepository;
 
 		$id = request()->route('skill');
 		$this->middleware('skill:' . $id)->only('destroy');
 	}
 
-	// create   #####################################
+	//MARK: create   
 	public function create():View
 	{
 		$skills = $this->skillRepository->getSkills();
@@ -31,7 +27,7 @@ class SkillController extends Controller
 		return view('users.skill.create', compact('skills'));
 	}
 
-	// store   #####################################
+	//MARK: store   
 	public function store(SkillRequest $request):JsonResponse
 	{
 		$this->skillRepository->storeSkill($request, 'user_skill', 'user_id', Auth::id());
@@ -39,7 +35,7 @@ class SkillController extends Controller
 		return response()->json(['success' => 'you added skills successfully']);
 	}
 
-	// destroy   #####################################
+	//MARK: destroy_project_skill  
 	public function destroy_project_skill(int $skill_id):JsonResponse
 	{
 		$this->skillRepository->delete_project_skill($skill_id);
@@ -47,7 +43,7 @@ class SkillController extends Controller
 		return response()->json();
 	}
 
-	// destroy   #####################################
+	//MARK: destroy   
 	public function destroy(int $id):JsonResponse
 	{
 		$this->skillRepository->deleteSkill($id);

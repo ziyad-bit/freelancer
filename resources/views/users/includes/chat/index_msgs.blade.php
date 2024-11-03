@@ -7,7 +7,7 @@
         <p class="user_message"> {{ $messages[$i]->text }} </p>
 
         @php
-            $files=null;
+            $files = null;
             $files_type_str = $messages[$i]->files_type;
 
             if ($files_type_str != null) {
@@ -25,7 +25,7 @@
                 @elseif ($file_type == 'application')
                     <iframe class="file_sent" src="/storage/applications/messages/{{ $file_name }}"></iframe>
                 @else
-                    <video class="file_sent"  src="/storage/videos/messages/{{ $file_name }}"></video>
+                    <video class="file_sent" src="/storage/videos/messages/{{ $file_name }}"></video>
                 @endif
             @endforeach
         @endif
