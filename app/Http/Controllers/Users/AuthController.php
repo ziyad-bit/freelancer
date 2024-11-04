@@ -15,8 +15,8 @@ class AuthController extends Controller
 		private AuthRepositoryInterface $authRepository,
 		private ProfileRepositoryInterface $profileRepository
 	) {
-		$this->middleware('auth')->only(['logout', 'index']);
-		$this->middleware('guest')->except(['logout', 'index']);
+		// $this->middleware('auth')->only(['logout', 'index']);
+		// $this->middleware('guest')->except(['logout', 'index']);
 	}
 
 	//MARK: getLogin
