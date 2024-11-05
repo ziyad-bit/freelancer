@@ -157,7 +157,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		->latest('messages.id')
 		->limit(3);
 
-		$messages     = [];
+		$messages = [];
 		$receiver = null;
 
 		$chat_room = DB::table('chat_room_user')
@@ -205,9 +205,8 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		DB::table('chat_room_user')->insert($data);
 
 		return to_route(
-			'chat-rooms.index',
+			'chat-rooms.acceptInvitation',
 			[
-				'receiver_id'  => 0,
 				'chat_room_id' => $data['chat_room_id'],
 			]
 		);

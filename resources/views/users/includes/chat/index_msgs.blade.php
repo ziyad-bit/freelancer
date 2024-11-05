@@ -4,7 +4,7 @@
             src={{ asset('storage/images/users/' . $messages[$i]->sender_image) }} alt="loading">
 
         <span class="user_name">{{ $messages[$i]->sender_name }}</span>
-        <p class="user_message"> {{ $messages[$i]->text }} </p>
+        <p class="user_message"> {{ decrypt($messages[$i]->text) }} </p>
 
         @php
             $files = null;

@@ -44,10 +44,6 @@
                 <input type="hidden" name="chat_room_id" value="{{ $chat_room->chat_room_id }}">
                 <input type="hidden" name="receiver_id" value="{{ $receiver_id }}">
 
-                <input type="hidden" name="all_images_count" id="all_images_count" value="0">
-                <input type="hidden" name="all_videos_count" id="all_videos_count" value="0">
-                <input type="hidden" name="all_apps_count" id="all_apps_count" value="0">
-
                 <textarea name="text" cols="30" rows="5" class="form-control send_input"
                     id="msg{{ $chat_room->chat_room_id }}"></textarea>
 
@@ -76,18 +72,21 @@
         </form>
 
         <form id="form_upload_app{{ $chat_room->chat_room_id }}" enctype="multipart/form-data">
+            @csrf
             <input id="app_input{{ $chat_room->chat_room_id }}" class="file_input" data-chat_room_id="{{$chat_room->chat_room_id}}" name="application" style="display: none" type="file" />
             <input type="hidden" name="dir" value="messages/">
             <input type="hidden" name="type" value="application">
         </form>
 
         <form id="form_upload_image{{ $chat_room->chat_room_id }}" enctype="multipart/form-data">
+            @csrf
             <input id="image_input{{ $chat_room->chat_room_id }}"  class="file_input" data-chat_room_id="{{$chat_room->chat_room_id}}" name="image" style="display: none" type="file" />
             <input type="hidden" name="dir" value="messages/">
             <input type="hidden" name="type" value="image">
         </form>
 
         <form id="form_upload_video{{ $chat_room->chat_room_id }}" enctype="multipart/form-data">
+            @csrf
             <input id="video_input{{ $chat_room->chat_room_id }}" class="file_input" data-chat_room_id="{{$chat_room->chat_room_id}}" name="video" style="display: none" type="file" />
             <input type="hidden" name="dir" value="messages/">
             <input type="hidden" name="type" value="video">

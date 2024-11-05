@@ -19,11 +19,10 @@ class MessageRepository implements MessageRepositoryInterface
 	// MARK: storeMessage   
 	public function storeMessage(MessageRequest $request, FileRepositoryInterface $fileRepository):void
 	{
-		$auth_user   = Auth::user();
-		$data        = $request->safe()->only(['chat_room_id', 'text', 'receiver_id']) +
-						['created_at' => now(), 'sender_id' => $auth_user->id];
-
 		$receiver_id = $request->receiver_id;
+		$auth_user   = Auth::user();
+		$data        = $request->safe()->only(['chat_room_id','receiver_id']) +
+						['created_at' => now(), 'sender_id' => $auth_user->id ,'text'=>$request->text];
 
 		DB::table('messages')
 			->where(
@@ -33,11 +32,14 @@ class MessageRepository implements MessageRepositoryInterface
 				]
 			)
 			->update(['last' => 0]);
+			
 
-		$message_id = DB::table('messages')->insertGetId($data);
+		$message_id = DB::table('messages')->insertGetId($data+['text'=>$request->text]);
 
 		$files = $fileRepository->insert_file($request, 'message_files', 'message_id', $message_id);
 
+		$data['text']=$request->safe()->__get('text');
+		
 		broadcast(new MessageEvent($data, $files))->toOthers();
 
 		$notif_view = view('users.includes.notifications.send', compact('data'))->render();

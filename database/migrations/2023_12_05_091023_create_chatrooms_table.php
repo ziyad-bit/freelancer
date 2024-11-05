@@ -13,7 +13,7 @@ return new class extends Migration {
 	public function up()
 	{
 		Schema::create('chat_rooms', function (Blueprint $table) {
-			$table->id();
+			$table->uuid('id')->primary();
 			$table->foreignId('owner_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
 			$table->foreignId('receiver_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
 			$table->timestamp('created_at');

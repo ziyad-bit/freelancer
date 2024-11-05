@@ -122,9 +122,7 @@ function storeMsg(e) {
                     auth_photo = document.getElementById('auth_photo').value,
                     message    = document.getElementById(`msg${chat_room_id}`).value;
 
-                console.log(auth_name)
-
-                const box = document.getElementsByClassName('box' + chat_room_id)[0];
+                const box        = document.getElementsByClassName('box' + chat_room_id)[0];
 
                 msg_err.textContent = '';
 
@@ -183,9 +181,6 @@ function storeMsg(e) {
 
                 document.querySelector(`.files_container${chat_room_id}`).style.display          = 'none';
                 document.querySelector(`.chat_room_${chat_room_id} div p .msg_text`).textContent = message;
-                document.querySelector(`#form${chat_room_id} #all_apps_count`).value             = 0;
-                document.querySelector(`#form${chat_room_id} #all_videos_count`).value           = 0;
-                document.querySelector(`#form${chat_room_id} #all_images_count`).value           = 0;
             }
         })
         .catch(err => {
@@ -220,19 +215,19 @@ function upload_file(path, type, form_upload, chat_room_id) {
                 file_number++;
 
                 if (type === 'app') {
-                    document.querySelector(`#form${chat_room_id} #all_apps_count`).value = all_apps_count;
+                    
 
                     var file_ele    = `<iframe class="file_uploaded" src="${path + file_name}"></iframe>`;
                     var file_inputs = `<input type="hidden" class="input_files" name="files[${file_number}][name]" value="${file_name}">
                         <input type="hidden" class="input_files" name="files[${file_number}][type]" value="application">`;
                 } else if (type === 'image') {
-                    document.querySelector(`#form${chat_room_id} #all_images_count`).value = all_images_count;
+                    
 
                     var file_ele    = `<img class="file_uploaded" src="${path + file_name}"></img>`;
                     var file_inputs = `<input type="hidden" class="input_files" name="files[${file_number}][name]" value="${file_name}">
                         <input type="hidden" class="input_files" name="files[${file_number}][type]" value="image">`;
                 } else {
-                    document.querySelector(`#form${chat_room_id} #all_videos_count`).value = all_videos_count;
+                    
 
                     var file_ele    = `<video class="file_uploaded" src="${path + file_name}"></video>`;
                     var file_inputs = `<input type="hidden" class="input_files" name="files[${file_number}][name]" value="${file_name}">
@@ -348,11 +343,10 @@ function subscribeChatChannel(chat_room_id) {
             plus_ele.setAttribute('data-chat_room_users_ids', chat_room_users_ids);
         })
         .listen('MessageEvent', (e) => {
-            const data = e.data;
-            console.log('data: ', data);
+            const data      = e.data;
             const sender_id = data.sender_id;
             const files     = e.files;
-            console.log('files: ', files);
+            
             const box   = document.querySelector('.box' + data.chat_room_id);
             const name  = document.getElementById('name' + sender_id).textContent;
             const image = document.getElementById('image' + sender_id).getAttribute('src');
@@ -364,6 +358,8 @@ function subscribeChatChannel(chat_room_id) {
                     <p    class = "user_message">${data.text}</p>
                 `
             )
+
+            document.querySelector(`.typing${data.chat_room_id}`).textContent='';
 
             files.forEach(function (file) {
                 let type = file.split('-')[0];
@@ -380,7 +376,6 @@ function subscribeChatChannel(chat_room_id) {
                         <video class = "file_sent" src = "/storage/videos/messages/${file}"></video>
                         `
                     )
-
                 } else {
                     box.insertAdjacentHTML('beforeend',
                         `

@@ -31,4 +31,14 @@ class MessageRequest extends FormRequest
 			'files.*.type'             => 'nullable|string',
 		];
 	}
+
+	/**
+	 * Handle a passed validation attempt.
+	 *
+	 * @return void
+	 */
+	protected function passedValidation()
+	{
+		$this->merge(['text' => encrypt($this->text)]);
+	}
 }

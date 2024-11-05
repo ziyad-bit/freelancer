@@ -84,7 +84,7 @@
 
                 <span class="msg_text">
                     @if ($message->text != 'new_chat_room%')
-                        {{ Str::limit($message->text, 15, '...') }}
+                        {{ Str::limit(decrypt($message->text), 15, '...') }}
                     @endif
 
                 </span>
