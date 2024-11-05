@@ -11,7 +11,7 @@ class NotificationRepository implements NotificationRepositoryInterface
 	// MARK: update
 	public function update(): void
 	{
-		User::find(Auth::id())->unreadNotifications->update(['read_at' => now()]);
+		User::find(Auth::id())->unreadNotifications()->update(['read_at' => now()]);
 	}
 
 	// MARK: show_old_notifs

@@ -38,7 +38,7 @@
                         <h5 class="mb-1 p">
                             {{ $notification->data['sender_name'] }}
                             sent message :
-                            {{ Str::limit($notification->data['text'], 10, '...') }}
+                            {{ Str::limit(decrypt($notification->data['text']), 10, '...') }}
                         </h5>
 
                     </div>

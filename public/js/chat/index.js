@@ -359,7 +359,10 @@ function subscribeChatChannel(chat_room_id) {
                 `
             )
 
-            document.querySelector(`.typing${data.chat_room_id}`).textContent='';
+            typing_users_ids.delete(data.sender_id);
+            if (typing_users_ids.size === 0) {
+                document.querySelector(`.typing${data.chat_room_id}`).textContent='';
+            } 
 
             files.forEach(function (file) {
                 let type = file.split('-')[0];
@@ -398,11 +401,9 @@ function subscribeChatChannel(chat_room_id) {
 
             const typing_ele = document.querySelector('.typing' + e.chat_room_id);
 
-            if (typing_users_ids.size !== 0) {
-                typing_ele.textContent = 'typing';
-            } else {
+            if (typing_users_ids.size === 0) {
                 typing_ele.textContent = '';
-            }
+            } 
         });
 }
 

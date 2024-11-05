@@ -39,11 +39,13 @@ class MessageRepository implements MessageRepositoryInterface
 		$files = $fileRepository->insert_file($request, 'message_files', 'message_id', $message_id);
 
 		$data['text']=$request->safe()->__get('text');
-		
+
 		broadcast(new MessageEvent($data, $files))->toOthers();
 
 		$notif_view = view('users.includes.notifications.send', compact('data'))->render();
 		$user       = User::find($request->receiver_id);
+
+		$data['text']=$request->text;
 
 		Notification::send($user, new NewMessageNotification($data, $auth_user->name, $auth_user->image, $notif_view));
 
