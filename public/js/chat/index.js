@@ -408,7 +408,7 @@ function subscribeChatChannel(chat_room_id) {
 }
 
 
-    //MARK:get other msgs
+//MARK:get chat msgs
 function getNewMessages(chat_room_id) {
     const box = document.getElementsByClassName('box' + chat_room_id)[0];
 
@@ -443,7 +443,6 @@ generalEventListener('click', '.user_btn', e => {
     let chat_room_id          = e.target.getAttribute('data-chat_room_id');
         selected_chat_room_id = chat_room_id;
     subscribedChatChannels.add(Number(chat_room_id));
-
 
     getNewMessages(chat_room_id);
 })

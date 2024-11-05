@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectRequest;
+use App\Http\Requests\SearchRequest;
 use App\Interfaces\Repository\{FileRepositoryInterface, ProjectRepositoryInterface, SkillRepositoryInterface};
 use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
 use Illuminate\View\View;
@@ -17,7 +18,7 @@ class ProjectController extends Controller
 	}
 
 	//MARK: index   
-	public function index_projects(Request $request):View|JsonResponse
+	public function fetch_projects(SearchRequest $request):View|JsonResponse
 	{
 		return $this->ProjectRepository->getProjects($request);
 	}

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Route;
 
 class SearchRequest extends FormRequest
 {
@@ -23,8 +24,9 @@ class SearchRequest extends FormRequest
 	 */
 	public function rules()
 	{
+		$route=Route::currentRouteName();
 		return [
-			'search' => 'required|string|max:30',
+			'search' =>$route == 'project.fetch'  ? 'nullable' : 'required'.'|string|max:30',
 		];
 	}
 }

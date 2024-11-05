@@ -2,10 +2,13 @@
 
 namespace App\Repositories;
 
+use App\Classes\Projects;
 use App\Classes\ChatRooms;
 use App\Http\Requests\SearchRequest;
-use App\Interfaces\Repository\SearchRepositoryInterface;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\{Auth};
+use Illuminate\Pagination\CursorPaginator;
+use App\Interfaces\Repository\SearchRepositoryInterface;
 
 class SearchRepository implements SearchRepositoryInterface
 {
@@ -29,7 +32,7 @@ class SearchRepository implements SearchRepositoryInterface
 		$show_chatroom      = false;
 		$is_chatroom_page_1 = false;
 
-		$chat_room_view = view('users.includes.chat.index_chat_rooms', compact('show_chatroom', 'all_chat_rooms', 'chat_room_id', 'searchName', 'is_chatroom_page_1'))->render();
+		$chat_room_view = view('users.includes.chat.index_chat_rooms', compact('show_chatroom', 'all_chat_rooms', 'chat_room_id', 'searchName', 'receiver','is_chatroom_page_1'))->render();
 		$chat_box_view  = view('users.includes.chat.index_chat_boxes', compact('show_chatroom', 'all_chat_rooms', 'chat_room_id', 'searchName', 'receiver', 'messages'))->render();
 
 		return [

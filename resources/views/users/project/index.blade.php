@@ -13,7 +13,7 @@
 @endsection
 
 @section('content')
-    <input type="hidden" value="{{ route('project.index_posts') }}" class="index_url">
+    <input type="hidden" value="{{ route('project.fetch') }}" class="index_url">
 
     <a class="btn btn-primary " href="{{ route('project.create') }}" style="margin-top: 25px" role="button">
         add project
@@ -32,9 +32,11 @@
         <div class="d-flex justify-content-center">
             <div class="alert alert-danger err_msg" style="display: none"></div>
 
-            <button class="btn btn-primary submit_btn" style="width: 120px;margin-bottom: 25px" role="button">
-                load more
-            </button>
+            @if ($cursor != '')
+                <button class="btn btn-primary submit_btn" style="width: 120px;margin-bottom: 25px" role="button">
+                    load more
+                </button>
+            @endif
         </div>
         
     </div>

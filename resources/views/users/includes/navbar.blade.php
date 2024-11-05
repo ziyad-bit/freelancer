@@ -3,7 +3,7 @@
     <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm">
         <div class="container">
 
-            <a class="navbar-brand" href="{{ route('project.index_posts') }}">
+            <a class="navbar-brand" href="{{ route('project.fetch') }}">
                 Social Media
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -21,7 +21,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('project.index_posts') }}">projects</a>
+                            <a class="nav-link" href="{{ route('project.fetch') }}">projects</a>
                         </li>
 
                         <li class="nav-item">
@@ -43,11 +43,12 @@
                             <a class="nav-link" href="{{ route('signup') }}">{{ __('signup') }}</a>
                         </li>
                     @else
-                        <form method="POST" id="search_form" action="" class="d-flex">
+                        <form method="POST" id="search_form" action="{{route('project.fetch')}}" class="d-flex">
                             @csrf
 
-                            <input required class="form-control me-2" id="search" name="search" type="search"
-                                value="{{ old('search') }}" placeholder="Search" aria-label="Search" autocomplete="off">
+                            <input  class="form-control me-2" id="search" name="search" type="search"
+                                value="{{Route::currentRouteName()=='project.fetch'? $searchTitle:'' }}" placeholder="Search" aria-label="Search" autocomplete="off">
+
                             <div class="    ">
                                 <ul class="list-group list-group-flush list_search" data-req_num="0" data-recent_req="0">
 

@@ -39,7 +39,7 @@ Route::resource('skill'                  ,'Users\SkillController')->except(['sho
 
 
 //MARK:Project
-Route::any('/project/index-projects','Users\ProjectController@index_projects')->name('project.index_posts');
+Route::any('/project/fetch-projects','Users\ProjectController@fetch_projects')->name('project.fetch');
 Route::resource('project'           ,'Users\ProjectController')->except(['index']);
 
 
@@ -81,4 +81,5 @@ Route::namespace('Users')->controller(ChatRoomController::class)->group(function
 //MARK:search
 Route::namespace('Users')->controller(SearchController::class)->group(function(){
     Route::post('search/chat-room' ,'index_chatrooms')->name('search.indexChatrooms');
+    // Route::post('search/projects'  ,'index_projects')->name('search.indexProjects');
 });

@@ -2,14 +2,15 @@
 
 namespace App\Interfaces\Repository;
 
+use Illuminate\View\View;
+use Illuminate\Support\Collection;
+use App\Http\Requests\SearchRequest;
 use App\Http\Requests\ProjectRequest;
 use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
-use Illuminate\Support\Collection;
-use Illuminate\View\View;
 
 interface ProjectRepositoryInterface
 {
-	public function getProjects(Request $request):View|JsonResponse;
+	public function getProjects(SearchRequest $request):View|JsonResponse;
 	public function createProject(Collection $skills):View;
 	public function storeProject(ProjectRequest $request, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):void;
 	public function showProject(int $id):object|null;

@@ -2,7 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Classes\Projects;
 use App\Http\Requests\ProjectRequest;
+use App\Http\Requests\SearchRequest;
 use App\Interfaces\Repository\{FileRepositoryInterface, ProjectRepositoryInterface, SkillRepositoryInterface};
 use App\Traits\GetCursor;
 use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
@@ -15,31 +17,42 @@ class ProjectRepository implements ProjectRepositoryInterface
 	use GetCursor;
 
 	//MARK:   getProjects  
-	public function getProjects(Request $request):View|JsonResponse
+	public function getProjects(SearchRequest $request):View|JsonResponse
 	{
-		$projects = DB::table('projects')
-			->select(
-				'projects.*',
-				'project_infos.*',
-				'location',
-				'card_num',
-				'review',
-				DB::raw('GROUP_CONCAT(DISTINCT skills.skill) as skills_names'),
-				DB::raw('COUNT(DISTINCT proposals.id) as proposals_count')
-			)
-			->join('project_infos', 'projects.id', '=', 'project_infos.project_id')
-			->join('project_skill', 'projects.id', '=', 'project_skill.project_id')
-			->join('skills', 'project_skill.skill_id', '=', 'skills.id')
-			->join('users', 'users.id', '=', 'projects.user_id')
-			->join('user_infos', 'users.id', '=', 'user_infos.user_id')
-			->leftJoin('proposals', 'projects.id', '=', 'proposals.project_id')
-			->join('user_skill', function ($join) {
-				$join->on('project_skill.skill_id', '=', 'user_skill.skill_id')
-					->where('user_skill.user_id', '=', Auth::id());
-			})
-			->groupBy('projects.id')
-			->latest()
-			->cursorPaginate(10);
+		$searchTitle = $request->input('search');
+		$projects    = DB::table('projects')
+				->select(
+					'projects.*',
+					'project_infos.*',
+					'location',
+					'card_num',
+					'review',
+					DB::raw('GROUP_CONCAT(DISTINCT skills.skill) as skills_names'),
+					DB::raw('COUNT(DISTINCT proposals.id) as proposals_count')
+				)
+				->join('project_infos', 'projects.id', '=', 'project_infos.project_id')
+				->join('project_skill', 'projects.id', '=', 'project_skill.project_id')
+				->join('skills', 'project_skill.skill_id', '=', 'skills.id')
+				->join('users', 'users.id', '=', 'projects.user_id')
+				->join('user_infos', 'users.id', '=', 'user_infos.user_id')
+				->leftJoin('proposals', 'projects.id', '=', 'proposals.project_id')
+				->when(
+					$searchTitle == null,
+					function ($query) {
+						$query->join('user_skill', function ($join) {
+							$join->on('project_skill.skill_id', '=', 'user_skill.skill_id')
+								->where('user_skill.user_id', '=', Auth::id());
+						});
+					},
+					function ($query) use ($searchTitle) {
+						$query->where(function ($query) use ($searchTitle) {
+							$query->where('title', 'LIKE', "%{$searchTitle}%");
+						});
+					}
+				)
+				->groupBy('projects.id')
+				->latest('projects.id')
+				->cursorPaginate(10);
 
 		$cursor = $this->getCursor($projects);
 
@@ -49,7 +62,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 			return response()->json(['view' => $view, 'cursor' => $cursor]);
 		}
 
-		return view('users.project.index', compact('projects', 'cursor'));
+		return view('users.project.index', compact('projects', 'cursor','searchTitle'));
 	}
 
 	//MARK:  createProject  
