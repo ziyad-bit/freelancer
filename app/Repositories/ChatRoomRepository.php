@@ -13,8 +13,6 @@ use Illuminate\Support\Facades\{Auth, DB};
 
 class ChatRoomRepository implements ChatRoomRepositoryInterface
 {
-	use GetCursor;
-
 	// MARK: indexChatroom
 	public function indexChatroom():array
 	{

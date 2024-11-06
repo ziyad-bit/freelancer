@@ -28,15 +28,12 @@
             @include('users.project.index_projects')
         </div>
         
-
         <div class="d-flex justify-content-center">
             <div class="alert alert-danger err_msg" style="display: none"></div>
 
-            @if ($cursor != '')
-                <button class="btn btn-primary submit_btn" style="width: 120px;margin-bottom: 25px" role="button">
-                    load more
-                </button>
-            @endif
+            <button @style(['display:none'=>!$cursor]) class="btn btn-primary submit_btn" style="width: 120px;margin-bottom: 25px" role="button">
+                load more
+            </button>
         </div>
         
     </div>

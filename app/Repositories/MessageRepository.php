@@ -14,8 +14,6 @@ use Illuminate\Support\Facades\{Auth, Cache, DB, Notification};
 
 class MessageRepository implements MessageRepositoryInterface
 {
-	use GetCursor;
-
 	// MARK: storeMessage   
 	public function storeMessage(MessageRequest $request, FileRepositoryInterface $fileRepository):void
 	{
