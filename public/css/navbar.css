@@ -1,7 +1,7 @@
-.list_search {
+.navbar_list_search {
     position: absolute;
     top     : 50px;
-    right   : 290px;
+    right   : 358px;
     z-index : 6;
     width   : 200px;
 }

@@ -80,6 +80,7 @@ Route::namespace('Users')->controller(ChatRoomController::class)->group(function
 
 //MARK:search
 Route::namespace('Users')->controller(SearchController::class)->group(function(){
-    Route::post('search/chat-room' ,'index_chatrooms')->name('search.indexChatrooms');
-    // Route::post('search/projects'  ,'index_projects')->name('search.indexProjects');
+    Route::post('search/chat-room'        ,'index_chatrooms')->name('search.Chatrooms');
+    Route::post('search/projects'         ,'index_projects')->name('search.projects');
+    Route::get ('recent-search/projects'  ,'recent_search_projects')->name('recent_search.projects');
 });

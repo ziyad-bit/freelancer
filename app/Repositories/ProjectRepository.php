@@ -19,6 +19,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 	//MARK:   getProjects  
 	public function getProjects(SearchRequest $request):View|JsonResponse
 	{
+		$auth_id = Auth::id();
 		$searchTitle = $request->input('search');
 		$projects    = DB::table('projects')
 				->select(
@@ -38,10 +39,10 @@ class ProjectRepository implements ProjectRepositoryInterface
 				->leftJoin('proposals', 'projects.id', '=', 'proposals.project_id')
 				->when(
 					$searchTitle == null,
-					function ($query) {
-						$query->join('user_skill', function ($join) {
+					function ($query) use($auth_id) {
+						$query->join('user_skill', function ($join) use($auth_id) {
 							$join->on('project_skill.skill_id', '=', 'user_skill.skill_id')
-								->where('user_skill.user_id', '=', Auth::id());
+								->where('user_skill.user_id', '=', $auth_id);
 						});
 					},
 					function ($query) use ($searchTitle) {
@@ -53,6 +54,11 @@ class ProjectRepository implements ProjectRepositoryInterface
 				->groupBy('projects.id')
 				->latest('projects.id')
 				->cursorPaginate(10);
+
+		if ($searchTitle) {
+			DB::table('searches')
+				->insert(['search'=>$searchTitle,'user_id'=>$auth_id,'created_at'=>now()]);
+		}
 
 		$cursor = $this->getCursor($projects);
 

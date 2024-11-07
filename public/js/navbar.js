@@ -1,38 +1,17 @@
 const search_ele   = document.getElementById('search'),
-    list_ele   = document.getElementsByClassName('search_item'),
-    list_group = document.querySelector('.list_search');
+    list_search_item   = document.getElementsByClassName('search_item'),
+    list_search_group = document.querySelector('.navbar_list_search');
+
+    const search_wrapper = document.querySelector('#search_wrapper');
 
 let recent_req     = 0,
     search_req_num = 0;
 
-
-//add event listener
-function generalEventListener(type, selector, callback) {
-    document.addEventListener(type, e => {
-        if (e.target.matches(selector)) {
-            callback(e);
-        }
-    });
-}
-
-//debounce
-function debounce(cb,delay=1000) {
-    let timeout;
-
-    return (...args)=>{
-        clearTimeout(timeout);
-
-        timeout=setTimeout(() => {
-                cb(...args);
-            }, delay);
-    }
-}
-
 //hide search results or notifications on document click
 document.onclick=function(e){
     if(e.target.id != 'search'){
-        for (let i = 0; i < list_ele.length; i++) {
-            list_ele[i].style.display = 'none';
+        for (let i = 0; i < list_search_item.length; i++) {
+            list_search_item[i].style.display = 'none';
         }
     }
 
@@ -59,36 +38,31 @@ generalEventListener('click','.search_name',e=>{
 });
 
 //show recent searches
+let recent_search_url = document.querySelector('#recent_search_url').value;
 function show_recent_searches(){
     if (recent_req == 0) {
-        axios.get('/search/show/recent')
+        axios.get(recent_search_url)
             .then(res=>{
                 if (res.status == 200) {
 
                     if (search_req_num == 1) {
-                        for (let i = 0; i < list_ele.length; i++) {
-                            list_ele[i].style.display = 'none';
+                        for (let i = 0; i < list_search_item.length; i++) {
+                            list_search_item[i].style.display = 'none';
                         }
                     }
 
                     search_req_num = 1;
                     recent_req     = 1;
 
-                    let recent_searches=res.data.recent_searches;
-                    for (let i = 0; i < recent_searches.length; i++) {
-                        list_group.insertAdjacentHTML('beforeend',
-                            `<li class="list-group-item search_item recent_search" >
-                                <span class="search_name">${recent_searches[i].search}</span> 
-                            </li>`
-                        );
-                    }
+                    let view=res.data.view;
+                    list_search_group.insertAdjacentHTML('afterbegin',view);
                 }
                 
             });
         }else{
             if (search_req_num == 1) {
-                for (let i = 0; i < list_ele.length; i++) {
-                    list_ele[i].style.display = 'none';
+                for (let i = 0; i < list_search_item.length; i++) {
+                    list_search_item[i].style.display = 'none';
                 }
             }
 
@@ -100,15 +74,16 @@ function show_recent_searches(){
     }
 }
 
-//show matched search results
-let search_words=[];
+//show matched search results under input
+let search_words = [];
+let search_url   = document.querySelector('#search_url').value;
 
 function showMatchedSearch() {
     let search = search_ele.value;
     if (search != '') {
         if (search_words.includes(search)) {
-            for (let i = 0; i < list_ele.length; i++) {
-                list_ele[i].style.display = 'none';
+            for (let i = 0; i < list_search_item.length; i++) {
+                list_search_item[i].style.display = 'none';
             }
 
             let search_key_ele=document.getElementsByClassName(`${search}`);
@@ -121,56 +96,20 @@ function showMatchedSearch() {
 
         search_words.unshift(search);
 
-        axios.post('/search/show', { 'search': search })
+        axios.post(search_url, { 'search': search })
             .then(res=> {
                 if (res.status == 200) {
+                    let view=res.data.view;
+
                     if (search_req_num == 1) {
-                        for (let i = 0; i < list_ele.length; i++) {
-                            list_ele[i].style.display = 'none';
+                        for (let i = 0; i < list_search_item.length; i++) {
+                            list_search_item[i].style.display = 'none';
                         }
                     }
 
                     search_req_num=1;
 
-                    let friends = res.data.friends;
-                    for (let i = 0; i < friends.length; i++) {
-                        list_group.insertAdjacentHTML('beforeend',
-                            `<li class="list-group-item search_item ${search}" >
-                                <img src="/images/users/${friends[i].photo}" class="rounded-circle search_image ">
-                                <span class="search_name">${friends[i].name}</span> 
-                            </li>`
-                        );
-                    }
-
-                    let users = res.data.users;
-                    for (let i = 0; i < users.length; i++) {
-                        list_group.insertAdjacentHTML('beforeend',
-                            `<li class="list-group-item search_item ${search}" >
-                                <img src="/images/users/${users[i].photo}" class="rounded-circle search_image">
-                                <span class="search_name">${users[i].name}</span> 
-                            </li>`
-                        );
-                    }
-
-                    let groups_joined = res.data.groups_joined;
-                    for (let i = 0; i < groups_joined.length; i++) {
-                        list_group.insertAdjacentHTML('beforeend',
-                            `<li class="list-group-item search_item ${search}" >
-                                <img src="/images/groups/${groups_joined[i].photo}" class="rounded-circle search_image">
-                                <span class="search_name">${groups_joined[i].name}</span> 
-                            </li>`
-                        );
-                    }
-
-                    let groups = res.data.groups;
-                    for (let i = 0; i < groups.length; i++) {
-                        list_group.insertAdjacentHTML('beforeend',
-                            `<li class="list-group-item search_item ${search}" >
-                                <img src="/images/groups/${groups[i].photo}" class="rounded-circle search_image">
-                                <span class="search_name">${groups[i].name}</span> 
-                            </li>`
-                        );
-                    }
+                    list_search_group.insertAdjacentHTML('beforeend',view);
                 }
                 
             });
@@ -181,7 +120,7 @@ function showMatchedSearch() {
 
 search_ele.addEventListener('input',debounce(()=>{
         showMatchedSearch()
-    },1000)
+    })
 )
 
 //show recent searches

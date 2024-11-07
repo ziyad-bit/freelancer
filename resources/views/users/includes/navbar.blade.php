@@ -43,17 +43,24 @@
                             <a class="nav-link" href="{{ route('signup') }}">{{ __('signup') }}</a>
                         </li>
                     @else
+                        <input id="recent_search_url" type="hidden" 
+                            value="{{route('recent_search.projects')}}">
+
+                        <input id="search_url" type="hidden" 
+                            value="{{route('search.projects')}}">
+
                         <form method="POST" id="search_form" action="{{route('project.fetch')}}" class="d-flex">
                             @csrf
 
                             <input  class="form-control me-2" id="search" name="search" type="search"
                                 value="{{Route::currentRouteName()=='project.fetch'? $searchTitle:'' }}" placeholder="Search" aria-label="Search" autocomplete="off">
 
-                            <div class="    ">
-                                <ul class="list-group list-group-flush list_search" data-req_num="0" data-recent_req="0">
-
+                            <div id="search_wrapper" >
+                                <ul class="list-group list-group-flush navbar_list_search" data-req_num="0" data-recent_req="0">
+                                    
                                 </ul>
                             </div>
+                            
                             <button class="btn btn-outline-success" id="search_btn" type="submit">Search</button>
                         </form>
 

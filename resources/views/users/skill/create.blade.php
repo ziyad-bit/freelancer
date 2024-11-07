@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('header')
-    <script defer src="{{ asset('js/general.js')}}?v={{ filemtime(public_path('js/general.js')) }}"></script>
     <script defer src="{{ asset('js/skill/create.js')}}?v={{ filemtime(public_path('js/skill/create.js')) }}"></script>
     <script defer src="{{ asset('js/skill/add.js')}}?v={{ filemtime(public_path('js/skill/add.js')) }}"></script>
 @endsection

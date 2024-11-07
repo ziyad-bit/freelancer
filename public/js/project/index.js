@@ -21,7 +21,7 @@ submit_btn.onclick = function () {
             })
             .catch(err => {
                 if (err.response.status == 500) {
-                    let   error       = err.response.data.error;
+                    let   error = err.response.data.error;
                     
                     err_element.textContent   = error;
                     err_element.style.display = '';
