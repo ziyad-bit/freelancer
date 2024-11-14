@@ -151,6 +151,7 @@ Echo.private(`App.Models.User.${auth_id}`)
 
 //show notifications and mark them as read
 const bell_ele=document.querySelector('.fa-bell');
+console.log('bell_ele: ', bell_ele);
 
 bell_ele.onclick=()=>{
     notif_ele.style.display='';

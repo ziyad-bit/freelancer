@@ -9,7 +9,7 @@
                 </div>
 
                 <div class="modal-body add_body">
-                    <div style="display: none" class="alert alert-success text-center delete_msg"></div>
+                    <div style="display: none" class="alert alert-success text-center success_msg"></div>
 
                     <div style="display: none" class="alert alert-danger text-center err_msg"></div>
                 </div>

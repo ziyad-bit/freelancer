@@ -74,8 +74,7 @@ Route::namespace('Users')->controller(ChatRoomController::class)->group(function
     Route::get ('chat-room/fetch/{receiver_id}'            ,'fetch')->name('chat-rooms.fetch');
     Route::get ('chat-room/acceptInvitation/{chat_room_id}','acceptInvitation')->name('chat-rooms.acceptInvitation');
     Route::get ('chat-room/show-more/{id}'                 ,'show_more_chat_rooms')->name('message.show_chat_rooms');
-    Route::post('chat-room/add_user'                       ,'add_user')->name('chat-room.add_user');
-    Route::post('chat-room/send-invitation/{receiver_id}/{chat_room_id}','send_user_invitation')->name('chat-room.send_user_invitation');
+    Route::post('chat-room/send-invitation'                ,'send_user_invitation')->name('chat-room.send_user_invitation');
 });
 
 //MARK:search

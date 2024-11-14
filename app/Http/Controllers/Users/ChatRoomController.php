@@ -93,14 +93,8 @@ class ChatRoomController extends Controller
 	}
 
 	// MARK:send_invitation
-	public function send_user_invitation(int $receiver_id, int $chat_room_id) : JsonResponse
+	public function send_user_invitation(ChatRoomRequest $request) : JsonResponse
 	{
-		return $this->chatRoomRepository->sendInvitation($receiver_id, $chat_room_id);
-	}
-
-	// MARK:add_user
-	public function add_user(ChatRoomRequest $req):RedirectResponse
-	{
-		return $this->chatRoomRepository->addUserToChatRoom($req);
+		return $this->chatRoomRepository->sendInvitation($request);
 	}
 }

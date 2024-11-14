@@ -19,7 +19,7 @@ class AuthRepository implements AuthRepositoryInterface
 
 			return redirect()->intended();
 		} else {
-			return to_route('get.login')->with(['error' => 'incorrect password or email']);
+			return to_route('login')->with(['error' => 'incorrect password or email']);
 		}
 	}
 

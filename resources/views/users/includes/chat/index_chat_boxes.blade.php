@@ -47,7 +47,7 @@
                 <textarea name="text" cols="30" rows="5" class="form-control send_input"
                     id="msg{{ $chat_room->chat_room_id }}"></textarea>
 
-                <button type="button" class="btn btn-success send_btn">
+                <button type="button" class="btn btn-success  send_btn">
                     Send
                 </button>
 

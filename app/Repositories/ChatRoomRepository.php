@@ -7,7 +7,6 @@ use App\Http\Requests\{ChatRoomRequest};
 use App\Interfaces\Repository\ChatRoomRepositoryInterface;
 use App\Models\User;
 use App\Notifications\{AddUserToChatNotification};
-use App\Traits\GetCursor;
 use Illuminate\Http\{JsonResponse, RedirectResponse};
 use Illuminate\Support\Facades\{Auth, DB};
 
@@ -26,7 +25,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		->get();
 
 		$messages     = [];
-		$receiver = null;
+		$receiver     = null;
 		$chat_room_id = null;
 
 		if ($all_chat_rooms->count() > 0) {
@@ -37,7 +36,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			'messages'       => $messages,
 			'chat_room_id'   => $chat_room_id,
 			'all_chat_rooms' => $all_chat_rooms,
-			'receiver'   => $receiver,
+			'receiver'       => $receiver,
 			'show_chatroom'  => true,
 		];
 	}
@@ -49,7 +48,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		if (!$receiver) {
 			return to_route('chat-rooms.index')->with('error', 'user not found');
 		}
-			
+
 		$auth_id        = Auth::id();
 		$all_chat_rooms = ChatRooms::fetch(
 			['messages.sender_id' => $auth_id, 'last' => 1],
@@ -66,7 +65,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		$all_chat_rooms = $all_chat_rooms->union($selected_chat_room)->get();
 
 		$messages     = [];
-		$receiver = null;
+		$receiver     = null;
 		$chat_room_id = null;
 
 		foreach ($all_chat_rooms as $chat_room) {
@@ -88,14 +87,14 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 
 			DB::table('messages')
 				->insert([
-					'chat_room_id' => $chat_room_id, 
-					'receiver_id' => $receiver_id,
-					'sender_id' => $auth_id,
 					'chat_room_id' => $chat_room_id,
-					'sender_id' => $auth_id,
-					'text' => 'new_chat_room%',
-					'created_at'  => now(),
-					]);
+					'receiver_id'  => $receiver_id,
+					'sender_id'    => $auth_id,
+					'chat_room_id' => $chat_room_id,
+					'sender_id'    => $auth_id,
+					'text'         => 'new_chat_room%',
+					'created_at'   => now(),
+				]);
 
 			DB::table('chat_room_user')
 				->insert([
@@ -110,12 +109,12 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			'messages'       => $messages,
 			'chat_room_id'   => $chat_room_id,
 			'all_chat_rooms' => $all_chat_rooms,
-			'receiver'   => $receiver,
+			'receiver'       => $receiver,
 			'show_chatroom'  => true,
 		];
 	}
 
-	//MARK: get chat rooms   
+	//MARK: get chat rooms
 	public function getChatRooms(int $message_id):array
 	{
 		$auth_id        = Auth::id();
@@ -129,7 +128,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		->get();
 
 		$chat_room_id       = null;
-		$receiver       = null;
+		$receiver           = null;
 		$messages           = [];
 		$show_chatroom      = false;
 		$searchName         = null;
@@ -178,35 +177,44 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			'messages'       => $messages,
 			'chat_room_id'   => $chat_room_id,
 			'all_chat_rooms' => $all_chat_rooms,
-			'receiver'   => $receiver,
+			'receiver'       => $receiver,
 			'show_chatroom'  => true,
 		];
 	}
 
-	//MARK: sendInvitation  
-	public function sendInvitation(int $receiver_id, int $chat_room_id):JsonResponse
+	//MARK: sendInvitation
+	public function sendInvitation(ChatRoomRequest $request):JsonResponse
 	{
-		$receiver = User::find($receiver_id);
-		$view     = view('users.includes.notifications.send_user_invitation', compact('receiver_id', 'chat_room_id'))->render();
-		$user     = Auth::user();
+		$receiver_id  = $request->user_id;
+		$chat_room_id = $request->chat_room_id;
 
-		$receiver->notify(new AddUserToChatNotification($chat_room_id, $user->image, $user->name, $view));
+		$data             = $request->validated() + ['created_at' => now()];
+		$user_in_chatroom = DB::table('chat_room_user')
+			->where(['user_id'=>$receiver_id,'chat_room_id'=>$chat_room_id])
+			->first();
 
-		return response()->json();
-	}
+		if (!$user_in_chatroom) {
+			DB::table('chat_room_user')->insert($data);
+		}else{
+			return response()->json(['warning_msg' => 'user already exist in chatroom'],400);
+		}
 
-	//MARK: addUserToChatRoom   
-	public function addUserToChatRoom(ChatRoomRequest $req):RedirectResponse
-	{
-		$data = $req->validated() + ['created_at' => now()];
+		$user         = Auth::user();
+		$receiver     = User::find($request->user_id);
+		$view         = view(
+			'users.includes.notifications.send_user_invitation',
+			compact('chat_room_id')
+		)->render();
 
-		DB::table('chat_room_user')->insert($data);
-
-		return to_route(
-			'chat-rooms.acceptInvitation',
-			[
-				'chat_room_id' => $data['chat_room_id'],
-			]
+		$receiver->notify(
+			new AddUserToChatNotification(
+				$chat_room_id,
+				$user->image,
+				$user->name,
+				$view
+			)
 		);
+
+		return response()->json(['success_msg' => 'you send invitation successfully']);
 	}
 }

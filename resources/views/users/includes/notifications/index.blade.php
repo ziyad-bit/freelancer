@@ -2,30 +2,26 @@
     @foreach ($user_notifs as $notification)
         @if ($notification->type !== 'message')
             <div class="list-group">
-                <a class="list-group-item list-group-item-action notif_hover">
-                    <form action="{{ route('chat-room.add_user') }}" method="POST">
-                        @csrf
-
-                        <input type="hidden" name="user_id" value="{{ $notification->notifiable_id }}">
-                        <input type="hidden" name="chat_room_id" value="{{ $notification->data['chat_room_id'] }}">
-
+                <div class="list-group-item list-group-item-action notif_hover">
                         <div class="d-flex w-100 justify-content-between">
                             <img src="{{ asset('storage/images/users/' . $notification->data['sender_image']) }}"
                                 class="rounded-circle" alt="error">
+                                
                             <h5 class="mb-1 p">
-                                {{ $notification->data['sender_name'] }} send invitaion to add you to chat room
+                                {{ $notification->data['sender_name'] }} send invitation to add you to chat room
                             </h5>
                         </div>
 
                         <span class="text-muted">
-                            1 second ago
+                            {{ \Carbon\Carbon::parse($notification->created_at)->diffForhumans() }}
                         </span>
 
-                        <button type="submit" class="btn btn-primary" style="float: right;">
+                        <a type="button" 
+                            href="{{route('chat-rooms.acceptInvitation',$notification->data['chat_room_id'])}}"
+                            class="btn btn-primary accept" style="float: right;">
                             accept
-                        </button>
-                    </form>
-                </a>
+                        </a>
+                </div>
             </div>
         @else
             <div class="list-group notifications" data-created_at="{{ $notification->created_at }}">

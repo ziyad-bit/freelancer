@@ -24,6 +24,7 @@
         "pusher-js": "^8.3.0"
     },
     "dependencies": {
-        "https-proxy-agent": "^7.0.2"
+        "https-proxy-agent": "^7.0.2",
+        "jsdom": "^25.0.1"
     }
 }

@@ -103,4 +103,6 @@ div .send_input {
 
 .add_btn{
     float: right;
+    position: relative;
+    top: -43px;
 }

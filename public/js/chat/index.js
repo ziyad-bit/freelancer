@@ -122,7 +122,7 @@ function storeMsg(e) {
                     auth_photo = document.getElementById('auth_photo').value,
                     message    = document.getElementById(`msg${chat_room_id}`).value;
 
-                const box        = document.getElementsByClassName('box' + chat_room_id)[0];
+                const box = document.getElementsByClassName('box' + chat_room_id)[0];
 
                 msg_err.textContent = '';
 
@@ -197,7 +197,7 @@ function storeMsg(e) {
 }
 
 
-  //MARK:file upload
+//MARK:file upload
 let file_number = 0;
 
 function upload_file(path, type, form_upload, chat_room_id) {
@@ -215,20 +215,14 @@ function upload_file(path, type, form_upload, chat_room_id) {
                 file_number++;
 
                 if (type === 'app') {
-                    
-
                     var file_ele    = `<iframe class="file_uploaded" src="${path + file_name}"></iframe>`;
                     var file_inputs = `<input type="hidden" class="input_files" name="files[${file_number}][name]" value="${file_name}">
                         <input type="hidden" class="input_files" name="files[${file_number}][type]" value="application">`;
                 } else if (type === 'image') {
-                    
-
                     var file_ele    = `<img class="file_uploaded" src="${path + file_name}"></img>`;
                     var file_inputs = `<input type="hidden" class="input_files" name="files[${file_number}][name]" value="${file_name}">
                         <input type="hidden" class="input_files" name="files[${file_number}][type]" value="image">`;
                 } else {
-                    
-
                     var file_ele    = `<video class="file_uploaded" src="${path + file_name}"></video>`;
                     var file_inputs = `<input type="hidden" class="input_files" name="files[${file_number}][name]" value="${file_name}">
                         <input type="hidden" class="input_files" name="files[${file_number}][type]" value="video">`;
@@ -346,7 +340,7 @@ function subscribeChatChannel(chat_room_id) {
             const data      = e.data;
             const sender_id = data.sender_id;
             const files     = e.files;
-            
+
             const box   = document.querySelector('.box' + data.chat_room_id);
             const name  = document.getElementById('name' + sender_id).textContent;
             const image = document.getElementById('image' + sender_id).getAttribute('src');
@@ -361,8 +355,8 @@ function subscribeChatChannel(chat_room_id) {
 
             typing_users_ids.delete(data.sender_id);
             if (typing_users_ids.size === 0) {
-                document.querySelector(`.typing${data.chat_room_id}`).textContent='';
-            } 
+                document.querySelector(`.typing${data.chat_room_id}`).textContent = '';
+            }
 
             files.forEach(function (file) {
                 let type = file.split('-')[0];
@@ -403,12 +397,12 @@ function subscribeChatChannel(chat_room_id) {
 
             if (typing_users_ids.size === 0) {
                 typing_ele.textContent = '';
-            } 
+            }
         });
 }
 
 
-//MARK:get chat msgs
+  //MARK:get chat msgs
 function getNewMessages(chat_room_id) {
     const box = document.getElementsByClassName('box' + chat_room_id)[0];
 
@@ -496,8 +490,13 @@ generalEventListener('click', '.plus', e => {
                             src   = "${user_image}">
                                 ${user_name}
 
+                        <form  id   = "add_form${user_id}">
+                        <input type = "hidden" name = "chat_room_id" value = "${chat_room_id}">
+                        <input type = "hidden" name = "user_id" value      = "${user_id}">
+                        </form>        
+
                         <button
-                            type  = "button" data-chat_room_id                 = "${chat_room_id}"
+                            type  = "button"
                             class = "btn btn-primary add_btn" data-receiver_id = "${user_id}">
                             add
                         </button>
@@ -508,18 +507,53 @@ generalEventListener('click', '.plus', e => {
 })
 
 generalEventListener('click', '.add_btn', e => {
-    let receiver_id  = e.target.getAttribute('data-receiver_id');
-    let chat_room_id = e.target.getAttribute('data-chat_room_id');
+    e.target.disabled = true;
 
-    axios.post(`/chat-room/send-user-invitation/${receiver_id}/${chat_room_id}`)
+    let user_names  = document.querySelectorAll('.user_names');
+    let receiver_id = e.target.getAttribute('data-receiver_id');
+    let form        = document.querySelector(`#add_form${receiver_id}`);
+    let data        = new FormData(form);
+
+    const err_ele     = document.querySelector('.err_msg');
+    const success_ele = document.querySelector('.success_msg');
+
+    axios.post(`/chat-room/send-invitation`,data)
         .then(res => {
             if (res.status == 200) {
+                let success_msg = res.data.success_msg;
 
+                err_ele.style.display = 'none';
+                success_ele.style.display = '';
+                success_ele.textContent   = success_msg;
+
+                user_names.forEach(user_name=>{user_name.remove()});
+            }
+        })
+        .catch(err=>{
+            let error = err.response;
+            if (error.status == 400) {
+                let error_msg = error.data.warning_msg;
+
+                success_ele.style.display = 'none';
+                err_ele.style.display = '';
+                err_ele.textContent = error_msg;
+
+                user_names.forEach(user_name=>{user_name.remove()});
+            }
+
+            if (error.status == 422) {
+                let error_msg = error.data.message;
+
+                e.target.disabled = false;
+
+                success_ele.style.display = 'none';
+                err_ele.style.display = '';
+                err_ele.textContent = error_msg;
             }
         })
 })
 
-  //MARK:search chatrooms
+//MARK:search chatrooms
 function hide_results() {
     const chatroom_btn   = document.getElementsByClassName('chatroom_btn');
     const no_results_ele = document.getElementsByClassName('no_results');
