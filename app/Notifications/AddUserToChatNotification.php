@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\{BroadcastMessage};
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Auth;
 
 class AddUserToChatNotification extends Notification implements ShouldQueue
 {
@@ -18,8 +19,8 @@ class AddUserToChatNotification extends Notification implements ShouldQueue
 	 */
 	public function __construct(
 		public string $chat_room_id,
-		public string $image,
 		public string $name,
+		public string $image,
 		public string $view,
 	) {
 	}
@@ -57,7 +58,7 @@ class AddUserToChatNotification extends Notification implements ShouldQueue
 
 	public function databaseType():string
 	{
-		return 'add_user_to_chat';
+		return 'invitation_to_chat';
 	}
 
 	public function viaQueues()

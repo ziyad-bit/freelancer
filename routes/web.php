@@ -70,11 +70,12 @@ Route::namespace('Users')->controller(NotificationsController::class)->group(fun
 
 //MARK:chat room
 Route::namespace('Users')->controller(ChatRoomController::class)->group(function(){
-    Route::get ('chat-room/index'                          ,'index')->name('chat-rooms.index');
-    Route::get ('chat-room/fetch/{receiver_id}'            ,'fetch')->name('chat-rooms.fetch');
-    Route::get ('chat-room/acceptInvitation/{chat_room_id}','acceptInvitation')->name('chat-rooms.acceptInvitation');
-    Route::get ('chat-room/show-more/{id}'                 ,'show_more_chat_rooms')->name('message.show_chat_rooms');
-    Route::post('chat-room/send-invitation'                ,'send_user_invitation')->name('chat-room.send_user_invitation');
+    Route::get ('chat-room/index'                           ,'index')->name('chat-rooms.index');
+    Route::get ('chat-room/fetch/{receiver_id}'             ,'fetch')->name('chat-rooms.fetch');
+    Route::get ('chat-room/show-more/{id}'                  ,'show_more_chat_rooms')->name('message.show_chat_rooms');
+    Route::get ('chat-room/accept-invitation/{chat_room_id}','accept_invitation')->name('chat-rooms.acceptInvitation');
+    Route::post('chat-room/refuse-invitation'               ,'refuse_invitation')->name('chat-rooms.refuseInvitation');
+    Route::post('chat-room/send-invitation'                 ,'send_user_invitation')->name('chat-room.send_user_invitation');
 });
 
 //MARK:search

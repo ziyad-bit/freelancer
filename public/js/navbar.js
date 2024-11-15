@@ -151,7 +151,6 @@ Echo.private(`App.Models.User.${auth_id}`)
 
 //show notifications and mark them as read
 const bell_ele=document.querySelector('.fa-bell');
-console.log('bell_ele: ', bell_ele);
 
 bell_ele.onclick=()=>{
     notif_ele.style.display='';
@@ -195,14 +194,15 @@ notif_ele.onscroll=()=>{
     }
 }
 
-//accept invitation
-generalEventListener('click', '.accept', e => {
-    let add_user_forms = document.querySelectorAll('.add_user_form');
-    let token=document.querySelector('[name="_token"]').value;
+//refuse invitation
+generalEventListener('click', '.refuse_btn', e => {
+    let chat_room_id = e.target.getAttribute('data-chat_room_id');
+    let refuse_url   = e.target.getAttribute('data-refuse_url');
 
-    add_user_forms.forEach(add_user_form => {
-        add_user_form.insertAdjacentHTML('afterbegin',`<input type="hidden" name="_token" value="${token}">`)
-    });
-
-    e.target.parentElement.submit();
+    axios.post(refuse_url,{'chat_room_id':chat_room_id})
+        .then(res=>{
+            if (res.status == 200) {
+                document.querySelector(`.notif_${chat_room_id}`).remove();
+            }
+        });
 })

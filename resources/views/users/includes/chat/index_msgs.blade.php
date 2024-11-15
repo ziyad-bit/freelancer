@@ -1,4 +1,4 @@
-@if ($messages !== [])
+@if ($messages->count() > 0)
     @for ($i = count($messages) - 1; $i >= 0; $i--)
         <img id="{{ $messages[$i]->id }}" class="rounded-circle image"
             src={{ asset('storage/images/users/' . $messages[$i]->sender_image) }} alt="loading">

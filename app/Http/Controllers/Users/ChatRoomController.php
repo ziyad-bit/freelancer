@@ -69,10 +69,16 @@ class ChatRoomController extends Controller
 		);
 	}
 
-	// MARK:acceptInvitation
-	public function acceptInvitation(int $receiver_id = null, int $chat_room_id = null):View|RedirectResponse
+	// MARK:send_invitation
+	public function send_user_invitation(ChatRoomRequest $request) : JsonResponse
 	{
-		$data_or_redirect = $this->chatRoomRepository->acceptInvitationForChatroom($receiver_id, $chat_room_id);
+		return $this->chatRoomRepository->sendInvitation($request);
+	}
+
+	// MARK:acceptInvitation
+	public function accept_invitation(int $chat_room_id):View|RedirectResponse
+	{
+		$data_or_redirect = $this->chatRoomRepository->acceptInvitationForChatroom($chat_room_id);
 
 		if (!is_array($data_or_redirect)) {
 			return $data_or_redirect;
@@ -92,9 +98,15 @@ class ChatRoomController extends Controller
 		);
 	}
 
-	// MARK:send_invitation
-	public function send_user_invitation(ChatRoomRequest $request) : JsonResponse
+	// MARK:refuse_invitation
+	public function refuse_invitation(ChatRoomRequest $request) : JsonResponse
 	{
-		return $this->chatRoomRepository->sendInvitation($request);
+		$response=$this->chatRoomRepository->refuseInvitationForChatroom($request);
+
+		if ($response != null) {
+			return $response;
+		}
+
+		return response()->json();
 	}
 }

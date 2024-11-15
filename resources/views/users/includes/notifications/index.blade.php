@@ -1,26 +1,31 @@
 @if ($user_notifs->count() > 0)
     @foreach ($user_notifs as $notification)
         @if ($notification->type !== 'message')
-            <div class="list-group">
+            <div class="list-group notif_{{$notification->data['chat_room_id']}}">
                 <div class="list-group-item list-group-item-action notif_hover">
-                        <div class="d-flex w-100 justify-content-between">
-                            <img src="{{ asset('storage/images/users/' . $notification->data['sender_image']) }}"
-                                class="rounded-circle" alt="error">
-                                
-                            <h5 class="mb-1 p">
-                                {{ $notification->data['sender_name'] }} send invitation to add you to chat room
-                            </h5>
-                        </div>
+                    <div class="d-flex w-100 justify-content-between">
+                        <img src="{{ asset('storage/images/users/' . $notification->data['sender_image']) }}"
+                            class="rounded-circle" alt="error">
 
-                        <span class="text-muted">
-                            {{ \Carbon\Carbon::parse($notification->created_at)->diffForhumans() }}
-                        </span>
+                        <h5 class="mb-1 p">
+                            {{ $notification->data['sender_name'] }} send invitation to add you to chat room
+                        </h5>
+                    </div>
 
-                        <a type="button" 
-                            href="{{route('chat-rooms.acceptInvitation',$notification->data['chat_room_id'])}}"
-                            class="btn btn-primary accept" style="float: right;">
-                            accept
-                        </a>
+                    <span class="text-muted">
+                        {{ \Carbon\Carbon::parse($notification->created_at)->diffForhumans() }}
+                    </span>
+
+                    <a type="button"
+                        href="{{ route('chat-rooms.acceptInvitation', $notification->data['chat_room_id']) }}"
+                        class="btn btn-primary accept" style="float: right;margin-left: 5px">
+                        accept
+                    </a>
+
+                    <button type="submit" data-refuse_url="{{ route('chat-rooms.refuseInvitation') }}"
+                        data-chat_room_id="{{ $notification->data['chat_room_id'] }}" class="btn btn-danger refuse_btn" style="float: right;">
+                        refuse
+                    </button>
                 </div>
             </div>
         @else
