@@ -17,8 +17,11 @@ class NotificationRepository implements NotificationRepositoryInterface
 	// MARK: show_old_notifs
 	public function show_old_notifs(string $created_at): string
 	{
-		$user_notifs = User::find(Auth::id())->notifications
-			->where('created_at', '<', $created_at)->take(5);
+		$user_notifs = User::find(Auth::id())
+			->notifications()
+			->where('created_at', '<', $created_at)
+			->take(5)
+			->get();
 
 		return view('users.includes.notifications.index', compact('user_notifs'))->render();
 	}

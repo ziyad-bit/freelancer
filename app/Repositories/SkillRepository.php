@@ -33,12 +33,26 @@ class SkillRepository implements SkillRepositoryInterface
 	//MARK: delete_project_Skill   
 	public function delete_project_Skill(int $skill_id):void
 	{
-		DB::table('project_skill')->where(['id' => $skill_id])->delete();
+		$project_skill_query = DB::table('project_skill')->where('id' , $skill_id);
+		$project_skill       = $project_skill_query->first();
+
+		if (!$project_skill) {
+			return redirect()->back()->with('error', 'proposal not found');
+		}
+
+		$project_skill_query->delete();
 	}
 
 	//MARK: deleteSkill   
 	public function deleteSkill(int $id):void
 	{
-		DB::table('user_skill')->where('id', $id)->delete();
+		$user_skill_query = DB::table('user_skill')->where('id' , $id);
+		$user_skill       = $user_skill_query->first();
+
+		if (!$user_skill) {
+			return redirect()->back()->with('error', 'proposal not found');
+		}
+
+		$user_skill_query->delete();
 	}
 }

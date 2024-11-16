@@ -11,6 +11,7 @@ interface ChatRoomRepositoryInterface
 	public function fetchWithSelectedUser(int $receiver_id):array|RedirectResponse|JsonResponse;
 	public function getChatRooms(int $message_id):array;
 	public function sendInvitation(ChatRoomRequest $request):JsonResponse;
-	public function acceptInvitationForChatroom(int $chat_room_id):array|RedirectResponse|JsonResponse;
-	public function refuseInvitationForChatroom(ChatRoomRequest $request):null|JsonResponse;
+	public function postAcceptInvitationChatroom(ChatRoomRequest $request):null|RedirectResponse;
+	public function getAcceptInvitationChatroom(int $chat_room_id):array;
+	public function refuseInvitationChatroom(ChatRoomRequest $request):null|JsonResponse;
 }

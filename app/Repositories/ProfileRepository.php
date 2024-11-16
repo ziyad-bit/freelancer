@@ -55,11 +55,12 @@ class ProfileRepository implements ProfileRepositoryInterface
 		DB::table('user_infos')->where('user_id', $user_id)->update($data);
 
 		if ($request->has('image')) {
-			$old_image = DB::table('users')->where('id', $user_id)->value('image');
+			$user_query = DB::table('users')->where('id', $user_id);
+			$old_image  = $user_query->value('image');
 
 			$new_image = $this->updateImage($request, 199, $old_image);
 
-			DB::table('users')->where('id', $user_id)->update(['image' => $new_image]);
+			$user_query->update(['image' => $new_image]);
 		}
 
 		$request->session()->regenerate();

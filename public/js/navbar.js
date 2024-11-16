@@ -1,6 +1,6 @@
-const search_ele   = document.getElementById('search'),
-    list_search_item   = document.getElementsByClassName('search_item'),
-    list_search_group = document.querySelector('.navbar_list_search');
+const search_ele  = document.getElementById('search'),
+list_search_item  = document.getElementsByClassName('search_item'),
+list_search_group = document.querySelector('.navbar_list_search');
 
     const search_wrapper = document.querySelector('#search_wrapper');
 
@@ -154,15 +154,15 @@ const bell_ele=document.querySelector('.fa-bell');
 
 bell_ele.onclick=()=>{
     notif_ele.style.display='';
-    let notif_count = Number(notifs_count_ele.textContent);
+
     let url = document.querySelector('.wrapper_notifs').getAttribute('data-update_url');
 
-    if (notif_count > 0) {
+    if (notifs_count > 0) {
         axios.put(url )
             .then(res=>{
                 if (res.status == 200) {
                     notifs_count_ele.style.display='none';
-                    notifs_count_ele.innerText='0';
+                    notifs_count = 0;
                 }
             });
     }
@@ -174,12 +174,11 @@ if (notifs_count != 0) {
 
 //infinite scroll for notifications
 let notif_req=true;
-notif_ele.onscroll=()=>{
-    
+notif_ele.onscroll=(e)=>{
     if (notif_ele.offsetHeight-2 == notif_ele.scrollHeight - notif_ele.scrollTop && notif_req == true) {
-        let last_created_at=notif_ele.lastElementChild.getAttribute('data-created_at');
+        let show_notifs_url=document.querySelector('#show_notifs_url').value;
 
-        axios.get('/notifications/show-old/'+last_created_at)
+        axios.get(show_notifs_url)
             .then(res=>{
                 if (res.status == 200) {
                     let view=res.data.view;
@@ -196,7 +195,7 @@ notif_ele.onscroll=()=>{
 
 //refuse invitation
 generalEventListener('click', '.refuse_btn', e => {
-    let chat_room_id = e.target.getAttribute('data-chat_room_id');
+    let chat_room_id = e.target.parentElement.getAttribute('data-chat_room_id');
     let refuse_url   = e.target.getAttribute('data-refuse_url');
 
     axios.post(refuse_url,{'chat_room_id':chat_room_id})

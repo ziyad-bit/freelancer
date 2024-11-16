@@ -16,11 +16,14 @@
                         {{ \Carbon\Carbon::parse($notification->created_at)->diffForhumans() }}
                     </span>
 
-                    <a type="button"
-                        href="{{ route('chat-rooms.acceptInvitation', $notification->data['chat_room_id']) }}"
-                        class="btn btn-primary accept" style="float: right;margin-left: 5px">
-                        accept
-                    </a>
+                    <form action="{{route('chat-rooms.postAcceptInvitation')}}" method="POST">
+                        @csrf
+                        <input type="hidden" name="chat_room_id" value="{{ $notification->data['chat_room_id'] }}">
+                        
+                        <button type="submit" class="btn btn-primary accept" style="float: right;margin-left: 5px">
+                            accept
+                        </button>
+                    </form>
 
                     <button type="submit" data-refuse_url="{{ route('chat-rooms.refuseInvitation') }}"
                         data-chat_room_id="{{ $notification->data['chat_room_id'] }}" class="btn btn-danger refuse_btn" style="float: right;">
@@ -29,11 +32,15 @@
                 </div>
             </div>
         @else
-            <div class="list-group notifications" data-created_at="{{ $notification->created_at }}">
+            <div class="list-group notifications" >
 
+                @if ($loop->last)
+                    <input type="hidden" id="show_notifs_url" value="{{route('notifications.show_old',$notification->created_at)}}">
+                @endif
                 <a href="{{ route('chat-rooms.index', $notification->notifiable_id) }}"
                     class="list-group-item list-group-item-action notif_hover">
                     <div class="d-flex w-100 justify-content-between">
+                        
                         <img src="{{ asset('storage/images/users/' . $notification->data['sender_image']) }}"
                             class="rounded-circle" alt="error">
                         <h5 class="mb-1 p">

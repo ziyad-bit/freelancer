@@ -65,7 +65,7 @@ Route::namespace('Users')->controller(MessageController::class)->group(function(
 //MARK:notifications
 Route::namespace('Users')->controller(NotificationsController::class)->group(function(){
     Route::put ('notifications/update'          ,'update')->name('notifications.update');
-    Route::get ('notifications/show-old/{id}'   ,'show_old')->name('notifications.show_old');
+    Route::get ('notifications/show-old/{created_at}'   ,'show_old')->name('notifications.show_old');
 });
 
 //MARK:chat room
@@ -73,7 +73,8 @@ Route::namespace('Users')->controller(ChatRoomController::class)->group(function
     Route::get ('chat-room/index'                           ,'index')->name('chat-rooms.index');
     Route::get ('chat-room/fetch/{receiver_id}'             ,'fetch')->name('chat-rooms.fetch');
     Route::get ('chat-room/show-more/{id}'                  ,'show_more_chat_rooms')->name('message.show_chat_rooms');
-    Route::get ('chat-room/accept-invitation/{chat_room_id}','accept_invitation')->name('chat-rooms.acceptInvitation');
+    Route::post('chat-room/accept-invitation'               ,'post_accept_invitation')->name('chat-rooms.postAcceptInvitation');
+    Route::get ('chat-room/accept-invitation/{chat_room_id}','get_accept_invitation')->name('chat-rooms.getAcceptInvitation');
     Route::post('chat-room/refuse-invitation'               ,'refuse_invitation')->name('chat-rooms.refuseInvitation');
     Route::post('chat-room/send-invitation'                 ,'send_user_invitation')->name('chat-room.send_user_invitation');
 });

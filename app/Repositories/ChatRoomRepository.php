@@ -8,7 +8,7 @@ use App\Interfaces\Repository\ChatRoomRepositoryInterface;
 use App\Models\User;
 use App\Notifications\{AddUserToChatNotification};
 use Illuminate\Http\{JsonResponse, RedirectResponse};
-use Illuminate\Support\Facades\{Auth, DB};
+use Illuminate\Support\Facades\{Auth, Cache, DB};
 
 class ChatRoomRepository implements ChatRoomRepositoryInterface
 {
@@ -176,13 +176,17 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			)
 		);
 
+		Cache::forget('notifs_'.$receiver_id);
+		Cache::forget('notifs_count_'.$receiver_id);
+
 		return response()->json(['success_msg' => 'you send invitation successfully']);
 	}
 
 	// MARK: acceptInvitation
-	public function acceptInvitationForChatroom(int $chat_room_id): array|RedirectResponse
+	public function postAcceptInvitationChatroom(ChatRoomRequest $request):null|RedirectResponse
 	{
-		$auth_id = Auth::id();
+		$auth_id      = Auth::id();
+		$chat_room_id = $request->chat_room_id;
 
 		$chat_room_user_query = DB::table('chat_room_user')
 			->where(['chat_room_id' => $chat_room_id, 'user_id' => $auth_id]);
@@ -192,6 +196,20 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		if (!$chat_room) {
 			return to_route('chat-rooms.index')->with('error', 'user not found');
 		}
+
+		$chat_room_user_query->update(['decision' => 'approved']);
+
+		DB::table('notifications')
+			->where(['data->chat_room_id' => $chat_room_id, 'notifiable_id' => $auth_id])
+			->delete();
+		
+		return null;
+	}
+
+	// MARK: getAcceptInvitation
+	public function getAcceptInvitationChatroom(int $chat_room_id):array
+	{
+		$auth_id = Auth::id();
 
 		$selected_chat_room = ChatRooms::fetch(
 			['messages.chat_room_id' => $chat_room_id, 'last' => 1],
@@ -206,26 +224,17 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		->limit(3);
 
 		$all_chat_rooms = $all_chat_rooms->union($selected_chat_room)->get();
-
-		$chat_room_user_query->update(['decision' => 'approved']);
-
-		DB::table('notifications')
-			->where(['data->chat_room_id' => $chat_room_id, 'notifiable_id' => $auth_id])
-			->delete();
-
-		$messages = Messages::index($chat_room_id);
+		$messages       = Messages::index($chat_room_id);
 
 		return [
 			'messages'       => $messages,
 			'chat_room_id'   => $chat_room_id,
 			'all_chat_rooms' => $all_chat_rooms,
-			'receiver'       => null,
-			'show_chatroom'  => true,
 		];
 	}
 
 	// MARK: refuseInvitation
-	public function refuseInvitationForChatroom(ChatRoomRequest $request): null|JsonResponse
+	public function refuseInvitationChatroom(ChatRoomRequest $request): null|JsonResponse
 	{
 		$chat_room_id = $request->chat_room_id;
 		$auth_id      = Auth::id();

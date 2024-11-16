@@ -21,12 +21,26 @@ class ProposalRepository implements ProposalRepositoryInterface
 	{
 		$data = $request->validated();
 
-		DB::table('proposals')->where('id', $id)->update($data);
+		$proposal_query = DB::table('proposals')->where('id', $id);
+		$proposal       = $proposal_query->first();
+
+		if (!$proposal) {
+			return redirect()->back()->with('error', 'proposal not found');
+		}
+
+		$proposal_query->update($data);
 	}
 
 	//MARK: deleteProposal   
 	public function deleteProposal(int $id): void
 	{
-		DB::table('proposals')->where('id', $id)->delete();
+		$proposal_query = DB::table('proposals')->where('id', $id);
+		$proposal       = $proposal_query->first();
+
+		if (!$proposal) {
+			return redirect()->back()->with('error', 'proposal not found');
+		}
+
+		$proposal_query->delete();
 	}
 }

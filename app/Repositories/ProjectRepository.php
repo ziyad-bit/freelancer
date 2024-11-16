@@ -175,13 +175,14 @@ class ProjectRepository implements ProjectRepositoryInterface
 		$project_data      = $request->safe()->only(['title', 'content']) + ['user_id' => Auth::id(), 'created_at' => now()];
 		$project_info_data = $request->safe()->only(['num_of_days', 'min_price', 'max_price', 'exp']);
 
-		$project = DB::table('projects')->where('id', $id)->first();
+		$project_query = DB::table('projects')->where('id', $id);
+		$project       = $project_query->first();
 
 		if (!$project) {
 			return redirect()->back()->with('error', 'project not found');
 		}
 
-		DB::table('projects')->where('id', $id)->update($project_data);
+		$project_query->update($project_data);
 
 		DB::table('project_infos')->where('project_id', $id)->update($project_info_data);
 
@@ -195,13 +196,14 @@ class ProjectRepository implements ProjectRepositoryInterface
 	//MARK: deleteProject   
 	public function deleteProject(int $id):RedirectResponse
 	{
-		$project = DB::table('projects')->where('id', $id)->first();
+		$project_query = DB::table('projects')->where('id', $id);
+		$project       = $project_query->first();
 
 		if (!$project) {
 			return redirect()->back()->with('error', 'project not found');
 		}
 
-		DB::table('projects')->where('id', $id)->delete();
+		$project_query->delete();
 
 		return to_route('project.index_posts')->with('success', 'you deleted successfully project');
 	}
