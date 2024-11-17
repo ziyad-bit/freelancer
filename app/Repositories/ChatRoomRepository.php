@@ -7,11 +7,14 @@ use App\Http\Requests\{ChatRoomRequest};
 use App\Interfaces\Repository\ChatRoomRepositoryInterface;
 use App\Models\User;
 use App\Notifications\{AddUserToChatNotification};
+use App\Traits\DatabaseCache;
 use Illuminate\Http\{JsonResponse, RedirectResponse};
 use Illuminate\Support\Facades\{Auth, Cache, DB};
 
 class ChatRoomRepository implements ChatRoomRepositoryInterface
 {
+	use DatabaseCache;
+
 	// MARK: indexChatroom
 	public function indexChatroom():array
 	{
@@ -21,7 +24,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			['messages.receiver_id' => $auth_id, 'last' => 1]
 		)
 		->latest('messages.id')
-		->limit(3)
+		->limit(4)
 		->get();
 
 		$messages     = [];
@@ -46,7 +49,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 	{
 		$receiver = DB::table('users')->find($receiver_id, ['name', 'image', 'id']);
 		if (!$receiver) {
-			return to_route('chat-rooms.index')->with('error', 'user not found');
+			return to_route('chatrooms.index')->with('error', 'user not found');
 		}
 
 		$auth_id        = Auth::id();
@@ -55,7 +58,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			['messages.receiver_id' => $auth_id, 'last' => 1]
 		)
 		->latest('messages.id')
-		->limit(3);
+		->limit(4);
 
 		$selected_chat_room = ChatRooms::fetch(
 			['messages.sender_id' => $auth_id, 'messages.receiver_id' => $receiver_id, 'last' => 1],
@@ -124,7 +127,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			$message_id
 		)
 		->latest('messages.id')
-		->limit(3)
+		->limit(4)
 		->get();
 
 		$chat_room_id       = null;
@@ -176,8 +179,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			)
 		);
 
-		Cache::forget('notifs_'.$receiver_id);
-		Cache::forget('notifs_count_'.$receiver_id);
+		$this->forgetCache($receiver_id);
 
 		return response()->json(['success_msg' => 'you send invitation successfully']);
 	}
@@ -194,7 +196,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		$chat_room  = $chat_room_user_query->first();
 
 		if (!$chat_room) {
-			return to_route('chat-rooms.index')->with('error', 'user not found');
+			return to_route('chatrooms.index')->with('error', 'user not found');
 		}
 
 		$chat_room_user_query->update(['decision' => 'approved']);
@@ -202,6 +204,8 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		DB::table('notifications')
 			->where(['data->chat_room_id' => $chat_room_id, 'notifiable_id' => $auth_id])
 			->delete();
+
+		$this->forgetCache($auth_id);
 		
 		return null;
 	}
@@ -221,7 +225,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			['messages.receiver_id' => $auth_id, 'last' => 1]
 		)
 		->latest('messages.id')
-		->limit(3);
+		->limit(4);
 
 		$all_chat_rooms = $all_chat_rooms->union($selected_chat_room)->get();
 		$messages       = Messages::index($chat_room_id);
@@ -253,6 +257,8 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		DB::table('notifications')
 			->where(['data->chat_room_id' => $chat_room_id, 'notifiable_id' => $auth_id])
 			->delete();
+
+		$this->forgetCache($auth_id);
 
 		return null;
 	}

@@ -25,7 +25,7 @@ class ChatRoomRequest extends FormRequest
 	public function rules()
 	{
 		$route               = Route::currentRouteName();
-		$is_user_id_required = $route == 'chat-room.send_user_invitation' ? 'required' : 'nullable';
+		$is_user_id_required = $route == 'chatrooms.send_user_invitation' ? 'required' : 'nullable';
 
 		return [
 			'chat_room_id' => 'required|numeric',

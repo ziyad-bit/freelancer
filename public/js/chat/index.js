@@ -5,7 +5,7 @@ let subscribedChatChannels = new Set();
 
 window.onbeforeunload = function () {
     subscribedChatChannels.forEach(key => {
-        Echo.leaveChannel(`chat-room.${key}`);
+        Echo.leaveChannel(`chatrooms.${key}`);
     })
 }
 
@@ -34,12 +34,13 @@ function loadOldMessages() {
         chat_box[i].onscroll = function () {
             if (chat_box[i].scrollTop == 0) {
                 if (old_msg == true) {
-                    let first_msg_id = this.firstElementChild.id,
-                        chat_room_id = this.getAttribute('data-chat_room_id');
+                    let first_msg_id      = this.firstElementChild.id,
+                        chat_room_id      = this.getAttribute('data-chat_room_id');
+                        show_old_msgs_url = this.getAttribute('data-show_old_msgs_url');
 
                     const box = document.getElementsByClassName('box' + chat_room_id)[0];
 
-                    axios.put("/message/show-old/" + chat_room_id, { 'first_msg_id': first_msg_id })
+                    axios.put(show_old_msgs_url, { 'first_msg_id': first_msg_id })
                         .then(res => {
                             if (res.status == 200) {
                                 let view = res.data.view;
@@ -56,9 +57,6 @@ function loadOldMessages() {
                                 }
                             }
                         })
-                        .catch(err => {
-                            old_msg = false;
-                        })
                 }
             }
         }
@@ -73,10 +71,10 @@ const chat_room_box          = document.querySelector('.list_tab_users');
 let   data_chat_rooms_status = true;
 
 function loadPages() {
-    let message_id = chat_room_box.lastElementChild.getAttribute('data-message_id');
+    let show_more_chat_url = chat_room_box.lastElementChild.getAttribute('data-show_more_chat_url');
 
     if (data_chat_rooms_status) {
-        axios.get("/chat-room/show-more/" + message_id)
+        axios.get(show_more_chat_url)
             .then(res => {
                 if (res.status == 200) {
                     let chat_room_view = res.data.chat_room_view,
@@ -110,12 +108,13 @@ function storeMsg(e) {
     e.preventDefault();
 
     let chat_room_id = e.target.parentElement.getAttribute('data-chat_room_id'),
+        store_msg_url= e.target.parentElement.getAttribute('data-store_msg_url'),
         form         = document.querySelector('#form' + chat_room_id),
         formData     = new FormData(form);
 
     const msg_err = document.getElementsByClassName(`msg_err${chat_room_id}`)[0];
 
-    axios.post('/message', formData)
+    axios.post(store_msg_url, formData)
         .then(res => {
             if (res.status == 200) {
                 let auth_name  = document.getElementById('auth_name').value,
@@ -327,7 +326,7 @@ function is_typing(e) {
 
   //MARK:sub chat channel
 function subscribeChatChannel(chat_room_id) {
-    Echo.join(`chat-room.` + chat_room_id)
+    Echo.join(`chatrooms.` + chat_room_id)
         .joining((data) => {
             const plus_ele            = document.querySelector('.plus' + data.chat_room_id);
             let   chat_room_users_ids = plus_ele.getAttribute('data-chat_room_users_ids');
@@ -402,7 +401,8 @@ function subscribeChatChannel(chat_room_id) {
 }
 
 
-  //MARK:get chat msgs
+//MARK:get chat msgs
+//when click on chatroom
 function getNewMessages(chat_room_id) {
     const box = document.getElementsByClassName('box' + chat_room_id)[0];
 
@@ -452,7 +452,7 @@ generalEventListener('input', '.send_input', e => {
     let chat_room_id = card.getAttribute('data-chat_room_id');
     let user_id      = document.getElementById('auth_id').value;
 
-    Echo.join(`chat-room.` + chat_room_id).whisper('typing', {
+    Echo.join(`chatrooms.` + chat_room_id).whisper('typing', {
         chat_room_id   : chat_room_id,
         user_id        : user_id,
         msg_input_value: document.querySelector('#msg' + chat_room_id).value
@@ -517,7 +517,7 @@ generalEventListener('click', '.add_btn', e => {
     const err_ele     = document.querySelector('.err_msg');
     const success_ele = document.querySelector('.success_msg');
 
-    axios.post(`/chat-room/send-invitation`,data)
+    axios.post(`/chatrooms/send-invitation`,data)
         .then(res => {
             if (res.status == 200) {
                 let success_msg = res.data.success_msg;
@@ -588,7 +588,7 @@ function search_chatrooms(page) {
 
         search_chatrooms_arr.unshift(search_input_val);
 
-        axios.post('/search/chat-room?page=' + page, { 'search': search_input_val })
+        axios.post('/search/chatrooms?page=' + page, { 'search': search_input_val })
             .then((res) => {
                 if (res.status == 200) {
                     let chat_room_view = res.data.chat_room_view;

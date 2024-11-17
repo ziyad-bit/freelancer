@@ -48,7 +48,7 @@
         id="list-home-list" data-bs-toggle="pill" data-bs-target={{ '#chat_box' . $receiver_id }} role="tab"
         data-chat_room_id="{{ $message->chat_room_id }}" data-message_id="{{ $message->id }}" aria-controls="home"
         data-index="{{ $i }}" data-status={{ $is_selected_chat_room ? 'true' : 'false' }}
-        data-selected_chat_room_id="{{ $chat_room_id }}">
+        data-selected_chat_room_id="{{ $chat_room_id }}" data-show_more_chat_url="{{route('chatrooms.show_chat_rooms',$message->id)}}">
 
         <i class="fa-solid fa-plus plus plus{{ $message->chat_room_id }}" data-bs-toggle="modal"
             data-bs-target="#send_user_invitation" data-receiver_id="{{ $receiver_id }}"
@@ -100,7 +100,7 @@
 @if ($receiver)
     <button
         class="{{ $is_chatroom_page_1 ? 'chatroom_page_1' : '' }} search_{{ $searchName }}  chatroom_btn user_btn nav-link {{ 'chat_room_' . $chat_room_id }}  
-list-group-item list-group-item-action {{ $is_selected_chat_room ? 'active index_0' : null }}"
+        list-group-item list-group-item-action {{ $is_selected_chat_room ? 'active index_0' : null }}"
         id="list-home-list" data-bs-toggle="pill" data-bs-target={{ '#chat_box' . $receiver_id }} role="tab"
         data-chat_room_id="{{ $chat_room_id }}" aria-controls="home" data-index="{{ $i }}"
         data-status={{ $is_selected_chat_room ? 'true' : 'false' }} data-selected_chat_room_id="{{ $chat_room_id }}">

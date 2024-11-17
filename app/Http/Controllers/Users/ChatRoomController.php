@@ -84,7 +84,7 @@ class ChatRoomController extends Controller
 			return $is_null;
 		}
 
-		return to_route('chat-rooms.getAcceptInvitation',$request->chat_room_id);
+		return to_route('chatrooms.getAcceptInvitation',$request->chat_room_id);
 	}
 
 	// MARK:getAcceptInvitation

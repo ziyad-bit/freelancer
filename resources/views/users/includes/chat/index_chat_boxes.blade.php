@@ -26,7 +26,7 @@
         <div style="display: none" id="chat_room_id" data-chat_room_id="{{ $chat_room_id }}"></div>
 
         <form id={{ 'form' . $chat_room->chat_room_id }} enctype="multipart/form-data">
-            <div class="card" style="height: 316px" data-chat_room_id="{{ $chat_room->chat_room_id }}">
+            <div class="card" style="height: 316px" data-store_msg_url="{{route('message.store')}}" data-chat_room_id="{{ $chat_room->chat_room_id }}">
 
                 <h5 class="card-header">chat
                     <span id="loading{{ $receiver_id }}" style="margin-left: 50px;display:none">loading old
@@ -35,7 +35,9 @@
                 </h5>
 
                 <div class="card-body chat_body box{{ $chat_room->chat_room_id }}"
-                    data-chat_room_id="{{ $chat_room->chat_room_id }}" data-old_message='1'>
+                    data-chat_room_id="{{ $chat_room->chat_room_id }}"
+                    data-old_message='1' data-show_old_msgs_url="{{route('message.show_old',$chat_room->chat_room_id)}}">
+
                     @if ($is_selected_chat_room)
                         @include('users.includes.chat.index_msgs')
                     @endif

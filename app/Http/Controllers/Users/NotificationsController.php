@@ -14,9 +14,11 @@ class NotificationsController extends Controller
 	}
 
 	//MARK: update   
-	public function update() : void
+	public function update() : JsonResponse
 	{
 		$this->notificationsRepository->update();
+
+		return response()->json();
 	}
 
 	//MARK: show_old   

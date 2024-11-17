@@ -27,6 +27,6 @@ class MessageEvent implements ShouldBroadcast
 	 */
 	public function broadcastOn()
 	{
-		return new PresenceChannel('chat-room.' . $this->data['chat_room_id']);
+		return new PresenceChannel('chatrooms.' . $this->data['chat_room_id']);
 	}
 }
