@@ -24,8 +24,8 @@ class NotificationSeeder extends Seeder
 			$date   = $this->dateRandom();
 
 			DB::table('notifications')->insert([
-				'read'        => Arr::random(['read', 'unread']),
-				'type'        => Arr::random(['message', 'approval']),
+				'read_at'     => $date,
+				'type'        => Arr::random(['message', 'add_user_to_chat']),
 				'sender_id'   => $users->random(),
 				'receiver_id' => $users->random(),
 				'created_at'  => $date,

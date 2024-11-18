@@ -24,8 +24,7 @@ class Project_infoSeeder extends Seeder
 				'min_price'   => $faker->numberBetween(100, 200),
 				'max_price'   => $faker->numberBetween(200, 300),
 				'num_of_days' => rand(1, 30),
-				'exp'         => Arr::random(['beginer', 'intermediate', 'experienced']),
-				'file'        => null,
+				'exp'         => Arr::random(['beginner', 'intermediate', 'experienced']),
 				'project_id'  => $project,
 			]);
 		}

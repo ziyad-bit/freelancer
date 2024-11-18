@@ -150,7 +150,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 	public function sendInvitation(ChatRoomRequest $request):JsonResponse
 	{
 		$chat_room_id = $request->chat_room_id;
-		$receiver_id  = $request->receiver_id;
+		$receiver_id  = $request->user_id;
 		$data         = $request->validated() + ['created_at' => now()];
 
 		$user_in_chatroom = DB::table('chat_room_user')

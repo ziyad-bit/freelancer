@@ -403,14 +403,14 @@ function subscribeChatChannel(chat_room_id) {
 
 //MARK:get chat msgs
 //when click on chatroom
-function getNewMessages(chat_room_id) {
+function getNewMessages(chat_room_id,show_msgs_url) {
     const box = document.getElementsByClassName('box' + chat_room_id)[0];
 
     let data_status_ele = document.querySelector('.chat_room_' + chat_room_id);
     let data_status     = data_status_ele.getAttribute('data-status');
 
     if (data_status == 'false') {
-        axios.get("/message/" + chat_room_id)
+        axios.get(show_msgs_url)
             .then(res => {
                 if (res.status == 200) {
                     let view = res.data.view;
@@ -435,10 +435,13 @@ function getNewMessages(chat_room_id) {
 
 generalEventListener('click', '.user_btn', e => {
     let chat_room_id          = e.target.getAttribute('data-chat_room_id');
+        show_msgs_url         = e.target.getAttribute('data-show_msgs_url');
+        
         selected_chat_room_id = chat_room_id;
+        
     subscribedChatChannels.add(Number(chat_room_id));
 
-    getNewMessages(chat_room_id);
+    getNewMessages(chat_room_id,show_msgs_url);
 })
 
 
@@ -459,7 +462,7 @@ generalEventListener('input', '.send_input', e => {
     });
 })
 
-  //MARK:send invitation
+//MARK:send invitation
 generalEventListener('click', '.plus', e => {
     let user_names_ele = document.querySelectorAll('.user_names');
 
@@ -484,7 +487,7 @@ generalEventListener('click', '.plus', e => {
 
             add_body_modal.insertAdjacentHTML('beforeend',
                 `
-                    <li class = "list-group-item user_names">
+                    <li class = "list-group-item user_names user${user_id}">
 
                         <img class = "rounded-circle image" alt = "loading"
                             src   = "${user_image}">
@@ -509,24 +512,25 @@ generalEventListener('click', '.plus', e => {
 generalEventListener('click', '.add_btn', e => {
     e.target.disabled = true;
 
-    let user_names  = document.querySelectorAll('.user_names');
-    let receiver_id = e.target.getAttribute('data-receiver_id');
-    let form        = document.querySelector(`#add_form${receiver_id}`);
-    let data        = new FormData(form);
+    let receiver_id         = e.target.getAttribute('data-receiver_id');
+    let form                = document.querySelector(`#add_form${receiver_id}`);
+    let send_invitation_url = document.querySelector(`.add_body`).getAttribute('data-send_invitation_url');
+    let data                = new FormData(form);
+    let user_ele            = document.querySelector(`.user${receiver_id}`);
 
     const err_ele     = document.querySelector('.err_msg');
     const success_ele = document.querySelector('.success_msg');
 
-    axios.post(`/chatrooms/send-invitation`,data)
+    axios.post(send_invitation_url,data)
         .then(res => {
             if (res.status == 200) {
                 let success_msg = res.data.success_msg;
 
-                err_ele.style.display = 'none';
+                err_ele.style.display     = 'none';
                 success_ele.style.display = '';
                 success_ele.textContent   = success_msg;
 
-                user_names.forEach(user_name=>{user_name.remove()});
+                user_ele.remove();
             }
         })
         .catch(err=>{
@@ -538,7 +542,7 @@ generalEventListener('click', '.add_btn', e => {
                 err_ele.style.display = '';
                 err_ele.textContent = error_msg;
 
-                user_names.forEach(user_name=>{user_name.remove()});
+                user_ele.remove();
             }
 
             if (error.status == 422) {
@@ -571,8 +575,9 @@ const search_input_ele = document.querySelector('.search_input');
 
 let search_chatrooms_arr = [];
 
-function search_chatrooms(page) {
+function search_chatrooms() {
     let search_input_val = search_input_ele.value;
+    let search_url       = search_input_ele.getAttribute('data-search_url');
 
     if (search_input_val) {
         if (search_chatrooms_arr.includes(search_input_val)) {
@@ -588,7 +593,7 @@ function search_chatrooms(page) {
 
         search_chatrooms_arr.unshift(search_input_val);
 
-        axios.post('/search/chatrooms?page=' + page, { 'search': search_input_val })
+        axios.post(search_url  , { 'search': search_input_val })
             .then((res) => {
                 if (res.status == 200) {
                     let chat_room_view = res.data.chat_room_view;
@@ -614,7 +619,6 @@ function search_chatrooms(page) {
     }
 }
 
-let chatroom_page = 1;
 search_input_ele.addEventListener('input', debounce(() => {
-    search_chatrooms(chatroom_page);
+    search_chatrooms();
 }, 1000))

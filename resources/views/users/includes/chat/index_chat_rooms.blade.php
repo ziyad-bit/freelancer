@@ -8,7 +8,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                <div class="modal-body add_body">
+                <div class="modal-body add_body" data-send_invitation_url="{{route('chatrooms.send_user_invitation')}}">
                     <div style="display: none" class="alert alert-success text-center success_msg"></div>
 
                     <div style="display: none" class="alert alert-danger text-center err_msg"></div>
@@ -45,10 +45,11 @@
     <button
         class="{{ $is_chatroom_page_1 ? 'chatroom_page_1' : '' }} search_{{ $searchName }}  chatroom_btn user_btn nav-link {{ 'chat_room_' . $message->chat_room_id }}  
         list-group-item list-group-item-action {{ $is_selected_chat_room ? 'active index_0' : null }}"
-        id="list-home-list" data-bs-toggle="pill" data-bs-target={{ '#chat_box' . $receiver_id }} role="tab"
+        id="list-home-list" data-bs-toggle="pill" data-bs-target={{ '#chat_box' .$message->chat_room_id }} role="tab"
         data-chat_room_id="{{ $message->chat_room_id }}" data-message_id="{{ $message->id }}" aria-controls="home"
         data-index="{{ $i }}" data-status={{ $is_selected_chat_room ? 'true' : 'false' }}
-        data-selected_chat_room_id="{{ $chat_room_id }}" data-show_more_chat_url="{{route('chatrooms.show_chat_rooms',$message->id)}}">
+        data-selected_chat_room_id="{{ $chat_room_id }}" data-show_more_chat_url="{{route('chatrooms.show_chat_rooms',$message->id)}}"
+        data-show_msgs_url="{{route('message.show',$message->chat_room_id)}}">
 
         <i class="fa-solid fa-plus plus plus{{ $message->chat_room_id }}" data-bs-toggle="modal"
             data-bs-target="#send_user_invitation" data-receiver_id="{{ $receiver_id }}"
@@ -103,7 +104,8 @@
         list-group-item list-group-item-action {{ $is_selected_chat_room ? 'active index_0' : null }}"
         id="list-home-list" data-bs-toggle="pill" data-bs-target={{ '#chat_box' . $receiver_id }} role="tab"
         data-chat_room_id="{{ $chat_room_id }}" aria-controls="home" data-index="{{ $i }}"
-        data-status={{ $is_selected_chat_room ? 'true' : 'false' }} data-selected_chat_room_id="{{ $chat_room_id }}">
+        data-status={{ $is_selected_chat_room ? 'true' : 'false' }} data-selected_chat_room_id="{{ $chat_room_id }}"
+        data-show_msgs_url="{{route('message.show',$chat_room_id)}}" data-show_more_chat_url="{{route('chatrooms.show_chat_rooms',$message->id)}}">
 
         <i class="fa-solid fa-plus plus plus{{ $chat_room_id }}" data-bs-toggle="modal"
             data-bs-target="#send_user_invitation" data-receiver_id="{{ $receiver->id }}"

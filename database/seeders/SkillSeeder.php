@@ -18,7 +18,7 @@ class SkillSeeder extends Seeder
 
 		foreach ($skills as $skill) {
 			DB::table('skills')->insert([
-				'name'       => $skill,
+				'skill'       => $skill,
 			]);
 		}
 	}

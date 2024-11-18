@@ -7,7 +7,7 @@ use Faker\Factory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class MessageSeeder extends Seeder
+class ChatroomSeeder extends Seeder
 {
 	use DateRandom;
 	/**
@@ -19,16 +19,13 @@ class MessageSeeder extends Seeder
 	{
 		$faker   = Factory::create();
 		$users   = collect(DB::table('users')->pluck('id')->toArray());
-		$chatrooms   = collect(DB::table('chat_rooms')->pluck('id')->toArray());
 
 		for ($i = 0; $i < 100; $i++) {
 			$date   = $this->dateRandom();
 
-			DB::table('messages')->insert([
-				'text'        => $faker->sentence(3),
-				'sender_id'   => $users->random(),
-				'receiver_id' => $users->random(),
-				'chat_room_id' => $chatrooms->random(),
+			DB::table('chat_rooms')->insert([
+				'id'=>$faker->uuid(),
+				'owner_id'   => $users->random(),
 				'created_at'  => $date,
 			]);
 		}
