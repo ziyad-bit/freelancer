@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 class Messages
 {
 	// get    #####################################
-	public static function index(int $chat_room_id, $request = null, bool $oldMsgs = false):Collection
+	public static function index(string $chat_room_id, $request = null, bool $oldMsgs = false):Collection
 	{
 		return DB::table('messages')
 			->join('users as sender', 'messages.sender_id', '=', 'sender.id')

@@ -71,7 +71,7 @@ Route::namespace('Users')->controller(NotificationsController::class)->group(fun
 Route::namespace('Users')->controller(ChatRoomController::class)->group(function () {
 	Route::get('chatrooms/index'                           , 'index')->name('chatrooms.index');
 	Route::get('chatrooms/fetch/{receiver_id}'             , 'fetch')->name('chatrooms.fetch');
-	Route::get('chatrooms/show-more/{id}'                  , 'show_more_chat_rooms')->name('chatrooms.show_chat_rooms');
+	Route::get('chatrooms/show-more/{id}'                  , 'show_more_chat_rooms')->name('chatrooms.show_more');
 	Route::post('chatrooms/accept-invitation'              , 'post_accept_invitation')->name('chatrooms.postAcceptInvitation');
 	Route::get('chatrooms/accept-invitation/{chat_room_id}', 'get_accept_invitation')->name('chatrooms.getAcceptInvitation');
 	Route::post('chatrooms/refuse-invitation'              , 'refuse_invitation')->name('chatrooms.refuseInvitation');

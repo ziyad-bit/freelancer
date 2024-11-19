@@ -1,7 +1,8 @@
 @if ($user_notifs->count() > 0)
     @foreach ($user_notifs as $notification)
         @if ($notification->type !== 'message')
-            <div class="list-group notif_{{ $notification->data['chat_room_id'] }}">
+            <div class="list-group notif_{{ $notification->data['chat_room_id'] }}"
+                data-show_old_url="{{ $loop->last ? route('notifications.show_old', $notification->created_at) : '' }}">
                 <div class="list-group-item list-group-item-action notif_hover">
                     <div class="d-flex w-100 justify-content-between">
                         <img src="{{ asset('storage/images/users/' . $notification->data['sender_image']) }}"

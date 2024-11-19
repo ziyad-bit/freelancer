@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Http\Requests\ProposalRequest;
 use App\Interfaces\Repository\ProposalRepositoryInterface;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\{Auth, DB};
 
 class ProposalRepository implements ProposalRepositoryInterface
@@ -17,7 +18,7 @@ class ProposalRepository implements ProposalRepositoryInterface
 	}
 
 	//MARK: updateProposal   
-	public function updateProposal(ProposalRequest $request, int $id): void
+	public function updateProposal(ProposalRequest $request, int $id): null|RedirectResponse
 	{
 		$data = $request->validated();
 
@@ -29,10 +30,12 @@ class ProposalRepository implements ProposalRepositoryInterface
 		}
 
 		$proposal_query->update($data);
+
+		return null;
 	}
 
 	//MARK: deleteProposal   
-	public function deleteProposal(int $id): void
+	public function deleteProposal(int $id): null|RedirectResponse
 	{
 		$proposal_query = DB::table('proposals')->where('id', $id);
 		$proposal       = $proposal_query->first();
@@ -42,5 +45,7 @@ class ProposalRepository implements ProposalRepositoryInterface
 		}
 
 		$proposal_query->delete();
+
+		return null;
 	}
 }

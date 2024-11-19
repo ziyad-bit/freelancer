@@ -21,12 +21,12 @@ class DatabaseSeeder extends Seeder
 		//   $this->call(User_skillSeeder::class);
 		// $this->call(proposalSeeder::class); 
 		// $this->call(TransactionSeeder::class);
-		$this->call(ChatroomSeeder::class);
-		$this->call(Chat_room_userSeeder::class);
+		// $this->call(ChatroomSeeder::class);
+		// $this->call(Chat_room_userSeeder::class);
 		$this->call(MessageSeeder::class);
 		// $this->call(NotificationSeeder::class);
-		$this->call(ReviewSeeder::class); 
+		// $this->call(ReviewSeeder::class); 
 
-		$this->call(Project_skillSeeder::class); 
+		// $this->call(Project_skillSeeder::class); 
 	}
 }

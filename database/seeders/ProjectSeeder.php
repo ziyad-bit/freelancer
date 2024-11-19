@@ -26,7 +26,7 @@ class ProjectSeeder extends Seeder
 			$date   = $this->dateRandom();
 
 			$project = Project::create([
-				'title'      => $faker->title(),
+				'title'      => $faker->words(3, true),
 				'content'    => $faker->paragraph(),
 				'user_id'    => $users->random(),
 				'created_at' => $date,

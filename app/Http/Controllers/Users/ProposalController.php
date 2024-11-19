@@ -25,7 +25,11 @@ class ProposalController extends Controller
 	//MARK: update   
 	public function update(ProposalRequest $request, int $id):JsonResponse
 	{
-		$this->ProposalRepository->updateProposal($request, $id);
+		$response=$this->ProposalRepository->updateProposal($request, $id);
+
+		if ($response != null) {
+			return $response;
+		}
 
 		return response()->json(['success' => 'you updated proposal successfully']);
 	}
@@ -33,7 +37,11 @@ class ProposalController extends Controller
 	//MARK: destroy  
 	public function destroy(int $id):JsonResponse
 	{
-		$this->ProposalRepository->deleteProposal($id);
+		$response=$this->ProposalRepository->deleteProposal($id);
+		
+		if ($response != null) {
+			return $response;
+		}
 
 		return response()->json(['success' => 'you delete proposal successfully']);
 	}

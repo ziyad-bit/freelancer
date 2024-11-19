@@ -215,7 +215,7 @@
                     <input type="hidden" required name="project_id" value="{{ $project->id }}">
 
                     <button type="submit" style="margin-top: 5px;" class="btn btn-primary" role="button">
-                        send
+                        add
                     </button>
                 </form>
             @endif

@@ -45,7 +45,7 @@
                 accept
             </button>
 
-            <a href="{{ route('chatrooms.index',$proposal->user_id) }}" style="margin-top: 5px;" class="btn btn-primary" >
+            <a href="{{ route('chatrooms.fetch',$proposal->user_id) }}" style="margin-top: 5px;" class="btn btn-primary" >
                 chat
             </a>
         @endif

@@ -12,6 +12,7 @@ class ChatRoomController extends Controller
 {
 	public function __construct(private ChatRoomRepositoryInterface $chatRoomRepository)
 	{
+		$this->middleware('auth');
 	}
 
 	// MARK:index
@@ -49,6 +50,7 @@ class ChatRoomController extends Controller
 				'chat_room_id'             => $data_or_redirect['chat_room_id'],
 				'messages'                 => $data_or_redirect['messages'],
 				'receiver'                 => $data_or_redirect['receiver'],
+				'message_id'               => $data_or_redirect['message_id'],
 				'show_chatroom'            => $data_or_redirect['show_chatroom'],
 				'searchName'               => null,
 				'is_chatroom_page_1'       => true,
@@ -56,7 +58,7 @@ class ChatRoomController extends Controller
 		);
 	}
 
-	//MARK: show_chat_rooms
+	//MARK: show_more
 	public function show_more_chat_rooms(int $message_id):JsonResponse
 	{
 		$chat = $this->chatRoomRepository->getChatRooms($message_id);

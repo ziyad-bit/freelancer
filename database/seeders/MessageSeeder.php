@@ -25,7 +25,7 @@ class MessageSeeder extends Seeder
 			$date   = $this->dateRandom();
 
 			DB::table('messages')->insert([
-				'text'        => $faker->sentence(3),
+				'text'        => encrypt($faker->sentence(3)),
 				'sender_id'   => $users->random(),
 				'receiver_id' => $users->random(),
 				'chat_room_id' => $chatrooms->random(),

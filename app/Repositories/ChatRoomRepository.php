@@ -10,6 +10,7 @@ use App\Notifications\{AddUserToChatNotification};
 use App\Traits\DatabaseCache;
 use Illuminate\Http\{JsonResponse, RedirectResponse};
 use Illuminate\Support\Facades\{Auth, Cache, DB};
+use Illuminate\Support\Str;
 
 class ChatRoomRepository implements ChatRoomRepositoryInterface
 {
@@ -47,6 +48,11 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 	// MARK: fetch
 	public function fetchWithSelectedUser(int $receiver_id): array|RedirectResponse
 	{
+		$messages     = [];
+		$message_id   = null;
+		$receiver     = null;
+		$chat_room_id = null;
+
 		$receiver = DB::table('users')->find($receiver_id, ['name', 'image', 'id']);
 		if (!$receiver) {
 			return to_route('chatrooms.index')->with('error', 'user not found');
@@ -67,33 +73,34 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 
 		$all_chat_rooms = $all_chat_rooms->union($selected_chat_room)->get();
 
-		$messages     = [];
-		$receiver     = null;
-		$chat_room_id = null;
-
 		foreach ($all_chat_rooms as $chat_room) {
 			if ($chat_room->receiver_id === $receiver_id) {
 				$chat_room_id = $chat_room->chat_room_id;
-
+				$receiver=null;
 				break;
 			}
 		}
 
+		$created_at = now();
+
 		if (!$chat_room_id) {
-			$chat_room_id = DB::table('chat_rooms')
-				->insertGetId(
+			DB::table('chat_rooms')
+				->insert(
 					[
+						'id'    => Str::uuid(),
 						'owner_id'    => $auth_id,
-						'created_at'  => now(),
+						'created_at'  => $created_at,
 					]
 				);
 
-			DB::table('messages')
-				->insert([
+			$chat_room_id=DB::table('chat_rooms')
+				->where(['created_at'=>$created_at,'owner_id'=>$auth_id])
+				->value('id');
+
+			$message_id=DB::table('messages')
+				->insertGetId([
 					'chat_room_id' => $chat_room_id,
 					'receiver_id'  => $receiver_id,
-					'sender_id'    => $auth_id,
-					'chat_room_id' => $chat_room_id,
 					'sender_id'    => $auth_id,
 					'text'         => 'new_chat_room%',
 					'created_at'   => now(),
@@ -113,6 +120,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			'chat_room_id'   => $chat_room_id,
 			'all_chat_rooms' => $all_chat_rooms,
 			'receiver'       => $receiver,
+			'message_id'       => $message_id,
 			'show_chatroom'  => true,
 		];
 	}
