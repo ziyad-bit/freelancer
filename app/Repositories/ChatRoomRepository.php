@@ -50,7 +50,6 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 	{
 		$messages     = [];
 		$message_id   = null;
-		$receiver     = null;
 		$chat_room_id = null;
 
 		$receiver = DB::table('users')->find($receiver_id, ['name', 'image', 'id']);
@@ -77,6 +76,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			if ($chat_room->receiver_id === $receiver_id) {
 				$chat_room_id = $chat_room->chat_room_id;
 				$receiver=null;
+
 				break;
 			}
 		}
@@ -154,6 +154,18 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		];
 	}
 
+	public function get_chatrooms_users()
+	{
+		 $chat_room_ids=DB::table('chat_room_user')
+		->where('user_id',Auth::id())
+		->pluck('chat_room_id')
+		->toArray();
+
+		return DB::table('users')
+		->join('chat_room_user','chat_room_user.user_id','=','users.id')
+		->whereIn('chat_room_id',$chat_room_ids)
+		->get();
+	}
 	//MARK: sendInvitation
 	public function sendInvitation(ChatRoomRequest $request):JsonResponse
 	{

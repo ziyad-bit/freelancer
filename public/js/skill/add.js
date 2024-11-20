@@ -1,6 +1,6 @@
 //add skill input
-const num_input_ele = document.querySelector('#num_input');
-let num_input_ele_val = num_input_ele.value;
+const num_input_ele     = document.querySelector('#num_input');
+let   num_input_ele_val = num_input_ele.value;
 
 let number = 1;
 if (num_input_ele_val > 1) {
@@ -51,7 +51,7 @@ generalEventListener('input', '.input', e => {
     for (let i = 0; i < options.length; i++) {
         let option = options[i];
 
-        if (option.innerText === inputValue) {
+        if (option.value === inputValue) {
             hiddenInput.value = option.getAttribute('data-value');
             break;
         }else{

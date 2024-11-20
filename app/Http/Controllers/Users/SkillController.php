@@ -38,7 +38,11 @@ class SkillController extends Controller
 	//MARK: destroy_project_skill  
 	public function destroy_project_skill(int $skill_id):JsonResponse
 	{
-		$this->skillRepository->delete_project_skill($skill_id);
+		$response=$this->skillRepository->delete_project_skill($skill_id);
+
+		if ($response != null) {
+			return $response;
+		}
 
 		return response()->json();
 	}
@@ -46,7 +50,11 @@ class SkillController extends Controller
 	//MARK: destroy   
 	public function destroy(int $id):JsonResponse
 	{
-		$this->skillRepository->deleteSkill($id);
+		$response=$this->skillRepository->deleteSkill($id);
+
+		if ($response != null) {
+			return $response;
+		}
 
 		return response()->json();
 	}

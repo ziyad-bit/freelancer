@@ -46,7 +46,7 @@
 
         <button
             class="{{ $is_chatroom_page_1 ? 'chatroom_page_1' : '' }} search_{{ $searchName }}  chatroom_btn user_btn nav-link {{ 'chat_room_' . $message->chat_room_id }}  
-    list-group-item list-group-item-action {{ $is_selected_chat_room ? 'active index_0' : null }}"
+            list-group-item list-group-item-action {{ $is_selected_chat_room ? 'active index_0' : null }}"
             id="list-home-list" data-bs-toggle="pill" data-bs-target={{ '#chat_box' . $message->chat_room_id }}
             role="tab" data-chat_room_id="{{ $message->chat_room_id }}" data-message_id="{{ $message->id }}"
             aria-controls="home" data-index="{{ $i }}"

@@ -23,6 +23,8 @@
                     add more skill
                 </button>
             </div>
+                        
+            <input type="hidden" name="num_input" id="num_input" value="{{old('num_input')}}">
 
             <div class="card-body body">
 
@@ -30,11 +32,11 @@
                     <label for="exampleInputEmail1">
                         - skill
                     </label>
-                    <input list="skills" name="skills_name[1]" class="form-control input">
+                    <input list="skills" id="1" name="skills_name[1]" class="form-control input">
 
                     <datalist id="skills">
                         @forelse ($skills as $skill)
-                            <option value="{{ $skill->skill }}">
+                            <option value="{{ $skill->skill }}" data-value='{{$skill->id}}'>
                             @empty
                                 -
                         @endforelse
@@ -45,7 +47,7 @@
                     </small>
 
                 </div>
-
+                <input type="hidden" name="skills_id[1]" id="skill_id_1">
 
             </div>
         </div>

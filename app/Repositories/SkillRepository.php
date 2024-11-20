@@ -2,7 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Http\Requests\SkillRequest;
 use App\Interfaces\Repository\SkillRepositoryInterface;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -15,7 +17,7 @@ class SkillRepository implements SkillRepositoryInterface
 	}
 
 	//MARK: storeSkill   
-	public function storeSkill(object $request, string $table, string $column, string $value):void
+	public function storeSkill(SkillRequest $request, string $table, string $column, string $value):void
 	{
 		$skills    = $request->input('skills_id');
 
@@ -31,7 +33,7 @@ class SkillRepository implements SkillRepositoryInterface
 	}
 
 	//MARK: delete_project_Skill   
-	public function delete_project_Skill(int $skill_id):void
+	public function delete_project_Skill(int $skill_id):null | RedirectResponse
 	{
 		$project_skill_query = DB::table('project_skill')->where('id' , $skill_id);
 		$project_skill       = $project_skill_query->first();
@@ -44,7 +46,7 @@ class SkillRepository implements SkillRepositoryInterface
 	}
 
 	//MARK: deleteSkill   
-	public function deleteSkill(int $id):void
+	public function deleteSkill(int $id):null | RedirectResponse
 	{
 		$user_skill_query = DB::table('user_skill')->where('id' , $id);
 		$user_skill       = $user_skill_query->first();

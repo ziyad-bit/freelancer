@@ -72,6 +72,14 @@ class ChatRoomController extends Controller
 	}
 
 	// MARK:send_invitation
+	public function get_users() : JsonResponse
+	{
+		$users=$this->chatRoomRepository->get_chatroom_users();
+
+		return response()->json(['users'=>$users]);
+	}
+
+	// MARK:send_invitation
 	public function send_user_invitation(ChatRoomRequest $request) : JsonResponse
 	{
 		return $this->chatRoomRepository->sendInvitation($request);
