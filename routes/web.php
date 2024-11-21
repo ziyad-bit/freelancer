@@ -72,10 +72,11 @@ Route::namespace('Users')->controller(ChatRoomController::class)->group(function
 	Route::get('chatrooms/index'                           , 'index')->name('chatrooms.index');
 	Route::get('chatrooms/fetch/{receiver_id}'             , 'fetch')->name('chatrooms.fetch');
 	Route::get('chatrooms/show-more/{id}'                  , 'show_more_chat_rooms')->name('chatrooms.show_more');
+	Route::get('chatrooms/users'                           , 'get_users')->name('chatrooms.get_users');
+	Route::post('chatrooms/send-invitation'                , 'send_user_invitation')->name('chatrooms.send_user_invitation');
 	Route::post('chatrooms/accept-invitation'              , 'post_accept_invitation')->name('chatrooms.postAcceptInvitation');
 	Route::get('chatrooms/accept-invitation/{chat_room_id}', 'get_accept_invitation')->name('chatrooms.getAcceptInvitation');
 	Route::post('chatrooms/refuse-invitation'              , 'refuse_invitation')->name('chatrooms.refuseInvitation');
-	Route::post('chatrooms/send-invitation'                , 'send_user_invitation')->name('chatrooms.send_user_invitation');
 });
 
 //MARK:search

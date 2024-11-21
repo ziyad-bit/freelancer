@@ -154,17 +154,15 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		];
 	}
 
-	public function get_chatrooms_users()
+	public function get_chatroom_users()
 	{
-		 $chat_room_ids=DB::table('chat_room_user')
-		->where('user_id',Auth::id())
-		->pluck('chat_room_id')
-		->toArray();
-
 		return DB::table('users')
-		->join('chat_room_user','chat_room_user.user_id','=','users.id')
-		->whereIn('chat_room_id',$chat_room_ids)
-		->get();
+			->select('users.id','name','image')
+			->join('chat_room_user as cru1', 'cru1.user_id', '=', 'users.id')
+			->join('chat_room_user as cru2', 'cru1.chat_room_id', '=', 'cru2.chat_room_id')
+			->where('cru2.user_id', Auth::id())
+			->where('users.id','!=',Auth::id())
+			->get();
 	}
 	//MARK: sendInvitation
 	public function sendInvitation(ChatRoomRequest $request):JsonResponse

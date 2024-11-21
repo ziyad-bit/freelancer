@@ -43,10 +43,11 @@ generalEventListener('click', '.add_button', e => {
 })
 
 generalEventListener('input', '.input', e => {
-    let input = e.target,
-        options = document.querySelectorAll('#skills option'),
-        hiddenInput = document.getElementById('skill_id_' + input.getAttribute('id')),
-        inputValue = input.value;
+    let input       = e.target,
+        options     = document.querySelectorAll('#skills option'),
+        id          = input.getAttribute('id'),
+        hiddenInput = document.getElementById(`skill_id_${id}`),
+        inputValue  = input.value;
 
     for (let i = 0; i < options.length; i++) {
         let option = options[i];
