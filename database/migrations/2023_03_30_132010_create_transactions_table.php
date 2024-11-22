@@ -18,7 +18,8 @@ return new class extends Migration {
 			$table->string('type', 30);
 			$table->string('trans_id');
 			$table->foreignId('owner_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
-			$table->foreignId('receiver_id')->nullable()->constrained('projects')->cascadeOnDelete()->cascadeOnUpdate();
+			$table->foreignId('receiver_id')->nullable()->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+			$table->foreignId('project_id')->nullable()->constrained('projects')->cascadeOnDelete()->cascadeOnUpdate();
 			$table->timestamps();
 		});
 	}

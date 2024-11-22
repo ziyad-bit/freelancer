@@ -41,9 +41,13 @@
         </button>
     @else
         @if ($project->user_id === Auth::id())
-            <button type="submit" style="margin-top: 5px;" class="btn btn-success">
-                accept
-            </button>
+            @if ($proposal->finished !== 'in progress')
+                <a type="submit" 
+                href="{{route('transaction.milestone.create',['project_id'=>$proposal->project_id,'receiver_id'=>$proposal->user_id])}}" style="margin-top: 5px;" class="btn btn-success">
+                    accept
+                </a>
+            @endif
+            
 
             <a href="{{ route('chatrooms.fetch',$proposal->user_id) }}" style="margin-top: 5px;" class="btn btn-primary" >
                 chat

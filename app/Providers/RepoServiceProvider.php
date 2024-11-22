@@ -2,10 +2,11 @@
 
 namespace App\Providers;
 
-use App\Interfaces\Repository\{AuthRepositoryInterface, ChatRoomRepositoryInterface, FileRepositoryInterface, MessageRepositoryInterface, NotificationRepositoryInterface, ProfileRepositoryInterface, ProjectRepositoryInterface, ProposalRepositoryInterface, SearchRepositoryInterface, SkillRepositoryInterface};
-use App\Repositories\{AuthRepository, ChatRoomRepository, FileRepository, MessageRepository, NotificationRepository, ProfileRepository, ProjectRepository, ProposalRepository, SearchRepository, SkillRepository};
-use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Support\DeferrableProvider;
+use App\Interfaces\Repository\TransactionRepositoryInterface;
+use App\Repositories\{AuthRepository, ChatRoomRepository, FileRepository, MessageRepository, NotificationRepository, ProfileRepository, ProjectRepository, ProposalRepository, SearchRepository, SkillRepository, TransactionRepository};
+use App\Interfaces\Repository\{AuthRepositoryInterface, ChatRoomRepositoryInterface, FileRepositoryInterface, MessageRepositoryInterface, NotificationRepositoryInterface, ProfileRepositoryInterface, ProjectRepositoryInterface, ProposalRepositoryInterface, SearchRepositoryInterface, SkillRepositoryInterface};
 
 class RepoServiceProvider extends ServiceProvider implements DeferrableProvider
 {
@@ -26,6 +27,7 @@ class RepoServiceProvider extends ServiceProvider implements DeferrableProvider
 		$this->app->bind(NotificationRepositoryInterface::class, NotificationRepository::class);
 		$this->app->bind(ChatRoomRepositoryInterface::class, ChatRoomRepository::class);
 		$this->app->bind(SearchRepositoryInterface::class, SearchRepository::class);
+		$this->app->bind(TransactionRepositoryInterface::class, TransactionRepository::class);
 	}
 
 
@@ -42,6 +44,7 @@ class RepoServiceProvider extends ServiceProvider implements DeferrableProvider
 			NotificationRepositoryInterface::class,
 			ChatRoomRepositoryInterface::class,
 			SearchRepositoryInterface::class,
+			TransactionRepositoryInterface::class,
 		];
 	}
 

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Users\SkillController;
 use App\Http\Controllers\Users\ProjectController;
 use App\Http\Controllers\Users\ProposalController;
+use App\Http\Controllers\Users\TransactionController;
 use App\Http\Controllers\Users\{AuthController, ChatRoomController, FileController, MessageController, NotificationsController, ProfileController, SearchController};
 
 /*
@@ -85,3 +86,8 @@ Route::namespace('Users')->controller(SearchController::class)->group(function (
 	Route::post('search/projects'      , 'index_projects')->name('search.projects');
 	Route::get('recent-search/projects', 'recent_search_projects')->name('recent_search.projects');
 });
+
+//MARK:transaction
+Route::get('transaction/milestone/create/{project_id}/{receiver_id}', 'Users\TransactionController@create')->name('transaction.milestone.create');
+Route::resource('transaction' , TransactionController::class);
+

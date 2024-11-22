@@ -19,6 +19,7 @@ class TransactionSeeder extends Seeder
 	public function run()
 	{
 		$users     = collect(DB::table('users')->pluck('id')->toArray());
+		$projects  = collect(DB::table('projects')->pluck('id')->toArray());
 
 		for ($i = 0; $i < 100; $i++) {
 			$date   = $this->dateRandom();
@@ -30,7 +31,8 @@ class TransactionSeeder extends Seeder
 				'type'        => $type,
 				'trans_id'    => Str::random(10),
 				'owner_id'    => $users->random(),
-				'receiver_id' => $type == 'milestone' ? null : $users->random(),
+				'project_id'  => $type == 'withdraw' ? null : $projects->random(),
+				'receiver_id' => $type == 'withdraw' ? null : $users->random(),
 				'created_at'  => $date,
 				'updated_at'  => $date,
 			]);

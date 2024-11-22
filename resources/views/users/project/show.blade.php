@@ -92,6 +92,12 @@
     </div>
 
 
+    @if ( Session::has('success'))
+        <div class="alert alert-success text-center">{{ Session::get('success') }}</div>
+    @endif
+        
+    
+
     <!-- project details -->
     <div class="card-body" style="margin-top: 25px">
         <h5 class="card-title">{{ $project->title }}</h5>
@@ -174,7 +180,7 @@
             @include('users.project.index_proposals')
         @break
 
-        @else
+    @else
         @if ($loop->last)
             <h5 class="text-center">Add proposal</h5>
 
