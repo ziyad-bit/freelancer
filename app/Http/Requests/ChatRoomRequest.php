@@ -29,7 +29,7 @@ class ChatRoomRequest extends FormRequest
 
 		return [
 			'chat_room_id' => 'required|numeric',
-			'user_id'      =>$is_user_id_required . '|numeric',
+			'user_id'      => $is_user_id_required . '|numeric',
 		];
 	}
 }

@@ -1,19 +1,29 @@
 @extends('layouts.app')
 
+@section('header')
+    <script defer src="{{ asset('js/transaction/create.js') }}?v={{ filemtime(public_path('js/profile/index.js')) }}">
+    </script>
+
+    <title>
+        {{ ucfirst(Auth::user()->name) . ' - ' . config('app.name') }}
+    </title>
+
+    <meta name="keywords" content="profile page contain information about user">
+@endsection
+
+
 @section('content')
-    @if (Session::has('success'))
-        <div class="alert alert-success text-center">{{ Session::get('success') }}</div>
+    @if ($msg)
+        <div class="alert alert-success text-center">{{ $msg }}</div>
     @endif
 
-    @if (Session::has('error'))
+    @if ($error)
         <div class="alert alert-danger text-center">{{ Session::get('error') }}</div>
     @endif
 
-    <form method="POST" action="{{ route('transaction.store') }}" >
-        @csrf
-
+    <form id="checkout_form">
         <div class="card text-white bg-dark mb-3" style="max-width: 34rem;margin-top: 20px">
-            <div class="card-header">{{ __('add group') }}</div>
+            <div class="card-header">create milestone</div>
             <div class="card-body">
 
                 <div class="form-group">
@@ -21,22 +31,24 @@
                         amount
                     </label>
 
-                    <input type="number" required  min="5"  
-                        value="{{ old('amount') }}" name="amount" class="form-control">
-                    @error('amount')
-                        <small style="color: red">
-                            {{ $message }}
-                        </small>
-                    @enderror
+                    <input type="number" id="amount" name="amount" class="form-control">
                 </div>
 
-                <input type="hidden" name="project_id" value="{{$project_id}}">
-                <input type="hidden" name="receiver_id" value="{{$receiver_id}}">
+                <input type="hidden" name="project_id" value="{{ $project_id }}">
+                <input type="hidden" name="receiver_id" value="{{ $receiver_id }}">
+                <button id="next_btn" style="margin-top: 5px" class="btn btn-primary">next</button>
             </div>
+
         </div>
 
-        <button type="submit" class="btn btn-primary"
-            style="margin-top: 10px;margin-bottom: 10px">{{ __('add') }}</button>
+        <a href="{{ route('transaction.checkout', ['amount' => 0, 'project_id' => $project_id, 'receiver_id'=> $receiver_id]) }}"
+            class="btn btn-primary checkout_btn" style="margin-top: 10px;margin-bottom: 10px;display: none">
+            checkout
+        </a>
 
     </form>
+
+    <div id="card_form">
+
+    </div>
 @endsection

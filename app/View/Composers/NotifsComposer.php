@@ -16,11 +16,11 @@ class NotifsComposer
 		if (Auth::check()) {
 			$auth_id   = Auth::id();
 			$auth_user = User::find($auth_id);
-			
+
 			$notifs = Cache::remember(
 				'notifs_' . $auth_id,
 				now()->addHours(2),
-				function () use($auth_user) {
+				function () use ($auth_user) {
 					return $auth_user->notifications()->take(5)->get();
 				}
 			);
@@ -28,7 +28,7 @@ class NotifsComposer
 			$unread_notifs_count = Cache::remember(
 				'notifs_count_' . $auth_id,
 				now()->addHours(2),
-				function () use($auth_user) {
+				function () use ($auth_user) {
 					return $auth_user->unreadnotifications()->count();
 				}
 			);

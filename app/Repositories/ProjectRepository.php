@@ -2,12 +2,10 @@
 
 namespace App\Repositories;
 
-use App\Classes\Projects;
-use App\Http\Requests\ProjectRequest;
-use App\Http\Requests\SearchRequest;
+use App\Http\Requests\{ProjectRequest, SearchRequest};
 use App\Interfaces\Repository\{FileRepositoryInterface, ProjectRepositoryInterface, SkillRepositoryInterface};
 use App\Traits\GetCursor;
-use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
+use Illuminate\Http\{JsonResponse, RedirectResponse};
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\{Auth, DB};
 use Illuminate\View\View;
@@ -16,10 +14,10 @@ class ProjectRepository implements ProjectRepositoryInterface
 {
 	use GetCursor;
 
-	//MARK:   getProjects  
+	//MARK:   getProjects
 	public function getProjects(SearchRequest $request):View|JsonResponse
 	{
-		$auth_id = Auth::id();
+		$auth_id     = Auth::id();
 		$searchTitle = $request->input('search');
 		$projects    = DB::table('projects')
 				->select(
@@ -39,8 +37,8 @@ class ProjectRepository implements ProjectRepositoryInterface
 				->leftJoin('proposals', 'projects.id', '=', 'proposals.project_id')
 				->when(
 					$searchTitle == null,
-					function ($query) use($auth_id) {
-						$query->join('user_skill', function ($join) use($auth_id) {
+					function ($query) use ($auth_id) {
+						$query->join('user_skill', function ($join) use ($auth_id) {
 							$join->on('project_skill.skill_id', '=', 'user_skill.skill_id')
 								->where('user_skill.user_id', '=', $auth_id);
 						});
@@ -57,7 +55,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 
 		if ($searchTitle) {
 			DB::table('searches')
-				->insert(['search'=>$searchTitle,'user_id'=>$auth_id,'created_at'=>now()]);
+				->insert(['search' => $searchTitle, 'user_id' => $auth_id, 'created_at' => now()]);
 		}
 
 		$cursor = $this->getCursor($projects);
@@ -68,16 +66,16 @@ class ProjectRepository implements ProjectRepositoryInterface
 			return response()->json(['view' => $view, 'cursor' => $cursor]);
 		}
 
-		return view('users.project.index', compact('projects', 'cursor','searchTitle'));
+		return view('users.project.index', compact('projects', 'cursor', 'searchTitle'));
 	}
 
-	//MARK:  createProject  
+	//MARK:  createProject
 	public function createProject(Collection $skills):View
 	{
 		return view('users.project.create', compact('skills'));
 	}
 
-	//MARK:   storeProject  
+	//MARK:   storeProject
 	public function storeProject(ProjectRequest $request, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):void
 	{
 		$project_data = $request->safe()->only(['title', 'content']) + ['user_id' => Auth::id(), 'created_at' => now()];
@@ -92,7 +90,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 		$skillRepository->storeSkill($request, 'project_skill', 'project_id', $project_id);
 	}
 
-	//MARK: showProject   
+	//MARK: showProject
 	public function showProject(int $id):object|null
 	{
 		$project = DB::table('projects')
@@ -136,7 +134,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 		return view('users.project.show', compact('project', 'auth_proposal', 'proposals'));
 	}
 
-	//MARK:   editProject   
+	//MARK:   editProject
 	public function editProject(int $id, Collection $skills):RedirectResponse|View
 	{
 		$project = DB::table('projects')
@@ -169,7 +167,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 		return view('users.project.edit', compact('project', 'skills'));
 	}
 
-	//MARK:   updateProject  
+	//MARK:   updateProject
 	public function updateProject(ProjectRequest $request, int $id, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):RedirectResponse
 	{
 		$project_data      = $request->safe()->only(['title', 'content']) + ['user_id' => Auth::id(), 'created_at' => now()];
@@ -193,7 +191,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 		return redirect()->back()->with('success', 'you updated successfully project');
 	}
 
-	//MARK: deleteProject   
+	//MARK: deleteProject
 	public function deleteProject(int $id):RedirectResponse
 	{
 		$project_query = DB::table('projects')->where('id', $id);

@@ -24,8 +24,8 @@ class ChatroomSeeder extends Seeder
 			$date   = $this->dateRandom();
 
 			DB::table('chat_rooms')->insert([
-				'id'=>$faker->uuid(),
-				'owner_id'   => $users->random(),
+				'id'          => $faker->uuid(),
+				'owner_id'    => $users->random(),
 				'created_at'  => $date,
 			]);
 		}

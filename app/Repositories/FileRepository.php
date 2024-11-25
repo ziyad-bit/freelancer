@@ -12,7 +12,7 @@ class FileRepository implements FileRepositoryInterface
 {
 	use File;
 
-	// MARK: download_file   
+	// MARK: download_file
 	public function download_file(string $file, string $dir):StreamedResponse
 	{
 		$position  = strpos($file, '-');
@@ -22,7 +22,7 @@ class FileRepository implements FileRepositoryInterface
 		return $this->download($file, $path);
 	}
 
-	// MARK: insertAnyFile   
+	// MARK: insertAnyFile
 	public function insert_file(Request $request, string $table_name, string $column_name, int $column_value):array
 	{
 		if ($request->has('files')) {
@@ -51,7 +51,7 @@ class FileRepository implements FileRepositoryInterface
 		return [];
 	}
 
-	// MARK: upload_file   
+	// MARK: upload_file
 	public function upload_file(Request $request):array
 	{
 		$dir       = $request->dir;
@@ -63,7 +63,7 @@ class FileRepository implements FileRepositoryInterface
 		return $file_name;
 	}
 
-	// MARK: destroy_file   
+	// MARK: destroy_file
 	public function destroy_file(string $file, string $dir):JsonResponse
 	{
 		$position  = strpos($file, '-');

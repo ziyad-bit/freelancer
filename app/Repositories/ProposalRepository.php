@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\{Auth, DB};
 
 class ProposalRepository implements ProposalRepositoryInterface
 {
-	//MARK: storeProposal   
+	//MARK: storeProposal
 	public function storeProposal(ProposalRequest $request): void
 	{
 		$data = $request->validated() + ['user_id' => Auth::id(), 'created_at' => now()];
@@ -17,7 +17,7 @@ class ProposalRepository implements ProposalRepositoryInterface
 		DB::table('proposals')->insert($data);
 	}
 
-	//MARK: updateProposal   
+	//MARK: updateProposal
 	public function updateProposal(ProposalRequest $request, int $id): null|RedirectResponse
 	{
 		$data = $request->validated();
@@ -34,7 +34,7 @@ class ProposalRepository implements ProposalRepositoryInterface
 		return null;
 	}
 
-	//MARK: deleteProposal   
+	//MARK: deleteProposal
 	public function deleteProposal(int $id): null|RedirectResponse
 	{
 		$proposal_query = DB::table('proposals')->where('id', $id);

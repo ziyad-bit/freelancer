@@ -2,11 +2,10 @@
 
 namespace App\Interfaces\Repository;
 
-use Illuminate\View\View;
+use App\Http\Requests\{ProjectRequest, SearchRequest};
+use Illuminate\Http\{JsonResponse, RedirectResponse};
 use Illuminate\Support\Collection;
-use App\Http\Requests\SearchRequest;
-use App\Http\Requests\ProjectRequest;
-use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
+use Illuminate\View\View;
 
 interface ProjectRepositoryInterface
 {

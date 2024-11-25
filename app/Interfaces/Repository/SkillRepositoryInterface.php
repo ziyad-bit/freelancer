@@ -2,9 +2,8 @@
 
 namespace App\Interfaces\Repository;
 
-use Illuminate\Support\Collection;
-use App\Http\Requests\SkillRequest;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Collection;
 
 interface SkillRepositoryInterface
 {

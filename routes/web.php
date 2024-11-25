@@ -88,6 +88,7 @@ Route::namespace('Users')->controller(SearchController::class)->group(function (
 });
 
 //MARK:transaction
-Route::get('transaction/milestone/create/{project_id}/{receiver_id}', 'Users\TransactionController@create')->name('transaction.milestone.create');
+Route::get('transaction/checkout/{project_id}/{receiver_id}/{amount}', 'Users\TransactionController@checkout')->name('transaction.checkout');
+Route::get('transaction/milestone/create/{project_id}/{receiver_id}' , 'Users\TransactionController@create')->name('transaction.milestone.create');
 Route::resource('transaction' , TransactionController::class);
 

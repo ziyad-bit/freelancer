@@ -17,7 +17,7 @@ return new class extends Migration {
 			$table->text('text');
 			$table->tinyInteger('last')->default(1);
 			$table->uuid('chat_room_id');
-            $table->foreign('chat_room_id')->references('id')->on('chat_rooms')->cascadeOnDelete()->cascadeOnUpdate();
+			$table->foreign('chat_room_id')->references('id')->on('chat_rooms')->cascadeOnDelete()->cascadeOnUpdate();
 			$table->foreignId('sender_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
 			$table->foreignId('receiver_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
 			$table->timestamp('created_at');

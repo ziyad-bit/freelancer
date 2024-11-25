@@ -3,7 +3,7 @@
         <div class="d-flex w-100 justify-content-between">
             <img src="{{ asset('storage/images/users/' . Auth::user()->image) }}" class="rounded-circle" alt="error">
             <h5 class="mb-1 p">
-                {{ Auth::user()->name }} send invitation to add you to chat room
+                {{ Str::limit(Auth::user()->name,10,'...') }} send invitation to chatroom
             </h5>
         </div>
 

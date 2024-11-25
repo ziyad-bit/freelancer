@@ -2,11 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Contracts\Support\DeferrableProvider;
-use App\Interfaces\Repository\TransactionRepositoryInterface;
+use App\Interfaces\Repository\{AuthRepositoryInterface, ChatRoomRepositoryInterface, FileRepositoryInterface, MessageRepositoryInterface, NotificationRepositoryInterface, ProfileRepositoryInterface, ProjectRepositoryInterface, ProposalRepositoryInterface, SearchRepositoryInterface, SkillRepositoryInterface, TransactionRepositoryInterface};
 use App\Repositories\{AuthRepository, ChatRoomRepository, FileRepository, MessageRepository, NotificationRepository, ProfileRepository, ProjectRepository, ProposalRepository, SearchRepository, SkillRepository, TransactionRepository};
-use App\Interfaces\Repository\{AuthRepositoryInterface, ChatRoomRepositoryInterface, FileRepositoryInterface, MessageRepositoryInterface, NotificationRepositoryInterface, ProfileRepositoryInterface, ProjectRepositoryInterface, ProposalRepositoryInterface, SearchRepositoryInterface, SkillRepositoryInterface};
+use Illuminate\Contracts\Support\DeferrableProvider;
+use Illuminate\Support\ServiceProvider;
 
 class RepoServiceProvider extends ServiceProvider implements DeferrableProvider
 {

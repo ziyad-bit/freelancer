@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Notification;
 
-class AddUserToChatNotification extends Notification implements ShouldQueue
+class MilestoneNotification extends Notification implements ShouldQueue
 {
 	use Queueable;
 
@@ -17,9 +17,9 @@ class AddUserToChatNotification extends Notification implements ShouldQueue
 	 * @return void
 	 */
 	public function __construct(
-		public string $chat_room_id,
-		public string $name,
-		public string $image,
+		public array $data,
+		public string $user_name,
+		public string $user_image,
 		public string $view,
 	) {
 	}
@@ -41,7 +41,7 @@ class AddUserToChatNotification extends Notification implements ShouldQueue
 	{
 		return new BroadcastMessage(
 			[
-				'view'  => $this->view,
+				'view'         => $this->view,
 			]
 		);
 	}
@@ -49,21 +49,21 @@ class AddUserToChatNotification extends Notification implements ShouldQueue
 	public function toDatabase():array
 	{
 		return [
-			'chat_room_id' => $this->chat_room_id,
-			'sender_image' => $this->image,
-			'sender_name'  => $this->name,
+			'amount'       => $this->data['amount'],
+			'sender_name'  => $this->user_name,
+			'sender_image' => $this->user_image,
 		];
 	}
 
 	public function databaseType():string
 	{
-		return 'invitation_to_chatroom';
+		return 'milestone';
 	}
 
-	public function viaQueues()
+	public function viaQueues():array
 	{
 		return [
-			'database' => 'database',
+			'database'   => 'database',
 		];
 	}
 }

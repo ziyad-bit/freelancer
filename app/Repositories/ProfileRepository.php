@@ -24,7 +24,7 @@ class ProfileRepository implements ProfileRepositoryInterface
 			->get();
 	}
 
-	//MARK: getUserInfo 
+	//MARK: getUserInfo
 	public function getUserInfo(Request $request):object|null
 	{
 		$request->session()->regenerate();
@@ -32,7 +32,7 @@ class ProfileRepository implements ProfileRepositoryInterface
 		return DB::table('user_infos')->where('user_id', Auth::id())->first();
 	}
 
-	//MARK: storeUserInfo   
+	//MARK: storeUserInfo
 	public function storeUserInfo(ProfileRequest $request):void
 	{
 		$user_id = Auth::id();
@@ -46,7 +46,7 @@ class ProfileRepository implements ProfileRepositoryInterface
 		$request->session()->regenerate();
 	}
 
-	//MARK: updateUserInfo   
+	//MARK: updateUserInfo
 	public function updateUserInfo(ProfileRequest $request):void
 	{
 		$user_id = Auth::id();
@@ -66,7 +66,7 @@ class ProfileRepository implements ProfileRepositoryInterface
 		$request->session()->regenerate();
 	}
 
-	//MARK: deleteUserInfo   
+	//MARK: deleteUserInfo
 	public function deleteUserInfo(Request $request):void
 	{
 		Validator::make(

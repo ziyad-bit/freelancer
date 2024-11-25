@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Users;
 
-use Illuminate\View\View;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\TransactionRequest;
-use App\Http\Requests\TransactionControllerRequest;
 use App\Interfaces\Repository\TransactionRepositoryInterface;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class TransactionController extends Controller
 {
@@ -15,45 +14,53 @@ class TransactionController extends Controller
 	{
 		$this->middleware('auth');
 	}
-    // MARK: index   
+	// MARK: index
 	public function index():View
 	{
-		return view('');
+		$transactions = $this->transactionRepository->index_transaction();
+
+		return view('users.transaction.index', compact('transactions'));
 	}
 
-    // MARK: create   
-	public function create(int $project_id,int $receiver_id):View
+	// MARK: create
+	public function create(int $project_id, int $receiver_id):View
 	{
-		return $this->transactionRepository->create_milestone($project_id,$receiver_id);
+		return $this->transactionRepository->create_milestone($project_id, $receiver_id);
 	}
 
-    // MARK: store   
-    public function store(TransactionRequest $request):RedirectResponse
+	// MARK: checkout
+	public function checkout(int $amount, int $project_id, int $receiver_id):View
+	{
+		return $this->transactionRepository->checkout_transaction($amount, $project_id, $receiver_id);
+	}
+
+	// MARK: store
+	public function store(TransactionRequest $request):RedirectResponse
 	{
 		$this->transactionRepository->store_milestone($request);
 
-		return to_route('project.show',$request->project_id)->with(['success'=>'milestone is created successfully']);
+		return to_route('project.show', $request->project_id)->with(['success' => 'milestone is created successfully']);
 	}
 
-    // MARK: show   
+	// MARK: show
 	public function show(int $id):View
 	{
 		return view('');
 	}
 
-    // MARK: edit   
+	// MARK: edit
 	public function edit(int $id):View
 	{
 		return view('');
 	}
 
-    // MARK: update   
-	public function update( $request , int $id):RedirectResponse
+	// MARK: update
+	public function update($request, int $id):RedirectResponse
 	{
 		return to_route('');
 	}
 
-    // MARK: destroy   
+	// MARK: destroy
 	public function destroy(int $id):RedirectResponse
 	{
 		return to_route('');

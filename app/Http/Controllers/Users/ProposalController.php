@@ -14,7 +14,7 @@ class ProposalController extends Controller
 		$this->middleware('auth');
 	}
 
-	//MARK: store  
+	//MARK: store
 	public function store(ProposalRequest $request):RedirectResponse
 	{
 		$this->ProposalRepository->storeProposal($request);
@@ -22,10 +22,10 @@ class ProposalController extends Controller
 		return to_route('project.show', $request->input('project_id'))->with('success', 'you added proposal successfully');
 	}
 
-	//MARK: update   
+	//MARK: update
 	public function update(ProposalRequest $request, int $id):JsonResponse
 	{
-		$response=$this->ProposalRepository->updateProposal($request, $id);
+		$response = $this->ProposalRepository->updateProposal($request, $id);
 
 		if ($response != null) {
 			return $response;
@@ -34,11 +34,11 @@ class ProposalController extends Controller
 		return response()->json(['success' => 'you updated proposal successfully']);
 	}
 
-	//MARK: destroy  
+	//MARK: destroy
 	public function destroy(int $id):JsonResponse
 	{
-		$response=$this->ProposalRepository->deleteProposal($id);
-		
+		$response = $this->ProposalRepository->deleteProposal($id);
+
 		if ($response != null) {
 			return $response;
 		}

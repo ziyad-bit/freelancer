@@ -31,7 +31,7 @@ class SkillRequest extends FormRequest
 				->toArray();
 
 		return [
-			'num_input'=>'nullable|numeric',
+			'num_input'   => 'nullable|numeric',
 			'skills_id'   => 'required|array|min:1',
 			'skills_id.*' => ['distinct', 'exists:skills,id', Rule::notIn($skills_id)],
 		];

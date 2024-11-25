@@ -1,6 +1,6 @@
 @if ($user_notifs->count() > 0)
     @foreach ($user_notifs as $notification)
-        @if ($notification->type !== 'message')
+        @if ($notification->type === 'invitation_to_chatroom')
             <div class="list-group notif_{{ $notification->data['chat_room_id'] }}"
                 data-show_old_url="{{ $loop->last ? route('notifications.show_old', $notification->created_at) : '' }}">
                 <div class="list-group-item list-group-item-action notif_hover">
@@ -33,7 +33,7 @@
                     </button>
                 </div>
             </div>
-        @else
+        @elseif ($notification->type === 'message')
             <div class="list-group notifications"
                 data-show_old_url="{{ $loop->last ? route('notifications.show_old', $notification->created_at) : '' }}">
 
@@ -48,6 +48,31 @@
                             {{ $notification->data['sender_name'] }}
                             sent message :
                             {{ Str::limit(decrypt($notification->data['text']), 10, '...') }}
+                        </h5>
+
+                    </div>
+
+                    <small class="text-muted">
+                        {{ \Carbon\Carbon::parse($notification->created_at)->diffForhumans() }}
+                    </small>
+                </a>
+            </div>
+        @elseif ($notification->type === 'milestone')
+            <div class="list-group notifications"
+                data-show_old_url="{{ $loop->last ? route('notifications.show_old', $notification->created_at) : '' }}">
+
+                <a href="{{ route('transaction.index') }}"
+                    class="list-group-item list-group-item-action notif_hover">
+
+                    <div class="d-flex w-100 justify-content-between">
+
+                        <img src="{{ asset('storage/images/users/' . $notification->data['sender_image']) }}"
+                            class="rounded-circle" alt="error">
+                        <h5 class="mb-1 p">
+                            {{ $notification->data['sender_name'] }}
+                            created milestone : 
+                            {{$notification->data['amount']}}
+                            
                         </h5>
 
                     </div>

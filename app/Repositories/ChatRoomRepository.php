@@ -3,13 +3,13 @@
 namespace App\Repositories;
 
 use App\Classes\{ChatRooms, Messages};
-use App\Http\Requests\{ChatRoomRequest};
+use App\Http\Requests\ChatRoomRequest;
 use App\Interfaces\Repository\ChatRoomRepositoryInterface;
 use App\Models\User;
-use App\Notifications\{AddUserToChatNotification};
+use App\Notifications\AddUserToChatNotification;
 use App\Traits\DatabaseCache;
 use Illuminate\Http\{JsonResponse, RedirectResponse};
-use Illuminate\Support\Facades\{Auth, Cache, DB};
+use Illuminate\Support\Facades\{Auth, DB};
 use Illuminate\Support\Str;
 
 class ChatRoomRepository implements ChatRoomRepositoryInterface
@@ -75,7 +75,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		foreach ($all_chat_rooms as $chat_room) {
 			if ($chat_room->receiver_id === $receiver_id) {
 				$chat_room_id = $chat_room->chat_room_id;
-				$receiver=null;
+				$receiver     = null;
 
 				break;
 			}
@@ -87,17 +87,17 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			DB::table('chat_rooms')
 				->insert(
 					[
-						'id'    => Str::uuid(),
+						'id'          => Str::uuid(),
 						'owner_id'    => $auth_id,
 						'created_at'  => $created_at,
 					]
 				);
 
-			$chat_room_id=DB::table('chat_rooms')
-				->where(['created_at'=>$created_at,'owner_id'=>$auth_id])
+			$chat_room_id = DB::table('chat_rooms')
+				->where(['created_at' => $created_at, 'owner_id' => $auth_id])
 				->value('id');
 
-			$message_id=DB::table('messages')
+			$message_id = DB::table('messages')
 				->insertGetId([
 					'chat_room_id' => $chat_room_id,
 					'receiver_id'  => $receiver_id,
@@ -116,12 +116,12 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		}
 
 		return [
-			'messages'       => $messages,
-			'chat_room_id'   => $chat_room_id,
-			'all_chat_rooms' => $all_chat_rooms,
-			'receiver'       => $receiver,
+			'messages'         => $messages,
+			'chat_room_id'     => $chat_room_id,
+			'all_chat_rooms'   => $all_chat_rooms,
+			'receiver'         => $receiver,
 			'message_id'       => $message_id,
-			'show_chatroom'  => true,
+			'show_chatroom'    => true,
 		];
 	}
 
@@ -157,11 +157,11 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 	public function get_chatroom_users()
 	{
 		return DB::table('users')
-			->select('users.id','name','image')
+			->select('users.id', 'name', 'image')
 			->join('chat_room_user as cru1', 'cru1.user_id', '=', 'users.id')
 			->join('chat_room_user as cru2', 'cru1.chat_room_id', '=', 'cru2.chat_room_id')
 			->where('cru2.user_id', Auth::id())
-			->where('users.id','!=',Auth::id())
+			->where('users.id', '!=', Auth::id())
 			->get();
 	}
 	//MARK: sendInvitation
@@ -224,7 +224,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			->delete();
 
 		$this->forgetCache($auth_id);
-		
+
 		return null;
 	}
 
