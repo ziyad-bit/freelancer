@@ -7,7 +7,7 @@
 
 @section('content')
     <form action="{{ route('transaction.milestone.create', ['project_id' => $project_id, 'receiver_id' => $receiver_id]) }}"
-        class="paymentWidgets" data-brands="VISA MASTER">
+        class="paymentWidgets" style="margin-top: 5px" data-brands="VISA MASTER">
 
     </form>
 @endsection

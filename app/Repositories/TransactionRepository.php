@@ -8,16 +8,15 @@ use App\Models\User;
 use App\Notifications\MilestoneNotification;
 use App\Traits\{DatabaseCache, Payment};
 use Illuminate\Contracts\View\View;
-use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\{Auth, DB};
 
 class TransactionRepository implements TransactionRepositoryInterface
 {
 	use DatabaseCache ,Payment;
 
-
-	// MARK: create_milestone
-	public function index_transaction():CursorPaginator
+	//MARK: index_transaction
+	public function index_transaction(string $created_at = null):Collection
 	{
 		$auth_id      = Auth::id();
 		$transactions = DB::table('transactions')
@@ -34,8 +33,10 @@ class TransactionRepository implements TransactionRepositoryInterface
 			->join('users as owner', 'owner.id', '=', 'transactions.owner_id')
 			->where('receiver_id', $auth_id)
 			->orwhere('owner_id', $auth_id)
+			->when($created_at, fn ($query) => $query->where('transactions.created_at', '<', $created_at))
 			->latest()
-			->cursorPaginate(5);
+			->limit(8)
+			->get();
 
 		return $transactions;
 	}
@@ -49,7 +50,7 @@ class TransactionRepository implements TransactionRepositoryInterface
 		$error        = null;
 
 		if ($id && $resourcePath) {
-			$url           = 'https://test.oppwa.com/' . $resourcePath;
+			$url           = 'https://eu-test.oppwa.com/' . $resourcePath;
 			$url          .= '?entityId=8a8294174b7ecb28014b9699220015ca';
 
 			$status = $this->getPaymentStatus($url);
@@ -61,7 +62,7 @@ class TransactionRepository implements TransactionRepositoryInterface
 					'project_id'  => $project_id,
 					'amount'      => $status['amount'],
 					'owner_id'    => Auth::id(),
-					'trans_id'    => $status['id'],
+					'id'          => $status['id'],
 					'created_at'  => now(),
 				];
 
@@ -92,7 +93,7 @@ class TransactionRepository implements TransactionRepositoryInterface
 		return view('users.transaction.create', compact('project_id', 'receiver_id', 'msg', 'error'));
 	}
 
-	// MARK: checkout_transaction
+	// MARK: checkout
 	public function checkout_transaction(int $project_id, int $receiver_id, int $amount):view
 	{
 		$url  = 'https://eu-test.oppwa.com/v1/checkouts';

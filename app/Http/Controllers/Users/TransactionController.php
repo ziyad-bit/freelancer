@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Users;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TransactionRequest;
 use App\Interfaces\Repository\TransactionRepositoryInterface;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class TransactionController extends Controller
@@ -15,9 +17,14 @@ class TransactionController extends Controller
 		$this->middleware('auth');
 	}
 	// MARK: index
-	public function index():View
+	public function index(string $created_at=null):View|JsonResponse
 	{
-		$transactions = $this->transactionRepository->index_transaction();
+		$transactions = $this->transactionRepository->index_transaction($created_at);
+
+		if (request()->ajax()) {
+			$view = view('users.includes.transaction.table',compact('transactions'))->render();
+			return response()->json(['view'=>$view]);
+		}
 
 		return view('users.transaction.index', compact('transactions'));
 	}

@@ -5,12 +5,12 @@ namespace App\Traits;
 trait Payment
 {
 	//MARK: forgetCache
-	public function getPaymentStatus(string $url, $data = null):array
+	public function getPaymentStatus(string $url, $data = null):array|string
 	{
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, [
-			'Authorization:Bearer OGE4Mjk0MTc0YjdlY2IyODAxNGI5Njk5MjIwMDE1Y2N8c3k2S0pzVDg=']);
+			'Authorization:Bearer OGE4Mjk0MTc0YjdlY2IyODAxNGI5Njk5MjIwMDE1Y2N8ZmY0b1UhZSVlckI9YUJzQj82KyU=']);
 		if ($data == null) {
 			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
 		} else {

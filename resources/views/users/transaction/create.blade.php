@@ -18,7 +18,7 @@
     @endif
 
     @if ($error)
-        <div class="alert alert-danger text-center">{{ Session::get('error') }}</div>
+        <div class="alert alert-danger text-center">{{ $error }}</div>
     @endif
 
     <form id="checkout_form">

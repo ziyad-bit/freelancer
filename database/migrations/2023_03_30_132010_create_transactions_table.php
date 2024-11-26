@@ -13,10 +13,9 @@ return new class extends Migration {
 	public function up()
 	{
 		Schema::create('transactions', function (Blueprint $table) {
-			$table->id();
+			$table->uuid()->primary();
 			$table->smallInteger('amount', false, true);
 			$table->string('type', 30);
-			$table->string('trans_id');
 			$table->foreignId('owner_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
 			$table->foreignId('receiver_id')->nullable()->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
 			$table->foreignId('project_id')->nullable()->constrained('projects')->cascadeOnDelete()->cascadeOnUpdate();
