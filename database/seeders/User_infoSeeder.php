@@ -22,7 +22,6 @@ class User_infoSeeder extends Seeder
 		foreach ($users as $user) {
 			DB::table('user_infos')->insert([
 				'location'       => $faker->country(),
-				'review'         => rand(1, 5),
 				'job'            => $faker->jobTitle(),
 				'overview'       => $faker->paragraph(),
 				'card_num'       => rand(1, 5),

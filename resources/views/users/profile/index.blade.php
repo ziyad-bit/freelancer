@@ -18,7 +18,6 @@
     @if (Session::has('error'))
         <div class="alert alert-danger text-center">{{ Session::get('error') }}</div>
     @endif
-
     
     <div class="alert alert-success text-center success_msg" style="display: none"></div>
 
@@ -51,6 +50,7 @@
                     <li class="list-group-item active">
                         <h4>information</h4>
                     </li>
+
                     <li class="list-group-item items_list">
                         <span class="name_profile name_text">name</span>:
                         <span id="name" class="user_name">{{ Auth::user()->name }}</span>
@@ -86,6 +86,16 @@
                             <span class="name_profile">review</span>:
                             @if ($user_info->review)
                                 <span class="user_marital_status">{{ $user_info->review }}</span>
+                            @else
+                                __
+                            @endif
+
+                        </li>
+
+                        <li class="list-group-item items_list">
+                            <span class="name_profile">earn</span>:
+                            @if ($user_info->review)
+                                <span class="user_marital_status">${{ $user_info->total_amount }}</span>
                             @else
                                 __
                             @endif

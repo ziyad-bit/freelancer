@@ -29,7 +29,25 @@ class ProfileRepository implements ProfileRepositoryInterface
 	{
 		$request->session()->regenerate();
 
-		return DB::table('user_infos')->where('user_id', Auth::id())->first();
+		return DB::table('users')
+			->select(
+				'location',
+				'job',
+				'overview',
+				DB::raw('ROUND(AVG(rate), 1) as review'),
+				DB::raw('IFNULL(transaction_data.total_amount, 0) as total_amount')
+			)
+			->leftJoin('user_infos','user_infos.user_id','=','users.id')
+			->leftJoin('reviews','reviews.receiver_id','=','users.id')
+			->leftJoin(
+				DB::raw('(SELECT receiver_id, SUM(amount) as total_amount FROM transactions GROUP BY receiver_id) as transaction_data'),
+				'transaction_data.receiver_id',
+				'=',
+				'users.id'
+			)
+			->where('reviews.receiver_id', Auth::id())
+			->groupBy('users.id')
+			->first();
 	}
 
 	//MARK: storeUserInfo
