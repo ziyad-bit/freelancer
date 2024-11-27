@@ -12,5 +12,5 @@ interface TransactionRepositoryInterface
 	public function index_transaction(string $created_at=null):Collection;
 	public function create_milestone(int $project_id, int $receiver_id):View;
 	public function checkout_transaction(int $amount, int $project_id, int $receiver_id):View;
-	public function store_milestone(TransactionRequest $request):void;
+	public function release_milestone(TransactionRequest $request):void;
 }

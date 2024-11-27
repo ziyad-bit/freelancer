@@ -9,7 +9,7 @@ window.onscroll = function () {
         axios.get(index_url+'/'+created_at)
             .then(res => {
                 if (res.status == 200) {
-                    let view =String(res.data.view) ;
+                    let view =res.data.view;
 
                     if (view === "") {
                         index_data = false;

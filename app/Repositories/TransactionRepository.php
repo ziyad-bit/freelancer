@@ -2,14 +2,16 @@
 
 namespace App\Repositories;
 
-use App\Http\Requests\TransactionRequest;
-use App\Interfaces\Repository\TransactionRepositoryInterface;
 use App\Models\User;
-use App\Notifications\MilestoneNotification;
-use App\Traits\{DatabaseCache, Payment};
-use Illuminate\Contracts\View\View;
+use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use Illuminate\Contracts\View\View;
+use App\Traits\{DatabaseCache, Payment};
+use App\Http\Requests\TransactionRequest;
+use App\Notifications\ReleaseNotification;
 use Illuminate\Support\Facades\{Auth, DB};
+use App\Notifications\MilestoneNotification;
+use App\Interfaces\Repository\TransactionRepositoryInterface;
 
 class TransactionRepository implements TransactionRepositoryInterface
 {
@@ -24,6 +26,8 @@ class TransactionRepository implements TransactionRepositoryInterface
 				'transactions.type',
 				'transactions.amount',
 				'transactions.created_at',
+				'transactions.receiver_id',
+				'transactions.project_id',
 				'projects.title as project_title',
 				'receiver.name as receiver_name',
 				'owner.name as owner_name',
@@ -72,9 +76,10 @@ class TransactionRepository implements TransactionRepositoryInterface
 					->where(['project_id' => $project_id, 'user_id' => $receiver_id])
 					->update(['finished' => 'in progress']);
 
+				$release = false;
 				$receiver = User::find($receiver_id);
 				$user     = Auth::user();
-				$view     = view('users.includes.notifications.create_milestone', compact('data'))->render();
+				$view     = view('users.includes.notifications.milestone', compact('data','release'))->render();
 
 				$receiver->notify(new MilestoneNotification($data, $user->name, $user->image, $view));
 
@@ -111,7 +116,30 @@ class TransactionRepository implements TransactionRepositoryInterface
 	}
 
 	// MARK: store_milestone
-	public function store_milestone(TransactionRequest $request): void
+	public function release_milestone(TransactionRequest $request): void
 	{
+		$receiver_id=$request->receiver_id;
+		$data = $request->validated() + 
+				[
+					'type'=>'release',
+					'owner_id'=>Auth::id(),
+					'id'=>Str::uuid(),
+					'created_at'=>now()
+				];
+
+		DB::table('transactions')->insert($data);
+
+		DB::table('proposals')
+			->where(['project_id'=>$request->project_id,'user_id'=>$receiver_id])
+			->update(['finished'=>'finished']);
+
+		$release  = true;
+		$receiver = User::find($receiver_id);
+		$user     = Auth::user();
+		$view     = view('users.includes.notifications.milestone', compact('data','release'))->render();
+
+		$receiver->notify(new MilestoneNotification($data, $user->name, $user->image, $view));
+
+		$this->forgetCache($receiver_id);
 	}
 }

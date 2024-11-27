@@ -88,10 +88,9 @@ Route::namespace('Users')->controller(SearchController::class)->group(function (
 });
 
 //MARK:transaction
-
-
 Route::namespace('Users')->controller(TransactionController::class)->group(function () {
 	Route::get('transaction/checkout/{project_id}/{receiver_id}/{amount}', 'checkout')->name('transaction.checkout');
 	Route::get('transaction/milestone/create/{project_id}/{receiver_id}' , 'create')->name('transaction.milestone.create');
 	Route::get('transaction/index/{created_at?}'                         , 'index')->name('transaction.index');
+	Route::post('transaction/milestone/release'                          , 'release')->name('transaction.milestone.release');
 });

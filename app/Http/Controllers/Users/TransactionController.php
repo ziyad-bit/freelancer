@@ -42,11 +42,11 @@ class TransactionController extends Controller
 	}
 
 	// MARK: store
-	public function store(TransactionRequest $request):RedirectResponse
+	public function release(TransactionRequest $request):RedirectResponse
 	{
-		$this->transactionRepository->store_milestone($request);
+		$this->transactionRepository->release_milestone($request);
 
-		return to_route('project.show', $request->project_id)->with(['success' => 'milestone is created successfully']);
+		return to_route('transaction.index')->with(['success' => 'milestone is released successfully']);
 	}
 
 	// MARK: show

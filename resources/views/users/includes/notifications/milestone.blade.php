@@ -4,7 +4,12 @@
             <img src="{{asset('storage/images/users/'. Auth::user()->image) }}" class="rounded-circle" alt="error">
             <h5 class="mb-1 p">
                 {{ Str::limit(Auth::user()->name,10,'...') }} 
-                created milestone ${{ $data['amount'] }}
+                
+                @if ($release)
+                    released milestone ${{ $data['amount'] }}
+                @else
+                    created milestone ${{ $data['amount'] }}
+                @endif
             </h5>
         </div>
 
