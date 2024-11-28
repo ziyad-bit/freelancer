@@ -3,7 +3,7 @@
 @section('header')
     <link rel="stylesheet" href="{{ asset('css/users/profile/index.css') }}">
 
-    <script defer src="{{ asset('js/profile/index.js')}}?v={{ filemtime(public_path('js/profile/index.js')) }}"></script>
+    <script defer src="{{ asset('js/profile/index.js') }}?v={{ filemtime(public_path('js/profile/index.js')) }}"></script>
 
     <title>
         {{ ucfirst(Auth::user()->name) . ' - ' . config('app.name') }}
@@ -18,7 +18,7 @@
     @if (Session::has('error'))
         <div class="alert alert-danger text-center">{{ Session::get('error') }}</div>
     @endif
-    
+
     <div class="alert alert-success text-center success_msg" style="display: none"></div>
 
     @if (!$user_info)
@@ -117,18 +117,24 @@
     <h2>work history</h2>
     <p style="margin-left: 30px"></p>
 
-    @if ($user_skills)
+    @if ($user_info->skills != null)
         <div class="alert alert-danger text-center err_msg" style="display: none"></div>
         <h2>skills</h2>
 
-        <a class="btn btn-primary" href="{{ route('skill.create') }}" style="margin-left:270px;margin-top: -76px" role="button">
+        <a class="btn btn-primary" href="{{ route('skill.create') }}" style="margin-left:270px;margin-top: -76px"
+            role="button">
             add skills
         </a>
 
         <ol class="list-group list-group-numbered " style="margin-left: 30px;width: 20%">
-            @foreach ($user_skills as $user_skill)
-                <li class="list-group-item user_skill{{ $user_skill->id }}">{{ $user_skill->skill }}
-                    <button class="btn btn-danger delete_btn" id="{{ $user_skill->id }}" style="float: right;">
+            @foreach (explode(',', $user_info->skills) as $skill)
+                @php
+                    $skill_id = substr($skill, strpos($skill, ':') + 1);
+                    $skill    = strtok($skill, ':');
+                @endphp
+
+                <li class="list-group-item user_skill{{ $skill_id }}">{{ $skill }}
+                    <button class="btn btn-danger delete_btn" id="{{ $skill_id }}" style="float: right;">
                         delete
                     </button>
                 </li>

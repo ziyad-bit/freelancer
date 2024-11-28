@@ -13,17 +13,6 @@ class ProfileRepository implements ProfileRepositoryInterface
 {
 	use File;
 
-	// MARK: getUserSkills
-	public function getUserSkills(): Collection
-	{
-		return DB::table('users')
-			->select('user_skill.id', 'skills.skill')
-			->where('users.id', Auth::id())
-			->join('user_skill', 'users.id', '=', 'user_skill.user_id')
-			->join('skills', 'skills.id', '=', 'user_skill.skill_id')
-			->get();
-	}
-
 	//MARK: getUserInfo
 	public function getUserInfo(Request $request):object|null
 	{
@@ -34,18 +23,28 @@ class ProfileRepository implements ProfileRepositoryInterface
 				'location',
 				'job',
 				'overview',
+				DB::raw('Group_concat(Distinct Concat(skill,":",skills.id) ) as skills'),
 				DB::raw('ROUND(AVG(rate), 1) as review'),
 				DB::raw('IFNULL(transaction_data.total_amount, 0) as total_amount')
 			)
+			->leftJoin('user_skill', 'users.id', '=', 'user_skill.user_id')
+			->leftJoin('skills', 'skills.id', '=', 'user_skill.skill_id')
 			->leftJoin('user_infos','user_infos.user_id','=','users.id')
 			->leftJoin('reviews','reviews.receiver_id','=','users.id')
 			->leftJoin(
-				DB::raw('(SELECT receiver_id, SUM(amount) as total_amount FROM transactions GROUP BY receiver_id) as transaction_data'),
+				DB::raw(
+					'(
+					SELECT receiver_id, SUM(amount) as total_amount 
+					FROM transactions 
+					WHERE type = "release" 
+					GROUP BY receiver_id
+					) as transaction_data'
+				),
 				'transaction_data.receiver_id',
 				'=',
 				'users.id'
 			)
-			->where('reviews.receiver_id', Auth::id())
+			->where('users.id', Auth::id())
 			->groupBy('users.id')
 			->first();
 	}

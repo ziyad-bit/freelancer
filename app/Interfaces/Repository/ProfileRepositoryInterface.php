@@ -8,7 +8,6 @@ use Illuminate\Support\Collection;
 
 interface ProfileRepositoryInterface
 {
-	public function getUserSkills():Collection;
 	public function getUserInfo(Request $request):object|null;
 	public function storeUserInfo(ProfileRequest $request):void;
 	public function updateUserInfo(ProfileRequest $request):void;

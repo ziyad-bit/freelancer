@@ -23,9 +23,8 @@ class ProfileController extends Controller
 	public function index(Request $request):View
 	{
 		$user_info   = $this->profileRepository->getUserInfo($request);
-		$user_skills = $this->profileRepository->getUserSkills();
 
-		return view('users.profile.index',compact('user_info','user_skills'));
+		return view('users.profile.index',compact('user_info'));
 	}
 
 	//MARK: create
