@@ -26,6 +26,10 @@
                         </li>
 
                         <li class="nav-item">
+                            <a class="nav-link" href="{{ route('transaction.index') }}">transactions</a>
+                        </li>
+
+                        <li class="nav-item">
                             <a class="nav-link" href="{{ route('chatrooms.index') }}">chat</a>
                         </li>
                     </ul>

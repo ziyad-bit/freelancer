@@ -13,15 +13,15 @@
     <meta name="keywords" content="profile page contain information about user">
 @endsection
 
-@if (Session::has('success'))
-    <div class="alert alert-success text-center">{{ Session::get('success') }}</div>
-@endif
-
-@if (Session::has('error'))
-    <div class="alert alert-danger text-center">{{ Session::get('error') }}</div>
-@endif
-
 @section('content')
+    @if (Session::has('success'))
+        <div class="alert alert-success text-center">{{ Session::get('success') }}</div>
+    @endif
+
+    @if (Session::has('error'))
+        <div class="alert alert-danger text-center">{{ Session::get('error') }}</div>
+    @endif
+
     <table class="table " style="margin-top: 20px">
         <thead class="thead-dark">
             <tr>

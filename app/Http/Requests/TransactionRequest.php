@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Route;
 
 class TransactionRequest extends FormRequest
 {
@@ -23,10 +24,13 @@ class TransactionRequest extends FormRequest
 	 */
 	public function rules()
 	{
+		$id_rules = Route::currentRouteName() === route('transaction.milestone.release') ? 'required' : '' . '|string';
+
 		return [
 			'project_id'  => 'required|numeric',
 			'receiver_id' => 'required|numeric',
 			'amount'      => 'required|numeric|min:5',
+			'id'          => $id_rules
 		];
 	}
 }

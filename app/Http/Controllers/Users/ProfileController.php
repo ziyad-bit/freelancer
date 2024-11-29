@@ -22,9 +22,13 @@ class ProfileController extends Controller
 	//MARK: index
 	public function index(Request $request):View
 	{
-		$user_info   = $this->profileRepository->getUserInfo($request);
+		$data = $this->profileRepository->getUserInfo($request);
 
-		return view('users.profile.index',compact('user_info'));
+		return view('users.profile.index')
+				->with([
+					'user_info'=>$data['user_info'],
+					'projects'=>$data['projects']
+				]);
 	}
 
 	//MARK: create

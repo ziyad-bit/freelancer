@@ -115,6 +115,27 @@
 
 
     <h2>work history</h2>
+    @forelse ($projects as $project)
+    <div class="card-body" >
+        <a href="{{ route('project.show',$project->id) }}" style="text-decoration:none">
+            <h5 class="card-title">
+                {{ $project->title }}
+            </h5>
+        </a>
+
+        <div class="text-muted" style="margin-bottom: 15px;margin-top: 15px">
+            <span>budget : ${{ $project->amount }} </span>
+            <span style="margin-left: 10px">review: {{ $project->rate }}</span>
+            <span style="margin-left: 10px">completed:
+                {{ \Carbon\Carbon::parse($project->created_at)->diffForhumans() }}</span>
+        </div>
+    </div>
+
+    <hr>
+@empty
+    <p>no projects</p>
+@endforelse
+
     <p style="margin-left: 30px"></p>
 
     @if ($user_info->skills != null)
@@ -130,7 +151,7 @@
             @foreach (explode(',', $user_info->skills) as $skill)
                 @php
                     $skill_id = substr($skill, strpos($skill, ':') + 1);
-                    $skill    = strtok($skill, ':');
+                    $skill = strtok($skill, ':');
                 @endphp
 
                 <li class="list-group-item user_skill{{ $skill_id }}">{{ $skill }}

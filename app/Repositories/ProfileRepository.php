@@ -6,7 +6,6 @@ use App\Http\Requests\ProfileRequest;
 use App\Interfaces\Repository\ProfileRepositoryInterface;
 use App\Traits\File;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\{Auth, DB, Validator};
 
 class ProfileRepository implements ProfileRepositoryInterface
@@ -14,11 +13,11 @@ class ProfileRepository implements ProfileRepositoryInterface
 	use File;
 
 	//MARK: getUserInfo
-	public function getUserInfo(Request $request):object|null
+	public function getUserInfo(Request $request):array
 	{
 		$request->session()->regenerate();
 
-		return DB::table('users')
+		$user_info = DB::table('users')
 			->select(
 				'location',
 				'job',
@@ -29,8 +28,8 @@ class ProfileRepository implements ProfileRepositoryInterface
 			)
 			->leftJoin('user_skill', 'users.id', '=', 'user_skill.user_id')
 			->leftJoin('skills', 'skills.id', '=', 'user_skill.skill_id')
-			->leftJoin('user_infos','user_infos.user_id','=','users.id')
-			->leftJoin('reviews','reviews.receiver_id','=','users.id')
+			->leftJoin('user_infos', 'user_infos.user_id', '=', 'users.id')
+			->leftJoin('reviews', 'reviews.receiver_id', '=', 'users.id')
 			->leftJoin(
 				DB::raw(
 					'(
@@ -47,6 +46,18 @@ class ProfileRepository implements ProfileRepositoryInterface
 			->where('users.id', Auth::id())
 			->groupBy('users.id')
 			->first();
+
+		$projects = DB::table('projects')
+			->select('title', 'rate', 'amount', 'transactions.created_at', 'projects.id')
+			->leftJoin('reviews', 'reviews.project_id', '=', 'projects.id')
+			->Join('transactions', 'transactions.project_id', '=', 'projects.id')
+			->where('reviews.receiver_id', Auth::id())
+			->where('type', 'release')
+			->latest('transactions.created_at')
+			->limit(10)
+			->get();
+
+		return ['projects' => $projects, 'user_info' => $user_info];
 	}
 
 	//MARK: storeUserInfo

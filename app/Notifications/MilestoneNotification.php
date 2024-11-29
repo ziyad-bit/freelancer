@@ -17,7 +17,7 @@ class MilestoneNotification extends Notification implements ShouldQueue
 	 * @return void
 	 */
 	public function __construct(
-		public array $data,
+		public string $amount,
 		public string $user_name,
 		public string $user_image,
 		public string $view,
@@ -49,7 +49,7 @@ class MilestoneNotification extends Notification implements ShouldQueue
 	public function toDatabase():array
 	{
 		return [
-			'amount'       => $this->data['amount'],
+			'amount'       => $this->amount,
 			'sender_name'  => $this->user_name,
 			'sender_image' => $this->user_image,
 		];

@@ -23,9 +23,10 @@ class TransactionRepository implements TransactionRepositoryInterface
 		$auth_id      = Auth::id();
 		$transactions = DB::table('transactions')
 			->select(
+				'transactions.id',
 				'transactions.type',
 				'transactions.amount',
-				'transactions.created_at',
+				'transactions.created_at as date',
 				'transactions.receiver_id',
 				'transactions.project_id',
 				'projects.title as project_title',
@@ -37,8 +38,8 @@ class TransactionRepository implements TransactionRepositoryInterface
 			->join('users as owner', 'owner.id', '=', 'transactions.owner_id')
 			->where('receiver_id', $auth_id)
 			->orwhere('owner_id', $auth_id)
-			->when($created_at, fn ($query) => $query->where('transactions.created_at', '<', $created_at))
-			->latest()
+			->when($created_at, fn ($query) => $query->where('date', '<', $created_at))
+			->latest('date')
 			->limit(8)
 			->get();
 
@@ -81,7 +82,7 @@ class TransactionRepository implements TransactionRepositoryInterface
 				$user     = Auth::user();
 				$view     = view('users.includes.notifications.milestone', compact('data','release'))->render();
 
-				$receiver->notify(new MilestoneNotification($data, $user->name, $user->image, $view));
+				$receiver->notify(new MilestoneNotification($data['amount'], $user->name, $user->image, $view));
 
 				$this->forgetCache($receiver_id);
 
@@ -115,19 +116,13 @@ class TransactionRepository implements TransactionRepositoryInterface
 		return view('users.transaction.form', compact('data', 'receiver_id', 'project_id'));
 	}
 
-	// MARK: store_milestone
+	// MARK: release_milestone
 	public function release_milestone(TransactionRequest $request): void
 	{
 		$receiver_id=$request->receiver_id;
-		$data = $request->validated() + 
-				[
-					'type'=>'release',
-					'owner_id'=>Auth::id(),
-					'id'=>Str::uuid(),
-					'created_at'=>now()
-				];
+		$amount=$request->safe()->__get('amount');
 
-		DB::table('transactions')->insert($data);
+		DB::table('transactions')->where('id',$request->id)->update(['type'=>'release']);
 
 		DB::table('proposals')
 			->where(['project_id'=>$request->project_id,'user_id'=>$receiver_id])
@@ -136,9 +131,9 @@ class TransactionRepository implements TransactionRepositoryInterface
 		$release  = true;
 		$receiver = User::find($receiver_id);
 		$user     = Auth::user();
-		$view     = view('users.includes.notifications.milestone', compact('data','release'))->render();
+		$view     = view('users.includes.notifications.milestone', compact('amount','release'))->render();
 
-		$receiver->notify(new MilestoneNotification($data, $user->name, $user->image, $view));
+		$receiver->notify(new MilestoneNotification($amount, $user->name, $user->image, $view));
 
 		$this->forgetCache($receiver_id);
 	}
