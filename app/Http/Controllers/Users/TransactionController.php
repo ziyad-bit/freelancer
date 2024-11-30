@@ -5,9 +5,7 @@ namespace App\Http\Controllers\Users;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TransactionRequest;
 use App\Interfaces\Repository\TransactionRepositoryInterface;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\{JsonResponse, RedirectResponse};
 use Illuminate\View\View;
 
 class TransactionController extends Controller
@@ -17,13 +15,14 @@ class TransactionController extends Controller
 		$this->middleware('auth');
 	}
 	// MARK: index
-	public function index(string $created_at=null):View|JsonResponse
+	public function index(string $created_at = null):View|JsonResponse
 	{
 		$transactions = $this->transactionRepository->index_transaction($created_at);
 
 		if (request()->ajax()) {
-			$view = view('users.includes.transaction.table',compact('transactions'))->render();
-			return response()->json(['view'=>$view]);
+			$view = view('users.includes.transaction.table', compact('transactions'))->render();
+
+			return response()->json(['view' => $view]);
 		}
 
 		return view('users.transaction.index', compact('transactions'));
@@ -50,26 +49,14 @@ class TransactionController extends Controller
 	}
 
 	// MARK: show
-	public function show(int $id):View
+	public function get_withdraw():View
 	{
-		return view('');
+		return $this->transactionRepository->get_funds();
 	}
 
 	// MARK: edit
-	public function edit(int $id):View
+	public function post_withdraw(int $id):View
 	{
 		return view('');
-	}
-
-	// MARK: update
-	public function update($request, int $id):RedirectResponse
-	{
-		return to_route('');
-	}
-
-	// MARK: destroy
-	public function destroy(int $id):RedirectResponse
-	{
-		return to_route('');
 	}
 }

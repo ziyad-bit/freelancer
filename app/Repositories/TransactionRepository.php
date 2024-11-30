@@ -2,16 +2,14 @@
 
 namespace App\Repositories;
 
-use App\Models\User;
-use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
-use Illuminate\Contracts\View\View;
-use App\Traits\{DatabaseCache, Payment};
 use App\Http\Requests\TransactionRequest;
-use App\Notifications\ReleaseNotification;
-use Illuminate\Support\Facades\{Auth, DB};
-use App\Notifications\MilestoneNotification;
 use App\Interfaces\Repository\TransactionRepositoryInterface;
+use App\Models\User;
+use App\Notifications\{MilestoneNotification};
+use App\Traits\{DatabaseCache, Payment};
+use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\{Auth, DB};
+use Illuminate\Support\{Collection};
 
 class TransactionRepository implements TransactionRepositoryInterface
 {
@@ -77,10 +75,10 @@ class TransactionRepository implements TransactionRepositoryInterface
 					->where(['project_id' => $project_id, 'user_id' => $receiver_id])
 					->update(['finished' => 'in progress']);
 
-				$release = false;
+				$release  = false;
 				$receiver = User::find($receiver_id);
 				$user     = Auth::user();
-				$view     = view('users.includes.notifications.milestone', compact('data','release'))->render();
+				$view     = view('users.includes.notifications.milestone', compact('data', 'release'))->render();
 
 				$receiver->notify(new MilestoneNotification($data['amount'], $user->name, $user->image, $view));
 
@@ -119,22 +117,47 @@ class TransactionRepository implements TransactionRepositoryInterface
 	// MARK: release_milestone
 	public function release_milestone(TransactionRequest $request): void
 	{
-		$receiver_id=$request->receiver_id;
-		$amount=$request->safe()->__get('amount');
+		$receiver_id = $request->receiver_id;
+		$amount      = $request->safe()->__get('amount');
 
-		DB::table('transactions')->where('id',$request->id)->update(['type'=>'release']);
+		DB::table('transactions')->where('id', $request->id)->update(['type' => 'release']);
 
 		DB::table('proposals')
-			->where(['project_id'=>$request->project_id,'user_id'=>$receiver_id])
-			->update(['finished'=>'finished']);
+			->where(['project_id' => $request->project_id, 'user_id' => $receiver_id])
+			->update(['finished' => 'finished']);
 
 		$release  = true;
 		$receiver = User::find($receiver_id);
 		$user     = Auth::user();
-		$view     = view('users.includes.notifications.milestone', compact('amount','release'))->render();
+		$view     = view('users.includes.notifications.milestone', compact('amount', 'release'))->render();
 
 		$receiver->notify(new MilestoneNotification($amount, $user->name, $user->image, $view));
 
 		$this->forgetCache($receiver_id);
+	}
+
+	// MARK: get_funds
+	public function get_funds(): View
+	{
+		$auth_id = Auth::id();
+		$earn = DB::table('transactions')
+			->select(DB::raw('SUM(amount) as total_earn'))
+			->where('type', 'release')
+			->where('receiver_id', $auth_id)
+			->value('total_earn');
+
+		$withdraw = DB::table('transactions')
+			->select(DB::raw('SUM(amount) as total_withdraw'))
+			->where('type', 'withdraw')
+			->where('owner_id', $auth_id)
+			->value('total_withdraw');
+
+		$user_funds = $earn - $withdraw;
+
+		return view('users.transaction.get_funds', compact('user_funds'));
+	}
+
+	public function post_funds(TransactionRequest $request): void
+	{
 	}
 }

@@ -93,4 +93,6 @@ Route::namespace('Users')->controller(TransactionController::class)->group(funct
 	Route::get('transaction/milestone/create/{project_id}/{receiver_id}' , 'create')->name('transaction.milestone.create');
 	Route::get('transaction/index/{created_at?}'                         , 'index')->name('transaction.index');
 	Route::post('transaction/milestone/release'                          , 'release')->name('transaction.milestone.release');
+	Route::get('transaction/withdraw/get'                                , 'get_withdraw')->name('transaction.get_withdraw');
+	Route::post('transaction/withdraw/post'                              , 'post_withdraw')->name('transaction.post_withdraw');
 });

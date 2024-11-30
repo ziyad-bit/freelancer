@@ -30,7 +30,7 @@ class TransactionRequest extends FormRequest
 			'project_id'  => 'required|numeric',
 			'receiver_id' => 'required|numeric',
 			'amount'      => 'required|numeric|min:5',
-			'id'          => $id_rules
+			'id'          => $id_rules,
 		];
 	}
 }

@@ -47,8 +47,4 @@
         </a>
 
     </form>
-
-    <div id="card_form">
-
-    </div>
 @endsection

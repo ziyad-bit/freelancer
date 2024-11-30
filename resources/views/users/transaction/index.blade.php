@@ -22,6 +22,11 @@
         <div class="alert alert-danger text-center">{{ Session::get('error') }}</div>
     @endif
 
+    <a class="btn btn-primary" href="{{ route('transaction.get_withdraw') }}" 
+        style="margin-top: 10px"    role="button">
+        withdraw
+    </a>
+
     <table class="table " style="margin-top: 20px">
         <thead class="thead-dark">
             <tr>

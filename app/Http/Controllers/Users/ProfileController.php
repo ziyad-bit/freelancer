@@ -26,8 +26,8 @@ class ProfileController extends Controller
 
 		return view('users.profile.index')
 				->with([
-					'user_info'=>$data['user_info'],
-					'projects'=>$data['projects']
+					'user_info' => $data['user_info'],
+					'projects'  => $data['projects'],
 				]);
 	}
 

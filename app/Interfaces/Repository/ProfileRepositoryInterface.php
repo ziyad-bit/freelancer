@@ -4,7 +4,6 @@ namespace App\Interfaces\Repository;
 
 use App\Http\Requests\ProfileRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 
 interface ProfileRepositoryInterface
 {
