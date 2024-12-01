@@ -8,8 +8,9 @@ use App\Models\User;
 use App\Notifications\{MilestoneNotification};
 use App\Traits\{DatabaseCache, Payment};
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\{Auth, DB};
-use Illuminate\Support\{Collection};
+use Illuminate\Support\{Collection,Str};
 
 class TransactionRepository implements TransactionRepositoryInterface
 {
@@ -31,11 +32,11 @@ class TransactionRepository implements TransactionRepositoryInterface
 				'receiver.name as receiver_name',
 				'owner.name as owner_name',
 			)
-			->join('projects', 'projects.id', '=', 'transactions.project_id')
-			->join('users as receiver', 'receiver.id', '=', 'transactions.receiver_id')
+			->leftJoin('projects', 'projects.id', '=', 'transactions.project_id')
+			->leftJoin('users as receiver', 'receiver.id', '=', 'transactions.receiver_id')
 			->join('users as owner', 'owner.id', '=', 'transactions.owner_id')
 			->where('receiver_id', $auth_id)
-			->orwhere('owner_id', $auth_id)
+			->orwhere(fn ($query) => $query->where('transactions.owner_id', $auth_id))
 			->when($created_at, fn ($query) => $query->where('date', '<', $created_at))
 			->latest('date')
 			->limit(8)
@@ -115,16 +116,28 @@ class TransactionRepository implements TransactionRepositoryInterface
 	}
 
 	// MARK: release_milestone
-	public function release_milestone(TransactionRequest $request): void
+	public function release_milestone(TransactionRequest $request): RedirectResponse
 	{
 		$receiver_id = $request->receiver_id;
 		$amount      = $request->safe()->__get('amount');
+		$trans_query = DB::table('transactions')->where('id', $request->id);
+		
+		$trans = $trans_query->first();
+		if (!$trans) {
+			return to_route('transaction.index')->with('error','something went wrong');
+		}
+		
+		$trans_query->update(['type' => 'release']);
 
-		DB::table('transactions')->where('id', $request->id)->update(['type' => 'release']);
-
-		DB::table('proposals')
-			->where(['project_id' => $request->project_id, 'user_id' => $receiver_id])
-			->update(['finished' => 'finished']);
+		$proposal_query = DB::table('proposals')
+				->where(['project_id' => $request->project_id, 'user_id' => $receiver_id]);
+		
+		$proposal = $proposal_query->first();
+		if (!$proposal) {
+			return to_route('transaction.index')->with('error','something went wrong');
+		}
+		
+		$proposal_query->update(['finished' => 'finished']);
 
 		$release  = true;
 		$receiver = User::find($receiver_id);
@@ -134,10 +147,12 @@ class TransactionRepository implements TransactionRepositoryInterface
 		$receiver->notify(new MilestoneNotification($amount, $user->name, $user->image, $view));
 
 		$this->forgetCache($receiver_id);
+
+		return to_route('transaction.index')->with(['success' => 'milestone is released successfully']);
 	}
 
 	// MARK: get_funds
-	public function get_funds(): View
+	public function get_funds(): int
 	{
 		$auth_id = Auth::id();
 		$earn = DB::table('transactions')
@@ -152,12 +167,19 @@ class TransactionRepository implements TransactionRepositoryInterface
 			->where('owner_id', $auth_id)
 			->value('total_withdraw');
 
-		$user_funds = $earn - $withdraw;
-
-		return view('users.transaction.get_funds', compact('user_funds'));
+		return $earn - $withdraw;
 	}
 
 	public function post_funds(TransactionRequest $request): void
 	{
+		$data = $request->validated()+
+			[
+				'type'=>'withdraw',
+				'created_at'=>now(),
+				'owner_id'=>Auth::id(),
+				'id'=>Str::uuid()
+			];
+
+		DB::table('transactions')->insert($data);
 	}
 }

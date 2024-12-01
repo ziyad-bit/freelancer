@@ -40,23 +40,25 @@ class TransactionController extends Controller
 		return $this->transactionRepository->checkout_transaction($amount, $project_id, $receiver_id);
 	}
 
-	// MARK: store
+	// MARK: release
 	public function release(TransactionRequest $request):RedirectResponse
 	{
-		$this->transactionRepository->release_milestone($request);
-
-		return to_route('transaction.index')->with(['success' => 'milestone is released successfully']);
+		return $this->transactionRepository->release_milestone($request);
 	}
 
-	// MARK: show
+	// MARK: get_withdraw
 	public function get_withdraw():View
 	{
-		return $this->transactionRepository->get_funds();
+		$user_funds=$this->transactionRepository->get_funds();
+
+		return view('users.transaction.get_funds', compact('user_funds'));
 	}
 
-	// MARK: edit
-	public function post_withdraw(int $id):View
+	// MARK: post_withdraw
+	public function post_withdraw(TransactionRequest $request):RedirectResponse
 	{
-		return view('');
+		$this->transactionRepository->post_funds($request);
+
+		return to_route('transaction.get_withdraw')->with('success', 'the operation is successful');
 	}
 }

@@ -1,9 +1,6 @@
 @extends('layouts.app')
 
 @section('header')
-    <script defer src="{{ asset('js/transaction/create.js') }}?v={{ filemtime(public_path('js/profile/index.js')) }}">
-    </script>
-
     <title>
         {{ ucfirst(Auth::user()->name) . ' - ' . config('app.name') }}
     </title>
@@ -42,7 +39,7 @@
                     @enderror
                 </div>
 
-                <button id="next_btn" style="margin-top: 5px" class="btn btn-primary">
+                <button type="submit" style="margin-top: 5px" class="btn btn-primary">
                     withdraw
                 </button>
             </div>

@@ -24,13 +24,18 @@ class TransactionRequest extends FormRequest
 	 */
 	public function rules()
 	{
-		$id_rules = Route::currentRouteName() === route('transaction.milestone.release') ? 'required' : '' . '|string';
+		if (Route::currentRouteName() === route('transaction.milestone.release')) {
+			$release_rules = [
+				'project_id'  => 'required|numeric',
+				'receiver_id' => 'required|numeric',
+				'id'          => 'required|string',
+			];
+		}else{
+			$release_rules = [];
+		}
 
 		return [
-			'project_id'  => 'required|numeric',
-			'receiver_id' => 'required|numeric',
-			'amount'      => 'required|numeric|min:5',
-			'id'          => $id_rules,
-		];
+			'amount'      => 'required|numeric|min:5|max:5000',
+		] + $release_rules;
 	}
 }
