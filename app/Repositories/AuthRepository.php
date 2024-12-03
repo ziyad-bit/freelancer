@@ -9,6 +9,16 @@ use Illuminate\Support\Facades\{Auth, DB, Hash};
 
 class AuthRepository implements AuthRepositoryInterface
 {
+	// storeUser   #####################################
+	public function storeUser(UserRequest $request):void
+	{
+		$data = $request->safe()->except('password') + ['password' => Hash::make($request->password), 'created_at' => now()];
+
+		$user_id = DB::table('users')->insertGetId($data);
+
+		Auth::loginUsingId($user_id);
+	}
+
 	// login   #####################################
 	public function login(UserRequest $request):RedirectResponse
 	{
@@ -21,14 +31,6 @@ class AuthRepository implements AuthRepositoryInterface
 		} else {
 			return to_route('login')->with(['error' => 'incorrect password or email']);
 		}
-	}
-
-	// storeUser   #####################################
-	public function storeUser(UserRequest $request):int
-	{
-		$data = $request->safe()->except('password') + ['password' => Hash::make($request->password), 'created_at' => now()];
-
-		return DB::table('users')->insertGetId($data);
 	}
 
 	// logout   #####################################

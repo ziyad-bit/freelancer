@@ -49,7 +49,7 @@ class TransactionController extends Controller
 	// MARK: get_withdraw
 	public function get_withdraw():View
 	{
-		$user_funds=$this->transactionRepository->get_funds();
+		$user_funds = $this->transactionRepository->get_funds();
 
 		return view('users.transaction.get_funds', compact('user_funds'));
 	}

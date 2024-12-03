@@ -24,13 +24,12 @@ class SearchRepository implements SearchRepositoryInterface
 		->get();
 
 		$chat_room_id       = null;
-		$receiver           = null;
 		$messages           = [];
 		$show_chatroom      = false;
 		$is_chatroom_page_1 = false;
 
-		$chat_room_view = view('users.includes.chat.index_chat_rooms', compact('show_chatroom', 'all_chat_rooms', 'chat_room_id', 'searchName', 'receiver', 'is_chatroom_page_1'))->render();
-		$chat_box_view  = view('users.includes.chat.index_chat_boxes', compact('show_chatroom', 'all_chat_rooms', 'chat_room_id', 'searchName', 'receiver', 'messages'))->render();
+		$chat_room_view = view('users.includes.chat.index_chat_rooms', compact('show_chatroom', 'all_chat_rooms', 'chat_room_id', 'searchName', 'is_chatroom_page_1'))->render();
+		$chat_box_view  = view('users.includes.chat.index_chat_boxes', compact('show_chatroom', 'all_chat_rooms', 'chat_room_id', 'searchName', 'messages'))->render();
 
 		return [
 			'chat_room_view' => $chat_room_view,

@@ -26,9 +26,7 @@ class ChatRoomController extends Controller
 				'all_chat_rooms'           => $data['all_chat_rooms'],
 				'chat_room_id'             => $data['chat_room_id'],
 				'messages'                 => $data['messages'],
-				'receiver'                 => $data['receiver'],
 				'show_chatroom'            => $data['show_chatroom'],
-				'searchName'               => null,
 				'is_chatroom_page_1'       => true,
 			]
 		);
@@ -37,22 +35,21 @@ class ChatRoomController extends Controller
 	// MARK:fetch
 	public function fetch(int $receiver_id):View|RedirectResponse
 	{
-		$data_or_redirect = $this->chatRoomRepository->fetchWithSelectedUser($receiver_id);
+		$response = $this->chatRoomRepository->fetchWithSelectedUser($receiver_id);
 
-		if (!is_array($data_or_redirect)) {
-			return $data_or_redirect;
+		if (!is_array($response)) {
+			return $response;
 		}
 
 		return view(
 			'users.chat.index',
 			[
-				'all_chat_rooms'           => $data_or_redirect['all_chat_rooms'],
-				'chat_room_id'             => $data_or_redirect['chat_room_id'],
-				'messages'                 => $data_or_redirect['messages'],
-				'receiver'                 => $data_or_redirect['receiver'],
-				'message_id'               => $data_or_redirect['message_id'],
-				'show_chatroom'            => $data_or_redirect['show_chatroom'],
-				'searchName'               => null,
+				'all_chat_rooms'           => $response['all_chat_rooms'],
+				'chat_room_id'             => $response['chat_room_id'],
+				'messages'                 => $response['messages'],
+				'receiver'                 => $response['receiver'],
+				'message_id'               => $response['message_id'],
+				'show_chatroom'            => $response['show_chatroom'],
 				'is_chatroom_page_1'       => true,
 			]
 		);
@@ -82,16 +79,22 @@ class ChatRoomController extends Controller
 	// MARK:send_invitation
 	public function send_user_invitation(ChatRoomRequest $request) : JsonResponse
 	{
-		return $this->chatRoomRepository->sendInvitation($request);
+		$response = $this->chatRoomRepository->sendInvitation($request);
+
+		if ($response != null) {
+			return $response;
+		}
+
+		return response()->json(['success_msg' => 'You sent the invitation successfully']);
 	}
 
 	// MARK:AcceptInvitation
 	public function post_accept_invitation(ChatRoomRequest $request):View|RedirectResponse
 	{
-		$is_null = $this->chatRoomRepository->postAcceptInvitationChatroom($request);
+		$response = $this->chatRoomRepository->postAcceptInvitationChatroom($request);
 
-		if ($is_null != null) {
-			return $is_null;
+		if ($response != null) {
+			return $response;
 		}
 
 		return to_route('chatrooms.getAcceptInvitation', $request->chat_room_id);
@@ -108,9 +111,7 @@ class ChatRoomController extends Controller
 				'all_chat_rooms'           => $data['all_chat_rooms'],
 				'chat_room_id'             => $data['chat_room_id'],
 				'messages'                 => $data['messages'],
-				'receiver'                 => null,
 				'show_chatroom'            => true,
-				'searchName'               => null,
 				'is_chatroom_page_1'       => true,
 			]
 		);

@@ -25,11 +25,10 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			['messages.receiver_id' => $auth_id, 'last' => 1]
 		)
 		->latest('messages.id')
-		->limit(4)
+		->limit(3)
 		->get();
 
 		$messages     = [];
-		$receiver     = null;
 		$chat_room_id = null;
 
 		if ($all_chat_rooms->count() > 0) {
@@ -40,7 +39,6 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			'messages'       => $messages,
 			'chat_room_id'   => $chat_room_id,
 			'all_chat_rooms' => $all_chat_rooms,
-			'receiver'       => $receiver,
 			'show_chatroom'  => true,
 		];
 	}
@@ -49,7 +47,6 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 	public function fetchWithSelectedUser(int $receiver_id): array|RedirectResponse
 	{
 		$messages     = [];
-		$message_id   = null;
 		$chat_room_id = null;
 
 		$receiver = DB::table('users')->find($receiver_id, ['name', 'image', 'id']);
@@ -75,7 +72,6 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		foreach ($all_chat_rooms as $chat_room) {
 			if ($chat_room->receiver_id === $receiver_id) {
 				$chat_room_id = $chat_room->chat_room_id;
-				$receiver     = null;
 
 				break;
 			}
@@ -139,14 +135,12 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		->get();
 
 		$chat_room_id       = null;
-		$receiver           = null;
 		$messages           = [];
 		$show_chatroom      = false;
-		$searchName         = null;
 		$is_chatroom_page_1 = true;
 
-		$chat_room_view = view('users.includes.chat.index_chat_rooms', compact('show_chatroom', 'all_chat_rooms', 'chat_room_id', 'searchName', 'is_chatroom_page_1', 'receiver'))->render();
-		$chat_box_view  = view('users.includes.chat.index_chat_boxes', compact('show_chatroom', 'all_chat_rooms', 'chat_room_id', 'searchName', 'receiver', 'messages'))->render();
+		$chat_room_view = view('users.includes.chat.index_chat_rooms', compact('show_chatroom', 'all_chat_rooms', 'chat_room_id', 'is_chatroom_page_1'))->render();
+		$chat_box_view  = view('users.includes.chat.index_chat_boxes', compact('show_chatroom', 'all_chat_rooms', 'chat_room_id', 'messages'))->render();
 
 		return [
 			'chat_rooms_view' => $chat_room_view,
@@ -165,7 +159,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			->get();
 	}
 	//MARK: sendInvitation
-	public function sendInvitation(ChatRoomRequest $request):JsonResponse
+	public function sendInvitation(ChatRoomRequest $request):JsonResponse|null
 	{
 		$chat_room_id = $request->chat_room_id;
 		$receiver_id  = $request->user_id;
@@ -199,7 +193,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 
 		$this->forgetCache($receiver_id);
 
-		return response()->json(['success_msg' => 'you send invitation successfully']);
+		return null;
 	}
 
 	// MARK: acceptInvitation

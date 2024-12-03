@@ -5,7 +5,9 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">add user</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+                    </button>
                 </div>
 
                 <div class="modal-body add_body"
@@ -45,7 +47,7 @@
         @endphp
 
         <button
-            class="{{ $is_chatroom_page_1 ? 'chatroom_page_1' : '' }} search_{{ $searchName }}  chatroom_btn user_btn nav-link {{ 'chat_room_' . $message->chat_room_id }}  
+            class="{{ $is_chatroom_page_1 ? 'chatroom_page_1' : '' }} search_{{ isset($searchName) ? $searchName:'' }}  chatroom_btn user_btn nav-link {{ 'chat_room_' . $message->chat_room_id }}  
             list-group-item list-group-item-action {{ $is_selected_chat_room ? 'active index_0' : null }}"
             id="list-home-list" data-bs-toggle="pill" data-bs-target={{ '#chat_box' . $message->chat_room_id }}
             role="tab" data-chat_room_id="{{ $message->chat_room_id }}" data-message_id="{{ $message->id }}"
@@ -73,7 +75,7 @@
                 @endif
 
                 <span style="font-weight: bold;" class="name" id="name{{ $receiver_id }}">
-                    {{ Str::limit($receiver_name,20,'...') }}
+                    {{ Str::limit($receiver_name, 20, '...') }}
                 </span>
 
                 <p style="margin-left: 30px;">
@@ -100,19 +102,18 @@
         </button>
     @endforeach
 @else
-    @if (!$receiver)
+    @if (!$receiver && !request()->ajax())
         </p> no chat rooms</p>
     @endif
 @endif
 
-@if ($receiver)
+@isset($receiver)
     <button
-        class="{{ $is_chatroom_page_1 ? 'chatroom_page_1' : '' }} search_{{ $searchName }}  chatroom_btn user_btn nav-link {{ 'chat_room_' . $chat_room_id }}  
+        class="{{ $is_chatroom_page_1 ? 'chatroom_page_1' : '' }} search_{{ isset($searchName) ? $searchName:'' }}  chatroom_btn user_btn nav-link {{ 'chat_room_' . $chat_room_id }}  
         list-group-item list-group-item-action active index_0  }}"
         id="list-home-list" data-bs-toggle="pill" data-bs-target={{ '#chat_box' . $receiver->id }} role="tab"
-        data-chat_room_id="{{ $chat_room_id }}" aria-controls="home" 
-        data-status='true'   data-selected_chat_room_id="{{ $chat_room_id }}"
-        data-show_msgs_url="{{ route('message.show', $chat_room_id) }}"
+        data-chat_room_id="{{ $chat_room_id }}" aria-controls="home" data-status='true'
+        data-selected_chat_room_id="{{ $chat_room_id }}" data-show_msgs_url="{{ route('message.show', $chat_room_id) }}"
         data-show_more_chat_url="{{ route('chatrooms.show_more', $message_id) }}">
 
         <i class="fa-solid fa-plus plus plus{{ $chat_room_id }}" data-bs-toggle="modal"
@@ -131,7 +132,7 @@
             @endif
 
             <span style="font-weight: bold;" class="name" id="name{{ $receiver->id }}">
-                {{ Str::limit($receiver->name,20,'...') }}
+                {{ Str::limit($receiver->name, 20, '...') }}
             </span>
 
             <p style="margin-left: 30px;">
@@ -147,5 +148,4 @@
         </div>
 
     </button>
-
-@endif
+@endisset

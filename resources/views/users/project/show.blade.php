@@ -173,6 +173,7 @@
     <!-- proposal  -->
     <h3 class="text-center">proposals</h3>
 
+    
     @forelse ($proposals as $proposal)
         @if ($project->user_id === Auth::id())
             @include('users.project.index_proposals')
@@ -230,6 +231,6 @@
         @endif
     @endif
 @empty
-    <h3 class="text-center"> no proposals </h3>
+    <h5 class="text-center"> no proposals </h5>
 @endforelse
 @endsection

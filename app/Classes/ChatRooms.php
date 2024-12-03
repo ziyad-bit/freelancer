@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 class ChatRooms
 {
 	// get    #####################################
-	public static function fetch(array $last_sender_msg, array $last_receiver_msg, int $message_id = null, string $searchName = null):Builder
+	public static function fetch(array $last_msg_send, array $last_msg_receive, int $message_id = null, string $searchName = null):Builder
 	{
 		return DB::table('messages')
 			->select(
@@ -30,33 +30,11 @@ class ChatRooms
 						->orWhere('receiver.name', 'LIKE', "%{$searchName}%");
 				});
 			})
-			->Where(
-				function ($query) use ($last_sender_msg, $message_id) {
-					$query->where($last_sender_msg)
-						->when(
-							$message_id !== null,
-							function ($query) use ($message_id) {
-								$query->where('messages.id', '<', $message_id);
-							}
-						);
-				}
-			)
-			->when(
-				$last_receiver_msg !== [],
-				function ($query) use ($last_receiver_msg, $message_id) {
-					$query->orWhere(
-						function ($query) use ($last_receiver_msg, $message_id) {
-							$query->where($last_receiver_msg)
-								->when(
-									$message_id !== null,
-									function ($query) use ($message_id) {
-										$query->where('messages.id', '<', $message_id);
-									}
-								);
-						}
-					);
-				}
-			)
+			->when($message_id, fn ($query) => $query->where('messages.id', '<', $message_id))
+			->where($last_msg_send)
+			->when($last_msg_receive != [], function ($query) use ($last_msg_receive) {
+				$query->orwhere(fn ($query) => $query->where($last_msg_receive));
+			})
 			->groupBy('messages.id');
 	}
 }

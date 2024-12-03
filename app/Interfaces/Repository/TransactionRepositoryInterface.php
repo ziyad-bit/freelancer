@@ -2,10 +2,10 @@
 
 namespace App\Interfaces\Repository;
 
-use Illuminate\Support\Collection;
+use App\Http\Requests\TransactionRequest;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use App\Http\Requests\TransactionRequest;
+use Illuminate\Support\Collection;
 
 interface TransactionRepositoryInterface
 {

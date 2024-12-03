@@ -8,6 +8,6 @@ use Illuminate\Http\{RedirectResponse, Request};
 interface AuthRepositoryInterface
 {
 	public function login(UserRequest $request):RedirectResponse;
-	public function storeUser(UserRequest $request):int;
+	public function storeUser(UserRequest $request):void;
 	public function logoutUser(Request $request):void;
 }

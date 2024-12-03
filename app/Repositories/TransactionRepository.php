@@ -6,7 +6,7 @@ use App\Http\Requests\TransactionRequest;
 use App\Interfaces\Repository\TransactionRepositoryInterface;
 use App\Models\User;
 use App\Notifications\{MilestoneNotification};
-use App\Traits\{DatabaseCache, Payment};
+use App\Traits\{DatabaseCache, GetFunds, Payment};
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\{Auth, DB};
@@ -14,7 +14,7 @@ use Illuminate\Support\{Collection,Str};
 
 class TransactionRepository implements TransactionRepositoryInterface
 {
-	use DatabaseCache ,Payment;
+	use DatabaseCache ,Payment,GetFunds;
 
 	//MARK: index_transaction
 	public function index_transaction(string $created_at = null):Collection
@@ -121,22 +121,22 @@ class TransactionRepository implements TransactionRepositoryInterface
 		$receiver_id = $request->receiver_id;
 		$amount      = $request->safe()->__get('amount');
 		$trans_query = DB::table('transactions')->where('id', $request->id);
-		
+
 		$trans = $trans_query->first();
 		if (!$trans) {
-			return to_route('transaction.index')->with('error','something went wrong');
+			return to_route('transaction.index')->with('error', 'something went wrong');
 		}
-		
+
 		$trans_query->update(['type' => 'release']);
 
 		$proposal_query = DB::table('proposals')
 				->where(['project_id' => $request->project_id, 'user_id' => $receiver_id]);
-		
+
 		$proposal = $proposal_query->first();
 		if (!$proposal) {
-			return to_route('transaction.index')->with('error','something went wrong');
+			return to_route('transaction.index')->with('error', 'something went wrong');
 		}
-		
+
 		$proposal_query->update(['finished' => 'finished']);
 
 		$release  = true;
@@ -154,30 +154,17 @@ class TransactionRepository implements TransactionRepositoryInterface
 	// MARK: get_funds
 	public function get_funds(): int
 	{
-		$auth_id = Auth::id();
-		$earn = DB::table('transactions')
-			->select(DB::raw('SUM(amount) as total_earn'))
-			->where('type', 'release')
-			->where('receiver_id', $auth_id)
-			->value('total_earn');
-
-		$withdraw = DB::table('transactions')
-			->select(DB::raw('SUM(amount) as total_withdraw'))
-			->where('type', 'withdraw')
-			->where('owner_id', $auth_id)
-			->value('total_withdraw');
-
-		return $earn - $withdraw;
+		return $this->get_total_money();
 	}
 
 	public function post_funds(TransactionRequest $request): void
 	{
-		$data = $request->validated()+
+		$data = $request->validated() +
 			[
-				'type'=>'withdraw',
-				'created_at'=>now(),
-				'owner_id'=>Auth::id(),
-				'id'=>Str::uuid()
+				'type'       => 'withdraw',
+				'created_at' => now(),
+				'owner_id'   => Auth::id(),
+				'id'         => Str::uuid(),
 			];
 
 		DB::table('transactions')->insert($data);

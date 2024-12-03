@@ -33,7 +33,6 @@ class MessageRepository implements MessageRepositoryInterface
 			)
 			->update(['last' => 0]);
 
-
 		$message_id = DB::table('messages')->insertGetId($data);
 
 		$files = $fileRepository->insert_file($request, 'message_files', 'message_id', $message_id);

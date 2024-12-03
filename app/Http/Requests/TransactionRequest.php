@@ -2,11 +2,13 @@
 
 namespace App\Http\Requests;
 
+use App\Traits\GetFunds;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Route;
 
 class TransactionRequest extends FormRequest
 {
+	use GetFunds;
 	/**
 	 * Determine if the user is authorized to make this request.
 	 *
@@ -24,18 +26,23 @@ class TransactionRequest extends FormRequest
 	 */
 	public function rules()
 	{
+		$release_rules = [];
+		$amount_rules  = [];
+
 		if (Route::currentRouteName() === route('transaction.milestone.release')) {
 			$release_rules = [
 				'project_id'  => 'required|numeric',
 				'receiver_id' => 'required|numeric',
-				'id'          => 'required|string',
+				'id'          => 'required|uuid',
 			];
-		}else{
-			$release_rules = [];
+		} else {
+			$user_funds = $this->get_total_money();
+
+			$amount_rules = [
+				'amount'      => 'required|numeric|min:5|max:' . $user_funds,
+			];
 		}
 
-		return [
-			'amount'      => 'required|numeric|min:5|max:5000',
-		] + $release_rules;
+		return $amount_rules + $release_rules;
 	}
 }

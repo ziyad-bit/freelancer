@@ -18,7 +18,7 @@
                 @auth
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('profile.index') }}">{{ __('profile') }}</a>
+                            <a class="nav-link" href="{{ route('home') }}">profile</a>
                         </li>
 
                         <li class="nav-item">

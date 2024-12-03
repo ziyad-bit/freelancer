@@ -22,15 +22,18 @@ use App\Http\Controllers\Users\{AuthController, ChatRoomController, FileControll
 Route::namespace('Users')->controller(AuthController::class)->group(function () {
 	Route::get('/login'  , 'getLogin')->name('login');
 	Route::post('/login' , 'postLogin')->name('post.login');
-	Route::get('/'       , 'index')->name('home');
 	Route::post('/logout', 'logout')->name('logout');
 	Route::get('/signup' , 'create')->name('signup');
 	Route::post('/signup', 'store')->name('post.signup');
 });
 
 //MARK:Profile
-Route::get('/profile/delete', 'Users\ProfileController@delete')->name('profile.delete');
-Route::resource('profile'   , ProfileController::class)->except(['show']);
+Route::namespace('Users')->controller(ProfileController::class)->group(function () {
+	Route::get('/'              , 'index')->name('home');
+	Route::get('/profile/delete', 'delete')->name('profile.delete');
+});
+
+Route::resource('profile'   , ProfileController::class)->except(['show','index']);
 
 
 //MARK:Skill

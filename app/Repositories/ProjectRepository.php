@@ -25,7 +25,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 					'project_infos.*',
 					'location',
 					'card_num',
-					'review',
+					DB::raw('IFNULL(ROUND(AVG(rate), 1),0) as review'),
 					DB::raw('GROUP_CONCAT(DISTINCT skills.skill) as skills_names'),
 					DB::raw('COUNT(DISTINCT proposals.id) as proposals_count')
 				)
@@ -34,6 +34,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 				->join('skills', 'project_skill.skill_id', '=', 'skills.id')
 				->join('users', 'users.id', '=', 'projects.user_id')
 				->join('user_infos', 'users.id', '=', 'user_infos.user_id')
+				->leftJoin('reviews', 'reviews.receiver_id', '=', 'users.id')
 				->leftJoin('proposals', 'projects.id', '=', 'proposals.project_id')
 				->when(
 					$searchTitle == null,
@@ -102,7 +103,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 					'location',
 					'card_num',
 					'users.name',
-					'review',
+					DB::raw('IFNULL(ROUND(AVG(rate), 1),0) as review'),
 					DB::raw('GROUP_CONCAT(DISTINCT skill) as skills_names'),
 					DB::raw('GROUP_CONCAT(DISTINCT file)  as files_name'),
 				)
@@ -112,6 +113,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 				->leftJoin('project_files', 'projects.id', '=', 'project_files.project_id')
 				->join('users', 'users.id', '=', 'projects.user_id')
 				->join('user_infos', 'users.id', '=', 'user_infos.user_id')
+				->leftJoin('reviews', 'reviews.receiver_id', '=', 'users.id')
 				->where('projects.id', $id)
 				->groupBy('projects.id')
 				->first();
@@ -121,17 +123,21 @@ class ProjectRepository implements ProjectRepositoryInterface
 		}
 
 		$proposals = DB::table('proposals')
-					->select('proposals.*', 'location', 'card_num', 'name', 'review', )
+					->select(
+						'proposals.*',
+						'location',
+						'card_num',
+						'name',
+						DB::raw('IFNULL(ROUND(AVG(rate), 1),0) as review'),
+					)
 					->join('users', 'users.id', '=', 'proposals.user_id')
 					->join('user_infos', 'users.id', '=', 'user_infos.user_id')
-					->where('project_id', $project->id)
+					->leftJoin('reviews', 'reviews.receiver_id', '=', 'users.id')
+					->where('proposals.project_id', $project->id)
+					->groupBy('proposals.id')
 					->get();
 
-		$auth_proposal = DB::table('proposals')
-					->where(['project_id' => $project->id, 'user_id' => Auth::id()])
-					->value('id');
-
-		return view('users.project.show', compact('project', 'auth_proposal', 'proposals'));
+		return view('users.project.show', compact('project', 'proposals'));
 	}
 
 	//MARK:   editProject
