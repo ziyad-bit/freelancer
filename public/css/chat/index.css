@@ -1,7 +1,7 @@
 #list-tab {
     max-height: 220px;
     overflow-y: scroll;
-    position: relative;
+    position  : relative;
     min-height: 100px;
 }
 
@@ -19,20 +19,20 @@
 
 div .list_search {
     position: absolute;
-    top: 50px;
-    right: 291px;
-    z-index: 6;
-    width: 200px;
+    top     : 50px;
+    right   : 291px;
+    z-index : 6;
+    width   : 200px;
 }
 
 .dot {
-    height: 10px !important;
-    width: 10px !important;
+    height          : 10px !important;
+    width           : 10px !important;
     background-color: green;
-    float: right;
-    position: relative !important;
-    right: 232px;
-    top: 32px;
+    float           : right;
+    position        : relative !important;
+    right           : 232px;
+    top             : 32px;
 }
 
 .user_name {
@@ -45,27 +45,27 @@ div .list_search {
 
 div .send_input {
     position: relative;
-    top: 22px;
-    left: 5px;
-    width: 75%;
+    top     : 22px;
+    left    : 5px;
+    width   : 75%;
 }
 
 .app_upload{
     margin-left: 614px;
-    margin-top: -38px;
-    width: 8px;
+    margin-top : -38px;
+    width      : 8px;
 }
 
 .image_upload{
     margin-left: 591px;
-    margin-top:-23px;
-    width: 8px;
+    margin-top : -23px;
+    width      : 8px;
 }
 
 .video_upload{
     margin-left: 565px;
-    margin-top: -23px;
-    width: 8px;
+    margin-top : -23px;
+    width      : 8px;
 }
 
 .accordion{
@@ -77,9 +77,11 @@ div .send_input {
 }
 
 .file_sent{
-    width: 200px;
-    display: block;
+    width        : 200px;
+    display      : block;
     margin-bottom: 5px;
+    display      : inline;
+    margin-left  : 5px
 }
 
 .fa-solid{
@@ -87,10 +89,10 @@ div .send_input {
 }
 
 .send_btn {
-    width: 80px;
+    width      : 80px;
     margin-left: 634px;
-    position: relative;
-    bottom: 15px;
+    position   : relative;
+    bottom     : 15px;
 }
 
 .chat_msg {
@@ -98,11 +100,11 @@ div .send_input {
 }
 
 .plus{
-    float:right;
+    float: right;
 }
 
 .add_btn{
-    float: right;
+    float   : right;
     position: relative;
-    top: -43px;
+    top     : -43px;
 }

@@ -124,11 +124,12 @@ function storeMsg(e) {
                 const box = document.getElementsByClassName('box' + chat_room_id)[0];
 
                 msg_err.textContent = '';
+                file_number = 0;
 
                 document.getElementById('msg' + chat_room_id).value = '';
 
                 box.insertAdjacentHTML('beforeend',
-                    `
+                    ` 
                 <img  class = "rounded-circle image" src = "/storage/images/users/${auth_photo}" alt = "loading">
                 <span class = "user_name">${auth_name}</span>
                 <p    class = "user_message">${message}</p>
@@ -141,23 +142,46 @@ function storeMsg(e) {
                     let file_src = file_ele.src;
                     let type = file_ele.tagName;
 
-                    if (type === 'img') {
+                    if (type === 'IMG') {
+                        type = 'image';
+
                         box.insertAdjacentHTML('beforeend',
-                            `
-                        <img class = "rounded-circle image" src = "${file_src}" alt = "loading">
+
+                            `<div >
+                                <img class = "file_sent" src = "${file_src}" alt = "loading">
+
+                                <a class="btn btn-primary"  href="${file_src}/${type}/messages">
+                                    <i class="fa-solid fa-file-arrow-down"></i>
+                                </a>    
+                            </div>
+                       
                             `
                         )
                     } else if (type === 'video') {
                         box.insertAdjacentHTML('beforeend',
                             `
+                            <div >
                             <video class = "file_sent" src = "${file_src}"></video>
+
+                                <a class="btn btn-primary"  href="${file_src}/${type}/messages">
+                                    <i class="fa-solid fa-file-arrow-down"></i>
+                                </a>    
+                            </div>
                             `
                         )
 
                     } else {
+                        type = 'application';
+
                         box.insertAdjacentHTML('beforeend',
                             `
+                            <div >
                             <iframe class = "file_sent" src = "${file_src}"></iframe>
+
+                                <a class="btn btn-primary"  href="${file_src}/${type}/messages">
+                                    <i class="fa-solid fa-file-arrow-down"></i>
+                                </a>    
+                            </div>
                             `
                         )
                     }
@@ -182,17 +206,17 @@ function storeMsg(e) {
                 document.querySelector(`.chat_room_${chat_room_id} div p .msg_text`).textContent = message;
             }
         })
-        .catch(err => {
-            let error = err.response;
-            if (error.status == 422) {
-                let err_msgs = error.data.errors;
+    // .catch(err => {
+    //     let error = err.response;
+    //     if (error.status == 422) {
+    //         let err_msgs = error.data.errors;
 
-                for (const [key, value] of Object.entries(err_msgs)) {
-                    msg_err.textContent = value[0];
-                    msg_err.style.display = '';
-                }
-            }
-        });
+    //         for (const [key, value] of Object.entries(err_msgs)) {
+    //             msg_err.textContent = value[0];
+    //             msg_err.style.display = '';
+    //         }
+    //     }
+    // });
 }
 
 
@@ -349,6 +373,7 @@ function subscribeChatChannel(chat_room_id) {
                     <img  class = "rounded-circle image" src = "${image}" alt = "loading">
                     <span class = "user_name">${name}</span>
                     <p    class = "user_message">${data.text}</p>
+
                 `
             )
 
@@ -357,29 +382,49 @@ function subscribeChatChannel(chat_room_id) {
                 document.querySelector(`.typing${data.chat_room_id}`).textContent = '';
             }
 
-            files.forEach(function (file) {
-                let type = file.split('-')[0];
+            for (const [key, value] of Object.entries(files)) {
+                let file_type = value['type'];
+                let file_name = value['name'];
 
-                if (type === 'image') {
+                if (file_type === 'image') {
                     box.insertAdjacentHTML('beforeend',
                         `
-                    <img class = "rounded-circle image" src = "/storage/images/messages/${file}" alt = "loading">
+                            <div >
+                                <img class = "file_sent" src = "/storage/images/messages/${file_name}" alt = "loading">
+
+                                <a class="btn btn-primary"  href="${file_name}/${file_type}/messages">
+                                    <i class="fa-solid fa-file-arrow-down"></i>
+                                </a>    
+                            </div>                    
                         `
                     )
-                } else if (type === 'video') {
+                } else if (file_type === 'video') {
                     box.insertAdjacentHTML('beforeend',
                         `
-                        <video class = "file_sent" src = "/storage/videos/messages/${file}"></video>
+                        <div >
+                        <video class = "file_sent" src = "/storage/videos/messages/${file_name}"></video>
+
+                                <a class="btn btn-primary"  href="${file_name}/${file_type}/messages">
+                                    <i class="fa-solid fa-file-arrow-down"></i>
+                                </a>    
+                            </div>
                         `
                     )
                 } else {
                     box.insertAdjacentHTML('beforeend',
                         `
-                        <iframe class = "file_sent" src = "/storage/applications/messages/${file}"></iframe>
+                        <div >
+                            <iframe class = "file_sent" src = "/storage/applications/messages/${file_name}"></iframe>
+
+                                <a class="btn btn-primary"  href="${file_name}/${file_type}/messages">
+                                    <i class="fa-solid fa-file-arrow-down"></i>
+                                </a>    
+                            </div>
                         `
                     )
                 }
-            })
+            }
+
 
             box.scrollTo({
                 top: 10000,

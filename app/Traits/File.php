@@ -53,29 +53,4 @@ trait File
 
 		return ['file_name' => $file_name, 'original_name' => $original_name];
 	}
-
-	//MARK: download
-	public function download(string $file, string $path): StreamedResponse
-	{
-		return Storage::download($path . $file);
-	}
-
-	//MARK: destroy
-	public function destroy(string $file, string $type, $dir):JsonResponse
-	{
-		$path = $type . 's/' . $dir;
-
-		$storage_file = Storage::has($path . $file);
-		$db_file      = DB::table('project_files')->where($type, $file)->first();
-
-		if ($storage_file && $db_file) {
-			Storage::delete($path . $file);
-
-			DB::table('project_files')->where($type, $file)->delete();
-
-			return response()->json(['success' => 'you deleted successfully ' . $type]);
-		}
-
-		return response()->json(['error' => 'not found'], 404);
-	}
 }

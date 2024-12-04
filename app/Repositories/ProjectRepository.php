@@ -105,7 +105,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 					'users.name',
 					DB::raw('IFNULL(ROUND(AVG(rate), 1),0) as review'),
 					DB::raw('GROUP_CONCAT(DISTINCT skill) as skills_names'),
-					DB::raw('GROUP_CONCAT(DISTINCT file)  as files_name'),
+					DB::raw('GROUP_CONCAT(DISTINCT Concat(file,":",project_files.type))  as files'),
 				)
 				->join('project_skill', 'projects.id', '=', 'project_skill.project_id')
 				->join('skills', 'project_skill.skill_id', '=', 'skills.id')
@@ -140,7 +140,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 		return view('users.project.show', compact('project', 'proposals'));
 	}
 
-	//MARK:   editProject
+	//MARK:editProject
 	public function editProject(int $id, Collection $skills):RedirectResponse|View
 	{
 		$project = DB::table('projects')
@@ -149,9 +149,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 					'title',
 					'content',
 					'project_infos.*',
-					DB::raw('GROUP_CONCAT(DISTINCT project_files.application) as files_names'),
-					DB::raw('GROUP_CONCAT(DISTINCT project_files.video) as videos_names'),
-					DB::raw('GROUP_CONCAT(DISTINCT project_files.image) as images_names'),
+					DB::raw('GROUP_CONCAT(DISTINCT Concat(file,":",project_files.type))  as files'),
 				)
 				->join('project_infos', 'projects.id', '=', 'project_infos.project_id')
 				->leftJoin('project_files', 'projects.id', '=', 'project_files.project_id')

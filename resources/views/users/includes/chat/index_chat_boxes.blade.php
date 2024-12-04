@@ -27,7 +27,7 @@
 
             <form id={{ 'form' . $chat_room->chat_room_id }} enctype="multipart/form-data">
                 <div class="card" style="height: 316px" data-store_msg_url="{{ route('message.store') }}"
-                    data-chat_room_id="{{ $chat_room->chat_room_id }}">
+                    data-chat_room_id="{{ $chat_room->chat_room_id }}" >
 
                     <h5 class="card-header">chat
                         <span id="loading{{ $receiver_id }}" style="margin-left: 50px;display:none">loading old
@@ -48,7 +48,7 @@
                     <input type="hidden" name="receiver_id" value="{{ $receiver_id }}">
 
                     <textarea name="text" cols="30" rows="5" class="form-control send_input"
-                        id="msg{{ $chat_room->chat_room_id }}"></textarea>
+                        id="msg{{ $chat_room->chat_room_id }}" ></textarea>
 
                     <button type="button" class="btn btn-success  send_btn">
                         Send

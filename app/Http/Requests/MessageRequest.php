@@ -24,7 +24,7 @@ class MessageRequest extends FormRequest
 	public function rules()
 	{
 		return [
-			'chat_room_id'             => 'required|numeric',
+			'chat_room_id'             => 'required|uuid',
 			'receiver_id'              => 'required|numeric',
 			'text'                     => 'required|string|max:250',
 			'files.*.name'             => 'nullable|string',

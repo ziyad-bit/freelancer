@@ -5,7 +5,8 @@
     <div class="text-muted" style="margin-bottom: 15px">
         <span> $<span class="price">{{ $proposal->price }}</span></span>
         <span style="margin-left: 10px">time: <span class="num_of_days">{{ $proposal->num_of_days }}</span>
-            days</span>
+            days
+        </span>
         <span style="margin-left: 10px">posted:
             {{ \Carbon\Carbon::parse($proposal->created_at)->diffForhumans() }}</span>
     </div>

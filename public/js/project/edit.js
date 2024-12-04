@@ -14,7 +14,6 @@ close_btns.forEach(close_btn => {
 
 delete_btn.onclick = e => {
     const file = e.target.getAttribute('data-file');
-    console.log('file: ', file);
     const url = document.getElementsByClassName(`${file}`)[0].value;
     const success_ele = document.querySelector('.delete_msg');
     const err_ele = document.querySelector('.err_msg');

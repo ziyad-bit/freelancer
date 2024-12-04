@@ -24,14 +24,20 @@ class FileController extends Controller
 	}
 
 	//MARK: download
-	public function download(string $file):StreamedResponse
+	public function download(string $file,string $type,string $dir):StreamedResponse
 	{
-		return $this->fileRepository->download_file($file, 'projects/');
+		return $this->fileRepository->download_file($file, $type, $dir);
 	}
 
 	//MARK: destroy
-	public function destroy(string $file):JsonResponse
+	public function destroy(string $file,string $type,string $dir):JsonResponse
 	{
-		return $this->fileRepository->destroy_file($file, 'projects/');
+		$response= $this->fileRepository->destroy_file($file, $type ,$dir);
+
+		if (!$response) {
+			return response()->json(['error' => 'not found'], 404);		
+		}
+
+		return response()->json(['success' => 'you deleted successfully ' . $type]);
 	}
 }

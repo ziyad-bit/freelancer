@@ -48,9 +48,9 @@ Route::resource('project'           , ProjectController::class)->except(['index'
 
 //MARK:file
 Route::namespace('Users')->controller(FileController::class)->group(function () {
-	Route::post('/file/upload'   , 'upload')->name('file.upload');
-	Route::get('/files/{file}'   , 'download')->name('file.download');
-	Route::delete('/files/{file}', 'destroy')->name('file.destroy');
+	Route::post('/file/upload'                         , 'upload')->name('file.upload');
+	Route::get('/files/download/{name}/{type}/{dir}'   , 'download')->name('file.download');
+	Route::delete('/files/delete/{name}/{type}/{dir}'  , 'destroy')->name('file.destroy');
 });
 
 //MARK:proposal

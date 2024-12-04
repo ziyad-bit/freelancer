@@ -4,8 +4,8 @@ namespace App\Repositories;
 
 use App\Interfaces\Repository\FileRepositoryInterface;
 use App\Traits\{File, InsertAnyFile};
-use Illuminate\Http\{JsonResponse, Request};
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\{Request};
+use Illuminate\Support\Facades\{DB, Storage};
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileRepository implements FileRepositoryInterface
@@ -13,13 +13,11 @@ class FileRepository implements FileRepositoryInterface
 	use File;
 
 	// MARK: download_file
-	public function download_file(string $file, string $dir):StreamedResponse
+	public function download_file(string $file, string $type, string $dir):StreamedResponse
 	{
-		$position  = strpos($file, '-');
-		$type      = substr($file, 0, $position);
-		$path      = $type . 's/' . $dir;
+		$path = $type . 's/' . $dir. '/';
 
-		return $this->download($file, $path);
+		return Storage::download($path . $file);
 	}
 
 	// MARK: insertAnyFile
@@ -64,11 +62,22 @@ class FileRepository implements FileRepositoryInterface
 	}
 
 	// MARK: destroy_file
-	public function destroy_file(string $file, string $dir):JsonResponse
+	public function destroy_file(string $file, string $type, string $dir):bool
 	{
-		$position  = strpos($file, '-');
-		$type      = substr($file, 0, $position);
+		$path = $type . 's/' . $dir . '/';
 
-		return $this->destroy($file, $type, $dir);
+		$storage_file = Storage::has($path . $file);
+		$file_query   = DB::table('project_files')->where('file', $file);
+		$db_file      = $file_query->first();
+
+		if (!$storage_file || !$db_file) {
+			return false;
+		}
+
+		Storage::delete($path . $file);
+
+		$file_query->delete();
+
+		return true;
 	}
 }

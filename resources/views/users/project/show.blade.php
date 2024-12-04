@@ -92,11 +92,11 @@
     </div>
 
 
-    @if ( Session::has('success'))
+    @if (Session::has('success'))
         <div class="alert alert-success text-center">{{ Session::get('success') }}</div>
     @endif
-        
-    
+
+
 
     <!-- project details -->
     <div class="card-body" style="margin-top: 25px">
@@ -155,15 +155,20 @@
 
     </div>
 
-    @if ($project->files_name != null)
+    @if ($project->files != null)
         <h5 class="text-center" style="margin-top: 20px"> project files </h5>
 
-        @foreach (explode(',', $project->files_name) as $file)
+        @foreach (explode(',', $project->files) as $file)
+            @php
+                $type = substr($file, strpos($file, ':') + 1);
+                $name = strtok($file, ':');
+            @endphp
+
             <div style="margin-top: 10px">
-                <a class="btn btn-primary" href="{{ route('file.download', $file) }}">
+                <a class="btn btn-primary" href="{{ route('file.download',['name'=>$name,'type'=>$type,'dir'=>'projects'] ) }}">
                     download
                 </a>
-                <span class="text-muted">{{ substr($file, -10) }}</span>
+                <span class="text-muted">{{ substr($name, -10) }}</span>
             </div>
         @endforeach
     @endif
@@ -173,7 +178,7 @@
     <!-- proposal  -->
     <h3 class="text-center">proposals</h3>
 
-    
+
     @forelse ($proposals as $proposal)
         @if ($project->user_id === Auth::id())
             @include('users.project.index_proposals')

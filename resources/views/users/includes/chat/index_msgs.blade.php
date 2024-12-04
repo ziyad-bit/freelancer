@@ -20,13 +20,20 @@
 
         @if ($files != null)
             @foreach ($files as $file_type => $file_name)
-                @if ($file_type == 'image')
-                    <img class="file_sent" src="/storage/images/messages/{{ $file_name }}"></img>
-                @elseif ($file_type == 'application')
-                    <iframe class="file_sent" src="/storage/applications/messages/{{ $file_name }}"></iframe>
-                @else
-                    <video class="file_sent" src="/storage/videos/messages/{{ $file_name }}"></video>
-                @endif
+                <div>
+                    @if ($file_type == 'image')
+                        <img class="file_sent" src="/storage/images/messages/{{ $file_name }}"></img>
+                    @elseif ($file_type == 'application')
+                        <iframe class="file_sent" src="/storage/applications/messages/{{ $file_name }}"></iframe>
+                    @else
+                        <video class="file_sent" src="/storage/videos/messages/{{ $file_name }}"></video>
+                    @endif
+
+                    <a class="btn btn-primary"
+                        href="{{ route('file.download', ['name' => $file_name, 'type' => $file_type, 'dir' => 'messages']) }}">
+                        <i class="fa-solid fa-file-arrow-down"></i>
+                    </a>
+                </div>
             @endforeach
         @endif
     @endfor

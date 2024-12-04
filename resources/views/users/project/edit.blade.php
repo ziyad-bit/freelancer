@@ -3,12 +3,11 @@
 @section('header')
     <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
 
-
     <script defer src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
 
-    <script defer src="{{ asset('js/project/create.js')}}?v={{ filemtime(public_path('js/project/create.js')) }}"></script>
-    <script defer src="{{ asset('js/project/edit.js')}}?v={{ filemtime(public_path('js/project/edit.js')) }}"></script>
-    <script defer src="{{ asset('js/skill/add.js')}}?v={{ filemtime(public_path('js/skill/add.js')) }}"></script>
+    <script defer src="{{ asset('js/project/create.js') }}?v={{ filemtime(public_path('js/project/create.js')) }}"></script>
+    <script defer src="{{ asset('js/project/edit.js') }}?v={{ filemtime(public_path('js/project/edit.js')) }}"></script>
+    <script defer src="{{ asset('js/skill/add.js') }}?v={{ filemtime(public_path('js/skill/add.js')) }}"></script>
 @endsection
 
 @section('content')
@@ -45,57 +44,55 @@
         </div>
     </div>
 
-    @if ($project->images_names)
+    @if ($project->files)
         <h5 class="text-center" style="margin-top: 20px">project images</h5>
-        @foreach (explode(',', $project->images_names) as $image)
-            <span id="{{ $image }}">
-                <button type="button" class="btn-close close_btn" data-file="{{ $image }}" data-bs-toggle="modal"
-                    data-bs-target="#delete_file">
-                </button>
+        @foreach (explode(',', $project->files) as $file)
+            @php
+                $type = substr($file, strpos($file, ':') + 1);
+                $name = strtok($file, ':');
+            @endphp
 
-                <input type="hidden" class="{{ $image }}" value="{{ route('file.destroy', $image) }}">
+            @if ($type == 'image')
+                <span id="{{ $name }}">
+                    <button type="button" class="btn-close close_btn" data-file="{{ $name }}"
+                        data-bs-toggle="modal" data-bs-target="#delete_file">
+                    </button>
 
-                <img src="{{ asset('storage/images/projects/' . $image) }}"
-                    style="width: 300px;margin-left: 10px;margin-top: 10px">
-            </span>
+                    <input type="hidden" class="{{ $name }}" value="{{ route('file.destroy',['name'=>$name,'type'=>$type,'dir'=>'projects']) }}">
+
+                    <img src="{{ asset('storage/images/projects/' . $name) }}"
+                        style="width: 300px;margin-left: 10px;margin-top: 10px">
+                </span>
+            @elseif ($type == 'video')
+                <h5 class="text-center" style="margin-top: 20px">project videos</h5>
+                <div>
+                    <span id="{{ $name }}">
+                        <button type="button" class="btn-close close_btn" data-file="{{ $name }}"
+                            data-bs-toggle="modal" data-bs-target="#delete_file">
+                        </button>
+
+                        <input type="hidden" class="{{ $name }}" value="{{ route('file.destroy',['name'=>$name,'type'=>$type,'dir'=>'projects']) }}">
+
+                        <video src="{{ asset('storage/videos/projects/' . $name) }}" controls
+                            style="margin-left: 10px;margin-top: 10px;width: 300px">
+                    </span>
+                </div>
+            @else
+                <h5 class="text-center" style="margin-top: 20px">project files</h5>
+                <div>
+                    <span id="{{ $name }}">
+                        <button type="button" class="btn-close close_btn" data-file="{{ $name }}"
+                            data-bs-toggle="modal" data-bs-target="#delete_file">
+                        </button>
+                        <input type="hidden" class="{{ $name }}" value="{{ route('file.destroy', ['name'=>$name,'type'=>$type,'dir'=>'projects']) }}">
+
+                        <iframe src="{{ asset('storage/applications/projects/' . $name) }}"
+                            style="margin-left: 10px;margin-top: 10px"></iframe>
+                    </span>
+                </div>
+            @endif
         @endforeach
     @endif
-
-    @if ($project->files_names)
-        <h5 class="text-center" style="margin-top: 20px">project files</h5>
-        <div>
-            @foreach (explode(',', $project->files_names) as $file)
-                <span id="{{ $file }}">
-                    <button type="button" class="btn-close close_btn" data-file="{{ $file }}"
-                        data-bs-toggle="modal" data-bs-target="#delete_file">
-                    </button>
-                    <input type="hidden" class="{{ $file }}" value="{{ route('file.destroy', $file) }}">
-
-                    <iframe src="{{ asset('storage/applications/projects/' . $file) }}"
-                        style="margin-left: 10px;margin-top: 10px"></iframe>
-                </span>
-            @endforeach
-        </div>
-    @endif
-
-    @if ($project->videos_names)
-        <h5 class="text-center" style="margin-top: 20px">project videos</h5>
-        <div>
-            @foreach (explode(',', $project->videos_names) as $video)
-                <span id="{{ $video }}">
-                    <button type="button" class="btn-close close_btn" data-file="{{ $video }}"
-                        data-bs-toggle="modal" data-bs-target="#delete_file">
-                    </button>
-
-                    <input type="hidden" class="{{ $video }}" value="{{ route('file.destroy', $video) }}">
-
-                    <video src="{{ asset('storage/videos/projects/' . $video) }}" controls
-                        style="margin-left: 10px;margin-top: 10px;width: 300px">
-                </span>
-            @endforeach
-        </div>
-    @endif
-
 
     <div style="margin-top: 25px">
         <h4>upload images</h4>
@@ -122,7 +119,7 @@
     </div>
 
 
-    <form method="POST" id="form" action="{{ route('project.update',$project->id) }}" enctype="multipart/form-data">
+    <form method="POST" id="form" action="{{ route('project.update', $project->id) }}" enctype="multipart/form-data">
         @csrf
         @method('put')
 
@@ -206,7 +203,7 @@
                     <select class="form-select" required name="exp" aria-label="Default select example">
 
                         <option value="">...</option>
-                        <option @selected('beginer' == $project->exp) value="beginer">beginer</option>
+                        <option @selected('beginner' == $project->exp) value="beginner">beginner</option>
                         <option @selected('intermediate' == $project->exp) value="intermediate">intermediate</option>
                         <option @selected('experienced' == $project->exp) value="experienced">experienced</option>
 
@@ -233,7 +230,7 @@
 
 
                     @if (old('num_input'))
-                        @for ($i = 1 +$project->skills->count(); $i < old('num_input') + 1; $i++)
+                        @for ($i = 1 + $project->skills->count(); $i < old('num_input') + 1; $i++)
                             <div id="input{{ $i }}">
                                 <label for="exampleInputEmail1">
                                     - skill
@@ -242,8 +239,8 @@
                                 <button type="button" class="btn-close  delete_skill" id="{{ $i }}">
                                 </button>
 
-                                <input list="skills" value='{{old("skills_name.$i")}}' id="{{ $i }}" name="skills_name[{{ $i }}]"
-                                    class="form-control input">
+                                <input list="skills" value='{{ old("skills_name.$i") }}' id="{{ $i }}"
+                                    name="skills_name[{{ $i }}]" class="form-control input">
                             </div>
 
                             <input type="hidden" name="skills_id[{{ $i }}]"
@@ -317,7 +314,7 @@
                     value="{{ old('num_input') ? old('num_input') : count($project->skills) }}" name="num_input">
 
                 <button type="submit" class="btn btn-primary" style="margin-top: 25px">
-                    update 
+                    update
                 </button>
 
             </div>
