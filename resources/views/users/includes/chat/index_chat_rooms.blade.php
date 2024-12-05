@@ -79,7 +79,7 @@
                 </span>
 
                 <p style="margin-left: 30px;">
-                    <span>
+                    <span id="sender_name">
                         @if ($message->text != 'new_chat_room%')
                             @if ($message->sender_id !== Auth::id())
                                 {{ Str::limit($message->sender_name, 10, '...') }} :

@@ -117,75 +117,17 @@ function storeMsg(e) {
     axios.post(store_msg_url, formData)
         .then(res => {
             if (res.status == 200) {
-                let auth_name = document.getElementById('auth_name').value,
-                    auth_photo = document.getElementById('auth_photo').value,
-                    message = document.getElementById(`msg${chat_room_id}`).value;
+                let view = res.data.view;
+                let text = res.data.text;
 
-                const box = document.getElementsByClassName('box' + chat_room_id)[0];
+                const box = document.getElementsByClassName(`box${chat_room_id}`)[0];
+
+                box.insertAdjacentHTML('beforeend',view)
 
                 msg_err.textContent = '';
                 file_number = 0;
 
-                document.getElementById('msg' + chat_room_id).value = '';
-
-                box.insertAdjacentHTML('beforeend',
-                    ` 
-                <img  class = "rounded-circle image" src = "/storage/images/users/${auth_photo}" alt = "loading">
-                <span class = "user_name">${auth_name}</span>
-                <p    class = "user_message">${message}</p>
-                    `
-                )
-
-                const uploaded_files_ele = document.querySelectorAll('.file_uploaded');
-
-                uploaded_files_ele.forEach(function (file_ele) {
-                    let file_src = file_ele.src;
-                    let type = file_ele.tagName;
-
-                    if (type === 'IMG') {
-                        type = 'image';
-
-                        box.insertAdjacentHTML('beforeend',
-
-                            `<div >
-                                <img class = "file_sent" src = "${file_src}" alt = "loading">
-
-                                <a class="btn btn-primary"  href="${file_src}/${type}/messages">
-                                    <i class="fa-solid fa-file-arrow-down"></i>
-                                </a>    
-                            </div>
-                       
-                            `
-                        )
-                    } else if (type === 'video') {
-                        box.insertAdjacentHTML('beforeend',
-                            `
-                            <div >
-                            <video class = "file_sent" src = "${file_src}"></video>
-
-                                <a class="btn btn-primary"  href="${file_src}/${type}/messages">
-                                    <i class="fa-solid fa-file-arrow-down"></i>
-                                </a>    
-                            </div>
-                            `
-                        )
-
-                    } else {
-                        type = 'application';
-
-                        box.insertAdjacentHTML('beforeend',
-                            `
-                            <div >
-                            <iframe class = "file_sent" src = "${file_src}"></iframe>
-
-                                <a class="btn btn-primary"  href="${file_src}/${type}/messages">
-                                    <i class="fa-solid fa-file-arrow-down"></i>
-                                </a>    
-                            </div>
-                            `
-                        )
-                    }
-                })
+                document.getElementById(`msg${chat_room_id}`).value = '';
 
                 box.scrollTo({
                     top: 10000,
@@ -193,30 +135,30 @@ function storeMsg(e) {
                 })
 
                 const input_files = document.querySelectorAll('.input_files');
-                input_files.forEach(function (input_file) {
+                input_files.forEach((input_file)=> {
                     input_file.remove();
                 })
 
                 const files_uploaded = document.querySelectorAll(`.files_container${chat_room_id} .file_uploaded`);
-                files_uploaded.forEach(function (file_uploaded) {
+                files_uploaded.forEach((file_uploaded)=> {
                     file_uploaded.remove();
                 })
 
                 document.querySelector(`.files_container${chat_room_id}`).style.display = 'none';
-                document.querySelector(`.chat_room_${chat_room_id} div p .msg_text`).textContent = message;
+                document.querySelector(`.chat_room_${chat_room_id} div p .msg_text`).textContent = text;
             }
         })
-    // .catch(err => {
-    //     let error = err.response;
-    //     if (error.status == 422) {
-    //         let err_msgs = error.data.errors;
+        .catch(err => {
+            let error = err.response;
+            if (error.status == 422) {
+                let err_msgs = error.data.errors;
 
-    //         for (const [key, value] of Object.entries(err_msgs)) {
-    //             msg_err.textContent = value[0];
-    //             msg_err.style.display = '';
-    //         }
-    //     }
-    // });
+                for (const [key, value] of Object.entries(err_msgs)) {
+                    msg_err.textContent = value[0];
+                    msg_err.style.display = '';
+                }
+            }
+        });
 }
 
 
@@ -360,78 +302,24 @@ function subscribeChatChannel(chat_room_id) {
             plus_ele.setAttribute('data-chat_room_users_ids', chat_room_users_ids);
         })
         .listen('MessageEvent', (e) => {
-            const data = e.data;
-            const sender_id = data.sender_id;
-            const files = e.files;
-
-            const box = document.querySelector('.box' + data.chat_room_id);
-            const name = document.getElementById('name' + sender_id).textContent;
-            const image = document.getElementById('image' + sender_id).getAttribute('src');
-
-            box.insertAdjacentHTML('beforeend',
-                `
-                    <img  class = "rounded-circle image" src = "${image}" alt = "loading">
-                    <span class = "user_name">${name}</span>
-                    <p    class = "user_message">${data.text}</p>
-
-                `
-            )
+            const data         = e.data;
+            const chat_room_id = data.chat_room_id;
+            const box          = document.querySelector(`.box${chat_room_id}`);
+            
+            box.insertAdjacentHTML('beforeend',e.view)
 
             typing_users_ids.delete(data.sender_id);
             if (typing_users_ids.size === 0) {
-                document.querySelector(`.typing${data.chat_room_id}`).textContent = '';
+                document.querySelector(`.typing${chat_room_id}`).textContent = '';
             }
-
-            for (const [key, value] of Object.entries(files)) {
-                let file_type = value['type'];
-                let file_name = value['name'];
-
-                if (file_type === 'image') {
-                    box.insertAdjacentHTML('beforeend',
-                        `
-                            <div >
-                                <img class = "file_sent" src = "/storage/images/messages/${file_name}" alt = "loading">
-
-                                <a class="btn btn-primary"  href="${file_name}/${file_type}/messages">
-                                    <i class="fa-solid fa-file-arrow-down"></i>
-                                </a>    
-                            </div>                    
-                        `
-                    )
-                } else if (file_type === 'video') {
-                    box.insertAdjacentHTML('beforeend',
-                        `
-                        <div >
-                        <video class = "file_sent" src = "/storage/videos/messages/${file_name}"></video>
-
-                                <a class="btn btn-primary"  href="${file_name}/${file_type}/messages">
-                                    <i class="fa-solid fa-file-arrow-down"></i>
-                                </a>    
-                            </div>
-                        `
-                    )
-                } else {
-                    box.insertAdjacentHTML('beforeend',
-                        `
-                        <div >
-                            <iframe class = "file_sent" src = "/storage/applications/messages/${file_name}"></iframe>
-
-                                <a class="btn btn-primary"  href="${file_name}/${file_type}/messages">
-                                    <i class="fa-solid fa-file-arrow-down"></i>
-                                </a>    
-                            </div>
-                        `
-                    )
-                }
-            }
-
 
             box.scrollTo({
                 top: 10000,
                 behavior: 'smooth'
             });
 
-            document.querySelector('.chat_room_' + data.chat_room_id + ' div p .msg_text').textContent = data.text;
+            document.querySelector(`.chat_room_${chat_room_id} div  #sender_name`).textContent = e.sender_name +':';
+            document.querySelector(`.chat_room_${chat_room_id} div p .msg_text`).textContent = data.text;
         }).listenForWhisper('typing', (e) => {
             is_typing(e);
         }).leaving((e) => {

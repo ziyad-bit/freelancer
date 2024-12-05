@@ -16,8 +16,11 @@ class MessageEvent implements ShouldBroadcast
 	 *
 	 * @return void
 	 */
-	public function __construct(public array $data, public array $files)
-	{
+	public function __construct(
+		public array $data,
+		public string $view,
+		public string $sender_name
+	) {
 	}
 
 	/**

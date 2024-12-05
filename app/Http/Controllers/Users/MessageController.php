@@ -17,9 +17,9 @@ class MessageController extends Controller
 	//MARK: store
 	public function store(MessageRequest $request, FileRepositoryInterface $fileRepository)//:JsonResponse
 	{
-		$this->messageRepository->storeMessage($request, $fileRepository);
+		$data=$this->messageRepository->storeMessage($request, $fileRepository);
 
-		return response()->json();
+		return response()->json(['view'=>$data['view'],'text'=>$data['text']]);
 	}
 
 	//MARK: show

@@ -16,13 +16,14 @@ class MessageRepository implements MessageRepositoryInterface
 {
 	use DatabaseCache;
 	// MARK: storeMessage
-	public function storeMessage(MessageRequest $request, FileRepositoryInterface $fileRepository):void
+	public function storeMessage(MessageRequest $request, FileRepositoryInterface $fileRepository):array
 	{
-		$text        = $request->text;
+		$text        = $request->safe()->__get('text');
+		$enc_text    = $request->text;
 		$receiver_id = $request->receiver_id;
 		$auth_user   = Auth::user();
 		$data        = $request->safe()->only(['chat_room_id', 'receiver_id']) +
-					['created_at' => now(), 'sender_id' => $auth_user->id, 'text' => $text];
+					['created_at' => now(), 'sender_id' => $auth_user->id, 'text' => $enc_text];
 
 		DB::table('messages')
 			->where(
@@ -37,18 +38,22 @@ class MessageRepository implements MessageRepositoryInterface
 
 		$files = $fileRepository->insert_file($request, 'message_files', 'message_id', $message_id);
 
-		$data['text'] = $request->safe()->__get('text');
+		$data['text'] = $text;
 
-		broadcast(new MessageEvent($data, $files))->toOthers();
+		$view_msg=view('users.includes.chat.send_message',compact('data','files'))->render();
+
+		broadcast(new MessageEvent($data,$view_msg,$auth_user->name))->toOthers();
 
 		$notif_view = view('users.includes.notifications.send', compact('data'))->render();
 		$user       = User::find($receiver_id);
 
-		$data['text'] = $text;
+		$data['text'] = $enc_text;
 
 		Notification::send($user, new NewMessageNotification($data, $auth_user->name, $auth_user->image, $notif_view));
 
 		$this->forgetCache($receiver_id);
+
+		return ['view'=>$view_msg,'text'=>$text];
 	}
 
 	// MARK: showMessage
