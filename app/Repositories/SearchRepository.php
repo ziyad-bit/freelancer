@@ -54,7 +54,7 @@ class SearchRepository implements SearchRepositoryInterface
 		$searchTitle = $request->search;
 		$projects    = DB::table('projects')
 					->select('title')
-					->where('title', 'LIKE', "%{$searchTitle}%")
+					->where('title', 'LIKE', "{$searchTitle}%")
 					->limit(5)
 					->get();
 

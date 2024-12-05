@@ -46,7 +46,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 					},
 					function ($query) use ($searchTitle) {
 						$query->where(function ($query) use ($searchTitle) {
-							$query->where('title', 'LIKE', "%{$searchTitle}%");
+							$query->where('title', 'LIKE', "{$searchTitle}%");
 						});
 					}
 				)

@@ -122,7 +122,7 @@ function storeMsg(e) {
 
                 const box = document.getElementsByClassName(`box${chat_room_id}`)[0];
 
-                box.insertAdjacentHTML('beforeend',view)
+                box.insertAdjacentHTML('beforeend', view)
 
                 msg_err.textContent = '';
                 file_number = 0;
@@ -135,17 +135,24 @@ function storeMsg(e) {
                 })
 
                 const input_files = document.querySelectorAll('.input_files');
-                input_files.forEach((input_file)=> {
+                input_files.forEach((input_file) => {
                     input_file.remove();
                 })
 
                 const files_uploaded = document.querySelectorAll(`.files_container${chat_room_id} .file_uploaded`);
-                files_uploaded.forEach((file_uploaded)=> {
+                files_uploaded.forEach((file_uploaded) => {
                     file_uploaded.remove();
                 })
 
                 document.querySelector(`.files_container${chat_room_id}`).style.display = 'none';
-                document.querySelector(`.chat_room_${chat_room_id} div p .msg_text`).textContent = text;
+
+                const msg_ele = document.querySelector(`.chat_room_${chat_room_id} div p .msg_text`);
+
+                if (text == null) {
+                    msg_ele.textContent = 'file';
+                } else {
+                    msg_ele.textContent = text;
+                }
             }
         })
         .catch(err => {
@@ -302,11 +309,11 @@ function subscribeChatChannel(chat_room_id) {
             plus_ele.setAttribute('data-chat_room_users_ids', chat_room_users_ids);
         })
         .listen('MessageEvent', (e) => {
-            const data         = e.data;
+            const data = e.data;
             const chat_room_id = data.chat_room_id;
-            const box          = document.querySelector(`.box${chat_room_id}`);
-            
-            box.insertAdjacentHTML('beforeend',e.view)
+            const box = document.querySelector(`.box${chat_room_id}`);
+
+            box.insertAdjacentHTML('beforeend', e.view)
 
             typing_users_ids.delete(data.sender_id);
             if (typing_users_ids.size === 0) {
@@ -318,8 +325,17 @@ function subscribeChatChannel(chat_room_id) {
                 behavior: 'smooth'
             });
 
-            document.querySelector(`.chat_room_${chat_room_id} div  #sender_name`).textContent = e.sender_name +':';
-            document.querySelector(`.chat_room_${chat_room_id} div p .msg_text`).textContent = data.text;
+            document.querySelector(`.chat_room_${chat_room_id} div  #sender_name`).textContent = e.sender_name + ':';
+
+            const msg_ele = document.querySelector(`.chat_room_${chat_room_id} div p .msg_text`);
+            const text = data.text;
+
+            if (text == null) {
+                msg_ele.textContent = 'file';
+            } else {
+                msg_ele.textContent = text;
+            }
+
         }).listenForWhisper('typing', (e) => {
             is_typing(e);
         }).leaving((e) => {

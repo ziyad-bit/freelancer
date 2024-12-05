@@ -26,8 +26,8 @@ class ChatRooms
 			->join('chat_room_user', 'messages.chat_room_id', '=', 'chat_room_user.chat_room_id')
 			->when($searchName != null, function ($query) use ($searchName) {
 				$query->where(function ($query) use ($searchName) {
-					$query->where('sender.name', 'LIKE', "%{$searchName}%")
-						->orWhere('receiver.name', 'LIKE', "%{$searchName}%");
+					$query->where('sender.name', 'LIKE', "{$searchName}%")
+						->orWhere('receiver.name', 'LIKE', "{$searchName}%");
 				});
 			})
 			->when($message_id, fn ($query) => $query->where('messages.id', '<', $message_id))

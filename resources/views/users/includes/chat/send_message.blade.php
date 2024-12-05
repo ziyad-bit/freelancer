@@ -1,7 +1,9 @@
 <img class="rounded-circle image" src={{ asset('storage/images/users/' . Auth::user()->image) }} alt="loading">
 
 <span class="user_name">{{ Auth::user()->name }}</span>
-<p class="user_message"> {{ $data['text'] }} </p>
+@if ($data['text'])
+    <p class="user_message"> {{ $data['text'] }} </p>
+@endif
 
 @if (count($files) > 0)
     @for ($i = 1; $i < count($files) + 1; $i++)
