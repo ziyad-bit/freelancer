@@ -25,7 +25,7 @@ class SkillRequest extends FormRequest
 	 */
 	public function rules()
 	{
-		$skills_id = DB::table('user_skill')
+		$user_skills_id = DB::table('user_skill')
 				->where('user_id', Auth::id())
 				->pluck('skill_id')
 				->toArray();
@@ -33,7 +33,7 @@ class SkillRequest extends FormRequest
 		return [
 			'num_input'   => 'nullable|numeric',
 			'skills_id'   => 'required|array|min:1',
-			'skills_id.*' => ['distinct', 'exists:skills,id', Rule::notIn($skills_id)],
+			'skills_id.*' => ['distinct', 'exists:skills,id', Rule::notIn($user_skills_id)],
 		];
 	}
 

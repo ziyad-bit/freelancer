@@ -5,6 +5,8 @@ namespace App\Http\Middleware\Authorize;
 use App\Interfaces\Repository\ProfileRepositoryInterface;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class Profile
 {
@@ -25,8 +27,8 @@ class Profile
 	 */
 	public function handle(Request $request, Closure $next)
 	{
-		//store
-		if ($this->profileRepository->getUserInfo()) {
+		$user_info = DB::table('user_infos')->find(Auth::id(),'id');
+		if ($user_info ) {
 			return to_route('profile.index')->with('error', 'something went wrong');
 		}
 

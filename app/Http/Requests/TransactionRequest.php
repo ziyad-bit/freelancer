@@ -29,7 +29,7 @@ class TransactionRequest extends FormRequest
 		$release_rules = [];
 		$amount_rules  = [];
 
-		if (Route::currentRouteName() === route('transaction.milestone.release')) {
+		if (request()->routeIs('transaction.milestone.release')) {
 			$release_rules = [
 				'project_id'  => 'required|numeric',
 				'receiver_id' => 'required|numeric',

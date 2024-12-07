@@ -39,9 +39,20 @@ class ProjectController extends Controller
 	}
 
 	//MARK: show
-	public function show(int $id):View|RedirectResponse
+	public function show(int $id):View|RedirectResponse|JsonResponse
 	{
-		return $this->ProjectRepository->showProject($id);
+		$response = $this->ProjectRepository->showProject($id);
+
+		if (!is_array($response)) {
+			return $response;
+		}
+
+		return view('users.project.show')
+			->with([
+				'project'   => $response['project'],
+				'proposals' => $response['proposals'],
+				'cursor'    => $response['cursor'],
+			]);
 	}
 
 	//MARK: edit

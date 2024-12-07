@@ -1,6 +1,8 @@
 //delete proposal
 const close_btns = document.getElementsByClassName('close_btn');
 const delete_btn = document.querySelector('.delete_btn');
+const success_ele = document.querySelector('.delete_msg');
+const err_ele = document.querySelector('.err_msg');
 
 close_btns.forEach(close_btn => {
     close_btn.onclick = e => {
@@ -8,6 +10,9 @@ close_btns.forEach(close_btn => {
         
         delete_btn.setAttribute('data-file', file);
         delete_btn.removeAttribute('disabled');
+
+        err_ele.style.display = 'none';
+        success_ele.style.display = 'none';
     }
 });
 
@@ -15,12 +20,9 @@ close_btns.forEach(close_btn => {
 delete_btn.onclick = e => {
     const file = e.target.getAttribute('data-file');
     const url = document.getElementsByClassName(`${file}`)[0].value;
-    const success_ele = document.querySelector('.delete_msg');
-    const err_ele = document.querySelector('.err_msg');
 
-    err_ele.style.display = 'none';
-    success_ele.style.display = 'none';
-
+    delete_btn.disabled = true;
+    
     axios.delete(url)
         .then(res => {
             if (res.status == 200) {
@@ -28,7 +30,6 @@ delete_btn.onclick = e => {
 
                 success_ele.textContent = success_msg;
                 success_ele.style.display = '';
-                delete_btn.disabled = true;
 
                 document.getElementById(`${file}`).remove();
             }
@@ -37,11 +38,12 @@ delete_btn.onclick = e => {
             const error = err.response;
             const error_msg = error.data.error;
 
+            delete_btn.disabled = false;
+            
             if (error.status === 404) {
                 err_ele.textContent = error_msg;
                 err_ele.style.display = '';
             }
-
         });
 }
 

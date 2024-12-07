@@ -24,10 +24,8 @@ class SearchRequest extends FormRequest
 	 */
 	public function rules()
 	{
-		$route = Route::currentRouteName();
-
 		return [
-			'search' => $route == 'project.fetch' ? 'nullable' : 'required' . '|string|max:30',
+			'search' => request()->routeIs('project.fetch')  ? 'nullable' : 'required' . '|string|max:30',
 		];
 	}
 }

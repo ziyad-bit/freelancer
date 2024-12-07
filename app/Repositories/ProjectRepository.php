@@ -92,31 +92,31 @@ class ProjectRepository implements ProjectRepositoryInterface
 	}
 
 	//MARK: showProject
-	public function showProject(int $id):object|null
+	public function showProject(int $id):JsonResponse|RedirectResponse|array
 	{
 		$project = DB::table('projects')
-				->select(
-					'projects.*',
-					'projects.content as project_body',
-					'project_infos.*',
-					'project_infos.num_of_days as time',
-					'location',
-					'card_num',
-					'users.name',
-					DB::raw('IFNULL(ROUND(AVG(rate), 1),0) as review'),
-					DB::raw('GROUP_CONCAT(DISTINCT skill) as skills_names'),
-					DB::raw('GROUP_CONCAT(DISTINCT Concat(file,":",project_files.type))  as files'),
-				)
-				->join('project_skill', 'projects.id', '=', 'project_skill.project_id')
-				->join('skills', 'project_skill.skill_id', '=', 'skills.id')
-				->join('project_infos', 'projects.id', '=', 'project_infos.project_id')
-				->leftJoin('project_files', 'projects.id', '=', 'project_files.project_id')
-				->join('users', 'users.id', '=', 'projects.user_id')
-				->join('user_infos', 'users.id', '=', 'user_infos.user_id')
-				->leftJoin('reviews', 'reviews.receiver_id', '=', 'users.id')
-				->where('projects.id', $id)
-				->groupBy('projects.id')
-				->first();
+			->select(
+				'projects.*',
+				'projects.content as project_body',
+				'project_infos.*',
+				'project_infos.num_of_days as time',
+				'location',
+				'card_num',
+				'users.name',
+				DB::raw('IFNULL(ROUND(AVG(rate), 1),0) as review'),
+				DB::raw('GROUP_CONCAT(DISTINCT skill) as skills_names'),
+				DB::raw('GROUP_CONCAT(DISTINCT Concat(file,":",project_files.type))  as files'),
+			)
+			->join('project_skill', 'projects.id', '=', 'project_skill.project_id')
+			->join('skills', 'project_skill.skill_id', '=', 'skills.id')
+			->join('project_infos', 'projects.id', '=', 'project_infos.project_id')
+			->leftJoin('project_files', 'projects.id', '=', 'project_files.project_id')
+			->join('users', 'users.id', '=', 'projects.user_id')
+			->join('user_infos', 'users.id', '=', 'user_infos.user_id')
+			->leftJoin('reviews', 'reviews.receiver_id', '=', 'users.id')
+			->where('projects.id', $id)
+			->groupBy('projects.id')
+			->first();
 
 		if (!$project) {
 			return to_route('project.index_posts')->with('error', 'project not found');
@@ -133,11 +133,20 @@ class ProjectRepository implements ProjectRepositoryInterface
 					->join('users', 'users.id', '=', 'proposals.user_id')
 					->join('user_infos', 'users.id', '=', 'user_infos.user_id')
 					->leftJoin('reviews', 'reviews.receiver_id', '=', 'users.id')
-					->where('proposals.project_id', $project->id)
+					->where('proposals.project_id', $id)
 					->groupBy('proposals.id')
-					->get();
+					->orderBy('proposals.id')
+					->cursorPaginate(3);
 
-		return view('users.project.show', compact('project', 'proposals'));
+		$cursor = $this->getCursor($proposals);
+
+		if (request()->ajax()) {
+			$view = view('users.project.show_proposals', compact('proposals','project'))->render();
+
+			return response()->json(['view' => $view,'cursor'=>$cursor]);
+		}
+
+		return ['proposals' => $proposals, 'project' => $project, 'cursor' => $cursor];
 	}
 
 	//MARK:editProject

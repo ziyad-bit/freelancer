@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Route;
 
-class ChatRoomRequest extends FormRequest
+class SignupRequest extends FormRequest
 {
 	/**
 	 * Determine if the user is authorized to make this request.
@@ -24,11 +23,10 @@ class ChatRoomRequest extends FormRequest
 	 */
 	public function rules()
 	{
-		$is_user_id_required = request()->routeIs('chatrooms.send_user_invitation')  ? 'required' : 'nullable';
-
-		return [
-			'chat_room_id' => 'required|numeric',
-			'user_id'      => $is_user_id_required . '|numeric',
+		return  [
+			'name'      => 'required|string|max:20|min:3',
+			'email'     => 'unique:users,email|required|email|max:40|min:10|',
+			'password'  => 'confirmed|required|string|max:30|min:8',
 		];
 	}
 }

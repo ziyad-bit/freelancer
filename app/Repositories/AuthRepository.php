@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\SignupRequest;
 use App\Http\Requests\UserRequest;
 use App\Interfaces\Repository\AuthRepositoryInterface;
 use Illuminate\Http\{RedirectResponse, Request};
@@ -10,7 +12,7 @@ use Illuminate\Support\Facades\{Auth, DB, Hash};
 class AuthRepository implements AuthRepositoryInterface
 {
 	// storeUser   #####################################
-	public function storeUser(UserRequest $request):void
+	public function storeUser(SignupRequest $request):void
 	{
 		$data = $request->safe()->except('password') + ['password' => Hash::make($request->password), 'created_at' => now()];
 
@@ -20,7 +22,7 @@ class AuthRepository implements AuthRepositoryInterface
 	}
 
 	// login   #####################################
-	public function login(UserRequest $request):RedirectResponse
+	public function login(LoginRequest $request):RedirectResponse
 	{
 		$credentials = $request->only('email', 'password');
 

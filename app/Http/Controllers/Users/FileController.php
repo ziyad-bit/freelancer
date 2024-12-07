@@ -13,6 +13,7 @@ class FileController extends Controller
 	public function __construct(private FileRepositoryInterface $fileRepository)
 	{
 		$this->middleware('auth');
+		$this->middleware('file')->only('destroy');
 	}
 
 	//MARK: upload
@@ -35,7 +36,7 @@ class FileController extends Controller
 		$response= $this->fileRepository->destroy_file($file, $type ,$dir);
 
 		if (!$response) {
-			return response()->json(['error' => 'not found'], 404);		
+			return response()->json(['error' => 'file is not found'], 404);		
 		}
 
 		return response()->json(['success' => 'you deleted successfully ' . $type]);

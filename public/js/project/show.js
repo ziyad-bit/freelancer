@@ -78,6 +78,23 @@ if (edit_btn) {
     }
 }
 
+window.onscroll = function () {
+    const cursor = proposal_wrapper.getAttribute('data-cursor');
 
+    if (window.scrollY + window.innerHeight -16 >= document.body.clientHeight && cursor !='false') {
+        const proposal_wrapper = document.querySelector('#proposal_wrapper');
+        let   show_url         = proposal_wrapper.getAttribute('data-show_url');
 
+        axios.get(show_url+`?cursor=${cursor}`)
+            .then(res => {
+                if (res.status == 200) {
+                    let view =res.data.view;
+                    let new_cursor =res.data.cursor;
+
+                    proposal_wrapper.setAttribute('data-cursor',new_cursor);
+                    proposal_wrapper.insertAdjacentHTML('beforeend',view);
+                }
+            })
+    }
+}
 

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\SignupRequest;
 use App\Http\Requests\UserRequest;
 use App\Interfaces\Repository\{AuthRepositoryInterface};
 use Illuminate\Http\{RedirectResponse, Request};
@@ -23,7 +25,7 @@ class AuthController extends Controller
 	}
 
 	//MARK: store
-	public function store(UserRequest $request):RedirectResponse
+	public function store(SignupRequest $request):RedirectResponse
 	{
 		$this->authRepository->storeUser($request);
 
@@ -37,7 +39,7 @@ class AuthController extends Controller
 	}
 
 	//MARK: postLogin
-	public function postLogin(UserRequest $request):RedirectResponse
+	public function postLogin(LoginRequest $request):RedirectResponse
 	{
 		return $this->authRepository->login($request);
 	}

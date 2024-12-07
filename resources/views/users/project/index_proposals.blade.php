@@ -1,7 +1,7 @@
 <input type="hidden" value="{{ route('proposal.update', $proposal->id) }}" id="update_url">
 <input type="hidden" id="delete_url" value="{{ route('proposal.destroy', $proposal->id) }}">
 
-<div class="card-body proposal" style="margin-top: 25px">
+<div class="card-body proposal" style="margin-top: 25px" >
     <div class="text-muted" style="margin-bottom: 15px">
         <span> $<span class="price">{{ $proposal->price }}</span></span>
         <span style="margin-left: 10px">time: <span class="num_of_days">{{ $proposal->num_of_days }}</span>
