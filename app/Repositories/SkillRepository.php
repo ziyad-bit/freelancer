@@ -20,15 +20,17 @@ class SkillRepository implements SkillRepositoryInterface
 	{
 		$skills    = $request->input('skills_id');
 
-		$skills_arr = [];
-		foreach ($skills as $skill) {
-			$skills_arr[] = [
-				'skill_id' => $skill,
-				$column    => $value,
-			];
-		}
+		if ($skills !== [] && $skills !== null) {
+			$skills_arr = [];
+			foreach ($skills as $skill) {
+				$skills_arr[] = [
+					'skill_id' => $skill,
+					$column    => $value,
+				];
+			}
 
-		DB::table($table)->insert($skills_arr);
+			DB::table($table)->insert($skills_arr);
+		}
 	}
 
 	//MARK: delete_project_Skill

@@ -22,7 +22,7 @@ class Project
 		$user_id    = DB::table('projects')->where('id', $project_id)->value('user_id');
 
 		if ($user_id !== Auth::id()) {
-			return to_route('project.index_posts')->with('error', 'something went wrong');
+			return to_route('project.fetch')->with('error', 'something went wrong');
 		}
 
 		return $next($request);

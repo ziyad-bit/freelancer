@@ -16,10 +16,21 @@ class ProjectController extends Controller
 		$this->middleware('project')->only(['destroy', 'edit', 'update']);
 	}
 
-	//MARK: index
-	public function fetch_projects(SearchRequest $request):View|JsonResponse
+	//MARK: fetch
+	public function fetch(SearchRequest $request):View|JsonResponse
 	{
-		return $this->ProjectRepository->getProjects($request);
+		$response=$this->ProjectRepository->fetchProjects($request);
+
+		if (!is_array($response)) {
+			return $response;
+		}
+
+		return view('users.project.index')
+			->with([
+				'projects'=>$response['projects'],
+				'searchTitle'=>$response['searchTitle'],
+				'cursor'=>$response['cursor']
+			]);
 	}
 
 	//MARK: create
@@ -27,7 +38,9 @@ class ProjectController extends Controller
 	{
 		$skills  = $skillRepository->getSkills();
 
-		return  $this->ProjectRepository->createProject($skills);
+		$skills=  $this->ProjectRepository->createProject($skills);
+
+		return view('users.project.create', compact('skills'));
 	}
 
 	//MARK: store
@@ -60,18 +73,37 @@ class ProjectController extends Controller
 	{
 		$skills  = $skillRepository->getSkills();
 
-		return  $this->ProjectRepository->editProject($id, $skills);
+		$project_or_res=  $this->ProjectRepository->editProject($id, $skills);
+
+		if ($project_or_res instanceof RedirectResponse) {
+			return $project_or_res;
+		}
+
+		return view('users.project.edit')
+			->with(['project'=>$project_or_res,'skills'=>$skills]);
 	}
 
 	//MARK: update
 	public function update(ProjectRequest $request, int $id, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):RedirectResponse
 	{
-		return $this->ProjectRepository->updateProject($request, $id, $fileRepository, $skillRepository);
+		$response=$this->ProjectRepository->updateProject($request, $id, $fileRepository, $skillRepository);
+
+		if ($response instanceof RedirectResponse) {
+			return $response;
+		}
+
+		return redirect()->back()->with('success', 'you updated the project successfully');
 	}
 
 	//MARK: destroy
 	public function destroy(int $id):RedirectResponse
 	{
-		return $this->ProjectRepository->deleteProject($id);
+		$response= $this->ProjectRepository->deleteProject($id);
+
+		if ($response instanceof RedirectResponse) {
+			return $response;
+		}
+
+		return to_route('project.fetch')->with('success', 'you deleted project successfully');
 	}
 }

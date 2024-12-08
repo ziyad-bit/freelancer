@@ -42,7 +42,7 @@ Route::resource('skill'                  , SkillController::class)->except(['sho
 
 
 //MARK:Project
-Route::any('/project/fetch-projects', 'Users\ProjectController@fetch_projects')->name('project.fetch');
+Route::any('/project/fetch'         , 'Users\ProjectController@fetch')->name('project.fetch');
 Route::resource('project'           , ProjectController::class)->except(['index']);
 
 

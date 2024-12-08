@@ -39,6 +39,6 @@ class FileController extends Controller
 			return response()->json(['error' => 'file is not found'], 404);		
 		}
 
-		return response()->json(['success' => 'you deleted successfully ' . $type]);
+		return response()->json(['success' => 'you deleted ' . $type . ' successfully']);
 	}
 }

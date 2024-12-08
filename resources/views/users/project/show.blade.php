@@ -145,7 +145,7 @@
             <form action="{{ route('project.destroy', $project->id) }}" method="POST" style="display: inline-block">
                 @csrf
                 @method('delete')
-
+                
                 <button class="btn  btn-danger left_btn" style="margin-top: 5px"
                     onclick="return confirm('Are you want to delete this project?')">
                     delete

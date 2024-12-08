@@ -3,7 +3,7 @@
 @section('header')
     <link rel="stylesheet" href="{{ asset('css/users/profile/index.css') }}">
 
-    <script defer src="{{ asset('js/project/index.js')}}?v={{ filemtime(public_path('js/profile/index.js')) }}"></script>
+    <script defer src="{{ asset('js/project/index.js') }}?v={{ filemtime(public_path('js/profile/index.js')) }}"></script>
 
     <title>
         {{ ucfirst(Auth::user()->name) . ' - ' . config('app.name') }}
@@ -13,6 +13,14 @@
 @endsection
 
 @section('content')
+    @if (Session::has('success'))
+        <div class="alert alert-success text-center">{{ Session::get('success') }}</div>
+    @endif
+
+    @if (Session::has('error'))
+        <div class="alert alert-danger text-center">{{ Session::get('error') }}</div>
+    @endif
+
     <input type="hidden" value="{{ route('project.fetch') }}" class="index_url">
 
     <a class="btn btn-primary " href="{{ route('project.create') }}" style="margin-top: 25px" role="button">
@@ -27,14 +35,15 @@
         <div class="parent_projects" data-cursor="{{ $cursor }}">
             @include('users.project.index_projects')
         </div>
-        
+
         <div class="d-flex justify-content-center">
             <div class="alert alert-danger err_msg" style="display: none"></div>
 
-            <button @style(['display:none'=>!$cursor]) class="btn btn-primary submit_btn" style="width: 120px;margin-bottom: 25px" role="button">
+            <button @style(['display:none' => !$cursor]) class="btn btn-primary submit_btn" style="width: 120px;margin-bottom: 25px"
+                role="button">
                 load more
             </button>
         </div>
-        
+
     </div>
 @endsection
