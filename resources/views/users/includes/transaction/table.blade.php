@@ -20,7 +20,6 @@
                         <input type="hidden" name="amount" value="{{ $transaction->amount }}">
                         <input type="hidden" name="project_id" value="{{ $transaction->project_id }}">
                         <input type="hidden" name="receiver_id" value="{{ $transaction->receiver_id }}">
-                        <input type="hidden" name="trans_id" value="true">
 
                         <button type="submit" class="btn btn-success">release</button>
                     </form>

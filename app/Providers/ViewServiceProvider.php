@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
-use App\View\Composers\NotifsComposer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
+use App\View\Composers\NotifsComposer;
 use Illuminate\Support\ServiceProvider;
 
 class ViewServiceProvider extends ServiceProvider

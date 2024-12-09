@@ -15,8 +15,7 @@ class SkillController extends Controller
 	{
 		$this->middleware('auth');
 
-		$id = request()->route('skill');
-		$this->middleware('skill:' . $id)->only('destroy');
+		$this->middleware('skill')->only('destroy');
 	}
 
 	//MARK: create

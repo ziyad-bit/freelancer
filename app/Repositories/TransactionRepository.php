@@ -9,7 +9,7 @@ use App\Notifications\{MilestoneNotification};
 use App\Traits\{DatabaseCache, GetFunds, Payment};
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\{Auth, DB};
+use Illuminate\Support\Facades\{Auth, DB, Log};
 use Illuminate\Support\{Collection,Str};
 
 class TransactionRepository implements TransactionRepositoryInterface
@@ -20,7 +20,8 @@ class TransactionRepository implements TransactionRepositoryInterface
 	public function index_transaction(string $created_at = null):Collection
 	{
 		$auth_id      = Auth::id();
-		$transactions = DB::table('transactions')
+
+		return DB::table('transactions')
 			->select(
 				'transactions.id',
 				'transactions.type',
@@ -41,17 +42,13 @@ class TransactionRepository implements TransactionRepositoryInterface
 			->latest('date')
 			->limit(8)
 			->get();
-
-		return $transactions;
 	}
 
 	// MARK: create_milestone
-	public function create_milestone(int $project_id, int $receiver_id):View
+	public function create_milestone(int $project_id, int $receiver_id):View|array
 	{
 		$resourcePath = request('resourcePath');
 		$id           = request('id');
-		$msg          = null;
-		$error        = null;
 
 		if ($id && $resourcePath) {
 			$url           = 'https://eu-test.oppwa.com/' . $resourcePath;
@@ -87,19 +84,19 @@ class TransactionRepository implements TransactionRepositoryInterface
 
 				$msg = 'the operation is finished successfully';
 
-				return view('users.transaction.create', compact('project_id', 'receiver_id', 'msg', 'error'));
+				return view('users.transaction.create', compact('project_id', 'receiver_id', 'msg'));
 			} else {
 				$error = 'the operation is failed';
 
-				return view('users.transaction.create', compact('project_id', 'receiver_id', 'msg', 'error'));
+				return view('users.transaction.create', compact('project_id', 'receiver_id', 'error'));
 			}
 		}
 
-		return view('users.transaction.create', compact('project_id', 'receiver_id', 'msg', 'error'));
+		return ['project_id'=>$project_id,'receiver_id'=>$receiver_id];
 	}
 
 	// MARK: checkout
-	public function checkout_transaction(int $project_id, int $receiver_id, int $amount):view
+	public function checkout_transaction(int $project_id, int $receiver_id, int $amount):void
 	{
 		$url  = 'https://eu-test.oppwa.com/v1/checkouts';
 		$data = 'entityId=8a8294174b7ecb28014b9699220015ca' .
@@ -111,12 +108,10 @@ class TransactionRepository implements TransactionRepositoryInterface
 		$data        = $this->getPaymentStatus($url, $data);
 		$receiver_id = $receiver_id;
 		$project_id  = $project_id;
-
-		return view('users.transaction.form', compact('data', 'receiver_id', 'project_id'));
 	}
 
 	// MARK: release_milestone
-	public function release_milestone(TransactionRequest $request): RedirectResponse
+	public function release_milestone(TransactionRequest $request):? RedirectResponse
 	{
 		$receiver_id = $request->receiver_id;
 		$amount      = $request->safe()->__get('amount');
@@ -148,13 +143,9 @@ class TransactionRepository implements TransactionRepositoryInterface
 
 		$this->forgetCache($receiver_id);
 
-		return to_route('transaction.index')->with(['success' => 'milestone is released successfully']);
-	}
+		Log::info('user release milestone');
 
-	// MARK: get_funds
-	public function get_funds(): int
-	{
-		return $this->get_total_money();
+		return null;
 	}
 
 	public function post_funds(TransactionRequest $request): void

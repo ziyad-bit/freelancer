@@ -13,11 +13,11 @@
 
 
 @section('content')
-    @if ($msg)
+    @if (isset($msg))
         <div class="alert alert-success text-center">{{ $msg }}</div>
     @endif
 
-    @if ($error)
+    @if (isset($error))
         <div class="alert alert-danger text-center">{{ $error }}</div>
     @endif
 

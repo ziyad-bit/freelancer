@@ -27,22 +27,19 @@ class TransactionRequest extends FormRequest
 	public function rules()
 	{
 		$release_rules = [];
-		$amount_rules  = [];
 
 		if (request()->routeIs('transaction.milestone.release')) {
 			$release_rules = [
 				'project_id'  => 'required|numeric',
 				'receiver_id' => 'required|numeric',
-				'id'          => 'required|uuid',
+				'id'          => 'required|string',
 			];
-		} else {
-			$user_funds = $this->get_total_money();
+		} 
 
-			$amount_rules = [
-				'amount'      => 'required|numeric|min:5|max:' . $user_funds,
-			];
-		}
+		$user_funds = $this->get_total_money();
 
-		return $amount_rules + $release_rules;
+		return [
+			'amount'      => 'required|numeric|min:5|max:' . $user_funds,
+		] + $release_rules;
 	}
 }

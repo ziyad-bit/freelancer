@@ -16,9 +16,11 @@ class Skill
 	 *
 	 * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
 	 */
-	public function handle(Request $request, Closure $next, int $id)
+	public function handle(Request $request, Closure $next)
 	{
+		$id      = request()->route('skill');
 		$user_id = DB::table('user_skill')->where('id', $id)->value('user_id');
+		
 		if ($user_id !== Auth::id()) {
 			return response()->json(['error' => 'something went wrong'], 500);
 		}
