@@ -2,15 +2,18 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\Repository\NotificationRepositoryInterface;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use App\Interfaces\Repository\NotificationRepositoryInterface;
 
 class NotificationRepository implements NotificationRepositoryInterface
 {
 	// MARK: update
 	public function update(): void
-	{
+	{	
+		Log::info("user read notifications");
+
 		User::find(Auth::id())->unreadNotifications()->update(['read_at' => now()]);
 	}
 
@@ -22,6 +25,8 @@ class NotificationRepository implements NotificationRepositoryInterface
 			->where('created_at', '<', $created_at)
 			->take(5)
 			->get();
+
+		Log::info("user get old notifications");
 
 		return view('users.includes.notifications.index', compact('user_notifs'))->render();
 	}

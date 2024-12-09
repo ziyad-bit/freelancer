@@ -3,7 +3,7 @@
 namespace App\Traits;
 
 use Illuminate\Http\{JsonResponse, Request};
-use Illuminate\Support\Facades\{DB, Storage};
+use Illuminate\Support\Facades\{DB, Log, Storage};
 use Intervention\Image\Facades\Image;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -16,6 +16,8 @@ trait File
 		$fileName = $file->hashName();
 
 		Storage::putFileAs($path, $file, $fileName);
+
+		Log::info("user uploaded file_name: ".$fileName);
 
 		return $fileName;
 	}

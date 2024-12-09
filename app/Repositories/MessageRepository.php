@@ -2,15 +2,16 @@
 
 namespace App\Repositories;
 
+use App\Models\User;
 use App\Classes\Messages;
 use App\Events\MessageEvent;
-use App\Http\Requests\MessageRequest;
-use App\Interfaces\Repository\{FileRepositoryInterface, MessageRepositoryInterface};
-use App\Models\User;
-use App\Notifications\NewMessageNotification;
-use App\Traits\DatabaseCache;
 use Illuminate\Http\Request;
+use App\Traits\DatabaseCache;
+use Illuminate\Support\Facades\Log;
+use App\Http\Requests\MessageRequest;
+use App\Notifications\NewMessageNotification;
 use Illuminate\Support\Facades\{Auth, DB, Notification};
+use App\Interfaces\Repository\{FileRepositoryInterface, MessageRepositoryInterface};
 
 class MessageRepository implements MessageRepositoryInterface
 {
@@ -53,6 +54,8 @@ class MessageRepository implements MessageRepositoryInterface
 
 		$this->forgetCache($receiver_id);
 
+		Log::info("user sent message_id: ".$message_id." to receiver_id: " .$receiver_id);
+
 		return ['view'=>$view_msg,'text'=>$text];
 	}
 
@@ -61,6 +64,8 @@ class MessageRepository implements MessageRepositoryInterface
 	{
 		$messages = Messages::index($chat_room_id);
 
+		Log::info("user get messages for chatroom_id: ".$chat_room_id);
+
 		return view('users.includes.chat.index_msgs', compact('messages'))->render();
 	}
 
@@ -68,6 +73,8 @@ class MessageRepository implements MessageRepositoryInterface
 	public function showOldMessages(Request $request, int $chat_room_id):string
 	{
 		$messages = Messages::index($chat_room_id, $request, true);
+
+		Log::info("user get old messages for chatroom_id: ".$chat_room_id);
 
 		return view('users.includes.chat.index_msgs', compact('messages'))->render();
 	}

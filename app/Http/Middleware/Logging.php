@@ -20,11 +20,22 @@ class Logging
 	 */
 	public function handle(Request $request, Closure $next)
 	{
-		Log::shareContext([
-            'user-id' => Auth::id(),
-			'user-name' => Auth::user()->name,
-        ]);
+		$url = $request->fullUrl();
 
+		if (Auth::check()) {
+			Log::shareContext([
+				'user-id' => Auth::id(),
+				'user-name' => Auth::user()->name,
+				'user-ip' => $request->ip(),
+				'url' => $url,
+			]);
+		}else[
+			Log::shareContext([
+				'user-ip' => $request->ip(),
+				'url' => $url,
+			])
+		];
+		
 		return $next($request);
 	}
 }
