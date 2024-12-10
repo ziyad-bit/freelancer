@@ -3,81 +3,77 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Auth\Middleware\Authenticate as Middleware;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\Middleware\Authenticate as Middleware;
 
 class Logging
 {
-	/**
-	 * Handle an incoming request.
-	 *
-	 * @param  \Illuminate\Http\Request                                                                          $request
-	 * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse) $next
-	 *
-	 * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
-	 */
-	public function handle(Request $request, Closure $next)
+	protected static $user_data;
+
+	public function handle(Request $request, Closure $next):mixed
 	{
 		$user_ip = $request->ip();
 
 		if (Auth::check()) {
-			$user_data = [
-				'user-id' => Auth::id(),
-				'user-name' => Auth::user()->name,
-				'user-ip' => $user_ip,
+			self::$user_data = [
+				'user_id' => Auth::id(),
+				'user_name' => Auth::user()->name,
+				'user_ip' => $user_ip,
 			];
 		}else{
-			$user_data = [
-				'user-ip' => $user_ip,
+			self::$user_data = [
+				'user_ip' => $user_ip,
 			];
 		}
 
-		$user_data += [
+		$user_data = [
 					'method' => $request->method(),
 					'url' => $request->fullUrl(),
 					'body' => $request->except(['password', 'password_confirmation','_token','text']),
-				];
+				] + self::$user_data;
 
-		Log::shareContext($user_data);
+		Log::withContext($user_data);
 		
 		return $next($request);
 	}
 
 	/**
-     * Perform any final actions for the request lifecycle.
+     * Handle tasks after the response has been sent to the browser.
      *
-    * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request  $request
      * @param  \Illuminate\Http\Response  $response
      * @return void
      */
-    public function terminate($request, $response)
+
+    public function terminate($request,$response):void
     {
-		$user_ip = $request->ip();
+		$status_code =$response->getStatusCode();
 
-		if (Auth::check()) {
-			$user_data = [
-				'user-id' => Auth::id(),
-				'user-name' => Auth::user()->name,
-				'user-ip' => $user_ip
-			];
-		}else{
-			$user_data = [
-				'user-ip' => $user_ip,
-			];
-		}
-
-		$user_data += [
+		$user_data = [
 				'method' => $request->method(),
 				'url' => $request->fullUrl(),
 				'body' => $request->except(['password', 'password_confirmation','_token','text']),
 				'seconds'=>microtime(true) - LARAVEL_START,
-				'code'=>$response->getStatusCode(),
+				'code'=>$status_code,
 				'error'=>$request->session()->get('error'),
 				'success'=>$request->session()->get('success')
-			];
+			] + self::$user_data;
 
-        Log::debug('logging data for every request',$user_data);
+		if ($status_code === 101) {
+			Log::info('websocket request',$user_data);
+		}elseif ($status_code === 200) {
+			Log::info('successful request',$user_data);
+		}elseif($status_code >= 300){
+			Log::debug('redirect request',$user_data);
+		}elseif($status_code >= 400){
+			Log::error('client error',$user_data);
+		}elseif($status_code >= 500){
+			Log::critical('server error',$user_data);
+		}else{
+			Log::debug('unknown error',$user_data);
+		}
     }
 }

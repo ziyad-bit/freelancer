@@ -19,37 +19,6 @@
         <div class="alert alert-danger text-center">{{ Session::get('error') }}</div>
     @endif
 
-    <div style="margin-top: 25px">
-        <h4>upload images</h4>
-        <form action="{{ route('file.upload') }}" id="image_upload" method="post" enctype="multipart/form-data"
-            class="dropzone">
-            <input type="hidden" name="dir" value="projects/">
-            <input type="hidden" name="type" value="image">
-            @csrf
-        </form>
-    </div>
-
-    <div style="margin-top: 25px">
-        <h4>upload files</h4>
-        <form action="{{ route('file.upload') }}" id="file_upload" method="post" enctype="multipart/form-data"
-            class="dropzone">
-            <input type="hidden" name="dir" value="projects/">
-            <input type="hidden" name="type" value="application">
-            @csrf
-        </form>
-    </div>
-
-    <div style="margin-top: 25px">
-        <h4>upload videos</h4>
-        <form action="{{ route('file.upload') }}" id="video_upload" method="post" enctype="multipart/form-data"
-            class="dropzone">
-            <input type="hidden" name="dir" value="projects/">
-            <input type="hidden" name="type" value="video">
-            @csrf
-        </form>
-    </div>
-
-
     <form method="POST" id="form" action="{{ route('project.store') }}" enctype="multipart/form-data">
         @csrf
 
@@ -162,7 +131,7 @@
                             </label>
 
                             <input list="skills" id="{{$i}}" value='{{old("skills_name.$i")}}' name="skills_name[{{ $i }}]" class="form-control input">
-                            <input type="hidden" name="skills_id[{{$i}}]" id="skill_id_{{$i}}" value='{{old("skills_name.$i")}}'>
+                            <input type="hidden" name="skills_id[{{$i}}]" id="skill_id_{{$i}}" value='{{old("skills_id.$i")}}'>
                             
                             @error("skills_id.$i")
                                 <div style="color: red;font-size: small">
@@ -206,4 +175,34 @@
             </div>
         </div>
     </form>
+
+    <div style="margin-top: 25px">
+        <h4>upload images</h4>
+        <form action="{{ route('file.upload') }}" id="image_upload" method="post" enctype="multipart/form-data"
+            class="dropzone">
+            <input type="hidden" name="dir" value="projects/">
+            <input type="hidden" name="type" value="image">
+            @csrf
+        </form>
+    </div>
+
+    <div style="margin-top: 25px">
+        <h4>upload files</h4>
+        <form action="{{ route('file.upload') }}" id="file_upload" method="post" enctype="multipart/form-data"
+            class="dropzone">
+            <input type="hidden" name="dir" value="projects/">
+            <input type="hidden" name="type" value="application">
+            @csrf
+        </form>
+    </div>
+
+    <div style="margin-top: 25px">
+        <h4>upload videos</h4>
+        <form action="{{ route('file.upload') }}" id="video_upload" method="post" enctype="multipart/form-data"
+            class="dropzone">
+            <input type="hidden" name="dir" value="projects/">
+            <input type="hidden" name="type" value="video">
+            @csrf
+        </form>
+    </div>
 @endsection

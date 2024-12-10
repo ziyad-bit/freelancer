@@ -79,6 +79,7 @@ class TransactionRepository implements TransactionRepositoryInterface
 				$view     = view('users.includes.notifications.milestone', compact('data', 'release'))->render();
 
 				$receiver->notify(new MilestoneNotification($data['amount'], $user->name, $user->image, $view));
+				Log::info('user created milestone');
 
 				$this->forgetCache($receiver_id);
 
@@ -140,6 +141,7 @@ class TransactionRepository implements TransactionRepositoryInterface
 		$view     = view('users.includes.notifications.milestone', compact('amount', 'release'))->render();
 
 		$receiver->notify(new MilestoneNotification($amount, $user->name, $user->image, $view));
+		Log::info('user released milestone');
 
 		$this->forgetCache($receiver_id);
 
