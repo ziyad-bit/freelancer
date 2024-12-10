@@ -19,8 +19,6 @@ class AuthRepository implements AuthRepositoryInterface
 		$user_id = DB::table('users')->insertGetId($data);
 
 		Auth::loginUsingId($user_id);
-
-		Log::info('user sign up');
 	}
 
 	// login   #####################################
@@ -31,12 +29,8 @@ class AuthRepository implements AuthRepositoryInterface
 		if (auth()->attempt($credentials, $request->filled('remember_me'))) {
 			$request->session()->regenerate();
 
-			Log::info('user login');
-
 			return redirect()->intended();
 		} else {
-			Log::error("user can't login because of incorrect credentials");
-
 			return to_route('login')->with(['error' => 'incorrect password or email']);
 		}
 	}
@@ -49,7 +43,5 @@ class AuthRepository implements AuthRepositoryInterface
 		$request->session()->invalidate();
 
 		$request->session()->regenerateToken();
-
-		Log::info('user logout');
 	}
 }

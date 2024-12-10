@@ -20,22 +20,64 @@ class Logging
 	 */
 	public function handle(Request $request, Closure $next)
 	{
-		$url = $request->fullUrl();
+		$user_ip = $request->ip();
 
 		if (Auth::check()) {
-			Log::shareContext([
+			$user_data = [
 				'user-id' => Auth::id(),
 				'user-name' => Auth::user()->name,
-				'user-ip' => $request->ip(),
-				'url' => $url,
-			]);
-		}else[
-			Log::shareContext([
-				'user-ip' => $request->ip(),
-				'url' => $url,
-			])
-		];
+				'user-ip' => $user_ip,
+			];
+		}else{
+			$user_data = [
+				'user-ip' => $user_ip,
+			];
+		}
+
+		$user_data += [
+					'method' => $request->method(),
+					'url' => $request->fullUrl(),
+					'body' => $request->except(['password', 'password_confirmation','_token','text']),
+				];
+
+		Log::shareContext($user_data);
 		
 		return $next($request);
 	}
+
+	/**
+     * Perform any final actions for the request lifecycle.
+     *
+    * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Response  $response
+     * @return void
+     */
+    public function terminate($request, $response)
+    {
+		$user_ip = $request->ip();
+
+		if (Auth::check()) {
+			$user_data = [
+				'user-id' => Auth::id(),
+				'user-name' => Auth::user()->name,
+				'user-ip' => $user_ip
+			];
+		}else{
+			$user_data = [
+				'user-ip' => $user_ip,
+			];
+		}
+
+		$user_data += [
+				'method' => $request->method(),
+				'url' => $request->fullUrl(),
+				'body' => $request->except(['password', 'password_confirmation','_token','text']),
+				'seconds'=>microtime(true) - LARAVEL_START,
+				'code'=>$response->getStatusCode(),
+				'error'=>$request->session()->get('error'),
+				'success'=>$request->session()->get('success')
+			];
+
+        Log::debug('logging data for every request',$user_data);
+    }
 }

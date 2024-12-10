@@ -36,8 +36,6 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			$messages = Messages::index($all_chat_rooms[0]->chat_room_id);
 		}
 
-		Log::info("user index chatrooms");
-
 		return [
 			'messages'       => $messages,
 			'chat_room_id'   => $chat_room_id,
@@ -114,8 +112,6 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			$messages = Messages::index($chat_room_id);
 		}
 
-		Log::info("user fetch chatrooms and select chatroom with user_id: ".$receiver_id);
-
 		return [
 			'messages'         => $messages,
 			'chat_room_id'     => $chat_room_id,
@@ -147,8 +143,6 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		$chat_room_view = view('users.includes.chat.index_chat_rooms', compact('show_chatroom', 'all_chat_rooms', 'chat_room_id', 'is_chatroom_page_1'))->render();
 		$chat_box_view  = view('users.includes.chat.index_chat_boxes', compact('show_chatroom', 'all_chat_rooms', 'chat_room_id', 'messages'))->render();
 
-		Log::info("user get more chatrooms before message_id: ".$message_id);
-
 		return [
 			'chat_rooms_view' => $chat_room_view,
 			'chat_box_view'   => $chat_box_view,
@@ -157,8 +151,6 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 
 	public function get_chatroom_users()
 	{
-		Log::info("user get other users of chatrooms");
-
 		return DB::table('users')
 			->select('users.id', 'name', 'image')
 			->join('chat_room_user as cru1', 'cru1.user_id', '=', 'users.id')
@@ -181,8 +173,6 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		if (!$user_in_chatroom) {
 			DB::table('chat_room_user')->insert($data);
 		} else {
-			Log::error("user can't send an invitation because the user_id: " . $receiver_id . ' already exists in the chatroom_id: ' . $chat_room_id);
-
 			return response()->json(['warning_msg' => 'user already exist in chatroom'], 400);
 		}
 
@@ -201,9 +191,9 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			)
 		);
 
-		$this->forgetCache($receiver_id);
-
 		Log::info('user sent an invitation to the user_id: ' . $receiver_id . ' to join the chatroom_id: ' . $chat_room_id);
+
+		$this->forgetCache($receiver_id);
 
 		return null;
 	}
@@ -220,8 +210,6 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		$chat_room  = $chat_room_user_query->first();
 
 		if (!$chat_room) {
-			Log::error("user can't accept an invitation to join the chatroom_id: " . $chat_room_id." because of chatroom not found");
-
 			return to_route('chatrooms.index')->with('error', 'chatroom not found');
 		}
 
@@ -232,8 +220,6 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			->delete();
 
 		$this->forgetCache($auth_id);
-
-		Log::info('user accepted an invitation to join the chatroom_id: ' . $chat_room_id);
 
 		return null;
 	}
@@ -277,8 +263,6 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		$chat_room_user = $chat_room_user_query->first();
 
 		if (!$chat_room_user) {
-			Log::info("user can't refuse an invitation to join the chatroom_id: " . $chat_room_id ."because of chatroom not found");
-
 			return response()->json(['error'=>'chatroom not found'], 404);
 		}
 
@@ -289,8 +273,6 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			->delete();
 
 		$this->forgetCache($auth_id);
-
-		Log::info('user refused an invitation to join the chatroom_id: ' . $chat_room_id);
 
 		return null;
 	}

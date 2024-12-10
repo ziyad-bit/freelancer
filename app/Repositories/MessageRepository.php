@@ -44,6 +44,8 @@ class MessageRepository implements MessageRepositoryInterface
 		$view_msg=view('users.includes.chat.send_message',compact('data','files'))->render();
 
 		broadcast(new MessageEvent($data,$view_msg,$auth_user->name))->toOthers();
+		
+		Log::info("user sent message to user_id: ".$receiver_id);
 
 		$notif_view = view('users.includes.notifications.send', compact('data'))->render();
 		$user       = User::find($receiver_id);
@@ -52,9 +54,9 @@ class MessageRepository implements MessageRepositoryInterface
 
 		Notification::send($user, new NewMessageNotification($data, $auth_user->name, $auth_user->image, $notif_view));
 
-		$this->forgetCache($receiver_id);
+		Log::info("user_id: ".$receiver_id ." will receive notification message");
 
-		Log::info("user sent message_id: ".$message_id." to receiver_id: " .$receiver_id);
+		$this->forgetCache($receiver_id);
 
 		return ['view'=>$view_msg,'text'=>$text];
 	}
@@ -64,8 +66,6 @@ class MessageRepository implements MessageRepositoryInterface
 	{
 		$messages = Messages::index($chat_room_id);
 
-		Log::info("user get messages for chatroom_id: ".$chat_room_id);
-
 		return view('users.includes.chat.index_msgs', compact('messages'))->render();
 	}
 
@@ -73,8 +73,6 @@ class MessageRepository implements MessageRepositoryInterface
 	public function showOldMessages(Request $request, int $chat_room_id):string
 	{
 		$messages = Messages::index($chat_room_id, $request, true);
-
-		Log::info("user get old messages for chatroom_id: ".$chat_room_id);
 
 		return view('users.includes.chat.index_msgs', compact('messages'))->render();
 	}

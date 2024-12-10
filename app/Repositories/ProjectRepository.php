@@ -8,7 +8,6 @@ use App\Traits\GetCursor;
 use Illuminate\Http\{JsonResponse, RedirectResponse};
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\{Auth, DB};
-use Illuminate\View\View;
 
 class ProjectRepository implements ProjectRepositoryInterface
 {
@@ -67,16 +66,19 @@ class ProjectRepository implements ProjectRepositoryInterface
 			return response()->json(['view' => $view, 'cursor' => $cursor]);
 		}
 
-		return ['projects'=>$projects,'searchTitle'=>$searchTitle,'cursor'=>$cursor];
+		return ['projects' => $projects, 'searchTitle' => $searchTitle, 'cursor' => $cursor];
 	}
 
 	//MARK:   storeProject
 	public function storeProject(ProjectRequest $request, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):void
 	{
-		$project_data = $request->safe()->only(['title', 'content']) + ['user_id' => Auth::id(), 'created_at' => now()];
-		$project_id   = DB::table('projects')->insertGetId($project_data);
+		$project_data = $request->safe()->only(['title', 'content']) +
+					['user_id' => Auth::id(), 'created_at' => now()];
 
-		$project_info_data = $request->safe()->only(['num_of_days', 'min_price', 'max_price', 'exp']) + ['project_id' => $project_id];
+		$project_id  = DB::table('projects')->insertGetId($project_data);
+
+		$project_info_data = ['project_id' => $project_id]  +
+				$request->safe()->only(['num_of_days', 'min_price', 'max_price', 'exp']);
 
 		DB::table('project_infos')->insert($project_info_data);
 
@@ -135,9 +137,9 @@ class ProjectRepository implements ProjectRepositoryInterface
 		$cursor = $this->getCursor($proposals);
 
 		if (request()->ajax()) {
-			$view = view('users.project.show_proposals', compact('proposals','project'))->render();
+			$view = view('users.project.show_proposals', compact('proposals', 'project'))->render();
 
-			return response()->json(['view' => $view,'cursor'=>$cursor]);
+			return response()->json(['view' => $view, 'cursor' => $cursor]);
 		}
 
 		return ['proposals' => $proposals, 'project' => $project, 'cursor' => $cursor];

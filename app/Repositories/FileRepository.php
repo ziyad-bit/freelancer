@@ -17,8 +17,6 @@ class FileRepository implements FileRepositoryInterface
 	{
 		$path = $type . 's/' . $dir . '/';
 
-		Log::info("user try to download file_name ".$file);
-
 		return Storage::download($path . $file);
 	}
 
@@ -40,13 +38,9 @@ class FileRepository implements FileRepositoryInterface
 						$column_name => $column_value,
 						'created_at' => now(),
 					];
-
-					Log::info("user try to insert file_name ".$name);
 				}
 
 				DB::table($table_name)->insert($files_arr);
-
-				Log::info("user inserted files");
 			}
 
 			return $files;
@@ -77,16 +71,12 @@ class FileRepository implements FileRepositoryInterface
 		$db_file      = $file_query->first();
 
 		if (!$storage_file || !$db_file) {
-			Log::error("user can't delete file: ".$file ."because of file not found");
-
 			return false;
 		}
 
 		Storage::delete($path . $file);
 
 		$file_query->delete();
-
-		Log::info("user deleted file_name: ".$file);
 
 		return true;
 	}

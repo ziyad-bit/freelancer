@@ -28,7 +28,7 @@ return [
 	|
 	*/
 
-	'deprecations' => env('LOG_DEPRECATIONS_CHANNEL', 'stack'),
+	'deprecations' => env('LOG_DEPRECATIONS_CHANNEL', 'daily'),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -60,7 +60,7 @@ return [
 
 		'daily' => [
 			'driver' => 'daily',
-			'path'   => storage_path('logs/laravel.log'),
+			'path'   => storage_path('logs/deprecation.log'),
 			'level'  => env('LOG_LEVEL', 'debug'),
 			'days'   => 14,
 		],

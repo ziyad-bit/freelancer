@@ -38,8 +38,6 @@ class ProjectController extends Controller
 	{
 		$skills  = $skillRepository->getSkills();
 
-		$skills=  $this->ProjectRepository->createProject($skills);
-
 		return view('users.project.create', compact('skills'));
 	}
 
@@ -48,7 +46,7 @@ class ProjectController extends Controller
 	{
 		$this->ProjectRepository->storeProject($request, $fileRepository, $skillRepository);
 
-		return redirect()->back()->with('success', 'you added successfully project');
+		return redirect()->back()->with('success', 'you added project successfully');
 	}
 
 	//MARK: show
