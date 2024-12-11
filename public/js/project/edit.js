@@ -7,7 +7,7 @@ const err_ele = document.querySelector('.err_msg');
 close_btns.forEach(close_btn => {
     close_btn.onclick = e => {
         const file = e.target.getAttribute('data-file');
-        
+
         delete_btn.setAttribute('data-file', file);
         delete_btn.removeAttribute('disabled');
 
@@ -22,7 +22,8 @@ delete_btn.onclick = e => {
     const url = document.getElementsByClassName(`${file}`)[0].value;
 
     delete_btn.disabled = true;
-    
+
+    // eslint-disable-next-line no-undef
     axios.delete(url)
         .then(res => {
             if (res.status == 200) {
@@ -39,7 +40,7 @@ delete_btn.onclick = e => {
             const error_msg = error.data.error;
 
             delete_btn.disabled = false;
-            
+
             if (error.status === 404) {
                 err_ele.textContent = error_msg;
                 err_ele.style.display = '';
@@ -58,10 +59,10 @@ delete_skill_btns.forEach(delete_skill_btn => {
         if (url_ele) {
             const url = url_ele.value;
 
+            // eslint-disable-next-line no-undef
             axios.delete(url)
         }
 
         document.querySelector('#input' + skill_index).remove();
     }
 });
-

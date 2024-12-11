@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 let index_data = true;
 window.onscroll = function () {
     if (window.scrollY + window.innerHeight -16 >= document.body.clientHeight && index_data) {

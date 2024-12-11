@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 //store skill
 const button = document.querySelector('.submit_btn');
 button.onclick = function () {
@@ -7,7 +8,7 @@ button.onclick = function () {
         skills = JSON.parse(skills);
 
     let form     = document.getElementById('skill_form');
-        formData = new FormData(form);
+    let formData = new FormData(form);
 
     for (const pair of formData.entries()) {
 

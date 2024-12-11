@@ -5,6 +5,7 @@ let subscribedChatChannels = new Set();
 
 window.onbeforeunload = function () {
     subscribedChatChannels.forEach(key => {
+        // eslint-disable-next-line no-undef
         Echo.leaveChannel(`chatrooms.${key}`);
     })
 }
@@ -34,12 +35,13 @@ function loadOldMessages() {
         chat_box[i].onscroll = function () {
             if (chat_box[i].scrollTop == 0) {
                 if (old_msg == true) {
-                    let first_msg_id = this.firstElementChild.id,
-                        chat_room_id = this.getAttribute('data-chat_room_id');
-                    show_old_msgs_url = this.getAttribute('data-show_old_msgs_url');
+                    let first_msg_id      = this.firstElementChild.id,
+                        chat_room_id      = this.getAttribute('data-chat_room_id'),
+                        show_old_msgs_url = this.getAttribute('data-show_old_msgs_url');
 
                     const box = document.getElementsByClassName('box' + chat_room_id)[0];
 
+                    // eslint-disable-next-line no-undef
                     axios.put(show_old_msgs_url, { 'first_msg_id': first_msg_id })
                         .then(res => {
                             if (res.status == 200) {
@@ -74,6 +76,7 @@ function loadPages() {
     let show_more_chat_url = chat_room_box.lastElementChild.getAttribute('data-show_more_chat_url');
 
     if (data_chat_rooms_status) {
+        // eslint-disable-next-line no-undef
         axios.get(show_more_chat_url)
             .then(res => {
                 if (res.status == 200) {
@@ -95,10 +98,8 @@ function loadPages() {
     }
 }
 
-let page = 1;
 chat_room_box.onscroll = function () {
     if (chat_room_box.offsetHeight == chat_room_box.scrollHeight - chat_room_box.scrollTop) {
-        page++
         loadPages();
     }
 }
@@ -114,6 +115,7 @@ function storeMsg(e) {
 
     const msg_err = document.getElementsByClassName(`msg_err${chat_room_id}`)[0];
 
+    // eslint-disable-next-line no-undef
     axios.post(store_msg_url, formData)
         .then(res => {
             if (res.status == 200) {
@@ -160,6 +162,7 @@ function storeMsg(e) {
             if (error.status == 422) {
                 let err_msgs = error.data.errors;
 
+                // eslint-disable-next-line no-unused-vars
                 for (const [key, value] of Object.entries(err_msgs)) {
                     msg_err.textContent = value[0];
                     msg_err.style.display = '';
@@ -179,6 +182,7 @@ function upload_file(path, type, form_upload, chat_room_id) {
     document.querySelector(`#video_input${chat_room_id}`).value = '';
     document.querySelector(`#image_input${chat_room_id}`).value = '';
 
+    // eslint-disable-next-line no-undef
     axios.post(upload_url, form_upload)
         .then(res => {
             if (res.status == 200) {
@@ -191,11 +195,15 @@ function upload_file(path, type, form_upload, chat_room_id) {
                     var file_inputs = `<input type="hidden" class="input_files" name="files[${file_number}][name]" value="${file_name}">
                         <input type="hidden" class="input_files" name="files[${file_number}][type]" value="application">`;
                 } else if (type === 'image') {
+                    // eslint-disable-next-line no-redeclare
                     var file_ele = `<img class="file_uploaded" src="${path + file_name}"></img>`;
+                    // eslint-disable-next-line no-redeclare
                     var file_inputs = `<input type="hidden" class="input_files" name="files[${file_number}][name]" value="${file_name}">
                         <input type="hidden" class="input_files" name="files[${file_number}][type]" value="image">`;
                 } else {
+                    // eslint-disable-next-line no-redeclare
                     var file_ele = `<video class="file_uploaded" src="${path + file_name}"></video>`;
+                    // eslint-disable-next-line no-redeclare
                     var file_inputs = `<input type="hidden" class="input_files" name="files[${file_number}][name]" value="${file_name}">
                         <input type="hidden" class="input_files" name="files[${file_number}][type]" value="video">`;
                 }
@@ -213,9 +221,11 @@ function upload_file(path, type, form_upload, chat_room_id) {
             let error = err.response;
             if (error.status == 422) {
                 let err_msgs = error.data.errors;
+                // eslint-disable-next-line no-undef
                 let chatroom_id = e.target.getAttribute('data-chat_room_id');
                 const msg_ele = document.querySelector(`.msg_err${chatroom_id}`);
 
+                // eslint-disable-next-line no-unused-vars
                 for (const [key, value] of Object.entries(err_msgs)) {
                     msg_ele.textContent = value[0];
                     msg_ele.style.display = '';
@@ -224,6 +234,7 @@ function upload_file(path, type, form_upload, chat_room_id) {
         });
 }
 
+// eslint-disable-next-line no-undef
 generalEventListener('input', '.file_input', e => {
     let chat_room_id = e.target.getAttribute('data-chat_room_id');
     let file_input = document.querySelector(`#app_input${chat_room_id}`);
@@ -238,6 +249,7 @@ generalEventListener('input', '.file_input', e => {
     }
 })
 
+// eslint-disable-next-line no-undef
 generalEventListener('input', '.file_input', e => {
     let chat_room_id = e.target.getAttribute('data-chat_room_id');
     let file_input = document.querySelector(`#image_input${chat_room_id}`);
@@ -252,6 +264,7 @@ generalEventListener('input', '.file_input', e => {
     }
 })
 
+// eslint-disable-next-line no-undef
 generalEventListener('input', '.file_input', e => {
     let chat_room_id = e.target.getAttribute('data-chat_room_id');
     let file_input = document.querySelector(`#video_input${chat_room_id}`);
@@ -266,10 +279,12 @@ generalEventListener('input', '.file_input', e => {
     }
 })
 
+// eslint-disable-next-line no-undef
 generalEventListener('click', '.send_btn', e => {
     storeMsg(e);
 })
 
+// eslint-disable-next-line no-undef
 generalEventListener('keypress', '.send_input', e => {
     if (e.keyCode == 13 && !e.shiftKey) {
         storeMsg(e);
@@ -299,6 +314,7 @@ function is_typing(e) {
 
 //MARK:sub chat channel
 function subscribeChatChannel(chat_room_id) {
+    // eslint-disable-next-line no-undef
     Echo.join(`chatrooms.` + chat_room_id)
         .joining((data) => {
             const plus_ele = document.querySelector('.plus' + data.chat_room_id);
@@ -359,6 +375,7 @@ function getNewMessages(chat_room_id, show_msgs_url) {
     let data_status = data_status_ele.getAttribute('data-status');
 
     if (data_status == 'false') {
+        // eslint-disable-next-line no-undef
         axios.get(show_msgs_url)
             .then(res => {
                 if (res.status == 200) {
@@ -382,9 +399,10 @@ function getNewMessages(chat_room_id, show_msgs_url) {
     }
 }
 
+// eslint-disable-next-line no-undef
 generalEventListener('click', '.user_btn', e => {
-    let chat_room_id = e.target.getAttribute('data-chat_room_id');
-    show_msgs_url = e.target.getAttribute('data-show_msgs_url');
+    let chat_room_id  = e.target.getAttribute('data-chat_room_id'),
+        show_msgs_url = e.target.getAttribute('data-show_msgs_url');
 
     selected_chat_room_id = chat_room_id;
 
@@ -399,11 +417,13 @@ let selected_chat_room_id = document.querySelector('.user_btn.active').getAttrib
 subscribeChatChannel(selected_chat_room_id);
 subscribedChatChannels.add(selected_chat_room_id)
 
+// eslint-disable-next-line no-undef
 generalEventListener('input', '.send_input', e => {
     let card = e.target.parentElement;
     let chat_room_id = card.getAttribute('data-chat_room_id');
     let user_id = document.getElementById('auth_id').value;
 
+    // eslint-disable-next-line no-undef
     Echo.join(`chatrooms.` + chat_room_id).whisper('typing', {
         chat_room_id: chat_room_id,
         user_id: user_id,
@@ -412,6 +432,7 @@ generalEventListener('input', '.send_input', e => {
 })
 
 //MARK:send invitation
+// eslint-disable-next-line no-undef
 generalEventListener('click', '.plus', e => {
     let user_names_ele = document.querySelectorAll('.user_names');
 
@@ -423,6 +444,7 @@ generalEventListener('click', '.plus', e => {
     let chatroom_users_url = e.target.getAttribute('data-chatroom_users_url');
     let chat_room_users_ids = e.target.getAttribute('data-chat_room_users_ids');
 
+    // eslint-disable-next-line no-undef
     axios.get(chatroom_users_url)
         .then(res => {
             if (res.status == 200) {
@@ -457,6 +479,7 @@ generalEventListener('click', '.plus', e => {
         })
 })
 
+// eslint-disable-next-line no-undef
 generalEventListener('click', '.add_btn', e => {
     e.target.disabled = true;
 
@@ -469,6 +492,7 @@ generalEventListener('click', '.add_btn', e => {
     const err_ele = document.querySelector('.err_msg');
     const success_ele = document.querySelector('.success_msg');
 
+    // eslint-disable-next-line no-undef
     axios.post(send_invitation_url, data)
         .then(res => {
             if (res.status == 200) {
@@ -541,6 +565,7 @@ function search_chatrooms() {
 
         search_chatrooms_arr.unshift(search_input_val);
 
+        // eslint-disable-next-line no-undef
         axios.post(search_url, { 'search': search_input_val })
             .then((res) => {
                 if (res.status == 200) {
@@ -567,6 +592,7 @@ function search_chatrooms() {
     }
 }
 
+// eslint-disable-next-line no-undef
 search_input_ele.addEventListener('input', debounce(() => {
     search_chatrooms();
 }, 1000))

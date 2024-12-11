@@ -1,7 +1,7 @@
+/* eslint-disable no-undef */
 const search_ele        = document.getElementById('search');
 const list_search_item  = document.getElementsByClassName('search_item');
 const list_search_group = document.querySelector('.navbar_list_search');
-const search_wrapper    = document.querySelector('#search_wrapper');
 
 let recent_req     = 0,
     search_req_num = 0;

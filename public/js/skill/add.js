@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 //add skill input
 const num_input_ele     = document.querySelector('#num_input');
 let   num_input_ele_val = num_input_ele.value;
@@ -7,7 +8,7 @@ if (num_input_ele_val > 1) {
     number = num_input_ele_val;
 }
 
-generalEventListener('click', '.add_button', e => {
+generalEventListener('click', '.add_button',() => {
     if (number < 20) {
         number++;
         num_input_ele.value = number;

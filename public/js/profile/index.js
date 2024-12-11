@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 //delete skill
 const delete_button = document.getElementsByClassName('delete_btn');
 

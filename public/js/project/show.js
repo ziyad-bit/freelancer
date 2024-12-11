@@ -1,7 +1,8 @@
+/* eslint-disable no-undef */
 //update proposal
 const edit_btn = document.querySelector('.edit_btn');
 if (edit_btn) {
-    edit_btn.onclick = e => {
+    edit_btn.onclick =() => {
         const price_input       = document.querySelector('.price_input');
         const num_of_days_input = document.querySelector('.num_of_days_input');
         const content_input     = document.querySelector('.content_input');
@@ -16,7 +17,7 @@ if (edit_btn) {
 
         const update_btn = document.querySelector('.update_btn');
 
-        update_btn.onclick = e => {
+        update_btn.onclick =() => {
             const url = document.querySelector('#update_url').value;
 
             let form     = document.getElementById('proposal_form'),
@@ -56,7 +57,7 @@ if (edit_btn) {
 
     //delete proposal
     const delete_btn = document.querySelector('.delete_btn');
-    delete_btn.onclick = e => {
+    delete_btn.onclick =() => {
         const url = document.querySelector('#delete_url').value;
 
         axios.delete(url)
@@ -72,17 +73,17 @@ if (edit_btn) {
                     document.querySelector('.proposal').remove();
                 }
             })
-            .catch(err => {
+            .catch(() => {
 
             });
     }
 }
 
 window.onscroll = function () {
+    const proposal_wrapper = document.querySelector('#proposal_wrapper');
     const cursor = proposal_wrapper.getAttribute('data-cursor');
 
     if (window.scrollY + window.innerHeight -16 >= document.body.clientHeight && cursor !='false') {
-        const proposal_wrapper = document.querySelector('#proposal_wrapper');
         let   show_url         = proposal_wrapper.getAttribute('data-show_url');
 
         axios.get(show_url+`?cursor=${cursor}`)

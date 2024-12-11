@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 //add event listener
 function generalEventListener(type, selector, callback) {
     document.addEventListener(type, e => {

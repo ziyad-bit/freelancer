@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 let submit_btn    = document.querySelector('.submit_btn');
 
 submit_btn.onclick = function () {

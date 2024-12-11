@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 Dropzone.autoDiscover = false;
 
 let files_number = 0;
