@@ -72,19 +72,26 @@ class ProjectRepository implements ProjectRepositoryInterface
 	//MARK:   storeProject
 	public function storeProject(ProjectRequest $request, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):void
 	{
-		$project_data = $request->safe()->only(['title', 'content']) +
-					['user_id' => Auth::id(), 'created_at' => now()];
+		try {
+			DB::beginTransaction();
+			$project_data = $request->safe()->only(['title', 'content']) +
+						['user_id' => Auth::id(), 'created_at' => now()];
 
-		$project_id  = DB::table('projects')->insertGetId($project_data);
+			$project_id  = DB::table('projects')->insertGetId($project_data);
 
-		$project_info_data = ['project_id' => $project_id]  +
-				$request->safe()->only(['num_of_days', 'min_price', 'max_price', 'exp']);
+			$project_info_data = ['project_id' => $project_id]  +
+					$request->safe()->only(['num_of_days', 'min_price', 'max_price', 'exp']);
 
-		DB::table('project_infos')->insert($project_info_data);
+			DB::table('project_infos')->insert($project_info_data);
 
-		$fileRepository->insert_file($request, 'project_files', 'project_id', $project_id);
+			$fileRepository->insert_file($request, 'project_files', 'project_id', $project_id);
 
-		$skillRepository->storeSkill($request, 'project_skill', 'project_id', $project_id);
+			$skillRepository->storeSkill($request, 'project_skill', 'project_id', $project_id);
+			DB::commit();
+		} catch (\Throwable) {
+			DB::rollBack();
+			abort(500, 'something went wrong');
+		}
 	}
 
 	//MARK: showProject
@@ -179,25 +186,32 @@ class ProjectRepository implements ProjectRepositoryInterface
 	//MARK:   updateProject
 	public function updateProject(ProjectRequest $request, int $id, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):RedirectResponse|null
 	{
-		$project_data      = $request->safe()->only(['title', 'content']) + ['user_id' => Auth::id(), 'created_at' => now()];
-		$project_info_data = $request->safe()->only(['num_of_days', 'min_price', 'max_price', 'exp']);
+		try {
+			DB::beginTransaction();
+			$project_data      = $request->safe()->only(['title', 'content']) + ['user_id' => Auth::id(), 'created_at' => now()];
+			$project_info_data = $request->safe()->only(['num_of_days', 'min_price', 'max_price', 'exp']);
 
-		$project_query = DB::table('projects')->where('id', $id);
-		$project       = $project_query->first();
+			$project_query = DB::table('projects')->where('id', $id);
+			$project       = $project_query->first();
 
-		if (!$project) {
-			return redirect()->back()->with('error', 'project not found');
+			if (!$project) {
+				return redirect()->back()->with('error', 'project not found');
+			}
+
+			$project_query->update($project_data);
+
+			DB::table('project_infos')->where('project_id', $id)->update($project_info_data);
+
+			$fileRepository->insert_file($request, 'project_files', 'project_id', $id);
+
+			$skillRepository->storeSkill($request, 'project_skill', 'project_id', $id);
+			DB::commit();
+
+			return null;
+		} catch (\Throwable $th) {
+			DB::rollBack();
+			abort(500, 'something went wrong');
 		}
-
-		$project_query->update($project_data);
-
-		DB::table('project_infos')->where('project_id', $id)->update($project_info_data);
-
-		$fileRepository->insert_file($request, 'project_files', 'project_id', $id);
-
-		$skillRepository->storeSkill($request, 'project_skill', 'project_id', $id);
-
-		return null;
 	}
 
 	//MARK: deleteProject

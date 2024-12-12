@@ -2,10 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
 
 class SearchRequest extends FormRequest
 {
@@ -27,7 +24,7 @@ class SearchRequest extends FormRequest
 	public function rules()
 	{
 		return [
-			'search' => request()->routeIs('project.fetch')  ? 'nullable' : 'required' . '|string|max:30',
+			'search' => request()->routeIs('project.fetch') ? 'nullable' : 'required' . '|string|max:30',
 		];
 	}
 }

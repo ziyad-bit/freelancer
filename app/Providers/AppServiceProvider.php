@@ -2,11 +2,8 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Support\DeferrableProvider;
-use App\Classes\AbstractFactory\{ApplicationFile, Photo, Video};
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider implements DeferrableProvider
 {
@@ -17,7 +14,6 @@ class AppServiceProvider extends ServiceProvider implements DeferrableProvider
 	 */
 	public function register()
 	{
-		
 	}
 
 	/**
@@ -27,6 +23,5 @@ class AppServiceProvider extends ServiceProvider implements DeferrableProvider
 	 */
 	public function boot()
 	{
-		
 	}
 }

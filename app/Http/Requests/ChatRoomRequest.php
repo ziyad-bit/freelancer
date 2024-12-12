@@ -2,10 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
 
 class ChatRoomRequest extends FormRequest
 {
@@ -26,7 +23,7 @@ class ChatRoomRequest extends FormRequest
 	 */
 	public function rules()
 	{
-		$is_user_id_required = request()->routeIs('chatrooms.send_user_invitation')  ? 'required' : 'nullable';
+		$is_user_id_required = request()->routeIs('chatrooms.send_user_invitation') ? 'required' : 'nullable';
 
 		return [
 			'chat_room_id' => 'required|numeric',

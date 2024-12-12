@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use App\Traits\GetFunds;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Route;
 
 class TransactionRequest extends FormRequest
 {
@@ -34,7 +33,7 @@ class TransactionRequest extends FormRequest
 				'receiver_id' => 'required|numeric',
 				'id'          => 'required|string',
 			];
-		} 
+		}
 
 		$user_funds = $this->get_total_money();
 

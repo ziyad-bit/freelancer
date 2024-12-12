@@ -19,7 +19,7 @@ class ProjectController extends Controller
 	//MARK: fetch
 	public function fetch(SearchRequest $request):View|JsonResponse
 	{
-		$response=$this->ProjectRepository->fetchProjects($request);
+		$response = $this->ProjectRepository->fetchProjects($request);
 
 		if (!is_array($response)) {
 			return $response;
@@ -27,9 +27,9 @@ class ProjectController extends Controller
 
 		return view('users.project.index')
 			->with([
-				'projects'=>$response['projects'],
-				'searchTitle'=>$response['searchTitle'],
-				'cursor'=>$response['cursor']
+				'projects'    => $response['projects'],
+				'searchTitle' => $response['searchTitle'],
+				'cursor'      => $response['cursor'],
 			]);
 	}
 
@@ -71,20 +71,20 @@ class ProjectController extends Controller
 	{
 		$skills  = $skillRepository->getSkills();
 
-		$project_or_res=  $this->ProjectRepository->editProject($id, $skills);
+		$project_or_res =  $this->ProjectRepository->editProject($id, $skills);
 
 		if ($project_or_res instanceof RedirectResponse) {
 			return $project_or_res;
 		}
 
 		return view('users.project.edit')
-			->with(['project'=>$project_or_res,'skills'=>$skills]);
+			->with(['project' => $project_or_res, 'skills' => $skills]);
 	}
 
 	//MARK: update
 	public function update(ProjectRequest $request, int $id, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):RedirectResponse
 	{
-		$response=$this->ProjectRepository->updateProject($request, $id, $fileRepository, $skillRepository);
+		$response = $this->ProjectRepository->updateProject($request, $id, $fileRepository, $skillRepository);
 
 		if ($response instanceof RedirectResponse) {
 			return $response;
@@ -96,7 +96,7 @@ class ProjectController extends Controller
 	//MARK: destroy
 	public function destroy(int $id):RedirectResponse
 	{
-		$response= $this->ProjectRepository->deleteProject($id);
+		$response = $this->ProjectRepository->deleteProject($id);
 
 		if ($response instanceof RedirectResponse) {
 			return $response;

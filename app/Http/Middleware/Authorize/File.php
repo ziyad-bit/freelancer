@@ -20,12 +20,12 @@ class File
 	{
 		$file_name = $request->route('name');
 		$user_id   = DB::table('projects')
-				->join('project_files','project_files.project_id','=','projects.id')
+				->join('project_files', 'project_files.project_id', '=', 'projects.id')
 				->where('file', $file_name)
 				->value('user_id');
-		
+
 		if ($user_id !== Auth::id()) {
-			return response()->json(['error'=>'something went wrong'],500);
+			return response()->json(['error' => 'something went wrong'], 500);
 		}
 
 		return $next($request);

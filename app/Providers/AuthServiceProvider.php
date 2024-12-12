@@ -3,8 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Opcodes\LogViewer\Facades\LogViewer;
 
 class AuthServiceProvider extends ServiceProvider
@@ -29,7 +27,7 @@ class AuthServiceProvider extends ServiceProvider
 
 		LogViewer::auth(function ($request) {
 			return $request->user()
-				&& in_array($request->user()->email, [
+				 && in_array($request->user()->email, [
 					'grimes.jaron@example.org',
 				]);
 		});

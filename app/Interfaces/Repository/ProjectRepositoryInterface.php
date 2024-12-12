@@ -5,7 +5,6 @@ namespace App\Interfaces\Repository;
 use App\Http\Requests\{ProjectRequest, SearchRequest};
 use Illuminate\Http\{JsonResponse, RedirectResponse};
 use Illuminate\Support\Collection;
-use Illuminate\View\View;
 
 interface ProjectRepositoryInterface
 {

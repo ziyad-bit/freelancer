@@ -2,9 +2,7 @@
 
 namespace App\Interfaces\Repository;
 
-use App\Http\Requests\UserRequest;
-use App\Http\Requests\LoginRequest;
-use App\Http\Requests\SignupRequest;
+use App\Http\Requests\{LoginRequest, SignupRequest};
 use Illuminate\Http\{RedirectResponse, Request};
 
 interface AuthRepositoryInterface

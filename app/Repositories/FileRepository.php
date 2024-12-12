@@ -5,7 +5,7 @@ namespace App\Repositories;
 use App\Interfaces\Repository\FileRepositoryInterface;
 use App\Traits\{File, InsertAnyFile};
 use Illuminate\Http\{Request};
-use Illuminate\Support\Facades\{DB, Log, Storage};
+use Illuminate\Support\Facades\{DB, Storage};
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileRepository implements FileRepositoryInterface

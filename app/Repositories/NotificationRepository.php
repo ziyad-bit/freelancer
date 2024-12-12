@@ -2,16 +2,15 @@
 
 namespace App\Repositories;
 
-use App\Models\User;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 use App\Interfaces\Repository\NotificationRepositoryInterface;
+use App\Models\User;
+use Illuminate\Support\Facades\{Auth};
 
 class NotificationRepository implements NotificationRepositoryInterface
 {
 	// MARK: update
 	public function update(): void
-	{	
+	{
 		User::find(Auth::id())->unreadNotifications()->update(['read_at' => now()]);
 	}
 

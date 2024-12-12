@@ -18,7 +18,7 @@ class SkillRepository implements SkillRepositoryInterface
 	//MARK: storeSkill
 	public function storeSkill(object $request, string $table, string $column, string $value):void
 	{
-		$skills    = $request->input('skills_id');
+		$skills = $request->input('skills_id');
 
 		if ($skills !== [] && $skills !== null) {
 			$skills_arr = [];

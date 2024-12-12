@@ -17,7 +17,7 @@ class MilestoneNotification extends Notification implements ShouldQueue
 	 * @return void
 	 */
 	public function __construct(
-		public string $amount,
+		public int $amount,
 		public string $user_name,
 		public string $user_image,
 		public string $view,

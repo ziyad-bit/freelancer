@@ -2,12 +2,10 @@
 
 namespace App\Repositories;
 
-use App\Http\Requests\LoginRequest;
-use App\Http\Requests\SignupRequest;
-use App\Http\Requests\UserRequest;
+use App\Http\Requests\{LoginRequest, SignupRequest};
 use App\Interfaces\Repository\AuthRepositoryInterface;
 use Illuminate\Http\{RedirectResponse, Request};
-use Illuminate\Support\Facades\{Auth, DB, Hash, Log};
+use Illuminate\Support\Facades\{Auth, DB, Hash};
 
 class AuthRepository implements AuthRepositoryInterface
 {

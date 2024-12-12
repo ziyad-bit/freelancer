@@ -47,53 +47,60 @@ class TransactionRepository implements TransactionRepositoryInterface
 	// MARK: create_milestone
 	public function create_milestone(int $project_id, int $receiver_id):View|array
 	{
-		$resourcePath = request('resourcePath');
-		$id           = request('id');
+		try {
+			$resourcePath = request('resourcePath');
+			$id           = request('id');
 
-		if ($id && $resourcePath) {
-			$url           = 'https://eu-test.oppwa.com/' . $resourcePath;
-			$url          .= '?entityId=8a8294174b7ecb28014b9699220015ca';
+			if ($id && $resourcePath) {
+				$url           = 'https://eu-test.oppwa.com/' . $resourcePath;
+				$url          .= '?entityId=8a8294174b7ecb28014b9699220015ca';
 
-			$status = $this->getPaymentStatus($url);
+				$status = $this->getPaymentStatus($url);
 
-			if (isset($status['id'])) {
-				$data  = [
-					'type'        => 'milestone',
-					'receiver_id' => $receiver_id,
-					'project_id'  => $project_id,
-					'amount'      => $status['amount'],
-					'owner_id'    => Auth::id(),
-					'id'          => $status['id'],
-					'created_at'  => now(),
-				];
+				if (isset($status['id'])) {
+					$data  = [
+						'type'        => 'milestone',
+						'receiver_id' => $receiver_id,
+						'project_id'  => $project_id,
+						'amount'      => $status['amount'],
+						'owner_id'    => Auth::id(),
+						'id'          => $status['id'],
+						'created_at'  => now(),
+					];
+					DB::beginTransaction();
+					DB::table('transactions')->insert($data);
 
-				DB::table('transactions')->insert($data);
+					DB::table('proposals')
+						->where(['project_id' => $project_id, 'user_id' => $receiver_id])
+						->update(['finished' => 'in progress']);
 
-				DB::table('proposals')
-					->where(['project_id' => $project_id, 'user_id' => $receiver_id])
-					->update(['finished' => 'in progress']);
+					DB::commit();
 
-				$release  = false;
-				$receiver = User::find($receiver_id);
-				$user     = Auth::user();
-				$view     = view('users.includes.notifications.milestone', compact('data', 'release'))->render();
+					$release  = false;
+					$receiver = User::find($receiver_id);
+					$user     = Auth::user();
+					$view     = view('users.includes.notifications.milestone', compact('data', 'release'))->render();
 
-				$receiver->notify(new MilestoneNotification($data['amount'], $user->name, $user->image, $view));
-				Log::info('user created milestone');
+					$receiver->notify(new MilestoneNotification($data['amount'], $user->name, $user->image, $view));
+					Log::info('user created milestone');
 
-				$this->forgetCache($receiver_id);
+					$this->forgetCache($receiver_id);
 
-				$msg = 'the operation is finished successfully';
+					$msg = 'the operation is finished successfully';
 
-				return view('users.transaction.create', compact('project_id', 'receiver_id', 'msg'));
-			} else {
-				$error = 'the operation is failed';
+					return view('users.transaction.create', compact('project_id', 'receiver_id', 'msg'));
+				} else {
+					$error = 'the operation is failed';
 
-				return view('users.transaction.create', compact('project_id', 'receiver_id', 'error'));
+					return view('users.transaction.create', compact('project_id', 'receiver_id', 'error'));
+				}
 			}
-		}
 
-		return ['project_id'=>$project_id,'receiver_id'=>$receiver_id];
+			return ['project_id' => $project_id, 'receiver_id' => $receiver_id];
+		} catch (\Throwable) {
+			DB::rollBack();
+			abort(500, 'something went wrong');
+		}
 	}
 
 	// MARK: checkout
@@ -114,40 +121,47 @@ class TransactionRepository implements TransactionRepositoryInterface
 	// MARK: release_milestone
 	public function release_milestone(TransactionRequest $request):? RedirectResponse
 	{
-		$receiver_id = $request->receiver_id;
-		$amount      = $request->safe()->__get('amount');
-		$trans_query = DB::table('transactions')->where('id', $request->id);
+		try {
+			$receiver_id = $request->receiver_id;
+			$amount      = $request->safe()->__get('amount');
+			$trans_query = DB::table('transactions')->where('id', $request->id);
 
-		$trans = $trans_query->first();
-		if (!$trans) {
-			return to_route('transaction.index')->with('error', 'something went wrong');
+			$trans = $trans_query->first();
+			if (!$trans) {
+				return to_route('transaction.index')->with('error', 'something went wrong');
+			}
+
+			DB::beginTransaction();
+
+			$trans_query->update(['type' => 'release']);
+
+			$proposal_query = DB::table('proposals')
+					->where(['project_id' => $request->project_id, 'user_id' => $receiver_id]);
+
+			$proposal = $proposal_query->first();
+			if (!$proposal) {
+				return to_route('transaction.index')->with('error', 'something went wrong');
+			}
+
+			$proposal_query->update(['finished' => 'finished']);
+
+			DB::commit();
+
+			$release  = true;
+			$receiver = User::find($receiver_id);
+			$user     = Auth::user();
+			$view     = view('users.includes.notifications.milestone', compact('amount', 'release'))->render();
+
+			$receiver->notify(new MilestoneNotification($amount, $user->name, $user->image, $view));
+			Log::info('user released milestone');
+
+			$this->forgetCache($receiver_id);
+
+			return null;
+		} catch (\Throwable) {
+			DB::rollBack();
+			abort(500, 'something went wrong');
 		}
-
-		$trans_query->update(['type' => 'release']);
-
-		$proposal_query = DB::table('proposals')
-				->where(['project_id' => $request->project_id, 'user_id' => $receiver_id]);
-
-		$proposal = $proposal_query->first();
-		if (!$proposal) {
-			return to_route('transaction.index')->with('error', 'something went wrong');
-		}
-
-		$proposal_query->update(['finished' => 'finished']);
-
-		$release  = true;
-		$receiver = User::find($receiver_id);
-		$user     = Auth::user();
-		$view     = view('users.includes.notifications.milestone', compact('amount', 'release'))->render();
-
-		$receiver->notify(new MilestoneNotification($amount, $user->name, $user->image, $view));
-		Log::info('user released milestone');
-
-		$this->forgetCache($receiver_id);
-
-		Log::info('user release milestone');
-
-		return null;
 	}
 
 	public function post_funds(TransactionRequest $request): void

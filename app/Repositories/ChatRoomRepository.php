@@ -162,40 +162,49 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 	//MARK: sendInvitation
 	public function sendInvitation(ChatRoomRequest $request):JsonResponse|null
 	{
-		$chat_room_id = $request->chat_room_id;
-		$receiver_id  = $request->user_id;
-		$data         = $request->validated() + ['created_at' => now()];
+		try {
+			$chat_room_id = $request->chat_room_id;
+			$receiver_id  = $request->user_id;
+			$data         = $request->validated() + ['created_at' => now()];
 
-		$user_in_chatroom = DB::table('chat_room_user')
-			->where(['user_id' => $receiver_id, 'chat_room_id' => $chat_room_id])
-			->first();
+			DB::beginTransaction();
 
-		if (!$user_in_chatroom) {
-			DB::table('chat_room_user')->insert($data);
-		} else {
-			return response()->json(['warning_msg' => 'user already exist in chatroom'], 400);
+			$user_in_chatroom = DB::table('chat_room_user')
+				->where(['user_id' => $receiver_id, 'chat_room_id' => $chat_room_id])
+				->first();
+
+			if (!$user_in_chatroom) {
+				DB::table('chat_room_user')->insert($data);
+			} else {
+				return response()->json(['warning_msg' => 'user already exist in chatroom'], 400);
+			}
+
+			$user         = Auth::user();
+			$receiver     = User::find($request->user_id);
+			$view         = view('users.includes.notifications.send_user_invitation')
+							->with('chat_room_id')
+							->render();
+
+			$receiver->notify(
+				new AddUserToChatNotification(
+					$chat_room_id,
+					$user->name,
+					$user->image,
+					$view
+				)
+			);
+
+			DB::commit();
+
+			Log::info('user sent an invitation to the user_id: ' . $receiver_id . ' to join the chatroom_id: ' . $chat_room_id);
+
+			$this->forgetCache($receiver_id);
+
+			return null;
+		} catch (\Throwable $th) {
+			DB::rollBack();
+			abort(500, 'something went wrong');
 		}
-
-		$user         = Auth::user();
-		$receiver     = User::find($request->user_id);
-		$view         = view('users.includes.notifications.send_user_invitation')
-						->with('chat_room_id')
-						->render();
-
-		$receiver->notify(
-			new AddUserToChatNotification(
-				$chat_room_id,
-				$user->name,
-				$user->image,
-				$view
-			)
-		);
-
-		Log::info('user sent an invitation to the user_id: ' . $receiver_id . ' to join the chatroom_id: ' . $chat_room_id);
-
-		$this->forgetCache($receiver_id);
-
-		return null;
 	}
 
 	// MARK: acceptInvitation
@@ -263,7 +272,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		$chat_room_user = $chat_room_user_query->first();
 
 		if (!$chat_room_user) {
-			return response()->json(['error'=>'chatroom not found'], 404);
+			return response()->json(['error' => 'chatroom not found'], 404);
 		}
 
 		$chat_room_user_query->delete();

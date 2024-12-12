@@ -20,7 +20,7 @@ class Skill
 	{
 		$id      = request()->route('skill');
 		$user_id = DB::table('user_skill')->where('id', $id)->value('user_id');
-		
+
 		if ($user_id !== Auth::id()) {
 			return response()->json(['error' => 'something went wrong'], 500);
 		}
