@@ -104,7 +104,7 @@ class TransactionRepository implements TransactionRepositoryInterface
 	}
 
 	// MARK: checkout
-	public function checkout_transaction(int $project_id, int $receiver_id, int $amount):void
+	public function checkout_transaction(int $amount):void
 	{
 		$url  = 'https://eu-test.oppwa.com/v1/checkouts';
 		$data = 'entityId=8a8294174b7ecb28014b9699220015ca' .
@@ -113,9 +113,7 @@ class TransactionRepository implements TransactionRepositoryInterface
 					'&paymentType=DB' .
 					'&integrity=true';
 
-		$data        = $this->getPaymentStatus($url, $data);
-		$receiver_id = $receiver_id;
-		$project_id  = $project_id;
+		$data  = $this->getPaymentStatus($url, $data);
 	}
 
 	// MARK: release_milestone
@@ -164,6 +162,7 @@ class TransactionRepository implements TransactionRepositoryInterface
 		}
 	}
 
+	// MARK: post_funds
 	public function post_funds(TransactionRequest $request): void
 	{
 		$data = $request->validated() +

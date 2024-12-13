@@ -13,7 +13,7 @@
 @endsection
 
 @section('content')
-    <input type="hidden" value="{{ route('skill.destroy', 'id') }}" id="delete_route">
+    
 
     @if (Session::has('error'))
         <div class="alert alert-danger text-center">{{ Session::get('error') }}</div>
@@ -158,6 +158,8 @@
                     <button class="btn btn-danger delete_btn" id="{{ $skill_id }}" style="float: right;">
                         delete
                     </button>
+
+                    <input type="hidden" value="{{ route('skill.destroy', $skill_id) }}" id="delete_route{{$skill_id}}">
                 </li>
             @endforeach
         </ol>

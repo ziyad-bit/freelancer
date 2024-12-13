@@ -17,7 +17,7 @@
     <input type="hidden" value="{{ $skills }}" id="skills_input">
 
     <form id="skill_form">
-        <div class="card text-white bg-dark mb-3" style="max-width: 34rem;margin-top: 20px">
+        <div class="card card_form text-white bg-dark mb-3" style="max-width: 34rem;margin-top: 20px">
             <div class="card-header">add skills
                 <button type="button" class="btn btn-primary add_button" style="margin-left: 314px;">
                     add more skill
@@ -51,7 +51,7 @@
 
             </div>
         </div>
-        <button type="button" class="btn btn-primary submit_btn" style="margin-top: 10px;margin-bottom: 10px"> submit
+        <button type="submit" class="btn btn-primary submit_btn" style="margin-top: 10px;margin-bottom: 10px"> submit
         </button>
     </form>
 @endsection

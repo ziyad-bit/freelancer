@@ -31,14 +31,16 @@ class TransactionRequest extends FormRequest
 			$release_rules = [
 				'project_id'  => 'required|numeric',
 				'receiver_id' => 'required|numeric',
-				'id'          => 'required|string',
+				'id'          => 'required|uuid',
 			];
 		}
 
 		$user_funds = $this->get_total_money();
 
 		return [
-			'amount'      => 'required|numeric|min:5|max:' . $user_funds,
+			'amount' => 'required|numeric|min:5|max:' . $user_funds,
 		] + $release_rules;
+
+
 	}
 }

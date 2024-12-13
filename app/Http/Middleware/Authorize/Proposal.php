@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
 
-class Skill
+class Proposal
 {
 	/**
 	 * Handle an incoming request.
@@ -18,11 +18,11 @@ class Skill
 	 */
 	public function handle(Request $request, Closure $next)
 	{
-		$id      = request('skill');
-		$user_id = DB::table('user_skill')->where('id', $id)->value('user_id');
+		$proposal_id = $request->route('proposal');
+		$user_id    = DB::table('proposals')->where('id', $proposal_id)->value('user_id');
 
 		if ($user_id !== Auth::id()) {
-			return response()->json(['error' => 'something went wrong'], 500);
+			return response()->json(['error'=>'something went wrong'],500);
 		}
 
 		return $next($request);

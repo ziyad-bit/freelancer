@@ -22,7 +22,7 @@ class ProfileRepository implements ProfileRepositoryInterface
 				'location',
 				'job',
 				'overview',
-				DB::raw('Group_concat(Distinct Concat(skill,":",skills.id) ) as skills'),
+				DB::raw('Group_concat(Distinct Concat(skill,":",user_skill.id) ) as skills'),
 				DB::raw('ROUND(AVG(rate), 1) as review'),
 				DB::raw('IFNULL(transaction_data.total_amount, 0) as total_amount')
 			)

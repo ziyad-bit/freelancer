@@ -16,6 +16,8 @@ class TransactionController extends Controller
 	public function __construct(private TransactionRepositoryInterface $transactionRepository)
 	{
 		$this->middleware('auth');
+
+		$this->middleware('transaction')->only('release');
 	}
 
 	// MARK: index
@@ -51,7 +53,7 @@ class TransactionController extends Controller
 	// MARK: checkout
 	public function checkout(int $amount, int $project_id, int $receiver_id):View
 	{
-		$this->transactionRepository->checkout_transaction($amount, $project_id, $receiver_id);
+		$this->transactionRepository->checkout_transaction($amount);
 
 		return view('users.transaction.form', compact('data', 'receiver_id', 'project_id'));
 	}

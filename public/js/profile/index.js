@@ -4,12 +4,11 @@ const delete_button = document.getElementsByClassName('delete_btn');
 
 for (let i = 0; i < delete_button.length; i++) {
     delete_button[i].onclick = function (e) {
-        let   url = document.querySelector('#delete_route').value;
         const id  = e.target.id;
+        let   url = document.querySelector(`#delete_route${id}`).value;
+        // url=url.substring(0,url.length-2)
     
-        url=url.substring(0,url.length-2)
-    
-        axios.delete(url+id)
+        axios.delete(url)
             .then(res=> {
                 if (res.status == 200) {
                     document.querySelector('.user_skill'+id).remove();

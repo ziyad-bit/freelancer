@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Interfaces\Repository\SkillRepositoryInterface;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -34,28 +35,32 @@ class SkillRepository implements SkillRepositoryInterface
 	}
 
 	//MARK: delete_project_Skill
-	public function delete_project_Skill(int $skill_id):null | RedirectResponse
+	public function delete_project_Skill(int $skill_id):? RedirectResponse
 	{
 		$project_skill_query = DB::table('project_skill')->where('id', $skill_id);
 		$project_skill       = $project_skill_query->first();
 
 		if (!$project_skill) {
-			return redirect()->back()->with('error', 'proposal not found');
+			return response()->json(['error'=>'proposal not found']);
 		}
 
 		$project_skill_query->delete();
+
+		return null;
 	}
 
 	//MARK: deleteSkill
-	public function deleteSkill(int $id):null | RedirectResponse
+	public function deleteSkill(int $id):?JsonResponse
 	{
 		$user_skill_query = DB::table('user_skill')->where('id', $id);
 		$user_skill       = $user_skill_query->first();
 
 		if (!$user_skill) {
-			return redirect()->back()->with('error', 'proposal not found');
+			return response()->json(['error'=>'something went wrong'],500);
 		}
 
 		$user_skill_query->delete();
+
+		return null;
 	}
 }

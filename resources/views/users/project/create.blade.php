@@ -24,9 +24,9 @@
 
         <div class="card text-white bg-dark mb-3 " style="max-width: 34rem;margin-top: 20px">
             <div class="card-header">{{ __('add project') }}</div>
-            <div class="card-body ">
+            <div class="card-body body">
 
-                <div class="form-group">
+                <div class="form-group ">
                     <label for="exampleInputPassword1">
                         title
                     </label>
@@ -168,12 +168,12 @@
                 <input type="hidden"  id="num_input"  required  max="20"
                 value="{{ old('num_input') ? old('num_input') : 1 }}" name="num_input">
 
-                <button type="submit" class="btn btn-primary" style="margin-top: 25px">
-                    {{ __('add') }}
-                </button>
-
             </div>
+            <button type="submit" class="btn btn-primary" style="margin-top: 25px">
+                {{ __('add') }}
+            </button>
         </div>
+       
     </form>
 
     <div style="margin-top: 25px">

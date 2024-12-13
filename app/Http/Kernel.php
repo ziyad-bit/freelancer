@@ -62,6 +62,8 @@ class Kernel extends HttpKernel
 		'profile'               => \App\Http\Middleware\Authorize\Profile::class,
 		'skill'                 => \App\Http\Middleware\Authorize\Skill::class,
 		'project'               => \App\Http\Middleware\Authorize\Project::class,
+		'transaction'           => \App\Http\Middleware\Authorize\Transaction::class,
+		'proposal'              => \App\Http\Middleware\Authorize\Proposal::class,
 		'file'                  => \App\Http\Middleware\Authorize\File::class,
 		'auth.basic'            => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
 		'cache.headers'         => \Illuminate\Http\Middleware\SetCacheHeaders::class,

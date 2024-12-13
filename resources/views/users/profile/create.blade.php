@@ -79,7 +79,7 @@
 
                 <div class="form-group" style="margin-top: 20px;width: 50%">
                     <label for="exampleInputEmail1">
-                        {{ __('photo') }}
+                        photo 
                     </label>
                     <input type="file" required name="image" class="form-control" aria-describedby="emailHelp">
                     @error('image')

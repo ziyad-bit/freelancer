@@ -9,6 +9,7 @@ if (num_input_ele_val > 1) {
 }
 
 generalEventListener('click', '.add_button',() => {
+
     if (number < 20) {
         number++;
         num_input_ele.value = number;
@@ -32,7 +33,7 @@ generalEventListener('click', '.add_button',() => {
                         <input type="hidden" name="skills_id[${number}]" id="skill_id_${number}">
                     </div>`;
 
-        const body = document.querySelector('#skills_input');
+        const body = document.querySelector('.body');
 
         body.insertAdjacentHTML('beforeend', html);
     } else {
@@ -49,15 +50,20 @@ generalEventListener('input', '.input', e => {
         id          = input.getAttribute('id'),
         hiddenInput = document.getElementById(`skill_id_${id}`),
         inputValue  = input.value;
+        
 
     for (let i = 0; i < options.length; i++) {
         let option = options[i];
 
         if (option.value === inputValue) {
-            hiddenInput.value = option.getAttribute('data-value');
-            break;
+            if (hiddenInput) {
+                hiddenInput.value = option.getAttribute('data-value');
+                break;            }
+           
         }else{
-            hiddenInput.value = 0;
+            if (hiddenInput) {
+                hiddenInput.value = 0;
+            }
         }
     }
 })

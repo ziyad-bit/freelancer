@@ -187,7 +187,6 @@ class ProjectRepository implements ProjectRepositoryInterface
 	public function updateProject(ProjectRequest $request, int $id, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):RedirectResponse|null
 	{
 		try {
-			DB::beginTransaction();
 			$project_data      = $request->safe()->only(['title', 'content']) + ['user_id' => Auth::id(), 'created_at' => now()];
 			$project_info_data = $request->safe()->only(['num_of_days', 'min_price', 'max_price', 'exp']);
 
@@ -197,6 +196,8 @@ class ProjectRepository implements ProjectRepositoryInterface
 			if (!$project) {
 				return redirect()->back()->with('error', 'project not found');
 			}
+
+			DB::beginTransaction();
 
 			$project_query->update($project_data);
 

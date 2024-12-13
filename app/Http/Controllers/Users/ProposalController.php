@@ -12,6 +12,7 @@ class ProposalController extends Controller
 	public function __construct(private ProposalRepositoryInterface $ProposalRepository)
 	{
 		$this->middleware('auth');
+		$this->middleware('proposal')->except('store');
 	}
 
 	//MARK: store

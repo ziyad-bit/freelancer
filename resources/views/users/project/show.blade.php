@@ -177,7 +177,6 @@
     <hr>
 
     <!-- proposal  -->
-    <h3 class="text-center">proposals</h3>
 
     <div id="proposal_wrapper" data-show_url="{{route('project.show',$project->id)}}"
         data-cursor="{{$cursor}}"> 

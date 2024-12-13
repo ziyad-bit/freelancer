@@ -119,13 +119,13 @@
     </div>
 
 
-    <form method="POST" id="form" action="{{ route('project.update', $project->id) }}" enctype="multipart/form-data">
+    <form method="POST" id="edit_form" action="{{ route('project.update', $project->id) }}" enctype="multipart/form-data">
         @csrf
         @method('put')
 
         <div class="card text-white bg-success   mb-3 " style="max-width: 34rem;margin-top: 20px">
             <div class="card-header">{{ __('add project') }}</div>
-            <div class="card-body ">
+            <div class="card-body body">
 
                 <div class="form-group">
                     <label for="exampleInputPassword1">
@@ -241,6 +241,9 @@
 
                                 <input list="skills" value='{{ old("skills_name.$i") }}' id="{{ $i }}"
                                     name="skills_name[{{ $i }}]" class="form-control input">
+
+                                
+                                {{-- <input type="hidden" name="skills_id[{{$i}}]" id="skill_id_{{$i}}"> --}}
                             </div>
 
                             <input type="hidden" name="skills_id[{{ $i }}]"
@@ -263,7 +266,9 @@
                                 </button>
 
                                 <input list="skills" value="{{ $skill->skill }}" name="skills_name[1]"
-                                    class="form-control input">
+                                    class="form-control input" id="{{$i}}">
+                                
+                                    {{-- <input type="hidden" name="skills_id[{{$i}}]" id="skill_id_{{$i}}"> --}}
                             </div>
 
                             <input type="hidden" value="{{ route('project_skill.destroy', $skill->id) }}"
@@ -286,7 +291,9 @@
                                 </button>
 
                                 <input list="skills" value="{{ $skill->skill }}" name="skills_name[1]"
-                                    class="form-control input">
+                                    class="form-control input input_old" id="{{$i}}">
+
+                                {{-- <input type="hidden" name="skills_id[{{$i}}]" id="skill_id_{{$i}}"> --}}
                             </div>
 
                             <input type="hidden" value="{{ route('project_skill.destroy', $skill->id) }}"
@@ -313,11 +320,14 @@
                 <input type="hidden" id="num_input" required max="20" min="1"
                     value="{{ old('num_input') ? old('num_input') : count($project->skills) }}" name="num_input">
 
-                <button type="submit" class="btn btn-primary" style="margin-top: 25px">
-                    update
-                </button>
-
             </div>
         </div>
+        <button type="submit" class="btn btn-primary" style="margin-top:5px">
+            update
+        </button>
     </form>
+
+    {{-- <form id="edit_form">
+
+    </form> --}}
 @endsection
