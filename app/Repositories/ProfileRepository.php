@@ -15,8 +15,6 @@ class ProfileRepository implements ProfileRepositoryInterface
 	//MARK: getUserInfo
 	public function getUserInfo(Request $request):array
 	{
-		$request->session()->regenerate();
-
 		$user_info = DB::table('users')
 			->select(
 				'location',

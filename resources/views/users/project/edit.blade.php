@@ -58,7 +58,8 @@
                         data-bs-toggle="modal" data-bs-target="#delete_file">
                     </button>
 
-                    <input type="hidden" class="{{ $name }}" value="{{ route('file.destroy',['name'=>$name,'type'=>$type,'dir'=>'projects']) }}">
+                    <input type="hidden" class="{{ $name }}"
+                        value="{{ route('file.destroy', ['name' => $name, 'type' => $type, 'dir' => 'projects']) }}">
 
                     <img src="{{ asset('storage/images/projects/' . $name) }}"
                         style="width: 300px;margin-left: 10px;margin-top: 10px">
@@ -71,7 +72,8 @@
                             data-bs-toggle="modal" data-bs-target="#delete_file">
                         </button>
 
-                        <input type="hidden" class="{{ $name }}" value="{{ route('file.destroy',['name'=>$name,'type'=>$type,'dir'=>'projects']) }}">
+                        <input type="hidden" class="{{ $name }}"
+                            value="{{ route('file.destroy', ['name' => $name, 'type' => $type, 'dir' => 'projects']) }}">
 
                         <video src="{{ asset('storage/videos/projects/' . $name) }}" controls
                             style="margin-left: 10px;margin-top: 10px;width: 300px">
@@ -84,7 +86,8 @@
                         <button type="button" class="btn-close close_btn" data-file="{{ $name }}"
                             data-bs-toggle="modal" data-bs-target="#delete_file">
                         </button>
-                        <input type="hidden" class="{{ $name }}" value="{{ route('file.destroy', ['name'=>$name,'type'=>$type,'dir'=>'projects']) }}">
+                        <input type="hidden" class="{{ $name }}"
+                            value="{{ route('file.destroy', ['name' => $name, 'type' => $type, 'dir' => 'projects']) }}">
 
                         <iframe src="{{ asset('storage/applications/projects/' . $name) }}"
                             style="margin-left: 10px;margin-top: 10px"></iframe>
@@ -239,11 +242,10 @@
                                 <button type="button" class="btn-close  delete_skill" id="{{ $i }}">
                                 </button>
 
-                                <input list="skills" value='{{ old("skills_name.$i") }}' id="{{ $i }}"
-                                    name="skills_name[{{ $i }}]" class="form-control input">
+                                <input list="skills" value='{{ old("skills_id.$i") ? old("skills_id.$i") : '0' }}'
+                                    id="{{ $i }}" name="skills_name[{{ $i }}]"
+                                    class="form-control input" autocomplete="off">
 
-                                
-                                {{-- <input type="hidden" name="skills_id[{{$i}}]" id="skill_id_{{$i}}"> --}}
                             </div>
 
                             <input type="hidden" name="skills_id[{{ $i }}]"
@@ -266,9 +268,7 @@
                                 </button>
 
                                 <input list="skills" value="{{ $skill->skill }}" name="skills_name[1]"
-                                    class="form-control input" id="{{$i}}">
-                                
-                                    {{-- <input type="hidden" name="skills_id[{{$i}}]" id="skill_id_{{$i}}"> --}}
+                                    class="form-control input" id="{{ $i }}" autocomplete="off">
                             </div>
 
                             <input type="hidden" value="{{ route('project_skill.destroy', $skill->id) }}"
@@ -291,9 +291,7 @@
                                 </button>
 
                                 <input list="skills" value="{{ $skill->skill }}" name="skills_name[1]"
-                                    class="form-control input input_old" id="{{$i}}">
-
-                                {{-- <input type="hidden" name="skills_id[{{$i}}]" id="skill_id_{{$i}}"> --}}
+                                    class="form-control input input_old" id="{{ $i }}" autocomplete="off">
                             </div>
 
                             <input type="hidden" value="{{ route('project_skill.destroy', $skill->id) }}"

@@ -3,8 +3,7 @@
 namespace App\Repositories;
 
 use App\Interfaces\Repository\SkillRepositoryInterface;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\{JsonResponse, RedirectResponse};
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -13,7 +12,7 @@ class SkillRepository implements SkillRepositoryInterface
 	//MARK: getSkills
 	public function getSkills():Collection
 	{
-		return DB::table('skills')->limit(50)->get();
+		return DB::table('skills')->limit(350)->get();
 	}
 
 	//MARK: storeSkill
@@ -24,10 +23,12 @@ class SkillRepository implements SkillRepositoryInterface
 		if ($skills !== [] && $skills !== null) {
 			$skills_arr = [];
 			foreach ($skills as $skill) {
-				$skills_arr[] = [
-					'skill_id' => $skill,
-					$column    => $value,
-				];
+				if ($skill !== null) {
+					$skills_arr[] = [
+						'skill_id' => $skill,
+						$column    => $value,
+					];
+				}
 			}
 
 			DB::table($table)->insert($skills_arr);
@@ -41,7 +42,7 @@ class SkillRepository implements SkillRepositoryInterface
 		$project_skill       = $project_skill_query->first();
 
 		if (!$project_skill) {
-			return response()->json(['error'=>'proposal not found']);
+			return response()->json(['error' => 'proposal not found']);
 		}
 
 		$project_skill_query->delete();
@@ -56,7 +57,7 @@ class SkillRepository implements SkillRepositoryInterface
 		$user_skill       = $user_skill_query->first();
 
 		if (!$user_skill) {
-			return response()->json(['error'=>'something went wrong'],500);
+			return response()->json(['error' => 'something went wrong'], 500);
 		}
 
 		$user_skill_query->delete();

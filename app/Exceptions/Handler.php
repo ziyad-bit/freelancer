@@ -36,7 +36,7 @@ class Handler extends ExceptionHandler
 	{
 		$this->reportable(
 			function (Throwable $e) {
-				abort(500, 'Something went wrong');
+				// abort(500, 'Something went wrong');
 			}
 		);
 	}

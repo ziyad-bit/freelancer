@@ -20,17 +20,14 @@ generalEventListener('click', '.add_button',() => {
                                 - skill
                             </label>
 
-                            <button type="button" class="btn-close  delete_skill" id="${number}">
-                            </button>
-
-                            <input list="skills" id="${number}"  name="skills_name[${number}]" class="form-control input" >
+                            <input list="skills" autocomplete="off" id="${number}"  name="skills_name[${number}]" class="form-control input" >
                         </div>
     
                         <small style="color: red" class="errors" id="skills_name.${number}_err">
                             
                         </small>
     
-                        <input type="hidden" name="skills_id[${number}]" id="skill_id_${number}">
+                        <input type="hidden" value="" name="skills_id[${number}]" id="skill_id_${number}">
                     </div>`;
 
         const body = document.querySelector('.body');
@@ -58,12 +55,17 @@ generalEventListener('input', '.input', e => {
         if (option.value === inputValue) {
             if (hiddenInput) {
                 hiddenInput.value = option.getAttribute('data-value');
-                break;            }
-           
+                break;            
+            }
         }else{
-            if (hiddenInput) {
-                hiddenInput.value = 0;
+            if (hiddenInput && inputValue !== '') {
+                hiddenInput.value = inputValue;
+            }else{
+                hiddenInput.value = "";
             }
         }
     }
 })
+
+
+

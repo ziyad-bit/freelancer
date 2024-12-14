@@ -6,8 +6,8 @@
 
     <script defer src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
 
-    <script defer src="{{ asset('js/project/create.js')}}?v={{ filemtime(public_path('js/project/create.js')) }}"></script>
-    <script defer src="{{ asset('js/skill/add.js')}}?v={{ filemtime(public_path('js/skill/add.js')) }}"></script>
+    <script defer src="{{ asset('js/project/create.js') }}?v={{ filemtime(public_path('js/project/create.js')) }}"></script>
+    <script defer src="{{ asset('js/skill/add.js') }}?v={{ filemtime(public_path('js/skill/add.js')) }}"></script>
 @endsection
 
 @section('content')
@@ -30,7 +30,8 @@
                     <label for="exampleInputPassword1">
                         title
                     </label>
-                    <input type="text" required max="30" min="5"  value="{{ old('title') }}" name="title" class="form-control">
+                    <input type="text" required max="30" min="5" value="{{ old('title') }}" name="title"
+                        class="form-control">
                     @error('title')
                         <small style="color: red">
                             {{ $message }}
@@ -43,7 +44,7 @@
                         content
                     </label>
 
-                    <textarea type="text" required max="250" min="10"   name="content" class="form-control">{{ old('content') }}</textarea>
+                    <textarea type="text" required max="250" min="10" name="content" class="form-control">{{ old('content') }}</textarea>
                     @error('content')
                         <small style="color: red">
                             {{ $message }}
@@ -56,8 +57,8 @@
                         minimum price
                     </label>
 
-                    <input type="number" required  min="5"  
-                    value="{{ old('min_price') }}" name="min_price" class="form-control">
+                    <input type="number" required min="5" value="{{ old('min_price') }}" name="min_price"
+                        class="form-control">
                     @error('min_price')
                         <small style="color: red">
                             {{ $message }}
@@ -70,7 +71,8 @@
                         maximum price
                     </label>
 
-                    <input type="number"  required  max="10000" value="{{ old('max_price') }}" name="max_price" class="form-control">
+                    <input type="number" required max="10000" value="{{ old('max_price') }}" name="max_price"
+                        class="form-control">
                     @error('max_price')
                         <small style="color: red">
                             {{ $message }}
@@ -83,7 +85,8 @@
                         number of days
                     </label>
 
-                    <input type="number" required min="1" max="180" value="{{ old('num_of_days') }}" name="num_of_days" class="form-control">
+                    <input type="number" required min="1" max="180" value="{{ old('num_of_days') }}"
+                        name="num_of_days" class="form-control">
                     @error('num_of_days')
                         <small style="color: red">
                             {{ $message }}
@@ -96,7 +99,7 @@
                     <label for="exampleInputEmail1">
                         experience
                     </label>
-                    <select class="form-select"  name="exp" aria-label="Default select example">
+                    <select class="form-select" name="exp" aria-label="Default select example">
 
                         <option value="">...</option>
                         <option @selected('beginner' == old('exp')) value="beginner">beginner</option>
@@ -119,20 +122,23 @@
                     </button>
                     <div>
                         <small style="color: red;display: none" id="err_msg">
-                        
+
                         </small>
                     </div>
-                    
 
-                    @if (old('num_input'))
+                    @if (old('num_input') > 1)
                         @for ($i = 1; $i < old('num_input') + 1; $i++)
                             <label for="exampleInputEmail1">
                                 - skill
                             </label>
 
-                            <input list="skills" id="{{$i}}" value='{{old("skills_name.$i")}}' name="skills_name[{{ $i }}]" class="form-control input">
-                            <input type="hidden" name="skills_id[{{$i}}]" id="skill_id_{{$i}}" value='{{old("skills_id.$i")}}'>
-                            
+                            <input list="skills" autocomplete="off" id="{{ $i }}"
+                                value='{{ old("skills_name.$i") }}' name="skills_name[{{ $i }}]"
+                                class="form-control input">
+
+                            <input type="hidden" name="skills_id[{{ $i }}]" id="skill_id_{{ $i }}"
+                                value='{{ old("skills_id.$i") ? old("skills_id.$i") : '0' }}'>
+
                             @error("skills_id.$i")
                                 <div style="color: red;font-size: small">
                                     {{ $message }}
@@ -144,7 +150,8 @@
                             - skill
                         </label>
 
-                        <input list="skills" id="1" name="skills_name[1]" class="form-control input">
+                        <input list="skills" autocomplete="off" id="1" name="skills_name[1]"
+                            class="form-control input" value='{{ old("skills_name.1") }}'>
 
                         <input type="hidden" name="skills_id[1]" id="skill_id_1">
 
@@ -157,23 +164,23 @@
 
                     <datalist id="skills">
                         @forelse ($skills as $skill)
-                            <option data-value="{{ $skill->id }}" >{{ $skill->skill }}</option>
-                            @empty
-                                -
+                            <option data-value="{{ $skill->id }}">{{ $skill->skill }}</option>
+                        @empty
+                            -
                         @endforelse
                     </datalist>
 
                 </div>
 
-                <input type="hidden"  id="num_input"  required  max="20"
-                value="{{ old('num_input') ? old('num_input') : 1 }}" name="num_input">
+                <input type="hidden" id="num_input" required max="20"
+                    value="{{ old('num_input') ? old('num_input') : 1 }}" name="num_input">
 
             </div>
-            <button type="submit" class="btn btn-primary" style="margin-top: 25px">
-                {{ __('add') }}
-            </button>
+           
         </div>
-       
+        <button type="submit" class="btn btn-primary" style="margin-top: 5px">
+            {{ __('add') }}
+        </button>
     </form>
 
     <div style="margin-top: 25px">

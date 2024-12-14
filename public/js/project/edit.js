@@ -60,10 +60,13 @@ delete_skill_btns.forEach(delete_skill_btn => {
             const url = url_ele.value;
 
             // eslint-disable-next-line no-undef
-            axios.delete(url);
+            axios.delete(url)
+                .then(res => {
+                    if (res.status == 200) {
+                        document.querySelector('#input' + skill_index).remove();
+                    }
+                });
         }
-
-        document.querySelector('#input' + skill_index).remove();
     }
 });
 
@@ -81,8 +84,6 @@ generalEventListener('input', '.input_old', (e) => {
     let skill_id_ele = document.querySelector(`#skill_id_${id}`);
 
     if (input_values.includes(input_value) && skill_id_ele) {
-        console.log('input_values: ', 1);
-
         skill_id_ele.remove();
     } else {
         let html = `<input type="hidden" name="skills_id[${id}]" id="skill_id_${id}">`;

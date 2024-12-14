@@ -2,10 +2,11 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\{Auth, DB};
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\{Auth, DB};
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
 
 class SkillRequest extends FormRequest
 {
@@ -32,9 +33,19 @@ class SkillRequest extends FormRequest
 				->toArray();
 
 		return [
-			'num_input'   => 'nullable|numeric',
-			'skills_id'   => 'required|array|min:1',
-			'skills_id.*' => ['distinct', 'exists:skills,id', Rule::notIn($user_skills_id)],
+			'num_input' => 'required|numeric',
+    'skills_id' => [
+        'required',
+        'array',
+        function ($attribute, $value, $fail) {
+            // Ensure at least one non-null item exists in the array
+            if (empty(array_filter($value))) {
+                $fail('The :attribute must contain at least one valid skill.');
+            }
+        },
+    ],
+    'skills_name.*' => 'nullable',
+    'skills_id.*' => ['nullable', 'distinct', 'exists:skills,id', Rule::notIn($user_skills_id)],
 		];
 	}
 
@@ -46,7 +57,7 @@ class SkillRequest extends FormRequest
 	public function attributes()
 	{
 		return [
-			'skills_name.*' => 'skill',
+			'skills_id.*' => 'skill',
 		];
 	}
 
@@ -58,7 +69,7 @@ class SkillRequest extends FormRequest
 	public function messages()
 	{
 		return [
-			'skills_name.*.not_in' => 'The selected skill is added before',
+			'skills_name.*.not_in'   => 'The selected skill is added before',
 		];
 	}
 }

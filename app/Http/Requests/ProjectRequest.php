@@ -30,7 +30,7 @@ class ProjectRequest extends FormRequest
 			'title'         => 'required|string|max:50|min:5',
 			'content'       => 'required|string|max:250|min:10',
 			'num_of_days'   => 'required|numeric|max:180|min:1',
-			'min_price'     => 'required|numeric|lt:max_price|min:5',
+			'min_price'     => 'required|numeric|min:5',
 			'max_price'     => 'required|numeric|max:10000|gt:min_price',
 			'exp'           => ['required', 'string', Rule::in(['beginner', 'intermediate', 'experienced'])],
 			'skills_name'   => 'required|array|min:1',
