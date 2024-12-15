@@ -76,6 +76,8 @@ class TransactionRepository implements TransactionRepositoryInterface
 
 					DB::commit();
 
+					Log::info('database commit');
+
 					$release  = false;
 					$receiver = User::find($receiver_id);
 					$user     = Auth::user();
@@ -97,8 +99,10 @@ class TransactionRepository implements TransactionRepositoryInterface
 			}
 
 			return ['project_id' => $project_id, 'receiver_id' => $receiver_id];
-		} catch (\Throwable) {
+		} catch (\Throwable $th) {
 			DB::rollBack();
+			Log::critical('database rollback and '.$th->getMessage());
+
 			abort(500, 'something went wrong');
 		}
 	}
@@ -144,6 +148,7 @@ class TransactionRepository implements TransactionRepositoryInterface
 			$proposal_query->update(['finished' => 'finished']);
 
 			DB::commit();
+			Log::info('database commit');
 
 			$release  = true;
 			$receiver = User::find($receiver_id);
@@ -156,8 +161,10 @@ class TransactionRepository implements TransactionRepositoryInterface
 			$this->forgetCache($receiver_id);
 
 			return null;
-		} catch (\Throwable) {
+		} catch (\Throwable $th) {
 			DB::rollBack();
+			Log::critical('database rollback and '.$th->getMessage());
+
 			abort(500, 'something went wrong');
 		}
 	}

@@ -50,6 +50,10 @@ class Logging
 	{
 		$status_code = $response->getStatusCode();
 
+		if (self::$user_data == null) {
+			self::$user_data = ['user_ip' =>request()->ip()];
+		}
+		
 		$user_data = [
 			'method'  => $request->method(),
 			'url'     => $request->fullUrl(),

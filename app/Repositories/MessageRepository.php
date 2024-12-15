@@ -70,6 +70,7 @@ class MessageRepository implements MessageRepositoryInterface
 
 			$files = $fileRepository->insert_file($request, 'message_files', 'message_id', $message_id);
 			DB::commit();
+			Log::info('database commit and user_id: ' . $receiver_id . ' will receive notification message');
 
 			$data['text'] = $text;
 
@@ -93,6 +94,7 @@ class MessageRepository implements MessageRepositoryInterface
 			return ['view' => $view_msg, 'text' => $text];
 		} catch (\Throwable $th) {
 			DB::rollBack();
+			Log::critical('database rollback and '.$th->getMessage());
 
 			abort(500, 'something went wrong');
 		}

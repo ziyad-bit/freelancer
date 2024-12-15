@@ -4,7 +4,7 @@
         <div class="container">
 
             <a class="navbar-brand" href="{{ route('project.fetch') }}">
-                Social Media
+                Freelancer
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"

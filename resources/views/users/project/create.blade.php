@@ -22,7 +22,7 @@
     <form method="POST" id="form" action="{{ route('project.store') }}" enctype="multipart/form-data">
         @csrf
 
-        <div class="card text-white bg-dark mb-3 " style="max-width: 34rem;margin-top: 20px">
+        <div class="card text-white bg-success mb-3 " style="max-width: 34rem;margin-top: 20px">
             <div class="card-header">{{ __('add project') }}</div>
             <div class="card-body body">
 
@@ -128,38 +128,60 @@
 
                     @if (old('num_input') > 1)
                         @for ($i = 1; $i < old('num_input') + 1; $i++)
+                            <div id="input{{ $i }}">
+                                <label for="exampleInputEmail1">
+                                    - skill
+                                </label>
+
+                                @if ($i != 1)
+                                    <button type="button" class="btn-close  delete_skill" id="{{ $i }}">
+                                    </button>
+                                @endif
+
+                                <input list="skills" autocomplete="off" id="{{ $i }}"
+                                    value='{{ old("skills.$i.name") }}' name="skills[{{ $i }}]['name']"
+                                    class="form-control input">
+
+                                <input type="hidden" name="skills[{{ $i }}][id]"
+                                    id="skill_id_{{ $i }}"
+                                    value='{{ old("skills.$i.id") ? old("skills.$i.id") : '' }}'>
+
+                                @error("skills.$i.id")
+                                    <div style="color: red;font-size: small">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+
+                                @error('skills')
+                                    <small style="color: red">
+                                        {{ $message }}
+                                    </small>
+                                @enderror
+                            </div>
+                        @endfor
+                    @else
+                        <div id="input1">
                             <label for="exampleInputEmail1">
                                 - skill
                             </label>
 
-                            <input list="skills" autocomplete="off" id="{{ $i }}"
-                                value='{{ old("skills_name.$i") }}' name="skills_name[{{ $i }}]"
-                                class="form-control input">
+                            <input list="skills" autocomplete="off" id="1" name="skills[1][name]"
+                                class="form-control input" value='{{ old('skills.1.name') }}'>
 
-                            <input type="hidden" name="skills_id[{{ $i }}]" id="skill_id_{{ $i }}"
-                                value='{{ old("skills_id.$i") ? old("skills_id.$i") : '0' }}'>
+                            <input type="hidden" name="skills[1][id]" id="skill_id_1">
 
-                            @error("skills_id.$i")
-                                <div style="color: red;font-size: small">
+                            @error('skills.1.id')
+                                <small style="color: red">
                                     {{ $message }}
-                                </div>
+                                </small>
                             @enderror
-                        @endfor
-                    @else
-                        <label for="exampleInputEmail1">
-                            - skill
-                        </label>
 
-                        <input list="skills" autocomplete="off" id="1" name="skills_name[1]"
-                            class="form-control input" value='{{ old("skills_name.1") }}'>
-
-                        <input type="hidden" name="skills_id[1]" id="skill_id_1">
-
-                        @error('skills_id.1')
-                            <small style="color: red">
-                                {{ $message }}
-                            </small>
-                        @enderror
+                            @error('skills')
+                                <small style="color: red">
+                                    {{ $message }}
+                                </small>
+                            @enderror
+                        </div>
                     @endif
 
                     <datalist id="skills">
@@ -174,9 +196,7 @@
 
                 <input type="hidden" id="num_input" required max="20"
                     value="{{ old('num_input') ? old('num_input') : 1 }}" name="num_input">
-
             </div>
-           
         </div>
         <button type="submit" class="btn btn-primary" style="margin-top: 5px">
             {{ __('add') }}

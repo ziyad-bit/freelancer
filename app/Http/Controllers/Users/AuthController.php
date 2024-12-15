@@ -12,8 +12,8 @@ class AuthController extends Controller
 {
 	public function __construct(private AuthRepositoryInterface $authRepository)
 	{
-		$this->middleware('auth')->only('logout');
-		$this->middleware('guest')->except('logout');
+		// $this->middleware('auth')->only('logout');
+		// $this->middleware('guest')->except('logout');
 	}
 
 	//MARK: create

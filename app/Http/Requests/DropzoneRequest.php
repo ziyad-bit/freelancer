@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\File;
+use Illuminate\Foundation\Http\FormRequest;
 
 class DropzoneRequest extends FormRequest
 {
@@ -25,9 +26,9 @@ class DropzoneRequest extends FormRequest
 	public function rules()
 	{
 		return [
-			'image'           => 'nullable|image|mimes:jpg,gif,jpeg,webp,png|max:8000',
-			'application'     => 'nullable|file|mimes:pdf,ppt,doc,xls|max:100000',
-			'video'           => 'nullable|file|mimes:mp4,mov,flv,avi|max:1000000',
+			'image'           => ['nullable',File::image()->types(['jpg', 'jpeg','gif','webp','png'])->max(12 * 1024)] ,
+			'application'     => ['nullable',File::types(['pdf', 'ppt','doc','xls'])->max(20 * 1024)],
+			'video'           => ['nullable',File::types(['mp4', 'mov','flv','avi'])->max(150 * 1024)],
 			'dir'             => ['required', 'string', Rule::in(['projects/', 'messages/'])],
 			'type'            => ['required', 'string', Rule::in(['image', 'video', 'application'])],
 		];

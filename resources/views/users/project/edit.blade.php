@@ -242,20 +242,25 @@
                                 <button type="button" class="btn-close  delete_skill" id="{{ $i }}">
                                 </button>
 
-                                <input list="skills" value='{{ old("skills_id.$i") ? old("skills_id.$i") : '0' }}'
-                                    id="{{ $i }}" name="skills_name[{{ $i }}]"
+                                <input list="skills" value='{{ old("skills.$i.name") ? old("skills.$i.name") : '' }}'
+                                    id="{{ $i }}" name="skills[{{ $i }}][name]"
                                     class="form-control input" autocomplete="off">
 
+                                <input type="hidden" name="skills[{{ $i }}][id]"
+                                    id="skill_id_{{ $i }}">
+
+                                @error("skills.$i.id")
+                                    <div style="color: red;font-size: small">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+
+                                @error('skills')
+                                    <div style="color: red;font-size: small">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
-
-                            <input type="hidden" name="skills_id[{{ $i }}]"
-                                id="skill_id_{{ $i }}">
-
-                            @error("skills_id.$i")
-                                <div style="color: red;font-size: small">
-                                    {{ $message }}
-                                </div>
-                            @enderror
                         @endfor
 
                         @foreach ($project->skills as $i => $skill)
@@ -267,18 +272,18 @@
                                 <button type="button" class="btn-close  delete_skill" id="{{ $i }}">
                                 </button>
 
-                                <input list="skills" value="{{ $skill->skill }}" name="skills_name[1]"
+                                <input list="skills" value="{{ $skill->skill }}" name="skills[{{$i}}][name]"
                                     class="form-control input" id="{{ $i }}" autocomplete="off">
+
+                                <input type="hidden" value="{{ route('project_skill.destroy', $skill->id) }}"
+                                    id="delete_skill_url{{ $i }}">
+
+                                @error("skills.$i.id")
+                                    <small style="color: red">
+                                        {{ $message }}
+                                    </small>
+                                @enderror
                             </div>
-
-                            <input type="hidden" value="{{ route('project_skill.destroy', $skill->id) }}"
-                                id="delete_skill_url{{ $i }}">
-
-                            @error("skills_id.$i")
-                                <small style="color: red">
-                                    {{ $message }}
-                                </small>
-                            @enderror
                         @endforeach
                     @else
                         @foreach ($project->skills as $i => $skill)
@@ -290,18 +295,18 @@
                                 <button type="button" class="btn-close  delete_skill" id="{{ $i }}">
                                 </button>
 
-                                <input list="skills" value="{{ $skill->skill }}" name="skills_name[1]"
+                                <input list="skills" value="{{ $skill->skill }}" name="skills[{{$i}}][name]"
                                     class="form-control input input_old" id="{{ $i }}" autocomplete="off">
+
+                                <input type="hidden" value="{{ route('project_skill.destroy', $skill->id) }}"
+                                    id="delete_skill_url{{ $i }}">
+
+                                @error("skills.$i.id")
+                                    <small style="color: red">
+                                        {{ $message }}
+                                    </small>
+                                @enderror
                             </div>
-
-                            <input type="hidden" value="{{ route('project_skill.destroy', $skill->id) }}"
-                                id="delete_skill_url{{ $i }}">
-
-                            @error("skills_id.$i")
-                                <small style="color: red">
-                                    {{ $message }}
-                                </small>
-                            @enderror
                         @endforeach
                     @endif
 

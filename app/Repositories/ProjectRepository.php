@@ -2,12 +2,13 @@
 
 namespace App\Repositories;
 
+use App\Traits\GetCursor;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\{Auth, DB};
+use Illuminate\Http\{JsonResponse, RedirectResponse};
 use App\Http\Requests\{ProjectRequest, SearchRequest};
 use App\Interfaces\Repository\{FileRepositoryInterface, ProjectRepositoryInterface, SkillRepositoryInterface};
-use App\Traits\GetCursor;
-use Illuminate\Http\{JsonResponse, RedirectResponse};
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\{Auth, DB};
 
 class ProjectRepository implements ProjectRepositoryInterface
 {
@@ -88,8 +89,12 @@ class ProjectRepository implements ProjectRepositoryInterface
 
 			$skillRepository->storeSkill($request, 'project_skill', 'project_id', $project_id);
 			DB::commit();
-		} catch (\Throwable) {
+
+			Log::info('database commit');
+		} catch (\Throwable $th) {
 			DB::rollBack();
+			Log::critical('database rollback and '.$th->getMessage());
+
 			abort(500, 'something went wrong');
 		}
 	}
@@ -208,9 +213,13 @@ class ProjectRepository implements ProjectRepositoryInterface
 			$skillRepository->storeSkill($request, 'project_skill', 'project_id', $id);
 			DB::commit();
 
+			Log::info('database commit');
+
 			return null;
 		} catch (\Throwable $th) {
 			DB::rollBack();
+			Log::critical('database rollback and '.$th->getMessage());
+
 			abort(500, 'something went wrong');
 		}
 	}

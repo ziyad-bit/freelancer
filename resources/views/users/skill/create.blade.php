@@ -21,7 +21,7 @@
 
     <form id="skill_form" action="{{ route('skill.store') }}" method="POST">
         @csrf
-        <div class="card card_form text-white bg-dark mb-3" style="max-width: 34rem;margin-top: 20px">
+        <div class="card card_form text-white bg-success mb-3" style="max-width: 34rem;margin-top: 20px">
             <div class="card-header">add skills
                 <button type="button" class="btn btn-primary add_button" style="margin-left: 314px;">
                     add more skill
@@ -33,47 +33,60 @@
                 <div class="form-group skills">
                     @if (old('num_input') > 1)
                         @for ($i = 1; $i < old('num_input') + 1; $i++)
+                            <div id="input{{ $i }}">
+                                <label for="exampleInputEmail1">
+                                    - skill
+                                </label>
+
+                                @if ($i != 1)
+                                    <button type="button" class="btn-close  delete_skill" id="{{ $i }}">
+                                    </button>
+                                @endif
+
+                                <input list="skills" id="{{ $i }}" value='{{ old("skills.$i.name") }}'
+                                    name="skills[{{ $i }}][name]" class="form-control input" autocomplete="off">
+
+                                <input type="hidden" name="skills[{{ $i }}][id]"
+                                    id="skill_id_{{ $i }}"
+                                    value='{{ old("skills.$i.id") ? old("skills.$i.id") : '' }}'>
+
+                                @error("skills.$i.id")
+                                    <div style="color: red;font-size: small">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+
+                                @error('skills')
+                                    <small style="color: red">
+                                        {{ $message }}
+                                    </small>
+                                @enderror
+                            </div>
+                        @endfor
+                    @else
+                        <div id="input1">
                             <label for="exampleInputEmail1">
                                 - skill
                             </label>
 
-                            <input list="skills" id="{{ $i }}" value='{{ old("skills_name.$i") }}'
-                                name="skills_name[{{ $i }}]" class="form-control input" autocomplete="off">
+                            <input list="skills" id="1" name="skills[1][name]" class="form-control input"
+                                autocomplete="off" value='{{ old('skills.1.name') }}'>
 
-                            <input type="hidden" name="skills_id[{{ $i }}]" id="skill_id_{{ $i }}"
-                                value='{{ old("skills_id.$i") ? old("skills_id.$i") : '' }}'>
+                            <input type="hidden" name="skills[1][id]" id="skill_id_1">
 
-                            @error("skills_id.$i")
-                                <div style="color: red;font-size: small">
+                            @error('skills.1.id')
+                                <small style="color: red">
                                     {{ $message }}
-                                </div>
+                                </small>
                             @enderror
-                        @endfor
-                    @else
-                        <label for="exampleInputEmail1">
-                            - skill
-                        </label>
 
-
-                        <input list="skills" id="1" name="skills_name[1]" class="form-control input"
-                            autocomplete="off" value='{{ old("skills_name.1")  }}'>
-
-                        <input type="hidden" name="skills_id[1]" id="skill_id_1">
-
-                        @error('skills_id.1')
-                            <small style="color: red">
-                                {{ $message }}
-                            </small>
-                        @enderror
-
-                        @error('skills_id')
-                            <small style="color: red">
-                                {{ $message }}
-                            </small>
-                        @enderror
+                            @error('skills')
+                                <small style="color: red">
+                                    {{ $message }}
+                                </small>
+                            @enderror
+                        </div>
                     @endif
-
-                    
 
                 </div>
 

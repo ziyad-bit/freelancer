@@ -196,13 +196,15 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 
 			DB::commit();
 
-			Log::info('user sent an invitation to the user_id: ' . $receiver_id . ' to join the chatroom_id: ' . $chat_room_id);
+			Log::info('database commit and user sent an invitation to the user_id: ' . $receiver_id . ' to join the chatroom_id: ' . $chat_room_id);
 
 			$this->forgetCache($receiver_id);
 
 			return null;
 		} catch (\Throwable $th) {
 			DB::rollBack();
+			Log::critical('database rollback and '.$th->getMessage());
+
 			abort(500, 'something went wrong');
 		}
 	}

@@ -78,7 +78,7 @@
                 @csrf
                 <input id="app_input{{ $chat_room->chat_room_id }}" class="file_input"
                     data-chat_room_id="{{ $chat_room->chat_room_id }}" name="application" style="display: none"
-                    type="file" />
+                    type="file"  />
                 <input type="hidden" name="dir" value="messages/">
                 <input type="hidden" name="type" value="application">
             </form>

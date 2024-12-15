@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\OneItem;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -25,7 +26,6 @@ class ProjectRequest extends FormRequest
 	 */
 	public function rules()
 	{
-		
 		return [
 			'title'         => 'required|string|max:50|min:5',
 			'content'       => 'required|string|max:250|min:10',
@@ -33,9 +33,9 @@ class ProjectRequest extends FormRequest
 			'min_price'     => 'required|numeric|min:5',
 			'max_price'     => 'required|numeric|max:10000|gt:min_price',
 			'exp'           => ['required', 'string', Rule::in(['beginner', 'intermediate', 'experienced'])],
-			'skills_name'   => 'required|array|min:1',
-			'skills_name.*' => 'nullable',
-			'skills_id.*'   => ['distinct', 'exists:skills,id'],
+			'skills'        => ['required', 'array', new OneItem ],
+			'skills.*.name' => 'nullable|string',
+			'skills.*.id'   => ['nullable','numeric','distinct' ,'exists:skills,id'],
 			'num_input'     => 'required|numeric',
 			'files'         => 'nullable|array',
 		];
@@ -53,7 +53,20 @@ class ProjectRequest extends FormRequest
 			'min_price'      => 'minimum price',
 			'max_price'      => 'maximum price',
 			'exp'            => 'experience',
-			'skills_id.*'    => 'skill',
+			'skills.*.id'    => 'skill',
+			'skills'         => 'skill',
+		];
+	}
+
+	/**
+	 * Get custom attributes for validator errors.
+	 *
+	 * @return array
+	 */
+	public function messages()
+	{
+		return [
+			'skills.*.id.numeric' => 'The selected skill is invalid.'
 		];
 	}
 }

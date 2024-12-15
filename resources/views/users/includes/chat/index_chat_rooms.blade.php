@@ -90,14 +90,20 @@
 
                     </span>
 
-                    @if ($message->text)
+                    @if (!$message->text)
                         <span class="msg_text">
                             file
                         </span>
                     @else
-                        <span class="msg_text">
-                            {{ Str::limit(decrypt($message->text), 15, '...') }}
-                        </span>
+                        @if ($message->text != 'new_chat_room%')
+                            <span class="msg_text">
+                                {{ Str::limit(decrypt($message->text), 15, '...') }}
+                            </span>
+                        @else
+                            <span class="msg_text">
+                                
+                            </span>
+                        @endif
                     @endif
 
                 </p>

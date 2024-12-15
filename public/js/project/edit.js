@@ -49,26 +49,7 @@ delete_btn.onclick = e => {
 }
 
 
-const delete_skill_btns = document.getElementsByClassName('delete_skill');
 
-delete_skill_btns.forEach(delete_skill_btn => {
-    delete_skill_btn.onclick = e => {
-        const skill_index = e.target.id;
-        const url_ele = document.querySelector('#delete_skill_url' + skill_index);
-
-        if (url_ele) {
-            const url = url_ele.value;
-
-            // eslint-disable-next-line no-undef
-            axios.delete(url)
-                .then(res => {
-                    if (res.status == 200) {
-                        document.querySelector('#input' + skill_index).remove();
-                    }
-                });
-        }
-    }
-});
 
 const all_inputs = document.querySelectorAll('.input');
 let input_values = [];
@@ -86,7 +67,7 @@ generalEventListener('input', '.input_old', (e) => {
     if (input_values.includes(input_value) && skill_id_ele) {
         skill_id_ele.remove();
     } else {
-        let html = `<input type="hidden" name="skills_id[${id}]" id="skill_id_${id}">`;
+        let html = `<input type="hidden" name="skills[${id}][id]" id="skill_id_${id}">`;
         const body = document.querySelector('.body');
 
         body.insertAdjacentHTML('beforeend', html);
