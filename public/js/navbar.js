@@ -43,7 +43,6 @@ function show_recent_searches(){
         axios.get(recent_search_url)
             .then(res=>{
                 if (res.status == 200) {
-
                     if (search_req_num == 1) {
                         for (let i = 0; i < list_search_item.length; i++) {
                             list_search_item[i].style.display = 'none';

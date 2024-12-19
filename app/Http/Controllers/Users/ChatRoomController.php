@@ -2,34 +2,33 @@
 
 namespace App\Http\Controllers\Users;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\ChatRoomRequest;
-use App\Interfaces\Repository\ChatRoomRepositoryInterface;
 use Illuminate\Contracts\View\View;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\ChatRoomRequest;
 use Illuminate\Http\{JsonResponse, RedirectResponse};
+use App\Interfaces\Repository\ChatRoomRepositoryInterface;
 
 class ChatRoomController extends Controller
 {
 	public function __construct(private ChatRoomRepositoryInterface $chatRoomRepository)
 	{
-		$this->middleware('auth');
+		$this->middleware(['auth','verifyEmail']);
 	}
 
 	// MARK:index
 	public function index():View
 	{
 		$data = $this->chatRoomRepository->indexChatroom();
-
-		return view(
-			'users.chat.index',
-			[
+		
+		return view('users.chat.index')
+			->with([
 				'all_chat_rooms'           => $data['all_chat_rooms'],
 				'chat_room_id'             => $data['chat_room_id'],
 				'messages'                 => $data['messages'],
 				'show_chatroom'            => $data['show_chatroom'],
 				'is_chatroom_page_1'       => true,
-			]
-		);
+			]);
 	}
 
 	// MARK:fetch

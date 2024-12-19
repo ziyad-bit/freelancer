@@ -23,8 +23,10 @@
                     </label>
                     <select class="form-select" required name="location" aria-label="Default select example">
                         <option value="">...</option>
+                        {{$location = $user_info ? $user_info->location : ''}}
                         @foreach ($countries as $country)
-                            <option @selected($country == $user_info->location) value="{{ $country }}">
+
+                            <option @selected($country == $location) value="{{ $country }}">
                                 {{ $country }}
                             </option>
                         @endforeach
@@ -42,9 +44,10 @@
                         you will be
                     </label>
                     <select class="form-select" required name="type"  aria-label="Default select example">
-                        
-                            <option @selected('freelancer' == $user_info->type) value="freelancer">freelancer</option>
-                            <option @selected('client' == $user_info->type) value="client">client</option>
+                        {{$type = $user_info ? $user_info->type : ''}}
+
+                            <option @selected('freelancer' == $type) value="freelancer">freelancer</option>
+                            <option @selected('client' == $type) value="client">client</option>
                         
                     </select>
 
@@ -59,7 +62,7 @@
                     <label for="exampleInputPassword1">
                         job
                     </label>
-                    <input type="text" required max="30" min="3" value="{{ $user_info->job }}" name="job" class="form-control">
+                    <input type="text" required max="30" min="3" value="{{$user_info ? $user_info->job :'' }}" name="job" class="form-control">
                     @error('job')
                         <small style="color: red">
                             {{ $message }}
@@ -71,7 +74,9 @@
                     <label for="exampleInputPassword1">
                         overview
                     </label>
-                    <textarea type="text" required max="250" min="3"  name="overview" class="form-control"  cols="30" rows="4">{{ $user_info->overview }}</textarea>
+                    <textarea type="text" required max="250" min="3"  name="overview" class="form-control"  cols="30" rows="4">
+                        {{$user_info ? $user_info->overview : ''}}
+                    </textarea>
                     @error('overview')
                         <small style="color: red">
                             {{ $message }}

@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\GeneralNotFoundException;
 use App\Traits\GetCursor;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
@@ -175,7 +176,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 				->first();
 
 		if (!$project) {
-			return redirect()->back()->with('error', 'project not found');
+			return throw new GeneralNotFoundException('project');
 		}
 
 		$skills = DB::table('skills')

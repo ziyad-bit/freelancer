@@ -73,6 +73,14 @@ class ProfileRepository implements ProfileRepositoryInterface
 	}
 
 	//MARK: updateUserInfo
+	public function editUserInfo():?object
+	{
+		request()->session()->regenerate();
+
+		return DB::table('user_infos')->where('user_id', Auth::id())->first();
+	}
+
+	//MARK: updateUserInfo
 	public function updateUserInfo(ProfileRequest $request):void
 	{
 		$user_id = Auth::id();

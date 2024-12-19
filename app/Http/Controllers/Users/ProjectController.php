@@ -13,7 +13,7 @@ class ProjectController extends Controller
 	public function __construct(private ProjectRepositoryInterface $ProjectRepository)
 	{
 		$this->middleware('auth');
-		$this->middleware('project')->only(['destroy', 'edit', 'update']);
+		// $this->middleware('project')->only(['destroy', 'edit', 'update']);
 	}
 
 	//MARK: fetch
@@ -72,10 +72,6 @@ class ProjectController extends Controller
 		$skills  = $skillRepository->getSkills();
 
 		$project_or_res =  $this->ProjectRepository->editProject($id, $skills);
-
-		if ($project_or_res instanceof RedirectResponse) {
-			return $project_or_res;
-		}
 
 		return view('users.project.edit')
 			->with(['project' => $project_or_res, 'skills' => $skills]);

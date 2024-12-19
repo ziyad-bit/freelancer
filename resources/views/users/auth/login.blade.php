@@ -4,7 +4,7 @@
     @if (Session::has('error'))
         <div class="alert alert-danger text-center">{{ Session::get('error') }}</div>
     @endif
-    <script>sd</script>
+    
     <div class="row justify-content-center" style="margin-top:50px">
         <div class="col-md-8">
             <div class="card">

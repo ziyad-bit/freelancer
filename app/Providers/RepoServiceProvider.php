@@ -2,10 +2,11 @@
 
 namespace App\Providers;
 
-use App\Interfaces\Repository\{AuthRepositoryInterface, ChatRoomRepositoryInterface, FileRepositoryInterface, MessageRepositoryInterface, NotificationRepositoryInterface, ProfileRepositoryInterface, ProjectRepositoryInterface, ProposalRepositoryInterface, SearchRepositoryInterface, SkillRepositoryInterface, TransactionRepositoryInterface};
-use App\Repositories\{AuthRepository, ChatRoomRepository, FileRepository, MessageRepository, NotificationRepository, ProfileRepository, ProjectRepository, ProposalRepository, SearchRepository, SkillRepository, TransactionRepository};
-use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
+use App\Repositories\VerificationRepository;
+use Illuminate\Contracts\Support\DeferrableProvider;
+use App\Repositories\{AuthRepository, ChatRoomRepository, FileRepository, MessageRepository, NotificationRepository, ProfileRepository, ProjectRepository, ProposalRepository, SearchRepository, SkillRepository, TransactionRepository};
+use App\Interfaces\Repository\{AuthRepositoryInterface, ChatRoomRepositoryInterface, FileRepositoryInterface, MessageRepositoryInterface, NotificationRepositoryInterface, ProfileRepositoryInterface, ProjectRepositoryInterface, ProposalRepositoryInterface, SearchRepositoryInterface, SkillRepositoryInterface, TransactionRepositoryInterface, VerificationRepositoryInterface};
 
 class RepoServiceProvider extends ServiceProvider implements DeferrableProvider
 {
@@ -27,6 +28,8 @@ class RepoServiceProvider extends ServiceProvider implements DeferrableProvider
 		$this->app->bind(ChatRoomRepositoryInterface::class, ChatRoomRepository::class);
 		$this->app->bind(SearchRepositoryInterface::class, SearchRepository::class);
 		$this->app->bind(TransactionRepositoryInterface::class, TransactionRepository::class);
+		$this->app->bind(VerificationRepositoryInterface::class, VerificationRepository::class);
+
 	}
 
 
@@ -44,6 +47,7 @@ class RepoServiceProvider extends ServiceProvider implements DeferrableProvider
 			ChatRoomRepositoryInterface::class,
 			SearchRepositoryInterface::class,
 			TransactionRepositoryInterface::class,
+			VerificationRepositoryInterface::class
 		];
 	}
 

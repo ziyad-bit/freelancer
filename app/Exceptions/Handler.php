@@ -34,7 +34,11 @@ class Handler extends ExceptionHandler
 	 */
 	public function register()
 	{
-		$this->reportable(
+		$this->renderable(function (GeneralNotFoundException $e) {
+			abort(404, $e->getMessage());
+        });
+
+		$this->renderable(
 			function (Throwable $e) {
 				// abort(500, 'Something went wrong');
 			}

@@ -48,10 +48,10 @@ class ProfileController extends Controller
 	}
 
 	//MARK: edit
-	public function edit(Request $request):View
+	public function edit():View
 	{
 		$countries   = $this->getCountries();
-		$user_info   = $this->profileRepository->getUserInfo($request);
+		$user_info   = $this->profileRepository->editUserInfo();
 
 		return view('users.profile.edit', compact('user_info', 'countries'));
 	}

@@ -26,13 +26,13 @@ class Logging
 			];
 		}
 
-		$user_data = [
+		$request_data = [
 			'method' => $request->method(),
 			'url'    => $request->fullUrl(),
 			'body'   => $request->except(['password', 'password_confirmation', '_token', 'text']),
 		] + self::$user_data;
 
-		Log::withContext($user_data);
+		Log::withContext($request_data);
 
 		return $next($request);
 	}
@@ -49,15 +49,8 @@ class Logging
 	public function terminate($request, $response):void
 	{
 		$status_code = $response->getStatusCode();
-
-		if (self::$user_data == null) {
-			self::$user_data = ['user_ip' =>request()->ip()];
-		}
 		
-		$user_data = [
-			'method'  => $request->method(),
-			'url'     => $request->fullUrl(),
-			'body'    => $request->except(['password', 'password_confirmation', '_token', 'text']),
+		$request_data = [
 			'seconds' => microtime(true) - LARAVEL_START,
 			'code'    => $status_code,
 			'error'   => $request->session()->get('error'),
@@ -65,15 +58,9 @@ class Logging
 		] + self::$user_data;
 
 		if ($status_code === 200) {
-			Log::info('successful request', $user_data);
+			Log::info('successful request', $request_data);
 		} elseif ($status_code >= 300 && $status_code < 400) {
-			Log::debug('redirect request', $user_data);
-		} elseif ($status_code >= 400 && $status_code < 500) {
-			Log::error('client error', $user_data);
-		} elseif ($status_code >= 500) {
-			Log::critical('server error', $user_data);
-		} else {
-			Log::debug('unknown', $user_data);
-		}
+			Log::debug('redirect request', $request_data);
+		} 
 	}
 }

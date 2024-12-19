@@ -5,6 +5,7 @@ use App\Http\Controllers\Users\SkillController;
 use App\Http\Controllers\Users\ProjectController;
 use App\Http\Controllers\Users\ProposalController;
 use App\Http\Controllers\Users\TransactionController;
+use App\Http\Controllers\Users\VerificationController;
 use App\Http\Controllers\Users\{AuthController, ChatRoomController, FileController, MessageController, NotificationsController, ProfileController, SearchController};
 
 /*
@@ -20,12 +21,20 @@ use App\Http\Controllers\Users\{AuthController, ChatRoomController, FileControll
 
 //MARK:Auth
 Route::namespace('Users')->controller(AuthController::class)->group(function () {
-	Route::get('/login'  , 'getLogin')->name('login');
-	Route::post('/login' , 'postLogin')->name('post.login');
-	Route::post('/logout', 'logout')->name('logout');
-	Route::get('/signup' , 'create')->name('signup');
-	Route::post('/signup', 'store')->name('post.signup');
+	Route::get('/get/login'    , 'getLogin')->name('login');
+	Route::post('/post/login'  , 'postLogin')->name('post.login');
+	Route::post('/logout'      , 'logout')->name('logout');
+	Route::get('/get/signup'   , 'create')->name('signup');
+	Route::post('/post/signup' , 'store')->name('post.signup');
 });
+
+//MARK:Verification
+Route::namespace('Users')->controller(VerificationController::class)->group(function () {
+	Route::get('get/email/verify'           ,'get')->name('verification.get');
+	Route::post('send/email/verify'         ,'send')->name('verification.send');
+	Route::get('update/email/verify/{hash}' ,'update')->name('verification.update');
+});
+	
 
 //MARK:Profile
 Route::namespace('Users')->controller(ProfileController::class)->group(function () {
@@ -34,7 +43,6 @@ Route::namespace('Users')->controller(ProfileController::class)->group(function 
 });
 
 Route::resource('profile'   , ProfileController::class)->except(['show','index']);
-
 
 //MARK:Skill
 Route::delete('/project-skill/{skill_id}', 'Users\SkillController@destroy_project_skill')->name('project_skill.destroy');

@@ -58,6 +58,7 @@ class Kernel extends HttpKernel
 	 */
 	protected $routeMiddleware = [
 		'auth'                  => \App\Http\Middleware\Authenticate::class,
+		'verifyEmail'           => \App\Http\Middleware\VerifyEmail::class,
 		'profile'               => \App\Http\Middleware\Authorize\Profile::class,
 		'skill'                 => \App\Http\Middleware\Authorize\Skill::class,
 		'project'               => \App\Http\Middleware\Authorize\Project::class,
@@ -71,6 +72,5 @@ class Kernel extends HttpKernel
 		'password.confirm'      => \Illuminate\Auth\Middleware\RequirePassword::class,
 		'signed'                => \Illuminate\Routing\Middleware\ValidateSignature::class,
 		'throttle'              => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-		'verified'              => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 	];
 }

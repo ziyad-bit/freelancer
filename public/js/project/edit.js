@@ -48,9 +48,6 @@ delete_btn.onclick = e => {
         });
 }
 
-
-
-
 const all_inputs = document.querySelectorAll('.input');
 let input_values = [];
 

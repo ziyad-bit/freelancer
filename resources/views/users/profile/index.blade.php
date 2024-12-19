@@ -13,10 +13,12 @@
 @endsection
 
 @section('content')
-    
-
     @if (Session::has('error'))
         <div class="alert alert-danger text-center">{{ Session::get('error') }}</div>
+    @endif
+
+    @if (Session::has('success'))
+        <div class="alert alert-success text-center">{{ Session::get('success') }}</div>
     @endif
 
     <div class="alert alert-success text-center success_msg" style="display: none"></div>
@@ -108,44 +110,48 @@
         </div>
     </div>
 
+    <hr>
+
     @if ($user_info)
         <h2>overview</h2>
         <p style="margin-left: 30px">{{ $user_info->overview }}</p>
     @endif
 
+    <hr>
 
     <h2>work history</h2>
     @forelse ($projects as $project)
-    <div class="card-body" >
-        <a href="{{ route('project.show',$project->id) }}" style="text-decoration:none">
-            <h5 class="card-title">
-                {{ $project->title }}
-            </h5>
-        </a>
+        <div class="card-body">
+            <a href="{{ route('project.show', $project->id) }}" style="text-decoration:none">
+                <h5 class="card-title">
+                    {{ $project->title }}
+                </h5>
+            </a>
 
-        <div class="text-muted" style="margin-bottom: 15px;margin-top: 15px">
-            <span>budget : ${{ $project->amount }} </span>
-            <span style="margin-left: 10px">review: {{ $project->rate }}</span>
-            <span style="margin-left: 10px">completed:
-                {{ \Carbon\Carbon::parse($project->created_at)->diffForhumans() }}</span>
+            <div class="text-muted" style="margin-bottom: 15px;margin-top: 15px">
+                <span>budget : ${{ $project->amount }} </span>
+                <span style="margin-left: 10px">review: {{ $project->rate }}</span>
+                <span style="margin-left: 10px">completed:
+                    {{ \Carbon\Carbon::parse($project->created_at)->diffForhumans() }}</span>
+            </div>
         </div>
-    </div>
+
+        <hr>
+    @empty
+        <p>no projects</p>
+    @endforelse
 
     <hr>
-@empty
-    <p>no projects</p>
-@endforelse
+    
+    <h2>skills</h2>
 
-    <p style="margin-left: 30px"></p>
+    <a class="btn btn-primary" href="{{ route('skill.create') }}" style="margin-left:270px;margin-top: -76px"
+        role="button">
+        add skills
+    </a>
 
     @if ($user_info->skills != null)
         <div class="alert alert-danger text-center err_msg" style="display: none"></div>
-        <h2>skills</h2>
-
-        <a class="btn btn-primary" href="{{ route('skill.create') }}" style="margin-left:270px;margin-top: -76px"
-            role="button">
-            add skills
-        </a>
 
         <ol class="list-group list-group-numbered " style="margin-left: 30px;width: 20%">
             @foreach (explode(',', $user_info->skills) as $skill)
@@ -159,7 +165,8 @@
                         delete
                     </button>
 
-                    <input type="hidden" value="{{ route('skill.destroy', $skill_id) }}" id="delete_route{{$skill_id}}">
+                    <input type="hidden" value="{{ route('skill.destroy', $skill_id) }}"
+                        id="delete_route{{ $skill_id }}">
                 </li>
             @endforeach
         </ol>

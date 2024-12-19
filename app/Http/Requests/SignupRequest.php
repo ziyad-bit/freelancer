@@ -28,10 +28,11 @@ class SignupRequest extends FormRequest
 			'name'      => 'required|string|max:20|min:3',
 			'email'     => 'unique:users,email|required|email|max:40|min:10|',
 			'password'  => ['confirmed','required','string',Password::min(8)
-															->letters()
-															->mixedCase()
-															->numbers()
-															->symbols()]
+															
+															// ->mixedCase()
+															// ->numbers()
+															// ->symbols()
+															]
 		];
 	}
 }
