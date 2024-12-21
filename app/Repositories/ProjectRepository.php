@@ -3,13 +3,12 @@
 namespace App\Repositories;
 
 use App\Exceptions\GeneralNotFoundException;
-use App\Traits\GetCursor;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\{Auth, DB};
-use Illuminate\Http\{JsonResponse, RedirectResponse};
 use App\Http\Requests\{ProjectRequest, SearchRequest};
 use App\Interfaces\Repository\{FileRepositoryInterface, ProjectRepositoryInterface, SkillRepositoryInterface};
+use App\Traits\GetCursor;
+use Illuminate\Http\{JsonResponse, RedirectResponse};
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\{Auth, DB};
 
 class ProjectRepository implements ProjectRepositoryInterface
 {
@@ -94,7 +93,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 			Log::info('database commit');
 		} catch (\Throwable $th) {
 			DB::rollBack();
-			Log::critical('database rollback and '.$th->getMessage());
+			Log::critical('database rollback and ' . $th->getMessage());
 
 			abort(500, 'something went wrong');
 		}
@@ -159,7 +158,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 	}
 
 	//MARK:editProject
-	public function editProject(int $id, Collection $skills):object
+	public function editProject(int $id):\stdClass
 	{
 		$project = DB::table('projects')
 				->select(
@@ -167,24 +166,20 @@ class ProjectRepository implements ProjectRepositoryInterface
 					'title',
 					'content',
 					'project_infos.*',
-					DB::raw('GROUP_CONCAT(DISTINCT Concat(file,":",project_files.type))  as files'),
+					DB::raw('GROUP_CONCAT(DISTINCT Concat(file,":",project_files.type)) as files'),
+					DB::raw('GROUP_CONCAT(DISTINCT Concat(skills.skill,":",project_skill.id)) as skills')
 				)
 				->join('project_infos', 'projects.id', '=', 'project_infos.project_id')
 				->leftJoin('project_files', 'projects.id', '=', 'project_files.project_id')
+				->leftJoin('project_skill', 'projects.id', '=', 'project_skill.project_id')
+				->leftJoin('skills', 'project_skill.skill_id', '=', 'skills.id')
 				->where('projects.id', $id)
 				->groupBy('projects.id')
 				->first();
 
 		if (!$project) {
-			return throw new GeneralNotFoundException('project');
+			throw new GeneralNotFoundException('project');
 		}
-
-		$skills = DB::table('skills')
-				->join('project_skill', 'skills.id', '=', 'project_skill.skill_id')
-				->where('project_skill.project_id', $id)
-				->get();
-
-		$project->skills = $skills;
 
 		return $project;
 	}
@@ -219,7 +214,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 			return null;
 		} catch (\Throwable $th) {
 			DB::rollBack();
-			Log::critical('database rollback and '.$th->getMessage());
+			Log::critical('database rollback and ' . $th->getMessage());
 
 			abort(500, 'something went wrong');
 		}

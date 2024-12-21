@@ -3,6 +3,8 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -36,12 +38,21 @@ class Handler extends ExceptionHandler
 	{
 		$this->renderable(function (GeneralNotFoundException $e) {
 			abort(404, $e->getMessage());
-        });
+		});
 
 		$this->renderable(
 			function (Throwable $e) {
 				// abort(500, 'Something went wrong');
 			}
 		);
+	}
+
+	public function report(Throwable $exception)
+	{
+		if ($exception instanceof ValidationException) {
+			Log::error('validation error',['errors'=>$exception->errors()] );
+		}
+
+		return parent::report( $exception);
 	}
 }

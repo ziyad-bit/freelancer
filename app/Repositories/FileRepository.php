@@ -28,9 +28,9 @@ class FileRepository implements FileRepositoryInterface
 
 			$files_arr = [];
 			if ($files != []) {
-				for ($i = 1; $i < count($files) + 1; $i++) {
-					$type = $files[$i]['type'];
-					$name = $files[$i]['name'];
+				foreach ($files as  $file) {
+					$type = $file['type'];
+					$name = $file['name'];
 
 					$files_arr[] = [
 						'file'       => $name,

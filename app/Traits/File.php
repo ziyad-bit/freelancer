@@ -16,8 +16,6 @@ trait File
 
 		Storage::putFileAs($path, $file, $fileName);
 
-		Log::info('user uploaded file_name: ' . $fileName);
-
 		return $fileName;
 	}
 

@@ -1,6 +1,7 @@
 @extends('errors::minimal')
 
 @section('title', __('server error'))
+@section('code', '500')
 
 @section('message')
 @if ($exception->getMessage())

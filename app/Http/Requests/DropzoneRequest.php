@@ -26,7 +26,7 @@ class DropzoneRequest extends FormRequest
 	public function rules()
 	{
 		return [
-			'image'           => ['nullable',File::image()->types(['jpg', 'jpeg','gif','webp','png'])->max(12 * 1024)] ,
+			'image'           => ['nullable',File::image()->types(['jpg', 'jpeg','gif','webp','png'])->max(8 * 1024)] ,
 			'application'     => ['nullable',File::types(['pdf', 'ppt','doc','xls'])->max(20 * 1024)],
 			'video'           => ['nullable',File::types(['mp4', 'mov','flv','avi'])->max(150 * 1024)],
 			'dir'             => ['required', 'string', Rule::in(['projects/', 'messages/'])],

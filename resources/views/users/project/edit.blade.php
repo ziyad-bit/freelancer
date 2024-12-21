@@ -101,6 +101,10 @@
         <h4>upload images</h4>
         <form action="{{ route('file.upload') }}" id="image_upload" method="post" enctype="multipart/form-data"
             class="dropzone">
+            
+            <input type="hidden" name="type" value="image">
+            <input type="hidden" name="dir" value="projects/">
+
             @csrf
         </form>
     </div>
@@ -109,6 +113,10 @@
         <h4>upload files</h4>
         <form action="{{ route('file.upload') }}" id="file_upload" method="post" enctype="multipart/form-data"
             class="dropzone">
+
+            <input type="hidden" name="type" value="application">
+            <input type="hidden" name="dir" value="projects/">
+
             @csrf
         </form>
     </div>
@@ -117,12 +125,16 @@
         <h4>upload videos</h4>
         <form action="{{ route('file.upload') }}" id="video_upload" method="post" enctype="multipart/form-data"
             class="dropzone">
+
+            <input type="hidden" name="type" value="video">
+            <input type="hidden" name="dir" value="projects/">
+
             @csrf
         </form>
     </div>
 
 
-    <form method="POST" id="edit_form" action="{{ route('project.update', $project->id) }}" enctype="multipart/form-data">
+    <form method="POST" id="form" action="{{ route('project.update', $project->id) }}" enctype="multipart/form-data">
         @csrf
         @method('put')
 
@@ -233,7 +245,34 @@
 
 
                     @if (old('num_input'))
-                        @for ($i = 1 + $project->skills->count(); $i < old('num_input') + 1; $i++)
+                        @for ($i = 1 + explode(',', $project->skills)->count(); $i < old('num_input') + 1; $i++)
+                            <div id="input{{ $i }}">
+                                <label for="exampleInputEmail1">
+                                    - skill
+                                </label>
+
+                                <button type="button" class="btn-close  delete_skill" id="{{ $i }}">
+                                </button>
+
+                                <input list="skills" value='{{ old("skills.$i.name") ? old("skills.$i.name") : '' }}'
+                                    id="{{ $i }}" name="skills[{{ $i }}][name]"
+                                    class="form-control input" autocomplete="off">
+
+                                <input type="hidden" name="skills[{{ $i }}][id]"
+                                    id="skill_id_{{ $i }}">
+
+                                @error("skills.$i.id")
+                                    <div style="color: red;font-size: small">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+
+                                @error('skills')
+                                    <div style="color: red;font-size: small">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+
                             <div id="input{{ $i }}">
                                 <label for="exampleInputEmail1">
                                     - skill
@@ -263,7 +302,12 @@
                             </div>
                         @endfor
 
-                        @foreach ($project->skills as $i => $skill)
+                        @foreach (explode(',', $project->skills) as $i => $skill)
+                            @php
+                                $skill_id = substr($skill, strpos($skill, ':') + 1);
+                                $skill_name = strtok($skill, ':');
+                            @endphp
+
                             <div id="input{{ $i }}">
                                 <label for="exampleInputEmail1">
                                     - skill
@@ -272,10 +316,11 @@
                                 <button type="button" class="btn-close  delete_skill" id="{{ $i }}">
                                 </button>
 
-                                <input list="skills" value="{{ $skill->skill }}" name="skills[{{$i}}][name]"
-                                    class="form-control input" id="{{ $i }}" autocomplete="off">
+                                <input list="skills" value="{{ $skill_name }}"
+                                    name="skills[{{ $i }}][name]" class="form-control input"
+                                    id="{{ $i }}" autocomplete="off">
 
-                                <input type="hidden" value="{{ route('project_skill.destroy', $skill->id) }}"
+                                <input type="hidden" value="{{ route('project_skill.destroy', $skill_id) }}"
                                     id="delete_skill_url{{ $i }}">
 
                                 @error("skills.$i.id")
@@ -286,7 +331,12 @@
                             </div>
                         @endforeach
                     @else
-                        @foreach ($project->skills as $i => $skill)
+                        @foreach (explode(',', $project->skills) as $i => $skill)
+                        @php
+                                $skill_id = substr($skill, strpos($skill, ':') + 1);
+                                $skill_name = strtok($skill, ':');
+                            @endphp
+
                             <div id="input{{ $i }}">
                                 <label for="exampleInputEmail1">
                                     - skill
@@ -295,10 +345,11 @@
                                 <button type="button" class="btn-close  delete_skill" id="{{ $i }}">
                                 </button>
 
-                                <input list="skills" value="{{ $skill->skill }}" name="skills[{{$i}}][name]"
-                                    class="form-control input input_old" id="{{ $i }}" autocomplete="off">
+                                <input list="skills" value="{{ $skill_name }}"
+                                    name="skills[{{ $i }}][name]" class="form-control input input_old"
+                                    id="{{ $i }}" autocomplete="off">
 
-                                <input type="hidden" value="{{ route('project_skill.destroy', $skill->id) }}"
+                                <input type="hidden" value="{{ route('project_skill.destroy', $skill_id) }}"
                                     id="delete_skill_url{{ $i }}">
 
                                 @error("skills.$i.id")
@@ -321,7 +372,7 @@
                 </div>
 
                 <input type="hidden" id="num_input" required max="20" min="1"
-                    value="{{ old('num_input') ? old('num_input') : count($project->skills) }}" name="num_input">
+                    value="{{ old('num_input') ? old('num_input') : count(explode(',',$project->skills)) }}" name="num_input">
 
             </div>
         </div>
@@ -329,8 +380,4 @@
             update
         </button>
     </form>
-
-    {{-- <form id="edit_form">
-
-    </form> --}}
 @endsection

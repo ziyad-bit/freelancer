@@ -48,8 +48,8 @@ class Logging
 
 	public function terminate($request, $response):void
 	{
-		$status_code = $response->getStatusCode();
-		
+		$status_code      = $response->getStatusCode();
+
 		$request_data = [
 			'seconds' => microtime(true) - LARAVEL_START,
 			'code'    => $status_code,

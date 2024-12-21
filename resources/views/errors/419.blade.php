@@ -1,6 +1,8 @@
 @extends('errors::minimal')
 
 @section('title', __('token mismatch'))
+@section('code', '419')
+
 @section('message')
 @if ($exception->getMessage())
     <h2>{{$exception->getMessage()}}</h2>

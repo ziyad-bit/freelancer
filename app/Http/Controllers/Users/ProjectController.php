@@ -69,9 +69,8 @@ class ProjectController extends Controller
 	//MARK: edit
 	public function edit(int $id, SkillRepositoryInterface $skillRepository):View|RedirectResponse
 	{
-		$skills  = $skillRepository->getSkills();
-
-		$project_or_res =  $this->ProjectRepository->editProject($id, $skills);
+		$skills         = $skillRepository->getSkills();
+		$project_or_res = $this->ProjectRepository->editProject($id, $skills);
 
 		return view('users.project.edit')
 			->with(['project' => $project_or_res, 'skills' => $skills]);

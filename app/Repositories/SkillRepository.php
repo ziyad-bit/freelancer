@@ -37,13 +37,13 @@ class SkillRepository implements SkillRepositoryInterface
 	}
 
 	//MARK: delete_project_Skill
-	public function delete_project_Skill(int $skill_id):? RedirectResponse
+	public function delete_project_Skill(int $skill_id):? JsonResponse
 	{
 		$project_skill_query = DB::table('project_skill')->where('id', $skill_id);
 		$project_skill       = $project_skill_query->first();
 
 		if (!$project_skill) {
-			return response()->json(['error' => 'proposal not found']);
+			return response()->json(['error' => 'not found']);
 		}
 
 		$project_skill_query->delete();
