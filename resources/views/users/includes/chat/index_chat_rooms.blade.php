@@ -61,7 +61,8 @@
                 data-bs-target="#send_user_invitation" data-receiver_id="{{ $receiver_id }}"
                 data-chat_room_id="{{ $message->chat_room_id }}"
                 data-chatroom_users_url="{{ route('chatrooms.get_users') }}"
-                data-chat_room_users_ids="{{ $message->chat_room_users_ids }}">
+                data-chat_room_users_ids="{{ $message->chat_room_users_ids }}"
+                data-request_status="false">
             </i>
 
             @csrf
@@ -128,7 +129,9 @@
 
         <i class="fa-solid fa-plus plus plus{{ $chat_room_id }}" data-bs-toggle="modal"
             data-bs-target="#send_user_invitation" data-receiver_id="{{ $receiver->id }}"
-            data-chat_room_id="{{ $chat_room_id }}">
+            data-chat_room_id="{{ $chat_room_id }}"
+            data-request_status="false"
+            data-chatroom_users_url="{{ route('chatrooms.get_users') }}">
         </i>
 
         @csrf

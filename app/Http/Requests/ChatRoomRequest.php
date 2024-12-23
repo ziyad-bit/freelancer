@@ -26,7 +26,7 @@ class ChatRoomRequest extends FormRequest
 		$is_user_id_required = request()->routeIs('chatrooms.send_user_invitation') ? 'required' : 'nullable';
 
 		return [
-			'chat_room_id' => 'required|numeric',
+			'chat_room_id' => 'required|uuid',
 			'user_id'      => $is_user_id_required . '|numeric',
 		];
 	}

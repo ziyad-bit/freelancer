@@ -34,7 +34,7 @@ class SearchController extends Controller
 
 	public function index_projects(SearchRequest $request):JsonResponse
 	{
-		$view = $this->SearchRepository->show_projects($request);
+		$view = $this->SearchRepository->show_projects_after_typing($request);
 
 		return response()->json(['view' => $view]);
 	}

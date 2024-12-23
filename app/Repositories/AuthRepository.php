@@ -28,17 +28,17 @@ class AuthRepository implements AuthRepositoryInterface
 	}
 
 	// login   #####################################
-	public function login(LoginRequest $request):RedirectResponse
+	public function login(LoginRequest $request):?string
 	{
 		$credentials = $request->only('email', 'password');
 
-		if (auth()->attempt($credentials, $request->filled('remember_me'))) {
-			$request->session()->regenerate();
+		if (!auth()->attempt($credentials, $request->filled('remember_me'))) {
+			return 'error';
+		} 
 
-			return redirect()->intended();
-		} else {
-			return to_route('login')->with(['error' => 'incorrect password or email']);
-		}
+		request()->session()->regenerate();
+
+		return null;
 	}
 
 	// logout   #####################################

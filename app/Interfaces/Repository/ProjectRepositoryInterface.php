@@ -2,16 +2,17 @@
 
 namespace App\Interfaces\Repository;
 
-use App\Http\Requests\{ProjectRequest, SearchRequest};
-use Illuminate\Http\{JsonResponse, RedirectResponse};
 use Illuminate\Support\Collection;
+use App\Exceptions\GeneralNotFoundException;
+use Illuminate\Http\{JsonResponse, RedirectResponse};
+use App\Http\Requests\{ProjectRequest, SearchRequest};
 
 interface ProjectRepositoryInterface
 {
-	public function fetchProjects(SearchRequest $request):array|JsonResponse;
+	public function fetchProjects(SearchRequest $request):array;
 	public function storeProject(ProjectRequest $request, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):void;
-	public function showProject(int $id):JsonResponse|RedirectResponse|array;
+	public function showProject(int $id):array;
 	public function editProject(int $id):\stdClass;
-	public function updateProject(ProjectRequest $request, int $id, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):RedirectResponse|null;
-	public function deleteProject(int $id):RedirectResponse|null;
+	public function updateProject(ProjectRequest $request, int $id, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):void;
+	public function deleteProject(int $id):void;
 }

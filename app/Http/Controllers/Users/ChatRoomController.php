@@ -21,50 +21,23 @@ class ChatRoomController extends Controller
 	{
 		$data = $this->chatRoomRepository->indexChatroom();
 		
-		return view('users.chat.index')
-			->with([
-				'all_chat_rooms'           => $data['all_chat_rooms'],
-				'chat_room_id'             => $data['chat_room_id'],
-				'messages'                 => $data['messages'],
-				'show_chatroom'            => $data['show_chatroom'],
-				'is_chatroom_page_1'       => true,
-			]);
+		return view('users.chat.index', $data);
 	}
 
 	// MARK:fetch
 	public function fetch(int $receiver_id):View|RedirectResponse
 	{
-		$response = $this->chatRoomRepository->fetchWithSelectedUser($receiver_id);
+		$data = $this->chatRoomRepository->fetchWithSelectedUser($receiver_id);
 
-		if (!is_array($response)) {
-			return $response;
-		}
-
-		return view(
-			'users.chat.index',
-			[
-				'all_chat_rooms'           => $response['all_chat_rooms'],
-				'chat_room_id'             => $response['chat_room_id'],
-				'messages'                 => $response['messages'],
-				'receiver'                 => $response['receiver'],
-				'message_id'               => $response['message_id'],
-				'show_chatroom'            => $response['show_chatroom'],
-				'is_chatroom_page_1'       => true,
-			]
-		);
+		return view('users.chat.index',$data);
 	}
 
 	//MARK: show_more
 	public function show_more_chat_rooms(int $message_id):JsonResponse
 	{
-		$chat = $this->chatRoomRepository->getChatRooms($message_id);
+		$data = $this->chatRoomRepository->getChatRooms($message_id);
 
-		return response()->json(
-			[
-				'chat_room_view' => $chat['chat_rooms_view'],
-				'chat_box_view'  => $chat['chat_box_view'],
-			]
-		);
+		return response()->json($data);
 	}
 
 	// MARK:send_invitation
@@ -79,10 +52,6 @@ class ChatRoomController extends Controller
 	public function send_user_invitation(ChatRoomRequest $request) : JsonResponse
 	{
 		$response = $this->chatRoomRepository->sendInvitation($request);
-
-		if ($response != null) {
-			return $response;
-		}
 
 		return response()->json(['success_msg' => 'You sent the invitation successfully']);
 	}

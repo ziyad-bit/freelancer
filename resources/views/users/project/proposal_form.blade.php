@@ -1,5 +1,4 @@
-<h5 class="text-center">Add proposal</h5>
-
+<hr>
 <form action="{{ route('proposal.store') }}" method="POST">
     @csrf
 

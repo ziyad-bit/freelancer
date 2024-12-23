@@ -2,16 +2,18 @@
 
 namespace App\Repositories;
 
+use App\Models\User;
+use Illuminate\Support\Str;
+use App\Traits\DatabaseCache;
+use Illuminate\Support\Facades\Log;
 use App\Classes\{ChatRooms, Messages};
 use App\Http\Requests\ChatRoomRequest;
-use App\Interfaces\Repository\ChatRoomRepositoryInterface;
-use App\Models\User;
-use App\Notifications\AddUserToChatNotification;
-use App\Traits\DatabaseCache;
-use Illuminate\Http\{JsonResponse, RedirectResponse};
-use Illuminate\Support\Facades\Log;
+use App\Exceptions\RecordExistException;
 use Illuminate\Support\Facades\{Auth, DB};
-use Illuminate\Support\Str;
+use App\Exceptions\GeneralNotFoundException;
+use App\Notifications\AddUserToChatNotification;
+use Illuminate\Http\{JsonResponse, RedirectResponse};
+use App\Interfaces\Repository\ChatRoomRepositoryInterface;
 
 class ChatRoomRepository implements ChatRoomRepositoryInterface
 {
@@ -37,10 +39,11 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		}
 
 		return [
-			'messages'       => $messages,
-			'chat_room_id'   => $chat_room_id,
-			'all_chat_rooms' => $all_chat_rooms,
-			'show_chatroom'  => true,
+			'messages'           => $messages,
+			'chat_room_id'       => $chat_room_id,
+			'all_chat_rooms'     => $all_chat_rooms,
+			'show_chatroom'      => true,
+			'is_chatroom_page_1' => true,
 		];
 	}
 
@@ -52,7 +55,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 
 		$receiver = DB::table('users')->find($receiver_id, ['name', 'image', 'id']);
 		if (!$receiver) {
-			return to_route('chatrooms.index')->with('error', 'user not found');
+			throw new GeneralNotFoundException('user not found');
 		}
 
 		$auth_id        = Auth::id();
@@ -113,12 +116,13 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		}
 
 		return [
-			'messages'         => $messages,
-			'chat_room_id'     => $chat_room_id,
-			'all_chat_rooms'   => $all_chat_rooms,
-			'receiver'         => $receiver,
-			'message_id'       => $message_id,
-			'show_chatroom'    => true,
+			'messages'           => $messages,
+			'chat_room_id'       => $chat_room_id,
+			'all_chat_rooms'     => $all_chat_rooms,
+			'receiver'           => $receiver,
+			'message_id'         => $message_id,
+			'show_chatroom'      => true,
+			'is_chatroom_page_1' => true,
 		];
 	}
 
@@ -160,7 +164,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			->get();
 	}
 	//MARK: sendInvitation
-	public function sendInvitation(ChatRoomRequest $request):JsonResponse|null
+	public function sendInvitation(ChatRoomRequest $request):void
 	{
 		try {
 			$chat_room_id = $request->chat_room_id;
@@ -173,10 +177,10 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 				->where(['user_id' => $receiver_id, 'chat_room_id' => $chat_room_id])
 				->first();
 
-			if (!$user_in_chatroom) {
+			if (!$user_in_chatroom ) {
 				DB::table('chat_room_user')->insert($data);
 			} else {
-				return response()->json(['warning_msg' => 'user already exist in chatroom'], 400);
+				throw new RecordExistException('user');
 			}
 
 			$user         = Auth::user();
@@ -199,11 +203,11 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			Log::info('database commit and user sent an invitation to the user_id: ' . $receiver_id . ' to join the chatroom_id: ' . $chat_room_id);
 
 			$this->forgetCache($receiver_id);
-
-			return null;
+		}catch (RecordExistException $th) {
+			abort(409, $th->getMessage());
 		} catch (\Throwable $th) {
 			DB::rollBack();
-			Log::critical('database rollback and '.$th->getMessage());
+			Log::critical('database rollback and error is'.$th->getMessage());
 
 			abort(500, 'something went wrong');
 		}

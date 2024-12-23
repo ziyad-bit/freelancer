@@ -434,49 +434,62 @@ generalEventListener('input', '.send_input', e => {
 //MARK:send invitation
 // eslint-disable-next-line no-undef
 generalEventListener('click', '.plus', e => {
-    let user_names_ele = document.querySelectorAll('.user_names');
-
-    user_names_ele.forEach(user_name => {
-        user_name.style.display = 'none';
-    });
-
-    let chat_room_id = e.target.getAttribute('data-chat_room_id');
-    let chatroom_users_url = e.target.getAttribute('data-chatroom_users_url');
+    let request_status      = e.target.getAttribute('data-request_status');
+    let chat_room_id        = e.target.getAttribute('data-chat_room_id');
+    let chatroom_users_url  = e.target.getAttribute('data-chatroom_users_url');
     let chat_room_users_ids = e.target.getAttribute('data-chat_room_users_ids');
+    let user_names_ele      = document.querySelectorAll(`.user_names`);
+    let old_user_names_ele  = document.querySelectorAll(`.user_names${chat_room_id}`);
 
-    // eslint-disable-next-line no-undef
-    axios.get(chatroom_users_url)
-        .then(res => {
-            if (res.status == 200) {
-                let users = res.data.users;
-                const add_body_modal = document.querySelector('.add_body');
+    if (request_status  == 'false') {
+        user_names_ele.forEach(user_name => {
+            user_name.style.display = 'none';
+        });
 
-                users.forEach(user => {
-                    if (!chat_room_users_ids.includes(user.id)) {
-                        add_body_modal.insertAdjacentHTML('beforeend',
-                            `
-                                <li class = "list-group-item user_names user${user.id}">
-            
-                                    <img class = "rounded-circle image" alt = "loading"
-                                        src   = "/storage/images/users/${user.image}">
-                                            ${user.name}
-            
-                                    <form  id   = "add_form${user.id}">
-                                    <input type = "hidden" name = "chat_room_id" value = "${chat_room_id}">
-                                    <input type = "hidden" name = "user_id" value      = "${user.id}">
-                                    </form>        
-            
-                                    <button
-                                        type  = "button"
-                                        class = "btn btn-primary add_btn" data-receiver_id = "${user.id}">
-                                        add
-                                    </button>
-                                </li>
-                            `);
-                    }
-                })
-            }
-        })
+        // eslint-disable-next-line no-undef
+        axios.get(chatroom_users_url)
+            .then(res => {
+                if (res.status == 200) {
+                    let users = res.data.users;
+                    const add_body_modal = document.querySelector('.add_body');
+
+                    e.target.setAttribute('data-request_status', 'true');
+
+                    users.forEach(user => {
+                        if (!chat_room_users_ids.includes(user.id)) {
+                            add_body_modal.insertAdjacentHTML('beforeend',
+                                `
+                                    <li class = "list-group-item user_names user_names${chat_room_id} user${user.id}">
+                
+                                        <img class = "rounded-circle image" alt = "loading"
+                                            src   = "/storage/images/users/${user.image}">
+                                                ${user.name}
+                
+                                        <form  id   = "add_form${user.id}">
+                                        <input type = "hidden" name = "chat_room_id" value = "${chat_room_id}">
+                                        <input type = "hidden" name = "user_id" value      = "${user.id}">
+                                        </form>        
+                
+                                        <button
+                                            type  = "button"
+                                            class = "btn btn-primary add_btn" data-receiver_id = "${user.id}">
+                                            add
+                                        </button>
+                                    </li>
+                                `);
+                        }
+                    })
+                }
+            })
+    }else{
+        user_names_ele.forEach(user_name => {
+            user_name.style.display = 'none';
+        });
+
+        old_user_names_ele.forEach(user_name => {
+            user_name.style.display = '';
+        });
+    }
 })
 
 // eslint-disable-next-line no-undef
@@ -506,6 +519,8 @@ generalEventListener('click', '.add_btn', e => {
             }
         })
         .catch(err => {
+            e.target.disabled = false;
+
             let error = err.response;
             if (error.status == 400) {
                 let error_msg = error.data.warning_msg;
@@ -517,10 +532,8 @@ generalEventListener('click', '.add_btn', e => {
                 user_ele.remove();
             }
 
-            if (error.status == 422) {
+            if (error.status == 422 || error.status == 409) {
                 let error_msg = error.data.message;
-
-                e.target.disabled = false;
 
                 success_ele.style.display = 'none';
                 err_ele.style.display = '';

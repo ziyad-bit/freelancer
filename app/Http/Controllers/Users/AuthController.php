@@ -18,11 +18,6 @@ class AuthController extends Controller
 	}
 
 	//MARK: create
-	public function test():View
-	{
-		return view('users.auth.signup');
-	}
-	//MARK: create
 	public function create():View
 	{
 		return view('users.auth.signup');
@@ -36,20 +31,6 @@ class AuthController extends Controller
 		return to_route('home');
 	}
 
-	//MARK: getVerify
-	public function getVerify():View
-	{
-		return view('users.auth.verify-email');
-	}
-
-	//MARK: getVerify
-	public function postVerify(EmailVerificationRequest $request):RedirectResponse
-	{
-		$request->fulfill();
-
-		return to_route('home')->with('success','you verified your email successfully');
-	}
-
 	//MARK: getLogin
 	public function getLogin():View
 	{
@@ -59,7 +40,13 @@ class AuthController extends Controller
 	//MARK: postLogin
 	public function postLogin(LoginRequest $request):RedirectResponse
 	{
-		return $this->authRepository->login($request);
+		$response=$this->authRepository->login($request);
+
+		if ($response === 'error') {
+			return to_route('login')->with(['error' => 'incorrect password or email']);
+		}
+
+		return redirect()->intended();
 	}
 
 	//MARK: logout

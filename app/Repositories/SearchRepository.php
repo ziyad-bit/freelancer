@@ -37,6 +37,7 @@ class SearchRepository implements SearchRepositoryInterface
 		];
 	}
 
+ 	//MARK: RecentProjects
 	public function show_recent_projects():string
 	{
 		$searches = DB::table('searches')
@@ -49,7 +50,8 @@ class SearchRepository implements SearchRepositoryInterface
 		return view('users.includes.search.index_recent', compact('searches'))->render();
 	}
 
-	public function show_projects(SearchRequest $request):string
+	//MARK: projectsAfterTyping
+	public function show_projects_after_typing(SearchRequest $request):string
 	{
 		$searchTitle = $request->search;
 		$projects    = DB::table('projects')

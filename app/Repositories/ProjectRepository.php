@@ -14,8 +14,8 @@ class ProjectRepository implements ProjectRepositoryInterface
 {
 	use GetCursor;
 
-	//MARK:   getProjects
-	public function fetchProjects(SearchRequest $request):array|JsonResponse
+	//MARK:   fetchProjects
+	public function fetchProjects(SearchRequest $request):array
 	{
 		$auth_id     = Auth::id();
 		$searchTitle = $request->input('search');
@@ -64,7 +64,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 		if ($request->ajax()) {
 			$view = view('users.project.index_projects', compact('projects'))->render();
 
-			return response()->json(['view' => $view, 'cursor' => $cursor]);
+			return ['view' => $view, 'cursor' => $cursor];
 		}
 
 		return ['projects' => $projects, 'searchTitle' => $searchTitle, 'cursor' => $cursor];
@@ -100,7 +100,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 	}
 
 	//MARK: showProject
-	public function showProject(int $id):JsonResponse|RedirectResponse|array
+	public function showProject(int $id):array
 	{
 		$project = DB::table('projects')
 			->select(
@@ -127,7 +127,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 			->first();
 
 		if (!$project) {
-			return to_route('project.index_posts')->with('error', 'project not found');
+			throw new GeneralNotFoundException('project');
 		}
 
 		$proposals = DB::table('proposals')
@@ -151,7 +151,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 		if (request()->ajax()) {
 			$view = view('users.project.show_proposals', compact('proposals', 'project'))->render();
 
-			return response()->json(['view' => $view, 'cursor' => $cursor]);
+			return ['view' => $view, 'cursor' => $cursor];
 		}
 
 		return ['proposals' => $proposals, 'project' => $project, 'cursor' => $cursor];
@@ -185,7 +185,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 	}
 
 	//MARK:   updateProject
-	public function updateProject(ProjectRequest $request, int $id, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):RedirectResponse|null
+	public function updateProject(ProjectRequest $request, int $id, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):void
 	{
 		try {
 			$project_data      = $request->safe()->only(['title', 'content']) + ['user_id' => Auth::id(), 'created_at' => now()];
@@ -195,7 +195,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 			$project       = $project_query->first();
 
 			if (!$project) {
-				return redirect()->back()->with('error', 'project not found');
+				throw new GeneralNotFoundException('project');
 			}
 
 			DB::beginTransaction();
@@ -210,28 +210,24 @@ class ProjectRepository implements ProjectRepositoryInterface
 			DB::commit();
 
 			Log::info('database commit');
-
-			return null;
 		} catch (\Throwable $th) {
 			DB::rollBack();
-			Log::critical('database rollback and ' . $th->getMessage());
+			Log::critical('database rollback and error is' . $th->getMessage());
 
 			abort(500, 'something went wrong');
 		}
 	}
 
 	//MARK: deleteProject
-	public function deleteProject(int $id):RedirectResponse|null
+	public function deleteProject(int $id):void
 	{
 		$project_query = DB::table('projects')->where('id', $id);
 		$project       = $project_query->first();
 
 		if (!$project) {
-			return redirect()->back()->with('error', 'project not found');
+			throw new GeneralNotFoundException('project');
 		}
 
 		$project_query->delete();
-
-		return null;
 	}
 }

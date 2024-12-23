@@ -7,7 +7,7 @@ use Illuminate\Http\{RedirectResponse, Request};
 
 interface AuthRepositoryInterface
 {
-	public function login(LoginRequest $request):RedirectResponse;
+	public function login(LoginRequest $request):?string;
 	public function storeUser(SignupRequest $request):void;
 	public function logoutUser(Request $request):void;
 }

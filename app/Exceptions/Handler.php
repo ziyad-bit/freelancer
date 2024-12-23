@@ -40,6 +40,10 @@ class Handler extends ExceptionHandler
 			abort(404, $e->getMessage());
 		});
 
+		$this->renderable(function (RecordExistException $e) {
+			abort(409, $e->getMessage());
+		});
+
 		$this->renderable(
 			function (Throwable $e) {
 				// abort(500, 'Something went wrong');
