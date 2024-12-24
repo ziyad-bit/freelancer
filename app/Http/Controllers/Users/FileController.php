@@ -33,11 +33,7 @@ class FileController extends Controller
 	//MARK: destroy
 	public function destroy(string $file, string $type, string $dir):JsonResponse
 	{
-		$response = $this->fileRepository->destroy_file($file, $type, $dir);
-
-		if (!$response) {
-			return response()->json(['error' => 'file is not found'], 404);
-		}
+		$this->fileRepository->destroy_file($file, $type, $dir);
 
 		return response()->json(['success' => 'you deleted ' . $type . ' successfully']);
 	}

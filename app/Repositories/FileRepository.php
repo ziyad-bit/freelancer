@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\GeneralNotFoundException;
 use App\Interfaces\Repository\FileRepositoryInterface;
 use App\Traits\{File, InsertAnyFile};
 use Illuminate\Http\{Request};
@@ -17,6 +18,10 @@ class FileRepository implements FileRepositoryInterface
 	{
 		$path = $type . 's/' . $dir . '/';
 
+		if (!Storage::has($path . $file)) {
+			throw new GeneralNotFoundException('file');
+		}
+
 		return Storage::download($path . $file);
 	}
 
@@ -24,7 +29,7 @@ class FileRepository implements FileRepositoryInterface
 	public function insert_file(Request $request, string $table_name, string $column_name, int $column_value):array
 	{
 		if ($request->has('files')) {
-			$files  = $request->input('files');
+			$files  = $request->safe()->__get('files');
 
 			$files_arr = [];
 			if ($files != []) {
@@ -62,7 +67,7 @@ class FileRepository implements FileRepositoryInterface
 	}
 
 	// MARK: destroy_file
-	public function destroy_file(string $file, string $type, string $dir):bool
+	public function destroy_file(string $file, string $type, string $dir):void
 	{
 		$path = $type . 's/' . $dir . '/';
 
@@ -71,13 +76,11 @@ class FileRepository implements FileRepositoryInterface
 		$db_file      = $file_query->first();
 
 		if (!$storage_file || !$db_file) {
-			return false;
+			throw new GeneralNotFoundException('file');
 		}
 
 		Storage::delete($path . $file);
 
 		$file_query->delete();
-
-		return true;
 	}
 }

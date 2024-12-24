@@ -214,7 +214,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 	}
 
 	// MARK: acceptInvitation
-	public function postAcceptInvitationChatroom(ChatRoomRequest $request):null|RedirectResponse
+	public function postAcceptInvitationChatroom(ChatRoomRequest $request):void
 	{
 		$auth_id      = Auth::id();
 		$chat_room_id = $request->chat_room_id;
@@ -225,7 +225,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		$chat_room  = $chat_room_user_query->first();
 
 		if (!$chat_room) {
-			return to_route('chatrooms.index')->with('error', 'chatroom not found');
+			throw new GeneralNotFoundException('chatroom');
 		}
 
 		$chat_room_user_query->update(['decision' => 'approved']);
@@ -235,8 +235,6 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			->delete();
 
 		$this->forgetCache($auth_id);
-
-		return null;
 	}
 
 	// MARK: getAcceptInvitation
@@ -267,7 +265,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 	}
 
 	// MARK: refuseInvitation
-	public function refuseInvitationChatroom(ChatRoomRequest $request): null|JsonResponse
+	public function refuseInvitationChatroom(ChatRoomRequest $request): void
 	{
 		$chat_room_id = $request->chat_room_id;
 		$auth_id      = Auth::id();
@@ -278,7 +276,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		$chat_room_user = $chat_room_user_query->first();
 
 		if (!$chat_room_user) {
-			return response()->json(['error' => 'chatroom not found'], 404);
+			throw new GeneralNotFoundException('chatroom');
 		}
 
 		$chat_room_user_query->delete();
@@ -288,7 +286,5 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			->delete();
 
 		$this->forgetCache($auth_id);
-
-		return null;
 	}
 }

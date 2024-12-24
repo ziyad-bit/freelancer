@@ -19,7 +19,7 @@ class MessageController extends Controller
 	{
 		$data = $this->messageRepository->storeMessage($request, $fileRepository);
 
-		return response()->json(['view' => $data['view'], 'text' => $data['text']]);
+		return response()->json($data);
 	}
 
 	//MARK: show

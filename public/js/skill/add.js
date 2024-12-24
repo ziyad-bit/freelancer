@@ -14,21 +14,27 @@ generalEventListener('click', '.add_button', () => {
         number++;
         num_input_ele.value = number;
 
+        let show_skills_url = document.querySelector('.input').getAttribute('data-show_skills_url');
+
         let html = `<div class="form-group skills">
-                        <div id="input${number}">
-                            <label for="exampleInputEmail1">
+                        <div   id  = "input${number}">
+                        <label for = "exampleInputEmail1">
                                 - skill
                             </label>
 
-                            <button type="button" class="btn-close  delete_skill" id="${number}">
+                            <button type = "button" class = "btn-close  delete_skill" id = "${number}">
                                 </button>
 
-                            <input list="skills" autocomplete="off" id="${number}"  name="skills[${number}][name]" class="form-control input" >
+                            <input list = "skills" autocomplete = "off" id = "${number}"  name = "skills[${number}][name]" 
+                                class = "form-control input" data-show_skills_url = "${show_skills_url}" >
 
-                            <small style="color: red" class="errors" id="skills_name.${number}_err">
+                            <small style="color: red;display: none" class="err_msg" >
+                                </small>
+
+                            <small style = "color: red" class = "errors" id = "skills_name.${number}_err">
                             </small>
     
-                            <input type="hidden" value="" name="skills[${number}][id]" id="skill_id_${number}">
+                            <input type = "hidden" value = "" name = "skills[${number}][id]" id = "skill_id_${number}">
                         </div>
                     </div>`;
 
@@ -73,18 +79,67 @@ generalEventListener('click', '.delete_skill', e => {
     }
 })
 
+let inputs_arr = new Set();
+const debouncedShowSkills = debounce(async function (show_skills_url, inputValue) {
+    try {
+        if (inputs_arr.has(inputValue) === false) {
+            let source = axios.CancelToken.source();
 
+            const response    = await axios.get(show_skills_url, { cancelToken: source.token });
+            const skills      = response.data.skills;
+
+            inputs_arr.add(inputValue);
+
+            source.cancel();
+            source = axios.CancelToken.source();
+
+            if (skills.length > 0) {
+                const datalist = document.querySelector('#skills');
+                datalist.innerHTML = '';
+
+                skills.forEach(skill => {
+                    const option = document.createElement('option');
+
+                    option.value = skill.skill;
+                    option.setAttribute('data-value', skill.id);
+                    datalist.appendChild(option);
+                });
+            }
+        }
+    } catch (error) {
+        const err_ele = document.querySelector('.err_msg');
+        let err;
+
+        if (error.response) {
+            err = error.response.data.message;
+        } else if (error.request) {
+            err = 'Network error';
+        } else {
+            err = 'Something went wrong';
+        }
+
+        err_ele.style.display = '';
+        err_ele.textContent = err;
+
+        setTimeout(() => {
+            err_ele.style.display = 'none';
+        }, 3000);
+    }
+});
 
 generalEventListener('input', '.input', e => {
-    let input = e.target,
-        options = document.querySelectorAll('#skills option'),
-        id = input.getAttribute('id'),
-        hiddenInput = document.getElementById(`skill_id_${id}`),
-        inputValue = input.value;
+    const input = e.target;
+    const options = document.querySelectorAll('#skills option');
+    const id = input.getAttribute('id');
+    const hiddenInput = document.getElementById(`skill_id_${id}`);
+    const inputValue = input.value;
+    const show_skills_url = input.getAttribute('data-show_skills_url') + '/' + inputValue;
 
+    debouncedShowSkills(show_skills_url, inputValue);
 
+    // Update hidden input with selected skill ID
     for (let i = 0; i < options.length; i++) {
-        let option = options[i];
+        const option = options[i];
 
         if (option.value === inputValue) {
             if (hiddenInput) {
@@ -99,7 +154,5 @@ generalEventListener('input', '.input', e => {
             }
         }
     }
-})
 
-
-
+});

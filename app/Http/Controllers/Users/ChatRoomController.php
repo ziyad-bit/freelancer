@@ -59,11 +59,7 @@ class ChatRoomController extends Controller
 	// MARK:AcceptInvitation
 	public function post_accept_invitation(ChatRoomRequest $request):View|RedirectResponse
 	{
-		$response = $this->chatRoomRepository->postAcceptInvitationChatroom($request);
-
-		if ($response != null) {
-			return $response;
-		}
+		$this->chatRoomRepository->postAcceptInvitationChatroom($request);
 
 		return to_route('chatrooms.getAcceptInvitation', $request->chat_room_id);
 	}
@@ -73,26 +69,13 @@ class ChatRoomController extends Controller
 	{
 		$data = $this->chatRoomRepository->getAcceptInvitationChatroom($chat_room_id);
 
-		return view(
-			'users.chat.index',
-			[
-				'all_chat_rooms'           => $data['all_chat_rooms'],
-				'chat_room_id'             => $data['chat_room_id'],
-				'messages'                 => $data['messages'],
-				'show_chatroom'            => true,
-				'is_chatroom_page_1'       => true,
-			]
-		);
+		return view('users.chat.index', $data);
 	}
 
 	// MARK:refuse_invitation
 	public function refuse_invitation(ChatRoomRequest $request) : JsonResponse
 	{
-		$response = $this->chatRoomRepository->refuseInvitationChatroom($request);
-
-		if ($response != null) {
-			return $response;
-		}
+		$this->chatRoomRepository->refuseInvitationChatroom($request);
 
 		return response()->json();
 	}

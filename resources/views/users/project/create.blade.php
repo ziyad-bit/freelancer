@@ -16,7 +16,7 @@
     @endif
 
     @if (Session::has('error'))
-        <div class="alert alert-danger text-center">{{ Session::get('error') }}</div>
+        <div class="alert alert-danger text-center error_msg">{{ Session::get('error') }}</div>
     @endif
 
     <form method="POST" id="form" action="{{ route('project.store') }}" enctype="multipart/form-data">
@@ -140,7 +140,10 @@
 
                                 <input list="skills" autocomplete="off" id="{{ $i }}"
                                     value='{{ old("skills.$i.name") }}' name="skills[{{ $i }}]['name']"
-                                    class="form-control input">
+                                    class="form-control input" data-show_skills_url="{{ route('skill.show','')}}">
+                                    
+                                    <small style="color: red;display: none" class="err_msg" >
+                                    </small>
 
                                 <input type="hidden" name="skills[{{ $i }}][id]"
                                     id="skill_id_{{ $i }}"
@@ -166,7 +169,11 @@
                             </label>
 
                             <input list="skills" autocomplete="off" id="1" name="skills[1][name]"
-                                class="form-control input" value='{{ old('skills.1.name') }}'>
+                                class="form-control input" value='{{ old('skills.1.name') }}'
+                                data-show_skills_url="{{ route('skill.show','')}}">
+
+                                <small style="color: red;display: none" class="err_msg" >
+                                </small>
 
                             <input type="hidden" name="skills[1][id]" id="skill_id_1">
 
@@ -185,11 +192,7 @@
                     @endif
 
                     <datalist id="skills">
-                        @forelse ($skills as $skill)
-                            <option data-value="{{ $skill->id }}">{{ $skill->skill }}</option>
-                        @empty
-                            -
-                        @endforelse
+                                                
                     </datalist>
 
                 </div>

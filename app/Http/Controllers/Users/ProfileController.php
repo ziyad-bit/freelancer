@@ -24,11 +24,7 @@ class ProfileController extends Controller
 	{
 		$data = $this->profileRepository->getUserInfo($request);
 
-		return view('users.profile.index')
-				->with([
-					'user_info' => $data['user_info'],
-					'projects'  => $data['projects'],
-				]);
+		return view('users.profile.index', $data);
 	}
 
 	//MARK: create
@@ -64,7 +60,7 @@ class ProfileController extends Controller
 		return to_route('profile.edit', 'auth')->with('success', 'you updated profile successfully');
 	}
 
-	//MARK: show
+	//MARK: delete
 	public function delete():View
 	{
 		return view('users.profile.delete');

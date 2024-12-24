@@ -2,10 +2,11 @@
 
 namespace App\Repositories;
 
-use App\Http\Requests\ProposalRequest;
-use App\Interfaces\Repository\ProposalRepositoryInterface;
 use Illuminate\Http\RedirectResponse;
+use App\Http\Requests\ProposalRequest;
 use Illuminate\Support\Facades\{Auth, DB};
+use App\Exceptions\GeneralNotFoundException;
+use App\Interfaces\Repository\ProposalRepositoryInterface;
 
 class ProposalRepository implements ProposalRepositoryInterface
 {
@@ -18,7 +19,7 @@ class ProposalRepository implements ProposalRepositoryInterface
 	}
 
 	//MARK: updateProposal
-	public function updateProposal(ProposalRequest $request, int $id): null|RedirectResponse
+	public function updateProposal(ProposalRequest $request, int $id): void
 	{
 		$data = $request->validated();
 
@@ -26,26 +27,22 @@ class ProposalRepository implements ProposalRepositoryInterface
 		$proposal       = $proposal_query->first();
 
 		if (!$proposal) {
-			return redirect()->back()->with('error', 'proposal not found');
+			throw new GeneralNotFoundException('proposal');
 		}
 
 		$proposal_query->update($data);
-
-		return null;
 	}
 
 	//MARK: deleteProposal
-	public function deleteProposal(int $id): null|RedirectResponse
+	public function deleteProposal(int $id): void
 	{
 		$proposal_query = DB::table('proposals')->where('id', $id);
 		$proposal       = $proposal_query->first();
 
 		if (!$proposal) {
-			return redirect()->back()->with('error', 'proposal not found');
+			throw new GeneralNotFoundException('proposal');
 		}
 
 		$proposal_query->delete();
-
-		return null;
 	}
 }

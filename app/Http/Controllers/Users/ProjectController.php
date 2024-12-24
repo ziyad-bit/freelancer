@@ -29,11 +29,9 @@ class ProjectController extends Controller
 	}
 
 	//MARK: create
-	public function create(SkillRepositoryInterface $skillRepository):View
+	public function create():View
 	{
-		$skills  = $skillRepository->getSkills();
-
-		return view('users.project.create', compact('skills'));
+		return view('users.project.create');
 	}
 
 	//MARK: store

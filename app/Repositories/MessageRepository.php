@@ -48,7 +48,7 @@ class MessageRepository implements MessageRepositoryInterface
 
 			broadcast(new MessageEvent($data, $view_msg, $auth_user->name))->toOthers();
 
-			Log::info('user sent message to user_id: ' . $receiver_id);
+			Log::info('user sent message');
 
 			$notif_view = view('users.includes.notifications.send', compact('data'))->render();
 			$user       = User::find($receiver_id);
@@ -56,45 +56,16 @@ class MessageRepository implements MessageRepositoryInterface
 			$data['text'] = $enc_text;
 
 			Notification::send($user, new NewMessageNotification($data, $auth_user->name, $auth_user->image, $notif_view));
-
-			DB::table('messages')
-			->where(
-				[
-					'chat_room_id' => $request->chat_room_id,
-					'last'         => 1,
-				]
-			)
-			->update(['last' => 0]);
-
-			$message_id = DB::table('messages')->insertGetId($data);
-
-			$files = $fileRepository->insert_file($request, 'message_files', 'message_id', $message_id);
+			
 			DB::commit();
-			Log::info('database commit and user_id: ' . $receiver_id . ' will receive notification message');
-
-			$data['text'] = $text;
-
-			$view_msg = view('users.includes.chat.send_message', compact('data', 'files'))->render();
-
-			broadcast(new MessageEvent($data, $view_msg, $auth_user->name))->toOthers();
-
-			Log::info('user sent message to user_id: ' . $receiver_id);
-
-			$notif_view = view('users.includes.notifications.send', compact('data'))->render();
-			$user       = User::find($receiver_id);
-
-			$data['text'] = $enc_text;
-
-			Notification::send($user, new NewMessageNotification($data, $auth_user->name, $auth_user->image, $notif_view));
-
-			Log::info('user_id: ' . $receiver_id . ' will receive notification message');
+			Log::info('database commit and user will receive notification message');
 
 			$this->forgetCache($receiver_id);
 
 			return ['view' => $view_msg, 'text' => $text];
 		} catch (\Throwable $th) {
 			DB::rollBack();
-			Log::critical('database rollback and '.$th->getMessage());
+			Log::critical('database rollback and error is'.$th->getMessage());
 
 			abort(500, 'something went wrong');
 		}

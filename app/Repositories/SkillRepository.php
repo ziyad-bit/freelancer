@@ -3,20 +3,23 @@
 namespace App\Repositories;
 
 use App\Interfaces\Repository\SkillRepositoryInterface;
-use Illuminate\Http\{JsonResponse, RedirectResponse};
+use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class SkillRepository implements SkillRepositoryInterface
 {
 	//MARK: getSkills
-	public function getSkills():Collection
+	public function showSkills(string $skill):Collection
 	{
-		return DB::table('skills')->limit(350)->get();
+		return DB::table('skills')
+			->where('skill','like',"{$skill}%")
+			->limit(5)
+			->get();
 	}
 
 	//MARK: storeSkill
-	public function storeSkill(object $request, string $table, string $column, string $value):void
+	public function storeSkill(Request $request, string $table, string $column, string $value):void
 	{
 		$skills = $request->input('skills');
 

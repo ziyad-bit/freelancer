@@ -8,6 +8,6 @@ use Illuminate\Http\RedirectResponse;
 interface ProposalRepositoryInterface
 {
 	public function storeProposal(ProposalRequest $request):void;
-	public function updateProposal(ProposalRequest $request, int $id): null|RedirectResponse;
-	public function deleteProposal(int $id): null|RedirectResponse;
+	public function updateProposal(ProposalRequest $request, int $id): void;
+	public function deleteProposal(int $id): void;
 }

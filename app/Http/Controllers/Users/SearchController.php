@@ -17,12 +17,9 @@ class SearchController extends Controller
 	// MARK: index_chatrooms
 	public function index_chatrooms(SearchRequest $request):JsonResponse
 	{
-		$view = $this->SearchRepository->searchChatroom($request);
+		$data = $this->SearchRepository->searchChatroom($request);
 
-		return response()->json([
-			'chat_room_view' => $view['chat_room_view'],
-			'chat_box_view'  => $view['chat_box_view'],
-		]);
+		return response()->json($data);
 	}
 
 	public function recent_search_projects():JsonResponse
