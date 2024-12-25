@@ -10,8 +10,7 @@ use App\Models\User;
 use App\Notifications\NewMessageNotification;
 use App\Traits\DatabaseCache;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\{Auth, DB, Notification};
+use Illuminate\Support\Facades\{Auth, DB, Log, Notification};
 
 class MessageRepository implements MessageRepositoryInterface
 {
@@ -56,7 +55,7 @@ class MessageRepository implements MessageRepositoryInterface
 			$data['text'] = $enc_text;
 
 			Notification::send($user, new NewMessageNotification($data, $auth_user->name, $auth_user->image, $notif_view));
-			
+
 			DB::commit();
 			Log::info('database commit and user will receive notification message');
 
@@ -65,7 +64,7 @@ class MessageRepository implements MessageRepositoryInterface
 			return ['view' => $view_msg, 'text' => $text];
 		} catch (\Throwable $th) {
 			DB::rollBack();
-			Log::critical('database rollback and error is'.$th->getMessage());
+			Log::critical('database rollback and error is' . $th->getMessage());
 
 			abort(500, 'something went wrong');
 		}

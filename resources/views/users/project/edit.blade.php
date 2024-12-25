@@ -101,7 +101,7 @@
         <h4>upload images</h4>
         <form action="{{ route('file.upload') }}" id="image_upload" method="post" enctype="multipart/form-data"
             class="dropzone">
-            
+
             <input type="hidden" name="type" value="image">
             <input type="hidden" name="dir" value="projects/">
 
@@ -134,7 +134,8 @@
     </div>
 
 
-    <form method="POST" id="form" action="{{ route('project.update', $project->id) }}" enctype="multipart/form-data">
+    <form method="POST" id="form" action="{{ route('project.update', $project->id) }}"
+        enctype="multipart/form-data">
         @csrf
         @method('put')
 
@@ -273,33 +274,38 @@
                                     </div>
                                 @enderror
 
-                            <div id="input{{ $i }}">
-                                <label for="exampleInputEmail1">
-                                    - skill
-                                </label>
+                                <div id="input{{ $i }}">
+                                    <label for="exampleInputEmail1">
+                                        - skill
+                                    </label>
 
-                                <button type="button" class="btn-close  delete_skill" id="{{ $i }}">
-                                </button>
+                                    <button type="button" class="btn-close  delete_skill" id="{{ $i }}">
+                                    </button>
 
-                                <input list="skills" value='{{ old("skills.$i.name") ? old("skills.$i.name") : '' }}'
-                                    id="{{ $i }}" name="skills[{{ $i }}][name]"
-                                    class="form-control input" autocomplete="off">
+                                    <input list="skills"
+                                        value='{{ old("skills.$i.name") ? old("skills.$i.name") : '' }}'
+                                        id="{{ $i }}" name="skills[{{ $i }}][name]"
+                                        class="form-control input" autocomplete="off">
 
-                                <input type="hidden" name="skills[{{ $i }}][id]"
-                                    id="skill_id_{{ $i }}">
+                                    <small style="color: red;display: none" class="err_msg">
+                                    </small>
 
-                                @error("skills.$i.id")
-                                    <div style="color: red;font-size: small">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
 
-                                @error('skills')
-                                    <div style="color: red;font-size: small">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-                            </div>
+                                    <input type="hidden" name="skills[{{ $i }}][id]"
+                                        id="skill_id_{{ $i }}">
+
+                                    @error("skills.$i.id")
+                                        <div style="color: red;font-size: small">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+
+                                    @error('skills')
+                                        <div style="color: red;font-size: small">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
                         @endfor
 
                         @foreach (explode(',', $project->skills) as $i => $skill)
@@ -320,6 +326,9 @@
                                     name="skills[{{ $i }}][name]" class="form-control input"
                                     id="{{ $i }}" autocomplete="off">
 
+                                <small style="color: red;display: none" class="err_msg">
+                                </small>
+
                                 <input type="hidden" value="{{ route('project_skill.destroy', $skill_id) }}"
                                     id="delete_skill_url{{ $i }}">
 
@@ -332,7 +341,7 @@
                         @endforeach
                     @else
                         @foreach (explode(',', $project->skills) as $i => $skill)
-                        @php
+                            @php
                                 $skill_id = substr($skill, strpos($skill, ':') + 1);
                                 $skill_name = strtok($skill, ':');
                             @endphp
@@ -362,17 +371,14 @@
                     @endif
 
                     <datalist id="skills">
-                        @forelse ($skills as $skill)
-                            <option data-value="{{ $skill->id }}">{{ $skill->skill }}</option>
-                        @empty
-                            -
-                        @endforelse
+                        
                     </datalist>
 
                 </div>
 
                 <input type="hidden" id="num_input" required max="20" min="1"
-                    value="{{ old('num_input') ? old('num_input') : count(explode(',',$project->skills)) }}" name="num_input">
+                    value="{{ old('num_input') ? old('num_input') : count(explode(',', $project->skills)) }}"
+                    name="num_input">
 
             </div>
         </div>
@@ -380,4 +386,7 @@
             update
         </button>
     </form>
+    
+    <input type="hidden" id="show_skills_url" value="{{ route('skill.show','')}}">
+
 @endsection

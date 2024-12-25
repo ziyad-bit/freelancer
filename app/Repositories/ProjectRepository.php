@@ -6,9 +6,7 @@ use App\Exceptions\GeneralNotFoundException;
 use App\Http\Requests\{ProjectRequest, SearchRequest};
 use App\Interfaces\Repository\{FileRepositoryInterface, ProjectRepositoryInterface, SkillRepositoryInterface};
 use App\Traits\GetCursor;
-use Illuminate\Http\{JsonResponse, RedirectResponse};
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\{Auth, DB};
+use Illuminate\Support\Facades\{Auth, DB, Log};
 
 class ProjectRepository implements ProjectRepositoryInterface
 {

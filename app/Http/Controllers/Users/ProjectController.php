@@ -25,7 +25,7 @@ class ProjectController extends Controller
 			return response()->json($data);
 		}
 
-		return view('users.project.index',$data);
+		return view('users.project.index', $data);
 	}
 
 	//MARK: create
@@ -57,10 +57,9 @@ class ProjectController extends Controller
 	//MARK: edit
 	public function edit(int $id, SkillRepositoryInterface $skillRepository):View|RedirectResponse
 	{
-		$skills  = $skillRepository->getSkills();
-		$project = $this->ProjectRepository->editProject($id, $skills);
+		$project = $this->ProjectRepository->editProject($id);
 
-		return view('users.project.edit', compact('project', 'skills'));
+		return view('users.project.edit', compact('project'));
 	}
 
 	//MARK: update

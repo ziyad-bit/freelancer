@@ -2,24 +2,24 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\GeneralNotFoundException;
 use App\Http\Requests\TransactionRequest;
 use App\Interfaces\Repository\TransactionRepositoryInterface;
 use App\Models\User;
-use App\Notifications\{MilestoneNotification};
+use App\Notifications\MilestoneNotification;
 use App\Traits\{DatabaseCache, GetFunds, Payment};
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\{Auth, DB, Log};
-use Illuminate\Support\{Collection,Str};
+use Illuminate\Support\{Collection, Str};
 
 class TransactionRepository implements TransactionRepositoryInterface
 {
 	use DatabaseCache ,Payment,GetFunds;
 
 	//MARK: index_transaction
-	public function index_transaction(string $created_at = null):Collection
+	public function index_transaction(string $created_at = null):Collection|string
 	{
-		$auth_id      = Auth::id();
+		$auth_id  = Auth::id();
 
 		return DB::table('transactions')
 			->select(
@@ -90,18 +90,18 @@ class TransactionRepository implements TransactionRepositoryInterface
 
 					$msg = 'the operation is finished successfully';
 
-					return view('users.transaction.create', compact('project_id', 'receiver_id', 'msg'));
+					return  ['project_id' => $project_id, 'receiver_id' => $receiver_id, 'msg' => $msg];
 				} else {
 					$error = 'the operation is failed';
 
-					return view('users.transaction.create', compact('project_id', 'receiver_id', 'error'));
+					return ['project_id' => $project_id, 'receiver_id' => $receiver_id, 'error' => $error];
 				}
 			}
 
 			return ['project_id' => $project_id, 'receiver_id' => $receiver_id];
 		} catch (\Throwable $th) {
 			DB::rollBack();
-			Log::critical('database rollback and '.$th->getMessage());
+			Log::critical('database rollback and ' . $th->getMessage());
 
 			abort(500, 'something went wrong');
 		}
@@ -117,11 +117,11 @@ class TransactionRepository implements TransactionRepositoryInterface
 					'&paymentType=DB' .
 					'&integrity=true';
 
-		$data  = $this->getPaymentStatus($url, $data);
+		$this->getPaymentStatus($url, $data);
 	}
 
 	// MARK: release_milestone
-	public function release_milestone(TransactionRequest $request):? RedirectResponse
+	public function release_milestone(TransactionRequest $request):void
 	{
 		try {
 			$receiver_id = $request->receiver_id;
@@ -130,7 +130,7 @@ class TransactionRepository implements TransactionRepositoryInterface
 
 			$trans = $trans_query->first();
 			if (!$trans) {
-				return to_route('transaction.index')->with('error', 'something went wrong');
+				throw new GeneralNotFoundException('transaction');
 			}
 
 			DB::beginTransaction();
@@ -142,7 +142,7 @@ class TransactionRepository implements TransactionRepositoryInterface
 
 			$proposal = $proposal_query->first();
 			if (!$proposal) {
-				return to_route('transaction.index')->with('error', 'something went wrong');
+				throw new GeneralNotFoundException('proposal');
 			}
 
 			$proposal_query->update(['finished' => 'finished']);
@@ -159,11 +159,9 @@ class TransactionRepository implements TransactionRepositoryInterface
 			Log::info('user released milestone');
 
 			$this->forgetCache($receiver_id);
-
-			return null;
 		} catch (\Throwable $th) {
 			DB::rollBack();
-			Log::critical('database rollback and '.$th->getMessage());
+			Log::critical('database rollback and ' . $th->getMessage());
 
 			abort(500, 'something went wrong');
 		}

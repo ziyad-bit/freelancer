@@ -40,7 +40,5 @@ class TransactionRequest extends FormRequest
 		return [
 			'amount' => 'required|numeric|min:5|max:' . $user_funds,
 		] + $release_rules;
-
-
 	}
 }

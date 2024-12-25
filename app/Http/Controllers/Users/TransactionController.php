@@ -28,7 +28,7 @@ class TransactionController extends Controller
 		if (request()->ajax()) {
 			$view = view('users.includes.transaction.table', compact('transactions'))->render();
 
-			return response()->json(['view' => $view]);
+			return  response()->json(['view' => $view]);
 		}
 
 		return view('users.transaction.index', compact('transactions'));
@@ -37,17 +37,9 @@ class TransactionController extends Controller
 	// MARK: create
 	public function create(int $project_id, int $receiver_id):View
 	{
-		$response = $this->transactionRepository->create_milestone($project_id, $receiver_id);
+		$data = $this->transactionRepository->create_milestone($project_id, $receiver_id);
 
-		if (!is_array($response)) {
-			return $response;
-		}
-
-		return view('users.transaction.create')
-				->with([
-					'project_id'  => $response['project_id'],
-					'receiver_id' => $response['receiver_id'],
-				]);
+		return view('users.transaction.create', $data);
 	}
 
 	// MARK: checkout
@@ -61,11 +53,7 @@ class TransactionController extends Controller
 	// MARK: release
 	public function release(TransactionRequest $request):RedirectResponse
 	{
-		$response =  $this->transactionRepository->release_milestone($request);
-
-		if ($response instanceof RedirectResponse) {
-			return $response;
-		}
+		$this->transactionRepository->release_milestone($request);
 
 		return to_route('transaction.index')->with(['success' => 'milestone is released successfully']);
 	}

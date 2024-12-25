@@ -37,7 +37,7 @@ class SearchRepository implements SearchRepositoryInterface
 		];
 	}
 
- 	//MARK: RecentProjects
+	//MARK: RecentProjects
 	public function show_recent_projects():string
 	{
 		$searches = DB::table('searches')

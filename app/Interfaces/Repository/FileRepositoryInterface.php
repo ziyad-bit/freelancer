@@ -2,7 +2,7 @@
 
 namespace App\Interfaces\Repository;
 
-use Illuminate\Http\{Request};
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 interface FileRepositoryInterface

@@ -2,8 +2,8 @@
 
 namespace App\Traits;
 
-use Illuminate\Http\{Request};
-use Illuminate\Support\Facades\{Log, Storage};
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
 trait File

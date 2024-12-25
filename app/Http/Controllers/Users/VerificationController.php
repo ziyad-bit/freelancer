@@ -2,18 +2,12 @@
 
 namespace App\Http\Controllers\Users;
 
-use App\Models\User;
-use Illuminate\View\View;
-use App\Traits\SendVerification;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Http\{RedirectResponse, Request};
-use App\Http\Requests\{LoginRequest, SignupRequest};
-use App\Interfaces\Repository\{AuthRepositoryInterface};
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Interfaces\Repository\VerificationRepositoryInterface;
+use App\Traits\SendVerification;
+use Illuminate\Http\{RedirectResponse, Request};
+use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class VerificationController extends Controller
 {
@@ -42,12 +36,12 @@ class VerificationController extends Controller
 	//MARK: update
 	public function update(Request $request):RedirectResponse
 	{
-		$response = $this->VerificationRepository->updateVerify($request);
+		$message = $this->VerificationRepository->updateVerify($request);
 
-		if ($response !== null) {
-			return $response;
+		if (isset($message['error'])) {
+			return to_route('verification.get')->with($message);
 		}
 
-		return to_route('home')->with('success','you verified your email successfully');
+		return to_route('home')->with($message);
 	}
 }

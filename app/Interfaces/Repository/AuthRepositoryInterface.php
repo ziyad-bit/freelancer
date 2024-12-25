@@ -3,7 +3,7 @@
 namespace App\Interfaces\Repository;
 
 use App\Http\Requests\{LoginRequest, SignupRequest};
-use Illuminate\Http\{RedirectResponse, Request};
+use Illuminate\Http\Request;
 
 interface AuthRepositoryInterface
 {

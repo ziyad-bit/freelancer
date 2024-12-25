@@ -2,20 +2,12 @@
 
 namespace App\Http\Middleware\Authorize;
 
-use App\Interfaces\Repository\ProfileRepositoryInterface;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
 
-class Profile
+class Project_skill
 {
-	private $profileRepository;
-
-	public function __construct(ProfileRepositoryInterface $profileRepository)
-	{
-		$this->profileRepository = $profileRepository;
-	}
-
 	/**
 	 * Handle an incoming request.
 	 *
@@ -26,8 +18,13 @@ class Profile
 	 */
 	public function handle(Request $request, Closure $next)
 	{
-		$user_info = DB::table('user_infos')->find(Auth::id(), 'id');
-		if ($user_info) {
+		$id      = request('id');
+		$user_id = DB::table('project_skill')
+						->join('projects', 'projects.id', '=', 'project_skill.project_id')
+						->where('project_skill.id', $id)
+						->value('user_id');
+
+		if ($user_id !== Auth::id()) {
 			abort(500, 'something went wrong');
 		}
 

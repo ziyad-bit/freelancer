@@ -5,7 +5,7 @@ namespace App\Repositories;
 use App\Exceptions\GeneralNotFoundException;
 use App\Interfaces\Repository\FileRepositoryInterface;
 use App\Traits\{File, InsertAnyFile};
-use Illuminate\Http\{Request};
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{DB, Storage};
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -33,7 +33,7 @@ class FileRepository implements FileRepositoryInterface
 
 			$files_arr = [];
 			if ($files != []) {
-				foreach ($files as  $file) {
+				foreach ($files as $file) {
 					$type = $file['type'];
 					$name = $file['name'];
 

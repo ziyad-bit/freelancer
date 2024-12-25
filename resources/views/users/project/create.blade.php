@@ -115,7 +115,6 @@
                     @enderror
                 </div>
 
-
                 <div class="form-group skills " id="skills_input">
                     <button type="button" class="btn btn-primary add_button" style="margin-left: 406px;margin-top: 14px;">
                         add skill
@@ -140,7 +139,7 @@
 
                                 <input list="skills" autocomplete="off" id="{{ $i }}"
                                     value='{{ old("skills.$i.name") }}' name="skills[{{ $i }}]['name']"
-                                    class="form-control input" data-show_skills_url="{{ route('skill.show','')}}">
+                                    class="form-control input" >
                                     
                                     <small style="color: red;display: none" class="err_msg" >
                                     </small>
@@ -170,7 +169,7 @@
 
                             <input list="skills" autocomplete="off" id="1" name="skills[1][name]"
                                 class="form-control input" value='{{ old('skills.1.name') }}'
-                                data-show_skills_url="{{ route('skill.show','')}}">
+                                >
 
                                 <small style="color: red;display: none" class="err_msg" >
                                 </small>
@@ -205,6 +204,8 @@
             {{ __('add') }}
         </button>
     </form>
+
+    <input type="hidden" id="show_skills_url" value="{{ route('skill.show','')}}">
 
     <div style="margin-top: 25px">
         <h4>upload images</h4>

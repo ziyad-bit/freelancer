@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Users;
 
-use Illuminate\View\View;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\{RedirectResponse, Request};
 use App\Http\Requests\{LoginRequest, SignupRequest};
-use App\Interfaces\Repository\{AuthRepositoryInterface};
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use App\Interfaces\Repository\AuthRepositoryInterface;
+use Illuminate\Http\{RedirectResponse, Request};
+use Illuminate\View\View;
 
 class AuthController extends Controller
 {
@@ -40,7 +39,7 @@ class AuthController extends Controller
 	//MARK: postLogin
 	public function postLogin(LoginRequest $request):RedirectResponse
 	{
-		$response=$this->authRepository->login($request);
+		$response = $this->authRepository->login($request);
 
 		if ($response === 'error') {
 			return to_route('login')->with(['error' => 'incorrect password or email']);

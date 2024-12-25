@@ -2,9 +2,6 @@
 
 namespace App\Interfaces\Repository;
 
-use Illuminate\Support\Collection;
-use App\Exceptions\GeneralNotFoundException;
-use Illuminate\Http\{JsonResponse, RedirectResponse};
 use App\Http\Requests\{ProjectRequest, SearchRequest};
 
 interface ProjectRepositoryInterface

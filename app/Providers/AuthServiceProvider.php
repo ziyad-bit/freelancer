@@ -27,10 +27,10 @@ class AuthServiceProvider extends ServiceProvider
 
 		LogViewer::auth(function ($request) {
 			return $request->user()
-				&& in_array($request->user()->email, [
-					'grimes.jaron@example.org',
-					'ziyad199523@gmail.com'
-				]);
+				 && in_array($request->user()->email, [
+				 	'grimes.jaron@example.org',
+				 	'ziyad199523@gmail.com',
+				 ]);
 		});
 	}
 }

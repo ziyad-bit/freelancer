@@ -2,8 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\GeneralNotFoundException;
 use App\Interfaces\Repository\SkillRepositoryInterface;
-use Illuminate\Http\{JsonResponse, RedirectResponse, Request};
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -13,7 +14,7 @@ class SkillRepository implements SkillRepositoryInterface
 	public function showSkills(string $skill):Collection
 	{
 		return DB::table('skills')
-			->where('skill','like',"{$skill}%")
+			->where('skill', 'like', "{$skill}%")
 			->limit(5)
 			->get();
 	}
@@ -25,7 +26,7 @@ class SkillRepository implements SkillRepositoryInterface
 
 		if ($skills !== [] && $skills !== null) {
 			$skills_arr = [];
-			
+
 			foreach ($skills as $skill) {
 				if (isset($skill['id'])) {
 					$skills_arr[] = [
@@ -40,32 +41,28 @@ class SkillRepository implements SkillRepositoryInterface
 	}
 
 	//MARK: delete_project_Skill
-	public function delete_project_Skill(int $skill_id):? JsonResponse
+	public function delete_project_Skill(int $id):void
 	{
-		$project_skill_query = DB::table('project_skill')->where('id', $skill_id);
+		$project_skill_query = DB::table('project_skill')->where('id', $id);
 		$project_skill       = $project_skill_query->first();
 
 		if (!$project_skill) {
-			return response()->json(['error' => 'not found']);
+			throw new GeneralNotFoundException('skill');
 		}
 
 		$project_skill_query->delete();
-
-		return null;
 	}
 
 	//MARK: deleteSkill
-	public function deleteSkill(int $id):?JsonResponse
+	public function deleteSkill(int $id):void
 	{
 		$user_skill_query = DB::table('user_skill')->where('id', $id);
 		$user_skill       = $user_skill_query->first();
 
 		if (!$user_skill) {
-			return response()->json(['error' => 'something went wrong'], 500);
+			throw new GeneralNotFoundException('skill');
 		}
 
 		$user_skill_query->delete();
-
-		return null;
 	}
 }

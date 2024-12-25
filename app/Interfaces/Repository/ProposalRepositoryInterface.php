@@ -3,7 +3,6 @@
 namespace App\Interfaces\Repository;
 
 use App\Http\Requests\ProposalRequest;
-use Illuminate\Http\RedirectResponse;
 
 interface ProposalRepositoryInterface
 {

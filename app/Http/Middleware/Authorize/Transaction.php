@@ -23,7 +23,7 @@ class Transaction
 		$user_id  = DB::table('transactions')->where('id', $transaction_id)->value('owner_id');
 
 		if ($user_id !== Auth::id()) {
-			return to_route('transaction.index')->with('error', 'something went wrong');
+			abort(500, 'something went wrong');
 		}
 
 		return $next($request);

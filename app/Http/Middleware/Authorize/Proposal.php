@@ -19,10 +19,10 @@ class Proposal
 	public function handle(Request $request, Closure $next)
 	{
 		$proposal_id = $request->route('proposal');
-		$user_id    = DB::table('proposals')->where('id', $proposal_id)->value('user_id');
+		$user_id     = DB::table('proposals')->where('id', $proposal_id)->value('user_id');
 
 		if ($user_id !== Auth::id()) {
-			return response()->json(['error'=>'something went wrong'],500);
+			abort(500, 'something went wrong');
 		}
 
 		return $next($request);

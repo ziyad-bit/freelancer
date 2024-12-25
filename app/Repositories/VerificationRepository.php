@@ -2,37 +2,31 @@
 
 namespace App\Repositories;
 
-use App\Models\User;
-use Illuminate\Support\{Str};
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Http\{RedirectResponse, Request};
-use App\Http\Requests\{LoginRequest, SignupRequest};
-use App\Interfaces\Repository\AuthRepositoryInterface;
 use App\Interfaces\Repository\VerificationRepositoryInterface;
-use App\Mail\VerifyEmail;
-use Illuminate\Support\Facades\{Auth, Cache, DB, Hash};
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\{Auth, Cache, DB};
 
 class VerificationRepository implements VerificationRepositoryInterface
 {
 	// logout   #####################################
-	public function updateVerify(Request $request):?RedirectResponse
+	public function updateVerify(Request $request):array
 	{
-		$auth_id= Auth::id();
-		
-		if (Cache::has('hash_'.$auth_id) && Auth::user()->email_verified_at === null) {
-			$hash=Cache::get('hash_'.$auth_id);
+		$auth_id = Auth::id();
 
-			if ($hash === request('hash') ) {
+		if (Cache::has('hash_' . $auth_id) && Auth::user()->email_verified_at === null) {
+			$hash = Cache::get('hash_' . $auth_id);
+
+			if ($hash === request('hash')) {
 				DB::table('users')
-				->where('id',$auth_id)
-				->update(['email_verified_at'=>now()]);
-			}else{
-				return to_route('verification.get')->with('error','something went wrong');
+				->where('id', $auth_id)
+				->update(['email_verified_at' => now()]);
+			} else {
+				abort(500, 'something went wrong');
 			}
-		}else{
-			return to_route('verification.get')->with('error','the verification link is expired');
+		} else {
+			return ['error' => 'the verification link is expired'];
 		}
 
-		return null;
+		return ['success' => 'you verified your email successfully'];
 	}
 }

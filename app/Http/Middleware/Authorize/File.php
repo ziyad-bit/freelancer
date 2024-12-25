@@ -25,7 +25,7 @@ class File
 				->value('user_id');
 
 		if ($user_id !== Auth::id()) {
-			return response()->json(['error' => 'something went wrong'], 500);
+			abort(500, 'something went wrong');
 		}
 
 		return $next($request);

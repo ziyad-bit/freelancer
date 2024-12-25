@@ -2,25 +2,24 @@
 
 namespace App\Http\Controllers\Users;
 
-use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ChatRoomRequest;
-use Illuminate\Http\{JsonResponse, RedirectResponse};
 use App\Interfaces\Repository\ChatRoomRepositoryInterface;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\{JsonResponse, RedirectResponse};
 
 class ChatRoomController extends Controller
 {
 	public function __construct(private ChatRoomRepositoryInterface $chatRoomRepository)
 	{
-		$this->middleware(['auth','verifyEmail']);
+		$this->middleware(['auth', 'verifyEmail']);
 	}
 
 	// MARK:index
 	public function index():View
 	{
 		$data = $this->chatRoomRepository->indexChatroom();
-		
+
 		return view('users.chat.index', $data);
 	}
 
@@ -29,7 +28,7 @@ class ChatRoomController extends Controller
 	{
 		$data = $this->chatRoomRepository->fetchWithSelectedUser($receiver_id);
 
-		return view('users.chat.index',$data);
+		return view('users.chat.index', $data);
 	}
 
 	//MARK: show_more
@@ -51,7 +50,7 @@ class ChatRoomController extends Controller
 	// MARK:send_invitation
 	public function send_user_invitation(ChatRoomRequest $request) : JsonResponse
 	{
-		$response = $this->chatRoomRepository->sendInvitation($request);
+		$this->chatRoomRepository->sendInvitation($request);
 
 		return response()->json(['success_msg' => 'You sent the invitation successfully']);
 	}

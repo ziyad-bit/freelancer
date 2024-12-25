@@ -33,9 +33,9 @@ class ProjectRequest extends FormRequest
 			'min_price'     => 'required|numeric|min:5',
 			'max_price'     => 'required|numeric|max:10000|gt:min_price',
 			'exp'           => ['required', 'string', Rule::in(['beginner', 'intermediate', 'experienced'])],
-			'skills'        => ['required', 'array', new OneItem ],
+			'skills'        => ['required', 'array', new OneItem],
 			'skills.*.name' => 'nullable|string',
-			'skills.*.id'   => ['nullable','numeric','distinct' ,'exists:skills,id'],
+			'skills.*.id'   => ['nullable', 'numeric', 'distinct', 'exists:skills,id'],
 			'num_input'     => 'required|numeric',
 			'files'         => 'nullable|array',
 		];
@@ -66,7 +66,7 @@ class ProjectRequest extends FormRequest
 	public function messages()
 	{
 		return [
-			'skills.*.id.numeric' => 'The selected skill is invalid.'
+			'skills.*.id.numeric' => 'The selected skill is invalid.',
 		];
 	}
 }

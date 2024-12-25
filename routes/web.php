@@ -45,7 +45,7 @@ Route::namespace('Users')->controller(ProfileController::class)->group(function 
 Route::resource('profile'   , ProfileController::class)->except(['show','index']);
 
 //MARK:Skill
-Route::delete('/project-skill/{skill_id}', 'Users\SkillController@destroy_project_skill')->name('project_skill.destroy');
+Route::delete('/project-skill/{id}', 'Users\SkillController@destroy_project_skill')->name('project_skill.destroy');
 Route::resource('skill'                  , SkillController::class)->except(['edit', 'update']);
 
 

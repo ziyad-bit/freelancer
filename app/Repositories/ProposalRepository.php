@@ -2,11 +2,10 @@
 
 namespace App\Repositories;
 
-use Illuminate\Http\RedirectResponse;
-use App\Http\Requests\ProposalRequest;
-use Illuminate\Support\Facades\{Auth, DB};
 use App\Exceptions\GeneralNotFoundException;
+use App\Http\Requests\ProposalRequest;
 use App\Interfaces\Repository\ProposalRepositoryInterface;
+use Illuminate\Support\Facades\{Auth, DB};
 
 class ProposalRepository implements ProposalRepositoryInterface
 {

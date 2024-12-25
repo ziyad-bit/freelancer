@@ -22,7 +22,7 @@ class Skill
 		$user_id = DB::table('user_skill')->where('id', $id)->value('user_id');
 
 		if ($user_id !== Auth::id()) {
-			return response()->json(['error' => 'something went wrong'], 500);
+			abort(500, 'something went wrong');
 		}
 
 		return $next($request);

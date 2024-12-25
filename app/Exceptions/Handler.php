@@ -54,9 +54,9 @@ class Handler extends ExceptionHandler
 	public function report(Throwable $exception)
 	{
 		if ($exception instanceof ValidationException) {
-			Log::error('validation error',['errors'=>$exception->errors()] );
+			Log::error('validation error', ['errors' => $exception->errors()]);
 		}
 
-		return parent::report( $exception);
+		return parent::report($exception);
 	}
 }

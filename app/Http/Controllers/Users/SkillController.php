@@ -5,10 +5,8 @@ namespace App\Http\Controllers\Users;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SkillRequest;
 use App\Interfaces\Repository\SkillRepositoryInterface;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\{JsonResponse, RedirectResponse};
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Js;
 use Illuminate\View\View;
 
 class SkillController extends Controller
@@ -18,12 +16,13 @@ class SkillController extends Controller
 		$this->middleware('auth');
 
 		$this->middleware('skill')->only('destroy');
+		$this->middleware('project_skill')->only('destroy_project_skill');
 	}
 
 	//MARK: create
 	public function create():View
 	{
-		return view('users.skill.create', compact('skills'));
+		return view('users.skill.create');
 	}
 
 	//MARK: store
@@ -31,7 +30,7 @@ class SkillController extends Controller
 	{
 		$this->skillRepository->storeSkill($request, 'user_skill', 'user_id', Auth::id());
 
-		return to_route('skill.create')->with('success','you added skills successfully');
+		return to_route('skill.create')->with('success', 'you added skills successfully');
 	}
 
 	//MARK: show
@@ -39,17 +38,13 @@ class SkillController extends Controller
 	{
 		$skills = $this->skillRepository->showSkills($skill);
 
-		return response()->json(['skills'=>$skills]);
+		return response()->json(['skills' => $skills]);
 	}
 
 	//MARK: destroy_project_skill
 	public function destroy_project_skill(int $skill_id):JsonResponse
 	{
-		$response = $this->skillRepository->delete_project_skill($skill_id);
-
-		if ($response != null) {
-			return $response;
-		}
+		$this->skillRepository->delete_project_skill($skill_id);
 
 		return response()->json();
 	}
@@ -57,11 +52,7 @@ class SkillController extends Controller
 	//MARK: destroy
 	public function destroy(int $id):JsonResponse
 	{
-		$response = $this->skillRepository->deleteSkill($id);
-
-		if ($response != null) {
-			return $response;
-		}
+		$this->skillRepository->deleteSkill($id);
 
 		return response()->json();
 	}

@@ -34,9 +34,9 @@ class SkillRequest extends FormRequest
 
 		return [
 			'num_input'     => 'required|numeric',
-			'skills'     	=> ['required', 'array', new OneItem ],
+			'skills'     	  => ['required', 'array', new OneItem],
 			'skills.*.name' => 'nullable|string',
-			'skills.*.id'   => ['nullable' ,'numeric','distinct', 'exists:skills,id', Rule::notIn($user_skills_id)],
+			'skills.*.id'   => ['nullable', 'numeric', 'distinct', 'exists:skills,id', Rule::notIn($user_skills_id)],
 		];
 	}
 
@@ -61,8 +61,8 @@ class SkillRequest extends FormRequest
 	public function messages()
 	{
 		return [
-			'skills.*.id.not_in' => 'The selected skill is added before.',
-			'skills.*.id.numeric' => 'The selected skill is invalid.'
+			'skills.*.id.not_in'  => 'The selected skill is added before.',
+			'skills.*.id.numeric' => 'The selected skill is invalid.',
 		];
 	}
 }

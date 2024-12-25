@@ -14,8 +14,6 @@ generalEventListener('click', '.add_button', () => {
         number++;
         num_input_ele.value = number;
 
-        let show_skills_url = document.querySelector('.input').getAttribute('data-show_skills_url');
-
         let html = `<div class="form-group skills">
                         <div   id  = "input${number}">
                         <label for = "exampleInputEmail1">
@@ -26,7 +24,7 @@ generalEventListener('click', '.add_button', () => {
                                 </button>
 
                             <input list = "skills" autocomplete = "off" id = "${number}"  name = "skills[${number}][name]" 
-                                class = "form-control input" data-show_skills_url = "${show_skills_url}" >
+                                class = "form-control input"  >
 
                             <small style="color: red;display: none" class="err_msg" >
                                 </small>
@@ -82,7 +80,7 @@ generalEventListener('click', '.delete_skill', e => {
 let inputs_arr = new Set();
 const debouncedShowSkills = debounce(async function (show_skills_url, inputValue) {
     try {
-        if (inputs_arr.has(inputValue) === false) {
+        if (inputs_arr.has(inputValue) === false && inputValue !== '') {
             let source = axios.CancelToken.source();
 
             const response    = await axios.get(show_skills_url, { cancelToken: source.token });
@@ -133,7 +131,7 @@ generalEventListener('input', '.input', e => {
     const id = input.getAttribute('id');
     const hiddenInput = document.getElementById(`skill_id_${id}`);
     const inputValue = input.value;
-    const show_skills_url = input.getAttribute('data-show_skills_url') + '/' + inputValue;
+    const show_skills_url = document.querySelector('#show_skills_url').value + '/' + inputValue;
 
     debouncedShowSkills(show_skills_url, inputValue);
 

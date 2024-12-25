@@ -2,15 +2,11 @@
 
 namespace App\Repositories;
 
-use App\Models\User;
-use Illuminate\Support\{Str};
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Http\{RedirectResponse, Request};
 use App\Http\Requests\{LoginRequest, SignupRequest};
 use App\Interfaces\Repository\AuthRepositoryInterface;
-use App\Mail\VerifyEmail;
 use App\Traits\SendVerification;
-use Illuminate\Support\Facades\{Auth, Cache, DB, Hash};
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\{Auth, DB, Hash};
 
 class AuthRepository implements AuthRepositoryInterface
 {
@@ -34,7 +30,7 @@ class AuthRepository implements AuthRepositoryInterface
 
 		if (!auth()->attempt($credentials, $request->filled('remember_me'))) {
 			return 'error';
-		} 
+		}
 
 		request()->session()->regenerate();
 

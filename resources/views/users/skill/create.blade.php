@@ -16,9 +16,6 @@
         <div class="alert alert-success text-center">{{ Session::get('success') }}</div>
     @endif
 
-
-    <input type="hidden" value="{{ $skills }}" id="skills_input">
-
     <form id="skill_form" action="{{ route('skill.store') }}" method="POST">
         @csrf
         <div class="card card_form text-white bg-success mb-3" style="max-width: 34rem;margin-top: 20px">
@@ -50,6 +47,10 @@
                                     id="skill_id_{{ $i }}"
                                     value='{{ old("skills.$i.id") ? old("skills.$i.id") : '' }}'>
 
+                                <small style="color: red;display: none" class="err_msg">
+                                </small>
+
+
                                 @error("skills.$i.id")
                                     <div style="color: red;font-size: small">
                                         {{ $message }}
@@ -71,6 +72,9 @@
 
                             <input list="skills" id="1" name="skills[1][name]" class="form-control input"
                                 autocomplete="off" value='{{ old('skills.1.name') }}'>
+
+                            <small style="color: red;display: none" class="err_msg">
+                            </small>
 
                             <input type="hidden" name="skills[1][id]" id="skill_id_1">
 
@@ -98,13 +102,9 @@
         </button>
     </form>
 
+    <input type="hidden" id="show_skills_url" value="{{ route('skill.show','')}}">
+
     <datalist id="skills">
-        @forelse ($skills as $skill)
-            <option data-value="{{ $skill->id }}">
-                {{ $skill->skill }}
-            </option>
-        @empty
-            -
-        @endforelse
+        
     </datalist>
 @endsection

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\{Auth, Log};
 
 class Logging
 {
-	protected static $user_data;
+	protected static $user_data = [];
 
 	public function handle(Request $request, Closure $next):mixed
 	{
@@ -48,7 +48,7 @@ class Logging
 
 	public function terminate($request, $response):void
 	{
-		$status_code      = $response->getStatusCode();
+		$status_code  = $response->getStatusCode();
 
 		$request_data = [
 			'seconds' => microtime(true) - LARAVEL_START,
@@ -61,6 +61,6 @@ class Logging
 			Log::info('successful request', $request_data);
 		} elseif ($status_code >= 300 && $status_code < 400) {
 			Log::debug('redirect request', $request_data);
-		} 
+		}
 	}
 }
