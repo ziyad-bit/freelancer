@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Traits\GetFunds;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Hash;
 
-class MessageRequest extends FormRequest
+class ResetPasswordRequest extends FormRequest
 {
 	/**
 	 * Determine if the user is authorized to make this request.
@@ -24,16 +26,16 @@ class MessageRequest extends FormRequest
 	public function rules()
 	{
 		return [
-			'chat_room_id' => 'required|uuid',
-			'receiver_id'  => 'required|numeric',
-			'text'         => 'required_without:files|nullable|string|max:500',
-			'files.*.name' => 'nullable|string',
-			'files.*.type' => 'nullable|string',
+			'token'    => 'required_with:password',
+			'email'    => 'required|email|exists:users,email',
+			'password' => 'required_with:token|min:8|confirmed',
 		];
 	}
 
 	protected function passedValidation(): void
 	{
-		$this->merge(['text' => encrypt($this->text)]);
+		if (isset($this->password)) {
+			$this->merge(['password' => Hash::make($this->password)]);
+		}
 	}
 }

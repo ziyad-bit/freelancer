@@ -12,7 +12,7 @@ class FileController extends Controller
 {
 	public function __construct(private FileRepositoryInterface $fileRepository)
 	{
-		$this->middleware('auth');
+		$this->middleware(['auth','verifyEmail']);
 		$this->middleware('file')->only('destroy');
 	}
 

@@ -6,7 +6,7 @@ use App\Http\Controllers\Users\ProjectController;
 use App\Http\Controllers\Users\ProposalController;
 use App\Http\Controllers\Users\TransactionController;
 use App\Http\Controllers\Users\VerificationController;
-use App\Http\Controllers\Users\{AuthController, ChatRoomController, FileController, MessageController, NotificationsController, ProfileController, SearchController};
+use App\Http\Controllers\Users\{AuthController, ChatRoomController, FileController, MessageController, NotificationsController, ProfileController, ResetPasswordController, SearchController};
 
 /*
 |--------------------------------------------------------------------------
@@ -32,9 +32,16 @@ Route::namespace('Users')->controller(AuthController::class)->group(function () 
 Route::namespace('Users')->controller(VerificationController::class)->group(function () {
 	Route::get('get/email/verify'           ,'get')->name('verification.get');
 	Route::post('send/email/verify'         ,'send')->name('verification.send');
-	Route::get('update/email/verify/{hash}' ,'update')->name('verification.update');
+	Route::get('update/email/verify/{token}' ,'update')->name('verification.update');
 });
-	
+
+//MARK:reset password
+Route::namespace('Users')->controller(ResetPasswordController::class)->group(function () {
+	Route::get('/reset-password/get'                ,'get')->name('reset_password.get');
+	Route::post('/reset-password/send'              ,'send')->name('reset_password.send');
+	Route::get('reset-password/edit/{email}/{token}','edit')->name('reset_password.edit');
+	Route::post('reset-password/update'             ,'update')->name('reset_password.update');
+});
 
 //MARK:Profile
 Route::namespace('Users')->controller(ProfileController::class)->group(function () {

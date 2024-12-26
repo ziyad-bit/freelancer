@@ -11,7 +11,7 @@ class ProposalController extends Controller
 {
 	public function __construct(private ProposalRepositoryInterface $ProposalRepository)
 	{
-		$this->middleware('auth');
+		$this->middleware(['auth','verifyEmail']);
 		$this->middleware('proposal')->except('store');
 	}
 

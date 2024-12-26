@@ -8,7 +8,7 @@ use Illuminate\Mail\Mailables\{Content, Envelope};
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\URL;
 
-class VerifyEmail extends Mailable
+class ResetPassword extends Mailable
 {
 	use Queueable, SerializesModels;
 
@@ -17,7 +17,7 @@ class VerifyEmail extends Mailable
 	 *
 	 * @return void
 	 */
-	public function __construct(protected string $token)
+	public function __construct(protected string $token,protected string $email)
 	{
 	}
 
@@ -29,7 +29,7 @@ class VerifyEmail extends Mailable
 	public function envelope()
 	{
 		return new Envelope(
-			subject: 'Verify Email',
+			subject: 'Reset password',
 		);
 	}
 
@@ -41,12 +41,12 @@ class VerifyEmail extends Mailable
 	public function content()
 	{
 		return new Content(
-			markdown: 'users.emails.verify_email',
+			markdown: 'users.emails.reset_password',
 			with: [
 				'url' => URL::temporarySignedRoute(
-					'verification.update',
+					'reset_password.edit',
 					now()->addMinutes(30),
-					['token' => $this->token]
+					['token' => $this->token,'email' => $this->email]
 				),
 			],
 		);

@@ -3,9 +3,11 @@
 @section('content')
     <div class="container">
 
-        <div class="alert alert-warning text-center">
-            you should verify your email.
-        </div>
+        @if (!Auth::user()->email_verified_at)
+            <div class="alert alert-warning text-center">
+                you should verify your email.
+            </div>
+        @endif
 
         @if (Session::has('error'))
             <div class="alert alert-danger text-center">{{ Session::get('error') }}</div>
@@ -20,20 +22,15 @@
                 <div class="card">
                     <div class="card-header">
                         Are you want to send verification link to {{ Auth::user()->email }}
-                    </div>
 
-                    <div class="card-body">
-                        <form method="POST" action="{{ route('verification.send') }}">
+                        <form method="POST" style="display: inline" action="{{ route('verification.send') }}">
                             @csrf
 
-                            <div class="row mb-0">
-                                <div class="col-md-6 offset-md-4">
-                                    <button type="submit" class="btn btn-primary">
-                                        send
-                                    </button>
-                                </div>
-                            </div>
+                            <button type="submit" style="float: right;" class="btn btn-primary">
+                                send
+                            </button>
                         </form>
+
                     </div>
                 </div>
             </div>

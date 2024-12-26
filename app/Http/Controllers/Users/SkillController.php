@@ -13,7 +13,7 @@ class SkillController extends Controller
 {
 	public function __construct(private SkillRepositoryInterface $skillRepository)
 	{
-		$this->middleware('auth');
+		$this->middleware(['auth','verifyEmail']);
 
 		$this->middleware('skill')->only('destroy');
 		$this->middleware('project_skill')->only('destroy_project_skill');

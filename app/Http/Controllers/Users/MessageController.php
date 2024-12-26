@@ -11,7 +11,7 @@ class MessageController extends Controller
 {
 	public function __construct(private MessageRepositoryInterface $messageRepository)
 	{
-		$this->middleware('auth');
+		$this->middleware(['auth','verifyEmail']);
 	}
 
 	//MARK: store

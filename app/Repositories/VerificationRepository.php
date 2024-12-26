@@ -8,15 +8,15 @@ use Illuminate\Support\Facades\{Auth, Cache, DB};
 
 class VerificationRepository implements VerificationRepositoryInterface
 {
-	// logout   #####################################
+	// updateVerify 
 	public function updateVerify(Request $request):array
 	{
 		$auth_id = Auth::id();
 
-		if (Cache::has('hash_' . $auth_id) && Auth::user()->email_verified_at === null) {
-			$hash = Cache::get('hash_' . $auth_id);
+		if (Cache::has('token_' . $auth_id) && Auth::user()->email_verified_at === null) {
+			$token = Cache::get('token_' . $auth_id);
 
-			if ($hash === request('hash')) {
+			if ($token === request('token')) {
 				DB::table('users')
 				->where('id', $auth_id)
 				->update(['email_verified_at' => now()]);

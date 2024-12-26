@@ -4,6 +4,10 @@
     @if (Session::has('error'))
         <div class="alert alert-danger text-center">{{ Session::get('error') }}</div>
     @endif
+
+    @if (Session::has('success'))
+        <div class="alert alert-danger text-center">{{ Session::get('success') }}</div>
+    @endif
     
     <div class="row justify-content-center" style="margin-top:50px">
         <div class="col-md-8">
@@ -58,7 +62,7 @@
                                     Login with Facebook
                                 </a>
 
-                                <a class="btn btn-link" href="">
+                                <a class="btn btn-link" href="{{ route('reset_password.get') }}">
                                     {{ __('Forgot Your Password?') }}
                                 </a>
                             </div>

@@ -16,6 +16,7 @@ class ProfileController extends Controller
 	public function __construct(private ProfileRepositoryInterface $profileRepository)
 	{
 		$this->middleware('auth');
+		$this->middleware('verifyEmail')->except('index');
 		$this->middleware('profile')->only(['create', 'store']);
 	}
 

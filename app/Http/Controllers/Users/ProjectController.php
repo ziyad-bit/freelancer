@@ -12,7 +12,8 @@ class ProjectController extends Controller
 {
 	public function __construct(private ProjectRepositoryInterface $ProjectRepository)
 	{
-		$this->middleware('auth');
+		$this->middleware(['auth','verifyEmail'])->except('fetch');
+		
 		$this->middleware('project')->only(['destroy', 'edit', 'update']);
 	}
 
