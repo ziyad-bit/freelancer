@@ -24,20 +24,21 @@ if (chat_room_id) {
 let old_msg = true;
 
 function loadOldMessages() {
-    const chat_box = document.getElementsByClassName('chat_body')
+    const chat_box = document.getElementsByClassName('chat_body');
 
     for (let i = 0; i < chat_box.length; i++) {
         chat_box[i].scrollTo({
             top: 1000,
             behavior: 'smooth'
-        })
+        });
 
         chat_box[i].onscroll = function () {
             if (chat_box[i].scrollTop == 0) {
                 if (old_msg == true) {
                     let first_msg_id      = this.firstElementChild.id,
                         chat_room_id      = this.getAttribute('data-chat_room_id'),
-                        show_old_msgs_url = this.getAttribute('data-show_old_msgs_url');
+                        show_old_msgs_url = this.firstElementChild.getAttribute('data-show_old_msgs_url');
+                        console.log('first_msg_id: ', first_msg_id);
 
                     const box = document.getElementsByClassName('box' + chat_room_id)[0];
 

@@ -21,7 +21,7 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header">
-                        Are you want to send verification link to {{ Auth::user()->email }}
+                        Are you want to send verification link to {{ Auth::user()->email }}?
 
                         <form method="POST" style="display: inline" action="{{ route('verification.send') }}">
                             @csrf

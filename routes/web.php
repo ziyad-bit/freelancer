@@ -6,7 +6,7 @@ use App\Http\Controllers\Users\ProjectController;
 use App\Http\Controllers\Users\ProposalController;
 use App\Http\Controllers\Users\TransactionController;
 use App\Http\Controllers\Users\VerificationController;
-use App\Http\Controllers\Users\{AuthController, ChatRoomController, FileController, MessageController, NotificationsController, ProfileController, ResetPasswordController, SearchController};
+use App\Http\Controllers\Users\{AuthController, ChatRoomController, ChatRoomInvitationController, FileController, MessageController, NotificationsController, ProfileController, ResetPasswordController, SearchController};
 
 /*
 |--------------------------------------------------------------------------
@@ -52,12 +52,12 @@ Route::namespace('Users')->controller(ProfileController::class)->group(function 
 Route::resource('profile'   , ProfileController::class)->except(['show','index']);
 
 //MARK:Skill
-Route::delete('/project-skill/{id}', 'Users\SkillController@destroy_project_skill')->name('project_skill.destroy');
+Route::delete('/project-skill/{id}'      ,[SkillController::class,'destroy_project_skill'])->name('project_skill.destroy');
 Route::resource('skill'                  , SkillController::class)->except(['edit', 'update']);
 
 
 //MARK:Project
-Route::any('/project/fetch'         , 'Users\ProjectController@fetch')->name('project.fetch');
+Route::any('/project/fetch'         ,[ProjectController::class,'fetch'])->name('project.fetch');
 Route::resource('project'           , ProjectController::class)->except(['index']);
 
 
@@ -69,7 +69,7 @@ Route::namespace('Users')->controller(FileController::class)->group(function () 
 });
 
 //MARK:proposal
-Route::post('proposal/update/{id}', 'Users\ProposalController@update')->name('proposal.update');
+Route::post('proposal/update/{id}',[ProposalController::class,'update'])->name('proposal.update');
 Route::resource('proposal'        , ProposalController::class)->only(['store', 'destroy']);
 
 
@@ -91,6 +91,10 @@ Route::namespace('Users')->controller(ChatRoomController::class)->group(function
 	Route::get('chatrooms/index'                           , 'index')->name('chatrooms.index');
 	Route::get('chatrooms/fetch/{receiver_id}'             , 'fetch')->name('chatrooms.fetch');
 	Route::get('chatrooms/show-more/{id}'                  , 'show_more_chat_rooms')->name('chatrooms.show_more');
+});
+
+//MARK:chatroomInvitation
+Route::namespace('Users')->controller(ChatRoomInvitationController::class)->group(function () {
 	Route::get('chatrooms/users'                           , 'get_users')->name('chatrooms.get_users');
 	Route::post('chatrooms/send-invitation'                , 'send_user_invitation')->name('chatrooms.send_user_invitation');
 	Route::post('chatrooms/accept-invitation'              , 'post_accept_invitation')->name('chatrooms.postAcceptInvitation');

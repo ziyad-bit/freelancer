@@ -23,7 +23,7 @@ class MessageController extends Controller
 	}
 
 	//MARK: show
-	public function show(int $chat_box_id):JsonResponse
+	public function show(string $chat_box_id):JsonResponse
 	{
 		$view = $this->messageRepository->showMessages($chat_box_id);
 

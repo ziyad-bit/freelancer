@@ -71,7 +71,7 @@ class MessageRepository implements MessageRepositoryInterface
 	}
 
 	// MARK: showMessage
-	public function showMessages(int $chat_room_id):string
+	public function showMessages(string $chat_room_id):string
 	{
 		$messages = Messages::index($chat_room_id);
 
