@@ -15,6 +15,6 @@ trait SendVerification
 
 		Cache::put('token_' . $user->id, $token, now()->addMinutes(30));
 
-		Mail::to($user)->send(new VerifyEmail($token));
+		Mail::to($user)->send((new VerifyEmail($token)));
 	}
 }

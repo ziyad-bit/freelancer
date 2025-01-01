@@ -20,7 +20,7 @@ class ProposalController extends Controller
 	{
 		$this->ProposalRepository->storeProposal($request);
 
-		return to_route('project.show', $request->input('project_id'))->with('success', 'you added proposal successfully');
+		return to_route('project.show', $request->project_id)->with('success', 'you added proposal successfully');
 	}
 
 	//MARK: update

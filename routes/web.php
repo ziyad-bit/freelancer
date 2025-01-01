@@ -6,7 +6,7 @@ use App\Http\Controllers\Users\ProjectController;
 use App\Http\Controllers\Users\ProposalController;
 use App\Http\Controllers\Users\TransactionController;
 use App\Http\Controllers\Users\VerificationController;
-use App\Http\Controllers\Users\{AuthController, ChatRoomController, ChatRoomInvitationController, FileController, MessageController, NotificationsController, ProfileController, ResetPasswordController, SearchController};
+use App\Http\Controllers\Users\{AuthController, ChatRoomController, ChatRoomInvitationController, FileController, MessageController, NotificationsController, ProfileController, ResetPasswordController, SearchController, SocialiteController};
 
 /*
 |--------------------------------------------------------------------------
@@ -43,6 +43,14 @@ Route::namespace('Users')->controller(ResetPasswordController::class)->group(fun
 	Route::post('reset-password/update'             ,'update')->name('reset_password.update');
 });
 
+//MARK:socialite
+Route::namespace('Users')->controller(SocialiteController::class)->group(function () {
+	Route::get('auth/redirect/{provider}', 'redirect')->name('auth.redirect');
+	Route::get('auth/callback/{provider}', 'callback')->name('auth.callback');
+});
+
+
+
 //MARK:Profile
 Route::namespace('Users')->controller(ProfileController::class)->group(function () {
 	Route::get('/'              , 'index')->name('home');
@@ -69,8 +77,7 @@ Route::namespace('Users')->controller(FileController::class)->group(function () 
 });
 
 //MARK:proposal
-Route::post('proposal/update/{id}',[ProposalController::class,'update'])->name('proposal.update');
-Route::resource('proposal'        , ProposalController::class)->only(['store', 'destroy']);
+Route::resource('proposal' , ProposalController::class)->only(['store', 'destroy','update']);
 
 
 //MARK:message

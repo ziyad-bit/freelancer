@@ -1,7 +1,6 @@
-<div class="tab-pane fade friends_1_page  search_{{ isset($searchName) ? $searchName : '' }} {{ isset($selected) ? 'show active' : '' }}  {{ $is_selected_chat_room ? 'show active' : '' }}"
+<div class="tab-pane fade friends_1_page  search_{{ isset($searchName) ? $searchName : '' }}
+    {{ $is_selected_chat_room ? 'show active' : '' }}"
     id={{ 'chat_box' . $chat_room_id }} role="tabpanel" aria-labelledby="list-home-list" >
-
-    <div style="display: none" id="chat_room_id" data-chat_room_id="{{ $selected_chat_room_id }}"></div>
 
     <form id={{ 'form' . $chat_room_id }} enctype="multipart/form-data">
         <div class="card" style="height: 316px" data-store_msg_url="{{ route('message.store') }}"

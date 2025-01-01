@@ -27,6 +27,7 @@
                     <div style="display: none" class="alert alert-success text-center success_msg"></div>
 
                     <form id="proposal_form">
+                        @method('put')
 
                         <label for="exampleDataList" class="form-label">content</label>
                         <textarea name="content" required maxlength="250" minlength="10" class="form-control content_input input" cols="30"

@@ -2,10 +2,11 @@
 
 namespace App\Providers;
 
-use App\Interfaces\Repository\{AuthRepositoryInterface, ChatRoomInvitationRepositoryInterface, ChatRoomRepositoryInterface, FileRepositoryInterface, MessageRepositoryInterface, NotificationRepositoryInterface, ProfileRepositoryInterface, ProjectRepositoryInterface, ProposalRepositoryInterface, ResetPasswordRepositoryInterface, SearchRepositoryInterface, SkillRepositoryInterface, TransactionRepositoryInterface, VerificationRepositoryInterface};
-use App\Repositories\{AuthRepository, ChatRoomInvitationRepository, ChatRoomRepository, FileRepository, MessageRepository, NotificationRepository, ProfileRepository, ProjectRepository, ProposalRepository, ResetPasswordRepository, SearchRepository, SkillRepository, TransactionRepository, VerificationRepository};
+use App\Interfaces\Repository\{AuthRepositoryInterface, ChatRoomInvitationRepositoryInterface, ChatRoomRepositoryInterface, FileRepositoryInterface, MessageRepositoryInterface, NotificationRepositoryInterface, ProfileRepositoryInterface, ProjectRepositoryInterface, ProposalRepositoryInterface, ResetPasswordRepositoryInterface, SearchRepositoryInterface, SkillRepositoryInterface, SocialiteRepositoryInterface, TransactionRepositoryInterface, VerificationRepositoryInterface};
+use App\Repositories\{AuthRepository, ChatRoomInvitationRepository, ChatRoomRepository, FileRepository, MessageRepository, NotificationRepository, ProfileRepository, ProjectRepository, ProposalRepository, ResetPasswordRepository, SearchRepository, SkillRepository, SocialiteRepository, TransactionRepository, VerificationRepository};
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Socialite\SocialiteServiceProvider;
 
 class RepoServiceProvider extends ServiceProvider implements DeferrableProvider
 {
@@ -30,6 +31,7 @@ class RepoServiceProvider extends ServiceProvider implements DeferrableProvider
 		$this->app->bind(VerificationRepositoryInterface::class, VerificationRepository::class);
 		$this->app->bind(ResetPasswordRepositoryInterface::class, ResetPasswordRepository::class);
 		$this->app->bind(ChatRoomInvitationRepositoryInterface::class, ChatRoomInvitationRepository::class);
+		$this->app->bind(SocialiteRepositoryInterface::class, SocialiteRepository::class);
 	}
 
 
@@ -49,7 +51,8 @@ class RepoServiceProvider extends ServiceProvider implements DeferrableProvider
 			TransactionRepositoryInterface::class,
 			VerificationRepositoryInterface::class,
 			ResetPasswordRepositoryInterface::class,
-			ChatRoomInvitationRepositoryInterface::class
+			ChatRoomInvitationRepositoryInterface::class,
+			SocialiteRepositoryInterface::class
 		];
 	}
 

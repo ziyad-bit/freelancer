@@ -28,7 +28,7 @@ class ProposalRequest extends FormRequest
 			'content'       => 'required|string|max:250|min:10',
 			'num_of_days'   => 'required|numeric|max:180|min:1',
 			'price'         => 'required|numeric|max:8000|min:5',
-			'project_id'    => request()->routeIs('proposal.update') ? 'required' : '' . '|numeric',
+			'project_id'    => request()->routeIs('proposal.update') ? '' : 'required' . '|numeric',
 		];
 	}
 

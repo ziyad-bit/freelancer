@@ -1,4 +1,13 @@
 <input type="hidden" id="upload_url" value="{{ route('file.upload') }}">
+<div style="display: none" id="chat_room_id" data-chat_room_id="{{ $chat_room_id }}"></div>
+
+@isset($receiver)
+    @include('users.includes.chat.chat_boxes_body', [
+        'is_selected_chat_room' => true,
+        'chat_room_id' => $chat_room_id,
+        'receiver_id' => $receiver->id,
+    ])
+@endisset
 
 @if ($all_chat_rooms->count() > 0)
     @foreach ($all_chat_rooms as $i => $chat_room)
@@ -22,7 +31,6 @@
         @endphp
 
         @include('users.includes.chat.chat_boxes_body', [
-            'selected_chat_room_id' => $chat_room_id,
             'chat_room_id' => $chat_room->chat_room_id,
         ])
 
@@ -74,12 +82,3 @@
 
 @endif
 
-
-@isset($receiver)
-    @include('users.includes.chat.chat_boxes_body', [
-        'selected_chat_room_id' => $chat_room_id,
-        'chat_room_id' => $chat_room_id,
-        'receiver_id' => $receiver->id,
-        'selected' => true,
-    ])
-@endisset

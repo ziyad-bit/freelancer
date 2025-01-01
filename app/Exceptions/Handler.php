@@ -44,7 +44,7 @@ class Handler extends ExceptionHandler
 			abort(409, $e->getMessage());
 		});
 
-		$this->renderable(
+		$this->reportable(
 			function (Throwable $e) {
 				// abort(500, 'Something went wrong');
 			}

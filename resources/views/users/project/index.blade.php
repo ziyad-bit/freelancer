@@ -5,9 +5,12 @@
 
     <script defer src="{{ asset('js/project/index.js') }}?v={{ filemtime(public_path('js/profile/index.js')) }}"></script>
 
-    <title>
-        {{ ucfirst(Auth::user()->name) . ' - ' . config('app.name') }}
-    </title>
+    @auth
+        <title>
+            {{ ucfirst(Auth::user()->name) . ' - ' . config('app.name') }}
+        </title>
+
+    @endauth
 
     <meta name="keywords" content="profile page contain information about user">
 @endsection

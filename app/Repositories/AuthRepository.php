@@ -14,7 +14,11 @@ class AuthRepository implements AuthRepositoryInterface
 	// storeUser   #####################################
 	public function storeUser(SignupRequest $request):void
 	{
-		$data = $request->safe()->except('password') + ['password' => Hash::make($request->password), 'created_at' => now()];
+		$data = $request->safe()->except('password') +
+			[
+				'password'   => Hash::make($request->password),
+				'created_at' => now(),
+			];
 
 		$user_id = DB::table('users')->insertGetId($data);
 
