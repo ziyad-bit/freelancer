@@ -11,42 +11,22 @@ use App\Interfaces\Repository\AuthRepositoryInterface;
 
 class AuthRepository implements AuthRepositoryInterface
 {
-	use sendEmailVerification, SendSmsVerification;
+	use sendEmailVerification;
 
 	//MARK: store User   
-	public function storeUser(SignupRequest $request):array
+	public function storeUser(SignupRequest $request):void
 	{
 		$data = $request->safe()->except('password') +
 			[
-				'password'   => Hash::make($request->password),
+				'password'   => $request->password,
 				'created_at' => now(),
 			];
 
 		$user_id = DB::table('users')->insertGetId($data);
 
+		Auth::loginUsingId($user_id);
+
 		$this->sendEmailVerification($request->email, $user_id);
-
-		return $this->sendSmsVerification($user_id, $request->phone_number);
-	}
-
-	//MARK: smsVerification   
-	public function smsVerification(SmsVerificationRequest $request):array
-	{
-		if (Cache::has('code_num_'.$request->user_id)) {
-			$code_num = Cache::get('code_num_'.$request->user_id);
-
-			if ($request->code_num === $code_num) {
-				Cache::forget('code_num_'.$request->user_id);
-
-				Auth::loginUsingId($request->user_id);
-
-				return ['success' => 'you are logged in'];
-			} else {
-				return ['error' => 'incorrect code'];
-			}
-		} else {
-			return ['error' => 'code expired'];
-		}
 	}
 
 	//MARK: login   

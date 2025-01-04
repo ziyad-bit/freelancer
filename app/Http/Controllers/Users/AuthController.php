@@ -25,29 +25,7 @@ class AuthController extends Controller
 	//MARK: store
 	public function store(SignupRequest $request):View|RedirectResponse
 	{
-		$message=$this->authRepository->storeUser($request);
-
-		if (isset($message['error']) ) {
-			return to_route('signup')->with($message);
-		}
-
-		return to_route('get.sms.verify', $message['user_id']);
-	}
-
-	//MARK: create
-	public function getSmsVerify(int $user_id):View
-	{
-		return view('users.auth.sms_verification',compact('user_id'));
-	}
-
-	//MARK: smsVerify
-	public function smsVerify(SmsVerificationRequest $request):RedirectResponse|View
-	{
-		$message = $this->authRepository->smsVerification($request);
-
-		if (isset($message['error'])) {
-			return to_route('get.sms.verify', $request->user_id)->with($message);
-		}
+		$this->authRepository->storeUser($request);
 
 		return to_route('home');
 	}

@@ -34,14 +34,16 @@ function loadOldMessages() {
         chat_box[i].onscroll = function () {
             if (chat_box[i].scrollTop == 0) {
                 if (old_msg == true) {
-                    let first_msg_id      = this.firstElementChild.id,
-                        chat_room_id      = this.getAttribute('data-chat_room_id'),
-                        show_old_msgs_url = this.firstElementChild.getAttribute('data-show_old_msgs_url');
+                        let chat_room_id      = this.getAttribute('data-chat_room_id'),
+                            show_old_msgs_url = this.firstElementChild.getAttribute('data-show_old_msgs_url'),
+                            lastIndex         = show_old_msgs_url.lastIndexOf("/");
+
+                        show_old_msgs_url = show_old_msgs_url.substring(0, lastIndex) +'/'+ chat_room_id;
 
                     const box = document.getElementsByClassName('box' + chat_room_id)[0];
 
                       // eslint-disable-next-line no-undef
-                    axios.put(show_old_msgs_url, { 'first_msg_id': first_msg_id })
+                    axios.get(show_old_msgs_url)
                         .then(res => {
                             if (res.status == 200) {
                                 let view = res.data.view;

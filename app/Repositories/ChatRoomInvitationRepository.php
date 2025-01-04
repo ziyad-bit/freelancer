@@ -54,8 +54,8 @@ class ChatRoomInvitationRepository implements ChatRoomInvitationRepositoryInterf
 			$user         = Auth::user();
 			$receiver     = User::find($request->user_id);
 			$view         = view('users.includes.notifications.send_user_invitation')
-							->with('chat_room_id')
-							->render();
+								->with('chat_room_id', $chat_room_id)
+								->render();
 
 			$receiver->notify(
 				new AddUserToChatNotification(
@@ -68,14 +68,14 @@ class ChatRoomInvitationRepository implements ChatRoomInvitationRepositoryInterf
 
 			DB::commit();
 
-			Log::info('database commit and user sent an invitation to the user_id: ' . $receiver_id . ' to join the chatroom_id: ' . $chat_room_id);
+			Log::info('database commit and user sent an invitation');
 
 			$this->forgetCache($receiver_id);
 		} catch (RecordExistException $th) {
 			abort(409, $th->getMessage());
 		} catch (\Throwable $th) {
 			DB::rollBack();
-			Log::critical('database rollback and error is' . $th->getMessage());
+			Log::critical('database rollback and error is ' . $th->getMessage());
 
 			abort(500, 'something went wrong');
 		}
@@ -110,11 +110,19 @@ class ChatRoomInvitationRepository implements ChatRoomInvitationRepositoryInterf
 	{
 		$auth_id = Auth::id();
 
+		/**
+			we will get the chat room between the authenticated user and  
+			user who sent the invitation
+		 * */ 
 		$selected_chat_room = ChatRooms::fetch(
 			['messages.chat_room_id' => $chat_room_id, 'last' => 1],
 			[]
 		);
 
+		/**
+		 * we will get the chat rooms with last received message 
+		 * or last sent message
+		 */
 		$all_chat_rooms = ChatRooms::fetch(
 			['messages.sender_id' => $auth_id, 'last' => 1],
 			['messages.receiver_id' => $auth_id, 'last' => 1]

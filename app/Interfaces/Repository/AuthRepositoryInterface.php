@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 interface AuthRepositoryInterface
 {
 	public function login(LoginRequest $request):?string;
-	public function storeUser(SignupRequest $request):array;
-	public function smsVerification(SmsVerificationRequest $request):array;
+	public function storeUser(SignupRequest $request):void;
 	public function logoutUser(Request $request):void;
 }

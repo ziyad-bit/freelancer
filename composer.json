@@ -12,12 +12,10 @@
         "laravel/sanctum": "^2.14",
         "laravel/socialite": "^5.16",
         "laravel/tinker": "^2.7",
-        "lcobucci/jwt": "^4.0",
         "opcodesio/log-viewer": "^3.12",
         "predis/predis": "~1.0",
         "pusher/pusher-php-server": "^7.2",
-        "react/promise": "^2.7",
-        "vonage/client": "^4.1"
+        "react/promise": "^2.7"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

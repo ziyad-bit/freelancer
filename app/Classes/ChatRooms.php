@@ -10,6 +10,14 @@ class ChatRooms
 	// get    #####################################
 	public static function fetch(array $last_msg_send, array $last_msg_receive, int $message_id = null, string $searchName = null):Builder
 	{
+		/**
+		in case searchName is not null, we will search for the sender name or receiver name
+		in case message_id is not null, we will get the chatrooms that have an message 
+			id less than the message_id
+			
+		in case last_msg_send exist, we will get the chatrooms with the last message send
+		or in case last_msg_receive exist, we will get the chatrooms with the last message received
+		 */
 		return DB::table('messages')
 			->select(
 				'messages.*',

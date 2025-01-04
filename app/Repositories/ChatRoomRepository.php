@@ -20,6 +20,10 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 	// MARK: indexChatroom
 	public function indexChatroom():array
 	{
+		/**
+		 * we will get the chat rooms with last received message 
+		 * or last sent message
+		 */
 		$auth_id        = Auth::id();
 		$all_chat_rooms = ChatRooms::fetch(
 			['messages.sender_id' => $auth_id, 'last' => 1],
@@ -57,6 +61,10 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			throw new GeneralNotFoundException('user not found');
 		}
 
+		/**
+		 * we will get the chat rooms with last received message 
+		 * or last sent message
+		 */
 		$auth_id        = Auth::id();
 		$all_chat_rooms = ChatRooms::fetch(
 			['messages.sender_id' => $auth_id, 'last' => 1],
@@ -65,6 +73,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		->latest('messages.id')
 		->limit(4);
 
+		//we will get the chat room between the authenticated user and the selected user
 		$selected_chat_room = ChatRooms::fetch(
 			['messages.sender_id' => $auth_id, 'messages.receiver_id' => $receiver_id, 'last' => 1],
 			['messages.receiver_id' => $auth_id, 'messages.sender_id' => $receiver_id, 'last' => 1]
@@ -82,6 +91,9 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 
 		$created_at = now();
 
+		/**
+		 * if the chat room does not exist, we will create a new chat room
+		 */
 		if (!$chat_room_id) {
 			DB::table('chat_rooms')
 				->insert(
@@ -129,6 +141,10 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 	//MARK: get chat rooms
 	public function getChatRooms(int $message_id):array
 	{
+		/**
+		 * we will get the chat rooms with last received message 
+		 * or last sent message
+		 */
 		$auth_id        = Auth::id();
 		$all_chat_rooms = ChatRooms::fetch(
 			['messages.sender_id' => $auth_id, 'last' => 1],

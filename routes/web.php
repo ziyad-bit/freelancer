@@ -82,11 +82,13 @@ Route::namespace('Users')->controller(FileController::class)->group(function () 
 Route::resource('proposal' , ProposalController::class)->only(['store', 'destroy','update']);
 
 
+
+
 //MARK:message
 Route::namespace('Users')->controller(MessageController::class)->group(function () {
-	Route::put('message/show-old/{id}', 'show_old')->name('message.show_old');
-	Route::post('message'             , 'store')->name('message.store');
-	Route::get('message/{id}'         , 'show')->name('message.show');
+	Route::post('message'                                    , 'store')->name('message.store');
+	Route::get('message/{id}'                                , 'show')->name('message.show');
+	Route::get('message/show-old/{message_id}/{chat_room_id}' , 'show_old')->name('message.show_old');
 });
 
 //MARK:notifications

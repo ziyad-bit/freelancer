@@ -28,14 +28,15 @@ class MessageRepository implements MessageRepositoryInterface
 
 			DB::beginTransaction();
 
+			//update last message
 			DB::table('messages')
-			->where(
-				[
-					'chat_room_id' => $request->chat_room_id,
-					'last'         => 1,
-				]
-			)
-			->update(['last' => 0]);
+				->where(
+					[
+						'chat_room_id' => $request->chat_room_id,
+						'last'         => 1,
+					]
+				)
+				->update(['last' => 0]);
 
 			$message_id = DB::table('messages')->insertGetId($data);
 
@@ -43,12 +44,14 @@ class MessageRepository implements MessageRepositoryInterface
 
 			$data['text'] = $text;
 
+			//send message to other user by using broadcast
 			$view_msg = view('users.includes.chat.send_message', compact('data', 'files'))->render();
 
 			broadcast(new MessageEvent($data, $view_msg, $auth_user->name))->toOthers();
 
 			Log::info('user sent message');
 
+			//send notification to other user
 			$notif_view = view('users.includes.notifications.send', compact('data'))->render();
 			$user       = User::find($receiver_id);
 
@@ -71,6 +74,7 @@ class MessageRepository implements MessageRepositoryInterface
 	}
 
 	// MARK: showMessage
+	//when user click on chat room
 	public function showMessages(string $chat_room_id):string
 	{
 		$messages = Messages::index($chat_room_id);
@@ -79,9 +83,9 @@ class MessageRepository implements MessageRepositoryInterface
 	}
 
 	// MARK: show Old Msgs
-	public function showOldMessages(Request $request, int $chat_room_id):string
+	public function showOldMessages(string $chat_room_id,int $message_id):string
 	{
-		$messages = Messages::index($chat_room_id, $request, true);
+		$messages = Messages::index($chat_room_id,$message_id);
 
 		return view('users.includes.chat.index_msgs', compact('messages'))->render();
 	}

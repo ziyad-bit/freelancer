@@ -12,6 +12,11 @@ class SearchRepository implements SearchRepositoryInterface
 	//MARK: searchChatroom
 	public function searchChatroom(SearchRequest $request):array
 	{
+		/**
+		 * we will get the chat rooms with last received message 
+		 * or last sent message
+		 * and we will search the chat rooms by the name of the user
+		 */
 		$searchName     = $request->safe()->search;
 		$auth_id        = Auth::id();
 		$all_chat_rooms = ChatRooms::fetch(

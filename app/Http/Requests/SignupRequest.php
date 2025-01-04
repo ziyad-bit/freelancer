@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
 class SignupRequest extends FormRequest
@@ -26,7 +27,6 @@ class SignupRequest extends FormRequest
 	{
 		return  [
 			'name'      => 'required|string|max:20|min:3',
-			'phone_number'      => 'required|numeric|digits_between:4,15',
 			'email'     => 'unique:users,email|required|email|max:40|min:10|',
 			'password'  => ['confirmed', 'required', 'string', Password::min(8),
 
@@ -35,5 +35,10 @@ class SignupRequest extends FormRequest
 				// ->symbols()
 			],
 		];
+	}
+
+	protected function passedValidation(): void
+	{
+		$this->merge(['password' => Hash::make($this->password)]);
 	}
 }

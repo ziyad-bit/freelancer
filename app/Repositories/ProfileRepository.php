@@ -45,6 +45,7 @@ class ProfileRepository implements ProfileRepositoryInterface
 			->groupBy('users.id')
 			->first();
 
+		//show the last 10 projects which the user has received the money
 		$projects = DB::table('projects')
 			->select('title', 'rate', 'amount', 'transactions.created_at', 'projects.id')
 			->leftJoin('reviews', 'reviews.project_id', '=', 'projects.id')

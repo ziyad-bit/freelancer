@@ -1,6 +1,6 @@
 @if ($all_chat_rooms->count() > 0)
     <!-- add user to chat room Modal -->
-    <div class="modal fade" id="send_user_invitation" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="send_user_invitation" tabindex="-1" aria-labelledby="exampleModalLabel" >
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
