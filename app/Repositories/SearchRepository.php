@@ -43,6 +43,7 @@ class SearchRepository implements SearchRepositoryInterface
 	}
 
 	//MARK: RecentProjects
+	//show recent searches under the search bar after focusing on it
 	public function show_recent_projects():string
 	{
 		$searches = DB::table('searches')
@@ -56,15 +57,18 @@ class SearchRepository implements SearchRepositoryInterface
 	}
 
 	//MARK: projectsAfterTyping
-	public function show_projects_after_typing(SearchRequest $request):string
+	/*
+		show searches about skills after typing in the search bar
+	**/
+	public function show_skills_after_typing(SearchRequest $request):string
 	{
 		$searchTitle = $request->search;
-		$projects    = DB::table('projects')
-					->select('title')
-					->where('title', 'LIKE', "{$searchTitle}%")
+		$skills    = DB::table('skills')
+					->select('skill')
+					->where('skill', 'LIKE', "{$searchTitle}%")
 					->limit(5)
 					->get();
 
-		return view('users.includes.search.index', compact('projects'))->render();
+		return view('users.includes.search.index', compact('skills'))->render();
 	}
 }

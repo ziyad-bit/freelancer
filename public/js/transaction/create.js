@@ -1,3 +1,4 @@
+//show checkout button when user click next button
 const next_btn = document.querySelector('#next_btn');
 next_btn.onclick = () => {
     next_btn.disabled = true;

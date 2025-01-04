@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+
 //store skill
 const button = document.querySelector('.submit_btn');
 button.onclick = function () {

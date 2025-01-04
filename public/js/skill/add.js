@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+
 //add skill input
 const num_input_ele = document.querySelector('#num_input');
 let num_input_ele_val = num_input_ele.value;
@@ -9,7 +10,6 @@ if (num_input_ele_val > 1) {
 }
 
 generalEventListener('click', '.add_button', () => {
-
     if (number < 20) {
         number++;
         num_input_ele.value = number;
@@ -47,7 +47,7 @@ generalEventListener('click', '.add_button', () => {
     }
 })
 
-
+//delete skill
 generalEventListener('click', '.delete_skill', e => {
     const skill_index = e.target.id;
     const url_ele = document.querySelector('#delete_skill_url' + skill_index);
@@ -77,6 +77,7 @@ generalEventListener('click', '.delete_skill', e => {
     }
 })
 
+//show skills when user type in the input
 let inputs_arr = new Set();
 const debouncedShowSkills = debounce(async function (show_skills_url, inputValue) {
     try {

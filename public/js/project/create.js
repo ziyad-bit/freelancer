@@ -3,6 +3,7 @@ Dropzone.autoDiscover = false;
 
 let files_number = 0;
 
+// upload images by dropzone
 new Dropzone('#image_upload', {
     thumbnailWidth: 200,
     acceptedFiles : '.jpg,.png,.jepg,.gif,.webp',
@@ -36,7 +37,7 @@ new Dropzone('#image_upload', {
     }
 })
 
-
+// upload files by dropzone
 new Dropzone('#file_upload', {
     thumbnailWidth: 200,
     acceptedFiles : '.pdf,.ppt.,.doc,.xls',
@@ -69,6 +70,7 @@ new Dropzone('#file_upload', {
     }
 })
 
+// upload videos by dropzone
 new Dropzone('#video_upload', {
     thumbnailWidth: 200,
     acceptedFiles : '.mp4,.mov,.flv,.avi',

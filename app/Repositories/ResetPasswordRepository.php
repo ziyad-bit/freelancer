@@ -15,10 +15,10 @@ class ResetPasswordRepository implements ResetPasswordRepositoryInterface
 	// updateVerify 
 	public function sendLink(Request $request):void
 	{
-		$email= $request->safe()->__get('email');
+		$email = $request->safe()->__get('email');
 		$token = Str::random(40);
 
-		Cache::put('token_' . $email, $token, now()->addMinutes(30));
+		Cache::put('token_' . $email, $token, now()->addMinutes(5));
 
 		Mail::to($email)->send(new ResetPassword($token,$email));
 	}
@@ -26,8 +26,8 @@ class ResetPasswordRepository implements ResetPasswordRepositoryInterface
 	// updateVerify 
 	public function updatePassword(Request $request):array
 	{
-		$email= $request->safe()->__get('email');
-		$token= $request->safe()->__get('token');
+		$email= $request->email;
+		$token= $request->token;
 
 		if (Cache::has('token_' . $email)) {
 			$cached_token = Cache::get('token_' . $email);

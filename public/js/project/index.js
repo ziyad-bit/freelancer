@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+//load more projects
 let submit_btn    = document.querySelector('.submit_btn');
 
 submit_btn.onclick = function () {

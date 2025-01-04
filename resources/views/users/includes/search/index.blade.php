@@ -1,5 +1,5 @@
-@foreach ($projects as $project)
-    <li class="list-group-item search_item recent_search {{$project->title}}" >
-        <span class="search_name">{{ $project->title }}</span> 
+@foreach ($skills as $skill)
+    <li class="list-group-item search_item recent_search {{$skill->title}}" >
+        <span class="search_name">{{ $skill->skill }}</span> 
     </li>
 @endforeach

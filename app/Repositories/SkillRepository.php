@@ -20,7 +20,7 @@ class SkillRepository implements SkillRepositoryInterface
 	}
 
 	//MARK: storeSkill
-	public function storeSkill(Request $request, string $table, string $column, string $value):void
+	public function storeSkill(Request $request, string $table, string $column, int $value):void
 	{
 		$skills = $request->input('skills');
 

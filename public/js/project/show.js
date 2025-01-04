@@ -79,6 +79,7 @@ if (edit_btn) {
     }
 }
 
+//load more proposals by infinite scrolling
 window.onscroll = function () {
     const proposal_wrapper = document.querySelector('#proposal_wrapper');
     const cursor = proposal_wrapper.getAttribute('data-cursor');

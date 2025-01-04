@@ -15,6 +15,11 @@ class ProjectRepository implements ProjectRepositoryInterface
 	//MARK:   fetchProjects
 	public function fetchProjects(SearchRequest $request):array
 	{
+		/** 
+			in case of search, we will search in project title and skills.
+			in case search is empty, we will get
+			project skills which match user skills if user is authenticated
+		 */
 		$auth_id     = Auth::id();
 		$searchTitle = $request->input('search');
 		$projects    = DB::table('projects')
@@ -98,7 +103,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 			Log::info('database commit');
 		} catch (\Throwable $th) {
 			DB::rollBack();
-			Log::critical('database rollback and ' . $th->getMessage());
+			Log::critical('database rollback and error is' . $th->getMessage());
 
 			abort(500, 'something went wrong');
 		}

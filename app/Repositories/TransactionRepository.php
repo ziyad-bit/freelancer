@@ -67,6 +67,7 @@ class TransactionRepository implements TransactionRepositoryInterface
 						'id'          => $status['id'],
 						'created_at'  => now(),
 					];
+
 					DB::beginTransaction();
 					DB::table('transactions')->insert($data);
 
@@ -101,7 +102,7 @@ class TransactionRepository implements TransactionRepositoryInterface
 			return ['project_id' => $project_id, 'receiver_id' => $receiver_id];
 		} catch (\Throwable $th) {
 			DB::rollBack();
-			Log::critical('database rollback and ' . $th->getMessage());
+			Log::critical('database rollback and error is' . $th->getMessage());
 
 			abort(500, 'something went wrong');
 		}

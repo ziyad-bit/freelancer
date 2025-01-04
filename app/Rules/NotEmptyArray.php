@@ -4,7 +4,7 @@ namespace App\Rules;
 
 use Illuminate\Contracts\Validation\InvokableRule;
 
-class OneItem implements InvokableRule
+class NotEmptyArray implements InvokableRule
 {
 	/**
 	 * Run the validation rule.

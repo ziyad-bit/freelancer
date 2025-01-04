@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\OneItem;
+use App\Rules\NotEmptyArray;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -33,7 +33,7 @@ class ProjectRequest extends FormRequest
 			'min_price'     => 'required|numeric|min:5',
 			'max_price'     => 'required|numeric|max:10000|gt:min_price',
 			'exp'           => ['required', 'string', Rule::in(['beginner', 'intermediate', 'experienced'])],
-			'skills'        => ['required', 'array', new OneItem],
+			'skills'        => ['required', 'array', new NotEmptyArray],
 			'skills.*.name' => 'nullable|string',
 			'skills.*.id'   => ['nullable', 'numeric', 'distinct', 'exists:skills,id'],
 			'num_input'     => 'required|numeric',

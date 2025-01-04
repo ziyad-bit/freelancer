@@ -1,9 +1,9 @@
-//delete proposal
 const close_btns = document.getElementsByClassName('close_btn');
 const delete_btn = document.querySelector('.delete_btn');
 const success_ele = document.querySelector('.delete_msg');
 const err_ele = document.querySelector('.err_msg');
 
+//delete file
 close_btns.forEach(close_btn => {
     close_btn.onclick = e => {
         const file = e.target.getAttribute('data-file');
@@ -48,6 +48,7 @@ delete_btn.onclick = e => {
         });
 }
 
+//update skills when user change the input value
 const all_inputs = document.querySelectorAll('.input');
 let input_values = [];
 
