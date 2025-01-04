@@ -35,16 +35,19 @@ class ProjectRepository implements ProjectRepositoryInterface
 				->leftJoin('reviews', 'reviews.receiver_id', '=', 'users.id')
 				->leftJoin('proposals', 'projects.id', '=', 'proposals.project_id')
 				->when(
-					$searchTitle == null,
-					function ($query) use ($auth_id) {
-						$query->join('user_skill', function ($join) use ($auth_id) {
-							$join->on('project_skill.skill_id', '=', 'user_skill.skill_id')
-								->where('user_skill.user_id', '=', $auth_id);
-						});
-					},
+					$searchTitle,
 					function ($query) use ($searchTitle) {
 						$query->where(function ($query) use ($searchTitle) {
-							$query->where('title', 'LIKE', "{$searchTitle}%");
+							$query->where('title', 'LIKE', "{$searchTitle}%")
+								->orWhere('skills.skill', 'LIKE', "{$searchTitle}%");
+						});
+					},
+					function ($query) use ($auth_id) {
+						$query->when(Auth::check(), function($query) use ($auth_id){
+							$query->join('user_skill', function ($join) use ($auth_id) {
+								$join->on('project_skill.skill_id', '=', 'user_skill.skill_id')
+									->where('user_skill.user_id', '=', $auth_id);
+								});
 						});
 					}
 				)
@@ -52,9 +55,13 @@ class ProjectRepository implements ProjectRepositoryInterface
 				->latest('projects.id')
 				->cursorPaginate(10);
 
-		if ($searchTitle) {
+		if ($searchTitle && Auth::check()) {
 			DB::table('searches')
-				->insert(['search' => $searchTitle, 'user_id' => $auth_id, 'created_at' => now()]);
+				->insert([
+					'search'     => $searchTitle,
+					'user_id'    => $auth_id,
+					'created_at' => now(),
+				]);
 		}
 
 		$cursor = $this->getCursor($projects);

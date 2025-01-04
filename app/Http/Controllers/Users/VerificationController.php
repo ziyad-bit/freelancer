@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
 use App\Interfaces\Repository\VerificationRepositoryInterface;
-use App\Traits\SendVerification;
+use App\Traits\SendEmailVerification;
 use Illuminate\Http\{RedirectResponse, Request};
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class VerificationController extends Controller
 {
-	use SendVerification;
+	use SendEmailVerification;
 
 	public function __construct(private VerificationRepositoryInterface $VerificationRepository)
 	{
@@ -28,7 +28,7 @@ class VerificationController extends Controller
 	//MARK: send
 	public function send():RedirectResponse
 	{
-		$this->sendVerification(Auth::user());
+		$this->sendEmailVerification(Auth::user());
 
 		return back()->with('success', 'you sent verification link successfully');
 	}

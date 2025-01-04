@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\{LoginRequest, SignupRequest};
+use App\Http\Requests\{LoginRequest, SignupRequest, SmsVerificationRequest};
 use App\Interfaces\Repository\AuthRepositoryInterface;
 use Illuminate\Http\{RedirectResponse, Request};
 use Illuminate\View\View;
@@ -23,9 +23,31 @@ class AuthController extends Controller
 	}
 
 	//MARK: store
-	public function store(SignupRequest $request):RedirectResponse
+	public function store(SignupRequest $request):View|RedirectResponse
 	{
-		$this->authRepository->storeUser($request);
+		$message=$this->authRepository->storeUser($request);
+
+		if (isset($message['error']) ) {
+			return to_route('signup')->with($message);
+		}
+
+		return to_route('get.sms.verify', $message['user_id']);
+	}
+
+	//MARK: create
+	public function getSmsVerify(int $user_id):View
+	{
+		return view('users.auth.sms_verification',compact('user_id'));
+	}
+
+	//MARK: smsVerify
+	public function smsVerify(SmsVerificationRequest $request):RedirectResponse|View
+	{
+		$message = $this->authRepository->smsVerification($request);
+
+		if (isset($message['error'])) {
+			return to_route('get.sms.verify', $request->user_id)->with($message);
+		}
 
 		return to_route('home');
 	}

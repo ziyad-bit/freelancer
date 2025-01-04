@@ -38,6 +38,7 @@ class ProjectController extends Controller
 	//MARK: store
 	public function store(ProjectRequest $request, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):RedirectResponse
 	{
+		$request->
 		$this->ProjectRepository->storeProject($request, $fileRepository, $skillRepository);
 
 		return redirect()->back()->with('success', 'you added project successfully');

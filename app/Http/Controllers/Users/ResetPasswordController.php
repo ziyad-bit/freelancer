@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Users;
 use App\Mail\VerifyEmail;
 use App\Mail\ResetPassword;
 use Illuminate\Support\Str;
-use App\Traits\SendVerification;
+use App\Traits\SendEmailVerification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;

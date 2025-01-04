@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Users;
 
+use Vonage\Client;
+use Vonage\SMS\Message\SMS;
 use App\Http\Controllers\Controller;
+use Vonage\Client\Credentials\Basic;
 use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Support\Facades\{Auth, DB, Hash};
 use App\Interfaces\Repository\SocialiteRepositoryInterface;
+use Illuminate\Http\Request;
 
 class SocialiteController extends Controller
 {
@@ -14,10 +17,10 @@ class SocialiteController extends Controller
 		return Socialite::driver($provider)->redirect();
 	}
 
-	public function callback(SocialiteRepositoryInterface $socialiteRepository ,string $provider )
-    {
-        $socialiteRepository->callback($provider);
+	public function callback(SocialiteRepositoryInterface $socialiteRepository, string $provider)
+	{
+		$socialiteRepository->callback($provider);
 
-        return to_route('home');
-    }
+		return to_route('home');
+	}
 }

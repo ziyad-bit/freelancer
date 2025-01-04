@@ -59,7 +59,7 @@
                                 </button>
 
                                 <a class="btn btn-primary" href="{{route('auth.redirect','google')}}">
-                                    Login with google
+                                    Login with Google
                                 </a>
 
                                 <a class="btn btn-link" href="{{ route('reset_password.get') }}">

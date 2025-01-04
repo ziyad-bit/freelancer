@@ -19,7 +19,7 @@ class ChatRoomInvitationRepository implements ChatRoomInvitationRepositoryInterf
 {
 	use DatabaseCache;
 
-	//MARK: getChatroomUsers
+	//MARK: get Users
 	public function get_chatroom_users():Collection
 	{
 		return DB::table('users')

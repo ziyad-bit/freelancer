@@ -2,17 +2,19 @@
 
 namespace App\Repositories;
 
-use App\Http\Requests\{LoginRequest, SignupRequest};
-use App\Interfaces\Repository\AuthRepositoryInterface;
-use App\Traits\SendVerification;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{Auth, DB, Hash};
+use App\Traits\SendSmsVerification;
+use App\Traits\sendEmailVerification;
+use Illuminate\Support\Facades\{Auth, Cache, DB, Hash};
+use App\Http\Requests\{LoginRequest, SignupRequest, SmsVerificationRequest};
+use App\Interfaces\Repository\AuthRepositoryInterface;
 
 class AuthRepository implements AuthRepositoryInterface
 {
-	use SendVerification;
-	// storeUser   #####################################
-	public function storeUser(SignupRequest $request):void
+	use sendEmailVerification, SendSmsVerification;
+
+	//MARK: store User   
+	public function storeUser(SignupRequest $request):array
 	{
 		$data = $request->safe()->except('password') +
 			[
@@ -22,12 +24,32 @@ class AuthRepository implements AuthRepositoryInterface
 
 		$user_id = DB::table('users')->insertGetId($data);
 
-		Auth::loginUsingId($user_id);
+		$this->sendEmailVerification($request->email, $user_id);
 
-		$this->sendVerification($request->user());
+		return $this->sendSmsVerification($user_id, $request->phone_number);
 	}
 
-	// login   #####################################
+	//MARK: smsVerification   
+	public function smsVerification(SmsVerificationRequest $request):array
+	{
+		if (Cache::has('code_num_'.$request->user_id)) {
+			$code_num = Cache::get('code_num_'.$request->user_id);
+
+			if ($request->code_num === $code_num) {
+				Cache::forget('code_num_'.$request->user_id);
+
+				Auth::loginUsingId($request->user_id);
+
+				return ['success' => 'you are logged in'];
+			} else {
+				return ['error' => 'incorrect code'];
+			}
+		} else {
+			return ['error' => 'code expired'];
+		}
+	}
+
+	//MARK: login   
 	public function login(LoginRequest $request):?string
 	{
 		$credentials = $request->only('email', 'password');
@@ -41,7 +63,7 @@ class AuthRepository implements AuthRepositoryInterface
 		return null;
 	}
 
-	// logout   #####################################
+	//MARK: logout   
 	public function logoutUser(Request $request):void
 	{
 		Auth::logout();

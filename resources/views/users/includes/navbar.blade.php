@@ -16,14 +16,14 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <!-- Left Side Of Navbar -->
 
-                @auth
-                    <ul class="navbar-nav me-auto">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('project.fetch') }}">projects</a>
+                    </li>
+                    
+                    @auth
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('home') }}">profile</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('project.fetch') }}">projects</a>
                         </li>
 
                         <li class="nav-item">
@@ -33,12 +33,27 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('chatrooms.index') }}">chat</a>
                         </li>
-                    </ul>
-                @endauth
-
+                    @endauth
+                </ul>
 
                 <!-- Right Side Of Navbar -->
                 <ul class="navbar-nav ms-auto">
+                    <form method="POST" id="search_form" action="{{ route('project.fetch') }}" class="d-flex">
+                        @csrf
+
+                        <input class="form-control me-2" id="search" name="search" type="search"
+                            value="{{ isset($searchTitle ) ? $searchTitle : '' }}"
+                            placeholder="Search" aria-label="Search" autocomplete="off">
+
+                        <div id="search_wrapper">
+                            <ul class="list-group list-group-flush navbar_list_search" data-req_num="0"
+                                data-recent_req="0">
+
+                            </ul>
+                        </div>
+
+                        <button class="btn btn-outline-success" id="search_btn" type="submit">Search</button>
+                    </form>
                     <!-- Authentication Links -->
                     @guest
                         <li class="nav-item">
@@ -48,27 +63,12 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('signup') }}">{{ __('signup') }}</a>
                         </li>
+
+                        
                     @else
                         <input id="recent_search_url" type="hidden" value="{{ route('recent_search.projects') }}">
 
                         <input id="search_url" type="hidden" value="{{ route('search.projects') }}">
-
-                        <form method="POST" id="search_form" action="{{ route('project.fetch') }}" class="d-flex">
-                            @csrf
-
-                            <input class="form-control me-2" id="search" name="search" type="search"
-                                value="{{ Route::currentRouteName() == 'project.fetch' ? $searchTitle : '' }}"
-                                placeholder="Search" aria-label="Search" autocomplete="off">
-
-                            <div id="search_wrapper">
-                                <ul class="list-group list-group-flush navbar_list_search" data-req_num="0"
-                                    data-recent_req="0">
-
-                                </ul>
-                            </div>
-
-                            <button class="btn btn-outline-success" id="search_btn" type="submit">Search</button>
-                        </form>
 
                         <i class="fas fa-bell"
                             style="top: 12px;margin-right: 10px; margin-left: 20px;
@@ -87,7 +87,6 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-
 
                                 <a class="dropdown-item" href="{{ route('logout') }}"
                                     onclick="event.preventDefault();

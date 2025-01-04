@@ -19,7 +19,6 @@ return new class extends Migration {
 			$table->text('overview');
 			$table->bigInteger('card_num', false, true);
 			$table->enum('type', ['client', 'freelancer']);
-			$table->enum('online', ['online', 'offline'])->default('offline');
 			$table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
 		});
 	}

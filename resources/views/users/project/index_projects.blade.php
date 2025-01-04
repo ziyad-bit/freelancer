@@ -1,6 +1,6 @@
 @forelse ($projects as $project)
-    <div class="card-body" >
-        <a href="{{ route('project.show',$project->id) }}" style="text-decoration:none">
+    <div class="card-body">
+        <a href="{{ route('project.show', $project->id) }}" style="text-decoration:none">
             <h5 class="card-title">
                 {{ $project->title }}
             </h5>
@@ -16,7 +16,7 @@
 
         <p class="card-text ">{{ $project->content }}</p>
 
-        @forelse ( explode(',',$project->skills_names)  as $skill )
+        @forelse (explode(',',$project->skills_names)  as $skill)
             <span class="badge text-bg-secondary" style="font-size:medium">
                 {{ $skill }}
             </span>
@@ -43,5 +43,9 @@
 
     <hr>
 @empty
-    <p>no projects</p>
+    @isset($searchTitle)
+        <p>no project found</p>
+    @else
+        <p>Add skills to see projects or search for specific project</p>
+    @endisset
 @endforelse
