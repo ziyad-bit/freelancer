@@ -6,10 +6,8 @@
         <div class="card" style="height: 316px" data-store_msg_url="{{ route('message.store') }}"
             data-chat_room_id="{{ $chat_room_id }}">
 
-            <h5 class="card-header">chat
-                <span id="loading{{ $receiver_id }}" style="margin-left: 50px;display:none">loading old
-                    all_chat_rooms
-                </span>
+            <h5 class="card-header">
+                chat
             </h5>
 
             <div class="card-body chat_body box{{ $chat_room_id }}"

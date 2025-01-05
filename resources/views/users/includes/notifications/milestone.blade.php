@@ -5,11 +5,11 @@
             <h5 class="mb-1 p">
                 {{ Str::limit(Auth::user()->name,10,'...') }} 
                 
-                @if ($release)
-                    released milestone ${{ $amount }}
-                @else
+                @isset($data['amount'])
                     created milestone ${{ $data['amount'] }}
-                @endif
+                @else
+                    released milestone ${{ $amount }}
+                @endisset
             </h5>
         </div>
 

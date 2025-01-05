@@ -2,14 +2,16 @@
     @foreach ($user_notifs as $notification)
         @if ($notification->type === 'invitation_to_chatroom')
             <div class="list-group notif_{{ $notification->data['chat_room_id'] }}"
-                data-show_old_url="{{ $loop->last ? route('notifications.show_old', $notification->created_at) : '' }}">
+                data-show_old_url="{{ route('notifications.show_old', $notification->created_at) }}">
+
                 <div class="list-group-item list-group-item-action notif_hover">
                     <div class="d-flex w-100 justify-content-between">
                         <img src="{{ asset('storage/images/users/' . $notification->data['sender_image']) }}"
                             class="rounded-circle" alt="error">
 
                         <h5 class="mb-1 p">
-                            {{ $notification->data['sender_name'] }} send invitation to add you to chat room
+                            {{ $notification->data['sender_name'] }}
+                            send invitation to add you to chat room
                         </h5>
                     </div>
 
@@ -26,7 +28,7 @@
                         </button>
                     </form>
 
-                    <button type="submit" data-refuse_url="{{ route('chatrooms.refuseInvitation') }}"
+                    <button type="button" data-refuse_url="{{ route('chatrooms.refuseInvitation') }}"
                         data-chat_room_id="{{ $notification->data['chat_room_id'] }}" class="btn btn-danger refuse_btn"
                         style="float: right;">
                         refuse
@@ -61,8 +63,7 @@
             <div class="list-group notifications"
                 data-show_old_url="{{ $loop->last ? route('notifications.show_old', $notification->created_at) : '' }}">
 
-                <a href="{{ route('transaction.index') }}"
-                    class="list-group-item list-group-item-action notif_hover">
+                <a href="{{ route('transaction.index') }}" class="list-group-item list-group-item-action notif_hover">
 
                     <div class="d-flex w-100 justify-content-between">
 
@@ -70,9 +71,9 @@
                             class="rounded-circle" alt="error">
                         <h5 class="mb-1 p">
                             {{ $notification->data['sender_name'] }}
-                            created milestone : 
-                            {{$notification->data['amount']}}
-                            
+                            created milestone :
+                            {{ $notification->data['amount'] }}
+
                         </h5>
 
                     </div>

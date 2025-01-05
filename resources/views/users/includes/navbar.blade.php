@@ -20,7 +20,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('project.fetch') }}">projects</a>
                     </li>
-                    
+
                     @auth
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('home') }}">profile</a>
@@ -42,8 +42,8 @@
                         @csrf
 
                         <input class="form-control me-2" id="search" name="search" type="search"
-                            value="{{ isset($searchTitle ) ? $searchTitle : '' }}"
-                            placeholder="Search" aria-label="Search" autocomplete="off">
+                            value="{{ isset($searchTitle) ? $searchTitle : '' }}" placeholder="Search"
+                            aria-label="Search" autocomplete="off">
 
                         <div id="search_wrapper">
                             <ul class="list-group list-group-flush navbar_list_search" data-req_num="0"
@@ -63,13 +63,12 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('signup') }}">{{ __('signup') }}</a>
                         </li>
-
-                        
                     @else
                         <input id="recent_search_url" type="hidden" value="{{ route('recent_search.projects') }}">
 
                         <input id="search_url" type="hidden" value="{{ route('search.projects') }}">
 
+                        {{-- notifications count --}}
                         <i class="fas fa-bell"
                             style="top: 12px;margin-right: 10px; margin-left: 20px;
                             color: white;font-size: larger;position: relative;"
@@ -80,6 +79,7 @@
                         </i>
 
 
+                        {{-- logout --}}
                         <li class="nav-item dropdown" style="margin-right: 70px">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
@@ -102,6 +102,7 @@
                     @endguest
                 </ul>
 
+                {{-- notifications index--}}
                 <div class="wrapper_notifs" data-update_url="{{ route('notifications.update') }}">
                     @auth
                         <div class="card notif " style="width: 26rem;display: none " id="notif">

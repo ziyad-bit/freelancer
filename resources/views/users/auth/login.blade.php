@@ -25,7 +25,7 @@
                             <div class="col-md-6">
                                 <input id="email"  value="oolan@example.org"
                                     class="form-control" name="email"
-                                    value="{{ old('email') }}" required autocomplete="email" autofocus>
+                                    required autocomplete="email" autofocus>
                             </div>
                         </div>
 
@@ -34,8 +34,7 @@
 
                             <div class="col-md-6">
                                 <input id="password" type="password" value="13131313"
-                                    class="form-control" name="password" required
-                                    autocomplete="current-password">
+                                    class="form-control" name="password" required>
                             </div>
                         </div>
 

@@ -9,7 +9,6 @@
         <title>
             {{ ucfirst(Auth::user()->name) . ' - ' . config('app.name') }}
         </title>
-
     @endauth
 
     <meta name="keywords" content="profile page contain information about user">
@@ -17,11 +16,15 @@
 
 @section('content')
     @if (Session::has('success'))
-        <div class="alert alert-success text-center">{{ Session::get('success') }}</div>
+        <div class="alert alert-success text-center">
+            {{ Session::get('success') }}
+        </div>
     @endif
 
     @if (Session::has('error'))
-        <div class="alert alert-danger text-center">{{ Session::get('error') }}</div>
+        <div class="alert alert-danger text-center">
+            {{ Session::get('error') }}
+        </div>
     @endif
 
     <input type="hidden" value="{{ route('project.fetch') }}" class="index_url">
@@ -47,6 +50,5 @@
                 load more
             </button>
         </div>
-
     </div>
 @endsection

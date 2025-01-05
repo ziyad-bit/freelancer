@@ -1,17 +1,30 @@
 <input type="hidden" value="{{ route('proposal.update', $proposal->id) }}" id="update_url">
 <input type="hidden" id="delete_url" value="{{ route('proposal.destroy', $proposal->id) }}">
 
-<div class="card-body proposal" style="margin-top: 25px" >
+<div class="card-body proposal" style="margin-top: 25px">
     <div class="text-muted" style="margin-bottom: 15px">
-        <span> $<span class="price">{{ $proposal->price }}</span></span>
-        <span style="margin-left: 10px">time: <span class="num_of_days">{{ $proposal->num_of_days }}</span>
+        <span>
+            $<span class="price">
+                {{ $proposal->price }}
+            </span>
+        </span>
+
+        <span style="margin-left: 10px">
+            time:
+            <span class="num_of_days">
+                {{ $proposal->num_of_days }}
+            </span>
             days
         </span>
+
         <span style="margin-left: 10px">posted:
-            {{ \Carbon\Carbon::parse($proposal->created_at)->diffForhumans() }}</span>
+            {{ \Carbon\Carbon::parse($proposal->created_at)->diffForhumans() }}
+        </span>
     </div>
 
-    <p class="card-text content">{{ $proposal->content }}</p>
+    <p class="card-text content">
+        {{ $proposal->content }}
+    </p>
 
     <div class="text-muted" style="margin-top: 10px">
         @if ($proposal->card_num)
@@ -42,15 +55,17 @@
         </button>
     @else
         @if ($project->user_id === Auth::id())
-            @if ($proposal->finished !== 'in progress')
-                <a type="submit" 
-                href="{{route('transaction.milestone.create',['project_id'=>$proposal->project_id,'receiver_id'=>$proposal->user_id])}}" style="margin-top: 5px;" class="btn btn-success">
+            @if ($proposal->finished !== 'in progress' && $proposal->finished !== 'finished')
+                <a type="submit"
+                    href="{{ route('transaction.milestone.create', ['project_id' => $proposal->project_id, 'receiver_id' => $proposal->user_id]) }}"
+                    style="margin-top: 5px;" class="btn btn-success">
                     accept
                 </a>
             @endif
-            
 
-            <a href="{{ route('chatrooms.fetch',$proposal->user_id) }}" style="margin-top: 5px;" class="btn btn-primary" >
+
+            <a href="{{ route('chatrooms.fetch', $proposal->user_id) }}" style="margin-top: 5px;"
+                class="btn btn-primary">
                 chat
             </a>
         @endif

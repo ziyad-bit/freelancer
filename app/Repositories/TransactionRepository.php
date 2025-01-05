@@ -79,10 +79,9 @@ class TransactionRepository implements TransactionRepositoryInterface
 
 					Log::info('database commit');
 
-					$release  = false;
 					$receiver = User::find($receiver_id);
 					$user     = Auth::user();
-					$view     = view('users.includes.notifications.milestone', compact('data', 'release'))->render();
+					$view     = view('users.includes.notifications.milestone', compact('data'))->render();
 
 					$receiver->notify(new MilestoneNotification($data['amount'], $user->name, $user->image, $view));
 					Log::info('user created milestone');
@@ -151,10 +150,9 @@ class TransactionRepository implements TransactionRepositoryInterface
 			DB::commit();
 			Log::info('database commit');
 
-			$release  = true;
 			$receiver = User::find($receiver_id);
 			$user     = Auth::user();
-			$view     = view('users.includes.notifications.milestone', compact('amount', 'release'))->render();
+			$view     = view('users.includes.notifications.milestone', compact('amount'))->render();
 
 			$receiver->notify(new MilestoneNotification($amount, $user->name, $user->image, $view));
 			Log::info('user released milestone');

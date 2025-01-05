@@ -1,6 +1,7 @@
 <input type="hidden" id="upload_url" value="{{ route('file.upload') }}">
 <div style="display: none" id="chat_room_id" data-chat_room_id="{{ $chat_room_id }}"></div>
 
+{{-- check if new chatroom exist --}}
 @isset($receiver)
     @include('users.includes.chat.chat_boxes_body', [
         'is_selected_chat_room' => true,
@@ -34,6 +35,7 @@
             'chat_room_id' => $chat_room->chat_room_id,
         ])
 
+        {{-- form for uploading files --}}
         <form id="form_upload_app{{ $chat_room->chat_room_id }}" enctype="multipart/form-data">
             @csrf
             <input id="app_input{{ $chat_room->chat_room_id }}" class="file_input"
@@ -61,6 +63,7 @@
             <input type="hidden" name="type" value="video">
         </form>
 
+        {{-- uploaded files will appear here --}}
         <div class="accordion files_container{{ $chat_room->chat_room_id }}" style="display: none"
             id="accordionExample">
             <div class="accordion-item">

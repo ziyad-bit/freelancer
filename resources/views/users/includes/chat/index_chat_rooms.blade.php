@@ -21,6 +21,7 @@
     </div>
 @endif
 
+{{-- check if new chatroom exist --}}
 @isset($receiver)
     @include('users.includes.chat.chat_rooms_body', [
         'chat_room_id' => $chat_room_id,

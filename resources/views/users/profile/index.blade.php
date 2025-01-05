@@ -40,6 +40,7 @@
         delete account
     </a>
 
+    {{-- user data --}}
     <div class="card mb-3 card_profile" style="margin-top: 15px">
         <div class="row no-gutters">
             <div class="col-md-4">
@@ -112,13 +113,14 @@
 
     <hr>
 
-    @if ($user_info)
+    @if ($user_info->overview )
         <h2>overview</h2>
         <p style="margin-left: 30px">{{ $user_info->overview }}</p>
     @endif
 
     <hr>
 
+    {{-- user projects --}}
     <h2>work history</h2>
     @forelse ($projects as $project)
         <div class="card-body">

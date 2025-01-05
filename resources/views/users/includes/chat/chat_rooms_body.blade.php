@@ -20,10 +20,12 @@
         <img class="rounded-circle image" alt="loading" id="image{{ $receiver_id }}"
             src="{{ asset('storage/images/users/' .$receiver_image ) }}">
 
+            {{-- check if user is online --}}
         @if (Cache::has('online_' . $receiver_id))
             <div class="rounded-circle dot"></div>
         @endif
 
+        {{-- last message box --}}
         <span style="font-weight: bold;" class="name" id="name{{ $receiver_id }}">
             {{ Str::limit($receiver_name, 20, '...') }}
         </span>

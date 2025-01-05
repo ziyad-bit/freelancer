@@ -3,7 +3,6 @@
 @section('header')
     <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
 
-
     <script defer src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
 
     <script defer src="{{ asset('js/project/create.js') }}?v={{ filemtime(public_path('js/project/create.js')) }}"></script>
@@ -12,11 +11,15 @@
 
 @section('content')
     @if (Session::has('success'))
-        <div class="alert alert-success text-center">{{ Session::get('success') }}</div>
+        <div class="alert alert-success text-center">
+            {{ Session::get('success') }}
+        </div>
     @endif
 
     @if (Session::has('error'))
-        <div class="alert alert-danger text-center error_msg">{{ Session::get('error') }}</div>
+        <div class="alert alert-danger text-center error_msg">
+            {{ Session::get('error') }}
+        </div>
     @endif
 
     <form method="POST" id="form" action="{{ route('project.store') }}" enctype="multipart/form-data">
@@ -125,6 +128,7 @@
                         </small>
                     </div>
 
+                   
                     @if (old('num_input') > 1)
                         @for ($i = 1; $i < old('num_input') + 1; $i++)
                             <div id="input{{ $i }}">
@@ -171,8 +175,8 @@
                                 class="form-control input" value='{{ old('skills.1.name') }}'
                                 >
 
-                                <small style="color: red;display: none" class="err_msg" >
-                                </small>
+                            <small style="color: red;display: none" class="err_msg" >
+                            </small>
 
                             <input type="hidden" name="skills[1][id]" id="skill_id_1">
 

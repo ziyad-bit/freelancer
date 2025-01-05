@@ -5,7 +5,14 @@
             data-show_old_msgs_url="{{ route('message.show_old', ['chat_room_id'=>0,'message_id'=>$messages[$i]->id]) }}"
             alt="loading">
 
-        <span class="user_name">{{ $messages[$i]->sender_name }}</span>
+        <span class="user_name">
+            {{ $messages[$i]->sender_name }}
+        </span>
+
+        <small class="text-muted">
+            {{ \Carbon\Carbon::parse($messages[$i]->created_at)->diffForhumans() }}
+        </small>
+
         @if ($messages[$i]->text)
             <p class="user_message"> {{ decrypt($messages[$i]->text) }} </p>
         @endif
