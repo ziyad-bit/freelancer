@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 interface ProfileRepositoryInterface
 {
-	public function getUserInfo(Request $request):array;
+	public function getUserInfo(string $slug):array;
 	public function storeUserInfo(ProfileRequest $request):void;
 	public function editUserInfo():?object;
 	public function updateUserInfo(ProfileRequest $request):void;

@@ -55,20 +55,20 @@ Route::namespace('Users')->controller(SocialiteController::class)->group(functio
 
 //MARK:Profile
 Route::namespace('Users')->controller(ProfileController::class)->group(function () {
-	Route::get('/'              , 'index')->name('home');
+	Route::get('/profile/{slug}', 'index')->name('profile.index');
 	Route::get('/profile/delete', 'delete')->name('profile.delete');
 });
 
-Route::resource('profile'   , ProfileController::class)->except(['show','index']);
+Route::resource('profile' , ProfileController::class)->except(['show','index']);
 
 //MARK:Skill
-Route::delete('/project-skill/{id}'      ,[SkillController::class,'destroy_project_skill'])->name('project_skill.destroy');
-Route::resource('skill'                  , SkillController::class)->except(['edit', 'update']);
+Route::delete('/project-skill/{id}' ,[SkillController::class,'destroy_project_skill'])->name('project_skill.destroy');
+Route::resource('skill'             , SkillController::class)->except(['edit', 'update']);
 
 
 //MARK:Project
-Route::any('/project/fetch'         ,[ProjectController::class,'fetch'])->name('project.fetch');
-Route::resource('project'           , ProjectController::class)->except(['index']);
+Route::any('/'             ,[ProjectController::class,'fetch'])->name('home');
+Route::resource('project'  , ProjectController::class)->except(['index']);
 
 
 //MARK:file
@@ -86,8 +86,8 @@ Route::resource('proposal' , ProposalController::class)->only(['store', 'destroy
 
 //MARK:message
 Route::namespace('Users')->controller(MessageController::class)->group(function () {
-	Route::post('message'                                    , 'store')->name('message.store');
-	Route::get('message/{id}'                                , 'show')->name('message.show');
+	Route::post('message'                                     , 'store')->name('message.store');
+	Route::get('message/{id}'                                 , 'show')->name('message.show');
 	Route::get('message/show-old/{message_id}/{chat_room_id}' , 'show_old')->name('message.show_old');
 });
 
@@ -99,9 +99,9 @@ Route::namespace('Users')->controller(NotificationsController::class)->group(fun
 
 //MARK:chat room
 Route::namespace('Users')->controller(ChatRoomController::class)->group(function () {
-	Route::get('chatrooms/index'                           , 'index')->name('chatrooms.index');
-	Route::get('chatrooms/fetch/{receiver_id}'             , 'fetch')->name('chatrooms.fetch');
-	Route::get('chatrooms/show-more/{id}'                  , 'show_more_chat_rooms')->name('chatrooms.show_more');
+	Route::get('chatrooms/index'               , 'index')->name('chatrooms.index');
+	Route::get('chatrooms/fetch/{receiver_id}' , 'fetch')->name('chatrooms.fetch');
+	Route::get('chatrooms/show-more/{id}'      , 'show_more_chat_rooms')->name('chatrooms.show_more');
 });
 
 //MARK:chatroomInvitation

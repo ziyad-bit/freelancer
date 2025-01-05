@@ -24,7 +24,7 @@ class SearchRequest extends FormRequest
 	public function rules()
 	{
 		return [
-			'search' => request()->routeIs('project.fetch') ? 'nullable' : 'required' . '|string|max:30',
+			'search' => request()->routeIs('home') ? 'nullable' : 'required' . '|string|max:30',
 		];
 	}
 }

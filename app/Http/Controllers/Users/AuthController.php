@@ -27,7 +27,7 @@ class AuthController extends Controller
 	{
 		$this->authRepository->storeUser($request);
 
-		return to_route('home');
+		return to_route('profile.index');
 	}
 
 	//MARK: getLogin

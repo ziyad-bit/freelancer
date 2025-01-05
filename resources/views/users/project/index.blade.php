@@ -27,7 +27,7 @@
         </div>
     @endif
 
-    <input type="hidden" value="{{ route('project.fetch') }}" class="index_url">
+    <input type="hidden" value="{{ route('home') }}" class="index_url">
 
     <a class="btn btn-primary " href="{{ route('project.create') }}" style="margin-top: 25px" role="button">
         add project

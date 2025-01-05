@@ -21,6 +21,6 @@ class SocialiteController extends Controller
 	{
 		$socialiteRepository->callback($provider);
 
-		return to_route('home');
+		return to_route('profile.index');
 	}
 }

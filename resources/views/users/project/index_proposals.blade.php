@@ -28,16 +28,30 @@
 
     <div class="text-muted" style="margin-top: 10px">
         @if ($proposal->card_num)
-            <span style="color: green">payment verified </span>
+            <span style="color: green">
+                payment verified 
+            </span>
         @else
-            <span>payment unverified </span>
+            <span>
+                payment unverified 
+            </span>
         @endif
 
-        <span style="margin-left: 10px">location: {{ $proposal->location }}</span>
+        <span style="margin-left: 10px">
+            location: 
+            {{ $proposal->location }}
+        </span>
 
-        <span style="margin-left: 10px">name: {{ $proposal->name }}</span>
+        <span style="margin-left: 10px">
+            review: 
+            {{ $proposal->review }}
+        </span>
 
-        <span style="margin-left: 10px">review: {{ $proposal->review }}</span>
+        <span style="margin-left: 10px">
+            <a class="nav-link" style="display: inline;font-weight: bold" href="{{ route('profile.index',$proposal->slug) }}">
+                name: {{ $proposal->name }}
+            </a>
+        </span>
     </div>
 
 

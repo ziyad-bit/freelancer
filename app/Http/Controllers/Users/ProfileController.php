@@ -21,9 +21,9 @@ class ProfileController extends Controller
 	}
 
 	//MARK: index
-	public function index(Request $request):View
+	public function index(string $slug):View
 	{
-		$data = $this->profileRepository->getUserInfo($request);
+		$data = $this->profileRepository->getUserInfo($slug);
 
 		return view('users.profile.index', $data);
 	}

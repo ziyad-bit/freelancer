@@ -42,6 +42,6 @@ class VerificationController extends Controller
 			return to_route('verification.get')->with($message);
 		}
 
-		return to_route('home')->with($message);
+		return to_route('profile.index')->with($message);
 	}
 }

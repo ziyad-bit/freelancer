@@ -3,7 +3,7 @@
     <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm">
         <div class="container">
 
-            <a class="navbar-brand" href="{{ route('project.fetch') }}">
+            <a class="navbar-brand" href="{{ route('home') }}">
                 Freelancer
             </a>
 
@@ -18,32 +18,40 @@
 
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('project.fetch') }}">projects</a>
+                        <a class="nav-link" href="{{ route('home') }}">
+                            projects
+                        </a>
                     </li>
 
                     @auth
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('home') }}">profile</a>
+                            <a class="nav-link" href="{{ route('profile.index',Auth::user()->slug) }}">
+                                profile
+                            </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('transaction.index') }}">transactions</a>
+                            <a class="nav-link" href="{{ route('transaction.index') }}">
+                                transactions
+                            </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('chatrooms.index') }}">chat</a>
+                            <a class="nav-link" href="{{ route('chatrooms.index') }}">
+                                chat
+                            </a>
                         </li>
                     @endauth
                 </ul>
 
                 <!-- Right Side Of Navbar -->
                 <ul class="navbar-nav ms-auto">
-                    <form method="POST" id="search_form" action="{{ route('project.fetch') }}" class="d-flex">
+                    <form method="POST" id="search_form" action="{{ route('home') }}" class="d-flex">
                         @csrf
 
                         <input class="form-control me-2" id="search" name="search" type="search"
-                            value="{{ isset($searchTitle) ? $searchTitle : '' }}" placeholder="Search"
-                            aria-label="Search" autocomplete="off">
+                            value="{{ isset($search) ? $search : '' }}" placeholder="Search" aria-label="Search"
+                            autocomplete="off">
 
                         <div id="search_wrapper">
                             <ul class="list-group list-group-flush navbar_list_search" data-req_num="0"
@@ -102,7 +110,7 @@
                     @endguest
                 </ul>
 
-                {{-- notifications index--}}
+                {{-- notifications index --}}
                 <div class="wrapper_notifs" data-update_url="{{ route('notifications.update') }}">
                     @auth
                         <div class="card notif " style="width: 26rem;display: none " id="notif">

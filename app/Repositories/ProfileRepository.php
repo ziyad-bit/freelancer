@@ -13,10 +13,11 @@ class ProfileRepository implements ProfileRepositoryInterface
 	use File;
 
 	//MARK: getUserInfo
-	public function getUserInfo(Request $request):array
+	public function getUserInfo(string $slug):array
 	{
 		$user_info = DB::table('users')
 			->select(
+				'users.*',
 				'location',
 				'job',
 				'overview',
@@ -41,7 +42,7 @@ class ProfileRepository implements ProfileRepositoryInterface
 				'=',
 				'users.id'
 			)
-			->where('users.id', Auth::id())
+			->where('users.slug', $slug)
 			->groupBy('users.id')
 			->first();
 
@@ -50,7 +51,7 @@ class ProfileRepository implements ProfileRepositoryInterface
 			->select('title', 'rate', 'amount', 'transactions.created_at', 'projects.id')
 			->leftJoin('reviews', 'reviews.project_id', '=', 'projects.id')
 			->Join('transactions', 'transactions.project_id', '=', 'projects.id')
-			->where('reviews.receiver_id', Auth::id())
+			->where('reviews.receiver_id', $user_info->id)
 			->where('type', 'release')
 			->latest('transactions.created_at')
 			->limit(10)

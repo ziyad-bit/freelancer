@@ -62,10 +62,10 @@ class SearchRepository implements SearchRepositoryInterface
 	**/
 	public function show_skills_after_typing(SearchRequest $request):string
 	{
-		$searchTitle = $request->search;
+		$search = $request->search;
 		$skills    = DB::table('skills')
 					->select('skill')
-					->where('skill', 'LIKE', "{$searchTitle}%")
+					->where('skill', 'LIKE', "{$search}%")
 					->limit(5)
 					->get();
 

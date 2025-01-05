@@ -43,7 +43,7 @@
 
     <hr>
 @empty
-    @isset($searchTitle)
+    @isset($search)
         <p>no project found</p>
     @else
         <p>Add skills to see projects or search for specific project</p>

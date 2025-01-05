@@ -2,24 +2,29 @@
 
 namespace App\Repositories;
 
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Traits\SendSmsVerification;
 use App\Traits\sendEmailVerification;
+use App\Interfaces\Repository\AuthRepositoryInterface;
 use Illuminate\Support\Facades\{Auth, Cache, DB, Hash};
 use App\Http\Requests\{LoginRequest, SignupRequest, SmsVerificationRequest};
-use App\Interfaces\Repository\AuthRepositoryInterface;
+use App\Traits\Slug;
 
 class AuthRepository implements AuthRepositoryInterface
 {
-	use sendEmailVerification;
+	use sendEmailVerification,Slug;
 
 	//MARK: store User   
 	public function storeUser(SignupRequest $request):void
 	{
+		$slug = $this->createSlug('users','name',$request->name);
+
 		$data = $request->safe()->except('password') +
 			[
 				'password'   => $request->password,
 				'created_at' => now(),
+				'slug'       => $slug,
 			];
 
 		$user_id = DB::table('users')->insertGetId($data);

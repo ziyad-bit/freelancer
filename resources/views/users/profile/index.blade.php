@@ -6,7 +6,7 @@
     <script defer src="{{ asset('js/profile/index.js') }}?v={{ filemtime(public_path('js/profile/index.js')) }}"></script>
 
     <title>
-        {{ ucfirst(Auth::user()->name) . ' - ' . config('app.name') }}
+        {{ ucfirst($user_info->name) . ' - ' . config('app.name') }}
     </title>
 
     <meta name="keywords" content="profile page contain information about user">
@@ -23,28 +23,30 @@
 
     <div class="alert alert-success text-center success_msg" style="display: none"></div>
 
-    @if (!$user_info)
-        <a class="btn btn-primary" href="{{ route('profile.create') }}" style="margin-left:270px; margin-top:70px;"
+    @if ($user_info->id === Auth::id())
+        @if (!$user_info)
+            <a class="btn btn-primary" href="{{ route('profile.create') }}" style="margin-left:270px; margin-top:70px;"
+                role="button">
+                complete profile
+            </a>
+        @else
+            <a class="btn btn-primary" href="{{ route('profile.edit', 'auth') }}"
+                style="margin-left:270px; margin-top:70px;" role="button">
+                update profile
+            </a>
+        @endif
+
+        <a class="btn btn-danger" href="{{ route('profile.delete') }}" style="margin-left:313px; margin-top:70px;"
             role="button">
-            complete profile
-        </a>
-    @else
-        <a class="btn btn-primary" href="{{ route('profile.edit', 'auth') }}" style="margin-left:270px; margin-top:70px;"
-            role="button">
-            update profile
+            delete account
         </a>
     @endif
-
-    <a class="btn btn-danger" href="{{ route('profile.delete') }}" style="margin-left:313px; margin-top:70px;"
-        role="button">
-        delete account
-    </a>
 
     {{-- user data --}}
     <div class="card mb-3 card_profile" style="margin-top: 15px">
         <div class="row no-gutters">
             <div class="col-md-4">
-                <img src="{{ asset('/storage/images/users/' . Auth::user()->image) }}" style="width: 199px"
+                <img src="{{ asset('/storage/images/users/' . $user_info->image) }}" style="width: 199px"
                     class="card-img image-profile" alt="..." />
             </div>
 
@@ -56,12 +58,12 @@
 
                     <li class="list-group-item items_list">
                         <span class="name_profile name_text">name</span>:
-                        <span id="name" class="user_name">{{ Auth::user()->name }}</span>
+                        <span id="name" class="user_name">{{ $user_info->name }}</span>
                     </li>
 
                     <li class="list-group-item items_list ">
                         <span class="email">email</span>:
-                        <span id="email" class="user_email">{{ Auth::user()->email }}</span>
+                        <span id="email" class="user_email">{{ $user_info->email }}</span>
                     </li>
 
                     @if ($user_info)
@@ -113,7 +115,7 @@
 
     <hr>
 
-    @if ($user_info->overview )
+    @if ($user_info->overview)
         <h2>overview</h2>
         <p style="margin-left: 30px">{{ $user_info->overview }}</p>
     @endif
@@ -144,13 +146,15 @@
     @endforelse
 
     <hr>
-    
+
     <h2>skills</h2>
 
-    <a class="btn btn-primary" href="{{ route('skill.create') }}" style="margin-left:270px;margin-top: -76px"
-        role="button">
-        add skills
-    </a>
+    @if ($user_info->id === Auth::id())
+        <a class="btn btn-primary" href="{{ route('skill.create') }}" style="margin-left:270px;margin-top: -76px"
+            role="button">
+            add skills
+        </a>
+    @endif
 
     @if ($user_info->skills != null)
         <div class="alert alert-danger text-center err_msg" style="display: none"></div>

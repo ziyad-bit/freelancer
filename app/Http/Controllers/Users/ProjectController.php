@@ -77,6 +77,6 @@ class ProjectController extends Controller
 	{
 		$this->ProjectRepository->deleteProject($id);
 
-		return to_route('project.fetch')->with('success', 'you deleted project successfully');
+		return to_route('home')->with('success', 'you deleted project successfully');
 	}
 }

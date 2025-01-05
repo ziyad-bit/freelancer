@@ -21,7 +21,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 			project skills which match user skills if user is authenticated
 		 */
 		$auth_id     = Auth::id();
-		$searchTitle = $request->input('search');
+		$search = $request->input('search');
 		$projects    = DB::table('projects')
 				->select(
 					'projects.*',
@@ -40,11 +40,11 @@ class ProjectRepository implements ProjectRepositoryInterface
 				->leftJoin('reviews', 'reviews.receiver_id', '=', 'users.id')
 				->leftJoin('proposals', 'projects.id', '=', 'proposals.project_id')
 				->when(
-					$searchTitle,
-					function ($query) use ($searchTitle) {
-						$query->where(function ($query) use ($searchTitle) {
-							$query->where('title', 'LIKE', "{$searchTitle}%")
-								->orWhere('skills.skill', 'LIKE', "{$searchTitle}%");
+					$search,
+					function ($query) use ($search) {
+						$query->where(function ($query) use ($search) {
+							$query->where('title', 'LIKE', "{$search}%")
+								->orWhere('skills.skill', 'LIKE', "{$search}%");
 						});
 					},
 					function ($query) use ($auth_id) {
@@ -60,10 +60,10 @@ class ProjectRepository implements ProjectRepositoryInterface
 				->latest('projects.id')
 				->cursorPaginate(10);
 
-		if ($searchTitle && Auth::check()) {
+		if ($search && Auth::check()) {
 			DB::table('searches')
 				->insert([
-					'search'     => $searchTitle,
+					'search'     => $search,
 					'user_id'    => $auth_id,
 					'created_at' => now(),
 				]);
@@ -77,7 +77,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 			return ['view' => $view, 'cursor' => $cursor];
 		}
 
-		return ['projects' => $projects, 'searchTitle' => $searchTitle, 'cursor' => $cursor];
+		return ['projects' => $projects, 'search' => $search, 'cursor' => $cursor];
 	}
 
 	//MARK:   storeProject
@@ -146,6 +146,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 						'location',
 						'card_num',
 						'name',
+						'slug',
 						DB::raw('IFNULL(ROUND(AVG(rate), 1),0) as review'),
 					)
 					->join('users', 'users.id', '=', 'proposals.user_id')
