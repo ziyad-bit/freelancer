@@ -5,24 +5,24 @@ namespace App\Repositories;
 use App\Exceptions\GeneralNotFoundException;
 use App\Http\Requests\{ProjectRequest, SearchRequest};
 use App\Interfaces\Repository\{FileRepositoryInterface, ProjectRepositoryInterface, SkillRepositoryInterface};
-use App\Traits\GetCursor;
+use App\Traits\{GetCursor, Slug};
 use Illuminate\Support\Facades\{Auth, DB, Log};
 
 class ProjectRepository implements ProjectRepositoryInterface
 {
-	use GetCursor;
+	use GetCursor,Slug;
 
 	//MARK:   fetchProjects
 	public function fetchProjects(SearchRequest $request):array
 	{
-		/** 
+		/**
 			in case of search, we will search in project title and skills.
 			in case search is empty, we will get
 			project skills which match user skills if user is authenticated
 		 */
-		$auth_id     = Auth::id();
-		$search = $request->input('search');
-		$projects    = DB::table('projects')
+		$auth_id  = Auth::id();
+		$search   = $request->input('search');
+		$projects = DB::table('projects')
 				->select(
 					'projects.*',
 					'project_infos.*',
@@ -48,11 +48,11 @@ class ProjectRepository implements ProjectRepositoryInterface
 						});
 					},
 					function ($query) use ($auth_id) {
-						$query->when(Auth::check(), function($query) use ($auth_id){
+						$query->when(Auth::check(), function ($query) use ($auth_id) {
 							$query->join('user_skill', function ($join) use ($auth_id) {
 								$join->on('project_skill.skill_id', '=', 'user_skill.skill_id')
 									->where('user_skill.user_id', '=', $auth_id);
-								});
+							});
 						});
 					}
 				)
@@ -80,13 +80,19 @@ class ProjectRepository implements ProjectRepositoryInterface
 		return ['projects' => $projects, 'search' => $search, 'cursor' => $cursor];
 	}
 
-	//MARK:   storeProject
+	//MARK:storeProject
 	public function storeProject(ProjectRequest $request, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):void
 	{
 		try {
 			DB::beginTransaction();
+			$slug = $this->createSlug('projects', 'title', $request->title);
+
 			$project_data = $request->safe()->only(['title', 'content']) +
-						['user_id' => Auth::id(), 'created_at' => now()];
+						[
+							'user_id'    => Auth::id(),
+							'created_at' => now(),
+							'slug'       => $slug,
+						];
 
 			$project_id  = DB::table('projects')->insertGetId($project_data);
 
@@ -103,14 +109,14 @@ class ProjectRepository implements ProjectRepositoryInterface
 			Log::info('database commit');
 		} catch (\Throwable $th) {
 			DB::rollBack();
-			Log::critical('database rollback and error is' . $th->getMessage());
+			Log::critical('database rollback and error is ' . $th->getMessage());
 
 			abort(500, 'something went wrong');
 		}
 	}
 
 	//MARK: showProject
-	public function showProject(int $id):array
+	public function showProject(string $slug):array
 	{
 		$project = DB::table('projects')
 			->select(
@@ -132,7 +138,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 			->join('users', 'users.id', '=', 'projects.user_id')
 			->join('user_infos', 'users.id', '=', 'user_infos.user_id')
 			->leftJoin('reviews', 'reviews.receiver_id', '=', 'users.id')
-			->where('projects.id', $id)
+			->where('projects.slug', $slug)
 			->groupBy('projects.id')
 			->first();
 
@@ -152,24 +158,18 @@ class ProjectRepository implements ProjectRepositoryInterface
 					->join('users', 'users.id', '=', 'proposals.user_id')
 					->join('user_infos', 'users.id', '=', 'user_infos.user_id')
 					->leftJoin('reviews', 'reviews.receiver_id', '=', 'users.id')
-					->where('proposals.project_id', $id)
+					->where('proposals.project_id', $project->id)
 					->groupBy('proposals.id')
 					->orderBy('proposals.id')
 					->cursorPaginate(3);
 
 		$cursor = $this->getCursor($proposals);
 
-		if (request()->ajax()) {
-			$view = view('users.project.show_proposals', compact('proposals', 'project'))->render();
-
-			return ['view' => $view, 'cursor' => $cursor];
-		}
-
 		return ['proposals' => $proposals, 'project' => $project, 'cursor' => $cursor];
 	}
 
 	//MARK:editProject
-	public function editProject(int $id):\stdClass
+	public function editProject(string $slug):\stdClass
 	{
 		$project = DB::table('projects')
 				->select(
@@ -184,7 +184,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 				->leftJoin('project_files', 'projects.id', '=', 'project_files.project_id')
 				->leftJoin('project_skill', 'projects.id', '=', 'project_skill.project_id')
 				->leftJoin('skills', 'project_skill.skill_id', '=', 'skills.id')
-				->where('projects.id', $id)
+				->where('projects.slug', $slug)
 				->groupBy('projects.id')
 				->first();
 
@@ -196,13 +196,17 @@ class ProjectRepository implements ProjectRepositoryInterface
 	}
 
 	//MARK:   updateProject
-	public function updateProject(ProjectRequest $request, int $id, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):void
-	{
+	public function updateProject(
+		ProjectRequest $request,
+		FileRepositoryInterface $fileRepository,
+		SkillRepositoryInterface $skillRepository,
+		string $slug,
+	):void {
 		try {
 			$project_data      = $request->safe()->only(['title', 'content']) + ['user_id' => Auth::id(), 'created_at' => now()];
 			$project_info_data = $request->safe()->only(['num_of_days', 'min_price', 'max_price', 'exp']);
 
-			$project_query = DB::table('projects')->where('id', $id);
+			$project_query = DB::table('projects')->where('slug', $slug);
 			$project       = $project_query->first();
 
 			if (!$project) {
@@ -213,11 +217,11 @@ class ProjectRepository implements ProjectRepositoryInterface
 
 			$project_query->update($project_data);
 
-			DB::table('project_infos')->where('project_id', $id)->update($project_info_data);
+			DB::table('project_infos')->where('project_id', $project->id)->update($project_info_data);
 
-			$fileRepository->insert_file($request, 'project_files', 'project_id', $id);
+			$fileRepository->insert_file($request, 'project_files', 'project_id', $project->id);
 
-			$skillRepository->storeSkill($request, 'project_skill', 'project_id', $id);
+			$skillRepository->storeSkill($request, 'project_skill', 'project_id', $project->id);
 			DB::commit();
 
 			Log::info('database commit');
@@ -230,9 +234,9 @@ class ProjectRepository implements ProjectRepositoryInterface
 	}
 
 	//MARK: deleteProject
-	public function deleteProject(int $id):void
+	public function deleteProject(string $slug):void
 	{
-		$project_query = DB::table('projects')->where('id', $id);
+		$project_query = DB::table('projects')->where('slug', $slug);
 		$project       = $project_query->first();
 
 		if (!$project) {

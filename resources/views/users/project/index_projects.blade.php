@@ -1,6 +1,6 @@
 @forelse ($projects as $project)
     <div class="card-body">
-        <a href="{{ route('project.show', $project->id) }}" style="text-decoration:none">
+        <a href="{{ route('project.show', $project->slug) }}" style="text-decoration:none">
             <h5 class="card-title">
                 {{ $project->title }}
             </h5>

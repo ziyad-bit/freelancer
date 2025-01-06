@@ -79,7 +79,7 @@ Route::namespace('Users')->controller(FileController::class)->group(function () 
 });
 
 //MARK:proposal
-Route::resource('proposal' , ProposalController::class)->only(['store', 'destroy','update']);
+Route::resource('proposal' , ProposalController::class)->only(['store', 'destroy','update','show']);
 
 
 

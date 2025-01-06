@@ -92,7 +92,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		$created_at = now();
 
 		/**
-		 * if the chat room does not exist, we will create a new chat room
+		 * if the chat room does not exist, create a new chat room
 		 */
 		if (!$chat_room_id) {
 			DB::table('chat_rooms')
@@ -142,8 +142,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 	public function getChatRooms(int $message_id):array
 	{
 		/**
-		 * we will get the chat rooms with last received message 
-		 * or last sent message
+			get more the chat rooms with last received message or last sent message
 		 */
 		$auth_id        = Auth::id();
 		$all_chat_rooms = ChatRooms::fetch(

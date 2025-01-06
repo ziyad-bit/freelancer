@@ -138,12 +138,12 @@
         </div>
 
         @if ($project->user_id === Auth::id())
-            <a type="button" class="btn btn-primary" href="{{ route('project.edit', $project->id) }}"
+            <a type="button" class="btn btn-primary" href="{{ route('project.edit', $project->slug) }}"
                 style="margin-top: 5px">
                 edit
             </a>
 
-            <form action="{{ route('project.destroy', $project->id) }}" method="POST" style="display: inline-block">
+            <form action="{{ route('project.destroy', $project->slug) }}" method="POST" style="display: inline-block">
                 @csrf
                 @method('delete')
                 
@@ -179,7 +179,7 @@
 
     <!-- proposal  -->
 
-    <div id="proposal_wrapper" data-show_url="{{route('project.show',$project->id)}}"
+    <div id="proposal_wrapper" data-show_url="{{route('proposal.show',$project->id)}}"
         data-cursor="{{$cursor}}"> 
         @include('users.project.show_proposals')
     </div>

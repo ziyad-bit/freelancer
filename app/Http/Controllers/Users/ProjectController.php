@@ -12,8 +12,8 @@ class ProjectController extends Controller
 {
 	public function __construct(private ProjectRepositoryInterface $ProjectRepository)
 	{
-		$this->middleware(['auth','verifyEmail'])->except('fetch');
-		
+		$this->middleware(['auth', 'verifyEmail'])->except('fetch');
+
 		$this->middleware('project')->only(['destroy', 'edit', 'update']);
 	}
 
@@ -36,46 +36,48 @@ class ProjectController extends Controller
 	}
 
 	//MARK: store
-	public function store(ProjectRequest $request, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):RedirectResponse
-	{
-		$request->
+	public function store(
+		ProjectRequest $request,
+		FileRepositoryInterface $fileRepository,
+		SkillRepositoryInterface $skillRepository
+	):RedirectResponse {
 		$this->ProjectRepository->storeProject($request, $fileRepository, $skillRepository);
 
 		return redirect()->back()->with('success', 'you added project successfully');
 	}
 
 	//MARK: show
-	public function show(int $id):View|RedirectResponse|JsonResponse
+	public function show(string $slug):View
 	{
-		$data = $this->ProjectRepository->showProject($id);
-
-		if (request()->ajax()) {
-			return response()->json($data);
-		}
+		$data = $this->ProjectRepository->showProject($slug);
 
 		return view('users.project.show', $data);
 	}
 
 	//MARK: edit
-	public function edit(int $id, SkillRepositoryInterface $skillRepository):View|RedirectResponse
+	public function edit(SkillRepositoryInterface $skillRepository, string $slug):View|RedirectResponse
 	{
-		$project = $this->ProjectRepository->editProject($id);
+		$project = $this->ProjectRepository->editProject($slug);
 
 		return view('users.project.edit', compact('project'));
 	}
 
 	//MARK: update
-	public function update(ProjectRequest $request, int $id, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):RedirectResponse
-	{
-		$this->ProjectRepository->updateProject($request, $id, $fileRepository, $skillRepository);
+	public function update(
+		ProjectRequest $request,
+		FileRepositoryInterface $fileRepository,
+		SkillRepositoryInterface $skillRepository,
+		string $slug
+	):RedirectResponse {
+		$this->ProjectRepository->updateProject($request, $fileRepository, $skillRepository, $slug);
 
 		return redirect()->back()->with('success', 'you updated the project successfully');
 	}
 
 	//MARK: destroy
-	public function destroy(int $id):RedirectResponse
+	public function destroy(string $slug):RedirectResponse
 	{
-		$this->ProjectRepository->deleteProject($id);
+		$this->ProjectRepository->deleteProject($slug);
 
 		return to_route('home')->with('success', 'you deleted project successfully');
 	}

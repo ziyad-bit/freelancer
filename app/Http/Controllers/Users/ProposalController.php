@@ -12,7 +12,7 @@ class ProposalController extends Controller
 	public function __construct(private ProposalRepositoryInterface $ProposalRepository)
 	{
 		$this->middleware(['auth','verifyEmail']);
-		$this->middleware('proposal')->except('store');
+		$this->middleware('proposal')->except(['store','show']);
 	}
 
 	//MARK: store
@@ -21,6 +21,14 @@ class ProposalController extends Controller
 		$this->ProposalRepository->storeProposal($request);
 
 		return to_route('project.show', $request->project_id)->with('success', 'you added proposal successfully');
+	}
+
+	//MARK: store
+	public function show(int $project_id):JsonResponse
+	{
+		$data=$this->ProposalRepository->showProposal($project_id);
+
+		return response()->json($data);
 	}
 
 	//MARK: update

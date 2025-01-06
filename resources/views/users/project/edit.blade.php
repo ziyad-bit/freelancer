@@ -44,6 +44,7 @@
         </div>
     </div>
 
+    {{-- uploaded files --}}
     @if ($project->files)
         <h5 class="text-center" style="margin-top: 20px">project images</h5>
         @foreach (explode(',', $project->files) as $file)
@@ -97,6 +98,7 @@
         @endforeach
     @endif
 
+    {{-- upload files form --}}
     <div style="margin-top: 25px">
         <h4>upload images</h4>
         <form action="{{ route('file.upload') }}" id="image_upload" method="post" enctype="multipart/form-data"
@@ -133,8 +135,8 @@
         </form>
     </div>
 
-
-    <form method="POST" id="form" action="{{ route('project.update', $project->id) }}"
+        {{-- upload project form --}}
+    <form method="POST" id="form" action="{{ route('project.update', $project->slug) }}"
         enctype="multipart/form-data">
         @csrf
         @method('put')

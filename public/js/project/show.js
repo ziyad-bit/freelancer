@@ -1,5 +1,5 @@
-/* eslint-disable no-undef */
-//update proposal
+  /* eslint-disable no-undef */
+  //update proposal
 const edit_btn = document.querySelector('.edit_btn');
 if (edit_btn) {
     edit_btn.onclick =() => {
@@ -55,16 +55,15 @@ if (edit_btn) {
         }
     }
 
-    //delete proposal
-    const delete_btn = document.querySelector('.delete_btn');
-    delete_btn.onclick =() => {
+      //delete proposal
+    const delete_btn   = document.querySelector('.delete_btn');
+    delete_btn.onclick = () => {
         const url = document.querySelector('#delete_url').value;
 
         axios.delete(url)
             .then(res => {
                 if (res.status == 200) {
-                    let success_msg = res.data.success;
-
+                    let   success_msg = res.data.success;
                     const success_ele = document.querySelector('.delete_msg');
 
                     success_ele.textContent   = success_msg;
@@ -73,25 +72,22 @@ if (edit_btn) {
                     document.querySelector('.proposal').remove();
                 }
             })
-            .catch(() => {
-
-            });
     }
 }
 
-//load more proposals by infinite scrolling
+  //load more proposals by infinite scrolling
 window.onscroll = function () {
     const proposal_wrapper = document.querySelector('#proposal_wrapper');
-    const cursor = proposal_wrapper.getAttribute('data-cursor');
+    const cursor           = proposal_wrapper.getAttribute('data-cursor');
 
-    if (window.scrollY + window.innerHeight -16 >= document.body.clientHeight && cursor !='false') {
-        let   show_url         = proposal_wrapper.getAttribute('data-show_url');
+    if (window.scrollY + window.innerHeight - 16 >= document.body.clientHeight && cursor !='false') {
+        let show_url = proposal_wrapper.getAttribute('data-show_url');
 
         axios.get(show_url+`?cursor=${cursor}`)
             .then(res => {
                 if (res.status == 200) {
-                    let view =res.data.view;
-                    let new_cursor =res.data.cursor;
+                    let view       = res.data.view;
+                    let new_cursor = res.data.cursor;
 
                     proposal_wrapper.setAttribute('data-cursor',new_cursor);
                     proposal_wrapper.insertAdjacentHTML('beforeend',view);
