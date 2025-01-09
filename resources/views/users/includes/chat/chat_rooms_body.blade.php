@@ -4,7 +4,7 @@
     id="list-home-list" data-bs-toggle="pill" data-bs-target={{ '#chat_box' . $chat_room_id }} role="tab"
     data-chat_room_id="{{ $chat_room_id }}" aria-controls="home" data-index="{{ $i }}"
     data-status={{ $is_selected_chat_room ? 'true' : 'false' }}
-    data-show_more_chat_url="{{ route('chatrooms.show_more', $message_id) }}"
+    data-show_more_chatroom_url="{{ route('chatrooms.show_more', $message->id) }}"
     data-show_msgs_url="{{ route('message.show', $chat_room_id) }}">
 
     <i class="fa-solid fa-plus plus plus{{ $chat_room_id }}" data-bs-toggle="modal"

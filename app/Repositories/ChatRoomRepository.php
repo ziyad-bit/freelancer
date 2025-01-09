@@ -3,14 +3,12 @@
 namespace App\Repositories;
 
 use App\Classes\{ChatRooms, Messages};
-use App\Exceptions\{GeneralNotFoundException, RecordExistException};
-use App\Http\Requests\ChatRoomRequest;
+use App\Exceptions\{GeneralNotFoundException};
 use App\Interfaces\Repository\ChatRoomRepositoryInterface;
 use App\Models\User;
-use App\Notifications\AddUserToChatNotification;
 use App\Traits\DatabaseCache;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\{Auth, DB, Log};
+use Illuminate\Support\Facades\{Auth, DB};
 use Illuminate\Support\Str;
 
 class ChatRoomRepository implements ChatRoomRepositoryInterface
@@ -21,7 +19,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 	public function indexChatroom():array
 	{
 		/**
-		 * we will get the chat rooms with last received message 
+		 * we will get the chat rooms with last received message
 		 * or last sent message
 		 */
 		$auth_id        = Auth::id();
@@ -29,8 +27,9 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			['messages.sender_id' => $auth_id, 'last' => 1],
 			['messages.receiver_id' => $auth_id, 'last' => 1]
 		)
+		->groupBy('messages.id')
 		->latest('messages.id')
-		->limit(3)
+		->limit(4)
 		->get();
 
 		$messages     = [];
@@ -54,116 +53,149 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 	{
 		$messages     = [];
 		$chat_room_id = null;
-		$message_id  = 0;
+		$message_id   = 0;
+		$auth_id      = Auth::id();
 
-		$receiver = DB::table('users')->find($receiver_id, ['name', 'image', 'id']);
+		$receiver = DB::table('users')
+			->select(['name', 'image', 'users.id', 'type'])
+			->join('user_infos', 'user_id', '=', 'users.id')
+			->where('users.id', $receiver_id)
+			->first();
+
 		if (!$receiver) {
-			throw new GeneralNotFoundException('user not found');
+			throw new GeneralNotFoundException('user');
 		}
-
-		/**
-		 * we will get the chat rooms with last received message 
-		 * or last sent message
-		 */
-		$auth_id        = Auth::id();
-		$all_chat_rooms = ChatRooms::fetch(
-			['messages.sender_id' => $auth_id, 'last' => 1],
-			['messages.receiver_id' => $auth_id, 'last' => 1]
-		)
-		->latest('messages.id')
-		->limit(4);
 
 		//we will get the chat room between the authenticated user and the selected user
-		$selected_chat_room = ChatRooms::fetch(
+		$selected_chat_room_query = ChatRooms::fetch(
 			['messages.sender_id' => $auth_id, 'messages.receiver_id' => $receiver_id, 'last' => 1],
 			['messages.receiver_id' => $auth_id, 'messages.sender_id' => $receiver_id, 'last' => 1]
-		);
+		)
+		->groupBy('messages.id');
 
-		$all_chat_rooms = $all_chat_rooms->union($selected_chat_room)->get();
-
-		foreach ($all_chat_rooms as $chat_room) {
-			if ($chat_room->receiver_id === $receiver_id) {
-				$chat_room_id = $chat_room->chat_room_id;
-
-				break;
-			}
-		}
-
-		$created_at = now();
+		$selected_chat_room = $selected_chat_room_query->first();
 
 		/**
-		 * if the chat room does not exist, create a new chat room
-		 */
-		if (!$chat_room_id) {
-			DB::table('chat_rooms')
-				->insert(
-					[
-						'id'          => Str::uuid(),
-						'owner_id'    => $auth_id,
-						'created_at'  => $created_at,
-					]
-				);
+		user can't start chat with any client
+		*/
+		if ($receiver->type !== 'client') {
+			/**
+			 * if the chat room does not exist, create a new chat room
+			*/
+			$created_at = now();
+			if (!$selected_chat_room) {
+				/**
+				 * we will get all the chat rooms with last received message
+				 * or last sent message
+				 */
 
-			$chat_room_id = DB::table('chat_rooms')
-				->where(['created_at' => $created_at, 'owner_id' => $auth_id])
-				->value('id');
+				$all_chat_rooms = ChatRooms::fetch(
+					['messages.sender_id' => $auth_id, 'last' => 1],
+					['messages.receiver_id' => $auth_id, 'last' => 1],
+				)
+				->groupBy('messages.id')
+				->latest('messages.id')
+				->limit(4)
+				->get();
 
-			$message_id = DB::table('messages')
-				->insertGetId([
-					'chat_room_id' => $chat_room_id,
-					'receiver_id'  => $receiver_id,
-					'sender_id'    => $auth_id,
-					'text'         => 'new_chat_room%',
-					'created_at'   => now(),
-				]);
+				DB::table('chat_rooms')
+					->insert(
+						[
+							'id'          => Str::uuid(),
+							'owner_id'    => $auth_id,
+							'created_at'  => $created_at,
+						]
+					);
 
-			DB::table('chat_room_user')
-				->insert([
-					['chat_room_id' => $chat_room_id, 'user_id' => $auth_id],
-					['chat_room_id' => $chat_room_id, 'user_id' => $receiver_id],
-				]);
+				$chat_room_id = DB::table('chat_rooms')
+					->where(['created_at' => $created_at, 'owner_id' => $auth_id])
+					->value('id');
+
+				$message_id = DB::table('messages')
+					->insertGetId([
+						'chat_room_id' => $chat_room_id,
+						'receiver_id'  => $receiver_id,
+						'sender_id'    => $auth_id,
+						'text'         => 'new_chat_room%',
+						'created_at'   => $created_at,
+					]);
+
+				DB::table('chat_room_user')
+					->insert([
+						['chat_room_id' => $chat_room_id, 'user_id' => $auth_id],
+						['chat_room_id' => $chat_room_id, 'user_id' => $receiver_id],
+					]);
+
+				$selected_chat_room = $selected_chat_room_query->first();
+			} else {
+				/**
+				 * we will get all the chat rooms with last received message
+				 * or last sent message except the selected one
+				 */
+				$all_chat_rooms = ChatRooms::fetch(
+					['messages.sender_id' => $auth_id, 'last' => 1],
+					['messages.receiver_id' => $auth_id, 'last' => 1],
+				)
+				->groupBy('messages.id')
+				->latest('messages.id')
+				->limit(3)
+				->get();
+
+				$messages = Messages::index($selected_chat_room->chat_room_id);
+			}
+
+			$all_chat_rooms_count = $all_chat_rooms->count();
+			$all_chat_rooms       = $all_chat_rooms
+									->union([$all_chat_rooms_count=>$selected_chat_room])
+									->unique()
+									->sortByDesc('id');
+
+			return [
+				'messages'              => $messages,
+				'chat_room_id'          => $chat_room_id,
+				'all_chat_rooms'        => $all_chat_rooms,
+				'receiver'              => $receiver,
+				'selected_chat_room_id' => $selected_chat_room->chat_room_id,
+				'message_id'            => $message_id,
+				'show_chatroom'         => true,
+				'is_chatroom_page_1'    => true,
+			];
 		} else {
-			$messages = Messages::index($chat_room_id);
-			$receiver = null;
+			abort(500, 'something went wrong');
 		}
-
-		return [
-			'messages'           => $messages,
-			'chat_room_id'       => $chat_room_id,
-			'all_chat_rooms'     => $all_chat_rooms,
-			'receiver'           => $receiver,
-			'message_id'         => $message_id,
-			'show_chatroom'      => true,
-			'is_chatroom_page_1' => true,
-		];
 	}
 
 	//MARK: get chat rooms
 	public function getChatRooms(int $message_id):array
 	{
 		/**
-			get more the chat rooms with last received message or last sent message
+			get more the chat rooms for infinite scrolling
+			with last received message or last sent message
 		 */
 		$auth_id        = Auth::id();
 		$all_chat_rooms = ChatRooms::fetch(
 			['messages.sender_id' => $auth_id, 'last' => 1],
 			['messages.receiver_id' => $auth_id, 'last' => 1],
-			$message_id
+			$message_id,
 		)
+		->groupBy('messages.id')
 		->latest('messages.id')
 		->limit(4)
 		->get();
 
-		$chat_room_id       = null;
-		$messages           = [];
-		$show_chatroom      = false;
-		$is_chatroom_page_1 = true;
+		$data = [
+			'selected_chat_room_id' => null,
+			'messages'              => [],
+			'show_chatroom'         => false,
+			'is_chatroom_page_1'    => true,
+			'all_chat_rooms'        => $all_chat_rooms,
+		];
 
-		$chat_room_view = view('users.includes.chat.index_chat_rooms', compact('show_chatroom', 'all_chat_rooms', 'chat_room_id', 'is_chatroom_page_1'))->render();
-		$chat_box_view  = view('users.includes.chat.index_chat_boxes', compact('show_chatroom', 'all_chat_rooms', 'chat_room_id', 'messages'))->render();
+		$chat_room_view = view('users.includes.chat.index_chat_rooms', $data)->render();
+		$chat_box_view  = view('users.includes.chat.index_chat_boxes', $data)->render();
 
 		return [
-			'chat_room_view' => $chat_room_view,
+			'chat_room_view'  => $chat_room_view,
 			'chat_box_view'   => $chat_box_view,
 		];
 	}

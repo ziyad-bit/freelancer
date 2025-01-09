@@ -1,6 +1,6 @@
 @if ($all_chat_rooms->count() > 0)
     <!-- add user to chat room Modal -->
-    <div class="modal fade" id="send_user_invitation" tabindex="-1" aria-labelledby="exampleModalLabel" >
+    <div class="modal fade" id="send_user_invitation" tabindex="-1" aria-labelledby="exampleModalLabel">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -21,19 +21,6 @@
     </div>
 @endif
 
-{{-- check if new chatroom exist --}}
-@isset($receiver)
-    @include('users.includes.chat.chat_rooms_body', [
-        'chat_room_id' => $chat_room_id,
-        'receiver_id' => $receiver->id,
-        'receiver_image' => $receiver->image,
-        'receiver_name' => $receiver->name,
-        'is_selected_chat_room' => true,
-        'message_id' => 0,
-        'i' => null,
-    ])
-@endisset
-
 @if ($all_chat_rooms->count() > 0)
     @foreach ($all_chat_rooms as $i => $message)
         @php
@@ -48,20 +35,19 @@
             }
 
             $is_selected_chat_room = false;
-            if ($chat_room_id === null) {
+            if (!isset($selected_chat_room_id)) {
                 if ($show_chatroom === true) {
                     $is_selected_chat_room = $i == 0;
                 }
-            } else {
+            }else{
                 if ($show_chatroom === true) {
-                    $is_selected_chat_room = $message->chat_room_id === $chat_room_id;
+                    $is_selected_chat_room = $message->chat_room_id === $selected_chat_room_id;
                 }
             }
         @endphp
 
         @include('users.includes.chat.chat_rooms_body', [
             'chat_room_id' => $message->chat_room_id,
-            'message_id' => $message->id,
         ])
     @endforeach
 @else

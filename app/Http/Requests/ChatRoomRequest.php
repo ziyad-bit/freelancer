@@ -28,6 +28,7 @@ class ChatRoomRequest extends FormRequest
 		return [
 			'chat_room_id' => 'required|uuid',
 			'user_id'      => $is_user_id_required . '|numeric',
+			'sender_id'    =>  'numeric',
 		];
 	}
 }

@@ -74,11 +74,11 @@ const chat_room_box          = document.querySelector('.list_tab_users');
 let   data_chat_rooms_status = true;
 
 function loadPages() {
-    let show_more_chat_url = chat_room_box.lastElementChild.getAttribute('data-show_more_chat_url');
+    let show_more_chatroom_url = chat_room_box.lastElementChild.getAttribute('data-show_more_chatroom_url');
 
     if (data_chat_rooms_status) {
           // eslint-disable-next-line no-undef
-        axios.get(show_more_chat_url)
+        axios.get(show_more_chatroom_url)
             .then(res => {
                 if (res.status == 200) {
                     let chat_room_view = res.data.chat_room_view,

@@ -61,6 +61,7 @@ class Kernel extends HttpKernel
 		'verifyEmail'           => \App\Http\Middleware\VerifyEmail::class,
 		'profile'               => \App\Http\Middleware\Authorize\Profile::class,
 		'skill'                 => \App\Http\Middleware\Authorize\Skill::class,
+		'chatroom'              => \App\Http\Middleware\Authorize\Chatroom::class,
 		'project_skill'         => \App\Http\Middleware\Authorize\Project_skill::class,
 		'project'               => \App\Http\Middleware\Authorize\Project::class,
 		'transaction'           => \App\Http\Middleware\Authorize\Transaction::class,

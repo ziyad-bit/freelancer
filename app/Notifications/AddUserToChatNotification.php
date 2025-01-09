@@ -18,8 +18,8 @@ class AddUserToChatNotification extends Notification implements ShouldQueue
 	 */
 	public function __construct(
 		public string $chat_room_id,
-		public string $name,
-		public string $image,
+		public string $sender_name,
+		public string $sender_image,
 		public string $view,
 	) {
 	}
@@ -50,8 +50,8 @@ class AddUserToChatNotification extends Notification implements ShouldQueue
 	{
 		return [
 			'chat_room_id' => $this->chat_room_id,
-			'sender_image' => $this->image,
-			'sender_name'  => $this->name,
+			'sender_image' => $this->sender_image,
+			'sender_name'  => $this->sender_name,
 		];
 	}
 

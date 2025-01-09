@@ -18,6 +18,7 @@ class NewMessageNotification extends Notification implements ShouldQueue
 	 */
 	public function __construct(
 		public array $data,
+		public int $user_id,
 		public string $user_name,
 		public string $user_image,
 		public string $view,
@@ -41,7 +42,7 @@ class NewMessageNotification extends Notification implements ShouldQueue
 	{
 		return new BroadcastMessage(
 			[
-				'view'         => $this->view,
+				'view' => $this->view,
 			]
 		);
 	}
@@ -50,6 +51,7 @@ class NewMessageNotification extends Notification implements ShouldQueue
 	{
 		return [
 			'text'         => $this->data['text'],
+			'sender_id'    => $this->user_id,
 			'sender_name'  => $this->user_name,
 			'sender_image' => $this->user_image,
 		];

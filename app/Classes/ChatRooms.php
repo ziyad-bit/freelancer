@@ -7,15 +7,14 @@ use Illuminate\Support\Facades\DB;
 
 class ChatRooms
 {
-	// get    #####################################
-	public static function fetch(array $last_msg_send, array $last_msg_receive, int $message_id = null, string $searchName = null):Builder
+	public static function fetch(array $last_msg_send, array $last_msg_receive, int $message_id = null,string $operator=null, string $searchName = null):Builder
 	{
 		/**
 		in case searchName is not null, we will search for the sender name or receiver name
-		in case message_id is not null, we will get the chatrooms that have an message 
+		in case message_id is not null, we will get more the chatrooms that have an message 
 			id less than the message_id
 			
-		in case last_msg_send exist, we will get the chatrooms with the last message send
+		in case last_msg_send exist, we will get the chatrooms with the last message sent
 		or in case last_msg_receive exist, we will get the chatrooms with the last message received
 		 */
 		return DB::table('messages')
@@ -38,11 +37,13 @@ class ChatRooms
 						->orWhere('receiver.name', 'LIKE', "{$searchName}%");
 				});
 			})
-			->when($message_id, fn ($query) => $query->where('messages.id', '<', $message_id))
+			->when($message_id,fn($query)=>$query->where('messages.id', '<', $message_id))
 			->where($last_msg_send)
-			->when($last_msg_receive != [], function ($query) use ($last_msg_receive) {
-				$query->orwhere(fn ($query) => $query->where($last_msg_receive));
-			})
-			->groupBy('messages.id');
+			->when($last_msg_receive != [], function ($query) use ($last_msg_receive,$message_id) {
+				$query->orwhere(function ($query)use ($last_msg_receive,$message_id){
+					$query->where($last_msg_receive)
+						->when($message_id,fn($query)=>$query->where('messages.id', '<', $message_id));
+				});
+			});
 	}
 }

@@ -57,7 +57,7 @@ class MessageRepository implements MessageRepositoryInterface
 
 			$data['text'] = $enc_text;
 
-			Notification::send($user, new NewMessageNotification($data, $auth_user->name, $auth_user->image, $notif_view));
+			Notification::send($user, new NewMessageNotification($data,$auth_user->id, $auth_user->name, $auth_user->image, $notif_view));
 
 			DB::commit();
 			Log::info('database commit and user will receive notification message');

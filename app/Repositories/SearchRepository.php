@@ -23,8 +23,10 @@ class SearchRepository implements SearchRepositoryInterface
 			['messages.sender_id' => $auth_id, 'last' => 1],
 			['messages.receiver_id' => $auth_id, 'last' => 1],
 			null,
+			null,
 			$searchName
 		)
+		->groupBy('messages.id')
 		->limit(3)
 		->get();
 

@@ -3,7 +3,7 @@
         <div class="d-flex w-100 justify-content-between">
             <img src="{{ asset('storage/images/users/' . Auth::user()->image) }}" class="rounded-circle" alt="error">
             <h5 class="mb-1 p">
-                {{ Str::limit(Auth::user()->name,10,'...') }} send invitation to chatroom
+                {{ Str::limit(Auth::user()->name,10,'...') }} sent invitation to chatroom
             </h5>
         </div>
 
@@ -11,11 +11,11 @@
             1 second ago
         </span>
 
-        <form action="{{route('chatrooms.postAcceptInvitation')}}" method="POST">
-            @csrf
+        <form id="accept_form" action="{{route('chatrooms.postAcceptInvitation')}}" method="POST">
             <input type="hidden" name="chat_room_id" value="{{ $chat_room_id }}">
+            <input type="hidden" name="sender_id" value="{{ Auth::id()}}">
 
-            <button type="submit" class="btn btn-primary accept" style="float: right;margin-left: 5px">
+            <button type="button" class="btn btn-primary accept_btn" style="float: right;margin-left: 5px">
                 accept
             </button>
         </form>

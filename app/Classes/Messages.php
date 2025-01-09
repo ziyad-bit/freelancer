@@ -6,8 +6,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class Messages
-{
-	// get    #####################################
+{    
 	public static function index(string $chat_room_id,int $message_id=null):Collection
 	{
 		return DB::table('messages')

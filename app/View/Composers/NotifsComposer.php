@@ -16,7 +16,7 @@ class NotifsComposer
 		if (Auth::check()) {
 			$auth_id   = Auth::id();
 			$auth_user = User::find($auth_id);
-
+Cache::flush();
 			$notifs = Cache::remember(
 				'notifs_' . $auth_id,
 				now()->addHours(2),

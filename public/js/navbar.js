@@ -204,3 +204,13 @@ generalEventListener('click', '.refuse_btn', e => {
             }
         });
 })
+
+//accept invitation
+generalEventListener('click', '.accept_btn', () => {
+    const accept_form = document.querySelector('#accept_form');
+    const csrf_token_ele = document.querySelector('[name="_token"]');
+
+    accept_form.appendChild(csrf_token_ele);
+    accept_form.submit();
+})
+
