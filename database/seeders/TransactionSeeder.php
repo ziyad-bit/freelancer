@@ -29,12 +29,12 @@ class TransactionSeeder extends Seeder
 			DB::table('transactions')->insert([
 				'amount'      => rand(100, 200),
 				'type'        => $type,
-				'trans_id'    => Str::random(10),
 				'owner_id'    => $users->random(),
 				'project_id'  => $type == 'withdraw' ? null : $projects->random(),
 				'receiver_id' => $type == 'withdraw' ? null : $users->random(),
 				'created_at'  => $date,
 				'updated_at'  => $date,
+				'id'  => Str::uuid(),
 			]);
 		}
 	}

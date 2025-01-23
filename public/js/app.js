@@ -2175,6 +2175,7 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var laravel_echo__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! laravel-echo */ "./node_modules/laravel-echo/dist/echo.js");
+/* eslint-disable no-undef */
 window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 
 /**
@@ -2185,6 +2186,7 @@ window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 
 window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
@@ -2211,9 +2213,9 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Channel": () => (/* binding */ Channel),
-/* harmony export */   "Connector": () => (/* binding */ Connector),
-/* harmony export */   "EventFormatter": () => (/* binding */ EventFormatter),
+/* harmony export */   Channel: () => (/* binding */ Channel),
+/* harmony export */   Connector: () => (/* binding */ Connector),
+/* harmony export */   EventFormatter: () => (/* binding */ EventFormatter),
 /* harmony export */   "default": () => (/* binding */ Echo)
 /* harmony export */ });
 function _typeof(obj) {
@@ -2435,6 +2437,16 @@ var EventFormatter = /*#__PURE__*/function () {
   return EventFormatter;
 }();
 
+function isConstructor(obj) {
+  try {
+    new obj();
+  } catch (err) {
+    if (err.message.includes('is not a constructor')) return false;
+  }
+
+  return true;
+}
+
 /**
  * This class represents a Pusher channel.
  */
@@ -2645,8 +2657,8 @@ var PusherEncryptedPrivateChannel = /*#__PURE__*/function (_PusherChannel) {
  * This class represents a Pusher presence channel.
  */
 
-var PusherPresenceChannel = /*#__PURE__*/function (_PusherChannel) {
-  _inherits(PusherPresenceChannel, _PusherChannel);
+var PusherPresenceChannel = /*#__PURE__*/function (_PusherPrivateChannel) {
+  _inherits(PusherPresenceChannel, _PusherPrivateChannel);
 
   var _super = _createSuper(PusherPresenceChannel);
 
@@ -2707,7 +2719,7 @@ var PusherPresenceChannel = /*#__PURE__*/function (_PusherChannel) {
   }]);
 
   return PusherPresenceChannel;
-}(PusherChannel);
+}(PusherPrivateChannel);
 
 /**
  * This class represents a Socket.io channel.
@@ -3107,11 +3119,40 @@ var NullPrivateChannel = /*#__PURE__*/function (_NullChannel) {
 }(NullChannel);
 
 /**
+ * This class represents a null private channel.
+ */
+
+var NullEncryptedPrivateChannel = /*#__PURE__*/function (_NullChannel) {
+  _inherits(NullEncryptedPrivateChannel, _NullChannel);
+
+  var _super = _createSuper(NullEncryptedPrivateChannel);
+
+  function NullEncryptedPrivateChannel() {
+    _classCallCheck(this, NullEncryptedPrivateChannel);
+
+    return _super.apply(this, arguments);
+  }
+
+  _createClass(NullEncryptedPrivateChannel, [{
+    key: "whisper",
+    value:
+    /**
+     * Send a whisper event to other clients in the channel.
+     */
+    function whisper(eventName, data) {
+      return this;
+    }
+  }]);
+
+  return NullEncryptedPrivateChannel;
+}(NullChannel);
+
+/**
  * This class represents a null presence channel.
  */
 
-var NullPresenceChannel = /*#__PURE__*/function (_NullChannel) {
-  _inherits(NullPresenceChannel, _NullChannel);
+var NullPresenceChannel = /*#__PURE__*/function (_NullPrivateChannel) {
+  _inherits(NullPresenceChannel, _NullPrivateChannel);
 
   var _super = _createSuper(NullPresenceChannel);
 
@@ -3160,7 +3201,7 @@ var NullPresenceChannel = /*#__PURE__*/function (_NullChannel) {
   }]);
 
   return NullPresenceChannel;
-}(NullChannel);
+}(NullPrivateChannel);
 
 var Connector = /*#__PURE__*/function () {
   /**
@@ -3617,7 +3658,7 @@ var NullConnector = /*#__PURE__*/function (_Connector) {
   }, {
     key: "encryptedPrivateChannel",
     value: function encryptedPrivateChannel(name) {
-      return new NullPrivateChannel();
+      return new NullEncryptedPrivateChannel();
     }
     /**
      * Get a presence channel instance by name.
@@ -3711,7 +3752,7 @@ var Echo = /*#__PURE__*/function () {
         this.connector = new SocketIoConnector(this.options);
       } else if (this.options.broadcaster == 'null') {
         this.connector = new NullConnector(this.options);
-      } else if (typeof this.options.broadcaster == 'function') {
+      } else if (typeof this.options.broadcaster == 'function' && isConstructor(this.options.broadcaster)) {
         this.connector = new this.options.broadcaster(this.options);
       } else {
         throw new Error("Broadcaster ".concat(_typeof(this.options.broadcaster), " ").concat(this.options.broadcaster, " is not supported."));
@@ -3789,6 +3830,10 @@ var Echo = /*#__PURE__*/function () {
   }, {
     key: "encryptedPrivate",
     value: function encryptedPrivate(channel) {
+      if (this.connector instanceof SocketIoConnector) {
+        throw new Error("Broadcaster ".concat(_typeof(this.options.broadcaster), " ").concat(this.options.broadcaster, " does not support encrypted private channels."));
+      }
+
       return this.connector.encryptedPrivateChannel(channel);
     }
     /**
@@ -21324,7 +21369,7 @@ process.umask = function() { return 0; };
 /***/ ((module) => {
 
 /*!
- * Pusher JavaScript Library v8.4.0-rc2
+ * Pusher JavaScript Library v8.3.0
  * https://pusher.com/
  *
  * Copyright 2020, Pusher
@@ -21341,7 +21386,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	var installedModules = {};
 /******/
 /******/ 	// The require function
-/******/ 	function __nested_webpack_require_673__(moduleId) {
+/******/ 	function __nested_webpack_require_669__(moduleId) {
 /******/
 /******/ 		// Check if module is in cache
 /******/ 		if(installedModules[moduleId]) {
@@ -21355,7 +21400,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 		};
 /******/
 /******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __nested_webpack_require_673__);
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __nested_webpack_require_669__);
 /******/
 /******/ 		// Flag the module as loaded
 /******/ 		module.l = true;
@@ -21366,20 +21411,20 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/
 /******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__nested_webpack_require_673__.m = modules;
+/******/ 	__nested_webpack_require_669__.m = modules;
 /******/
 /******/ 	// expose the module cache
-/******/ 	__nested_webpack_require_673__.c = installedModules;
+/******/ 	__nested_webpack_require_669__.c = installedModules;
 /******/
 /******/ 	// define getter function for harmony exports
-/******/ 	__nested_webpack_require_673__.d = function(exports, name, getter) {
-/******/ 		if(!__nested_webpack_require_673__.o(exports, name)) {
+/******/ 	__nested_webpack_require_669__.d = function(exports, name, getter) {
+/******/ 		if(!__nested_webpack_require_669__.o(exports, name)) {
 /******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
 /******/ 		}
 /******/ 	};
 /******/
 /******/ 	// define __esModule on exports
-/******/ 	__nested_webpack_require_673__.r = function(exports) {
+/******/ 	__nested_webpack_require_669__.r = function(exports) {
 /******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
 /******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 /******/ 		}
@@ -21391,35 +21436,35 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// mode & 2: merge all properties of value into the ns
 /******/ 	// mode & 4: return value when already ns object
 /******/ 	// mode & 8|1: behave like require
-/******/ 	__nested_webpack_require_673__.t = function(value, mode) {
-/******/ 		if(mode & 1) value = __nested_webpack_require_673__(value);
+/******/ 	__nested_webpack_require_669__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __nested_webpack_require_669__(value);
 /******/ 		if(mode & 8) return value;
 /******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
 /******/ 		var ns = Object.create(null);
-/******/ 		__nested_webpack_require_673__.r(ns);
+/******/ 		__nested_webpack_require_669__.r(ns);
 /******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
-/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __nested_webpack_require_673__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __nested_webpack_require_669__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
 /******/ 		return ns;
 /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__nested_webpack_require_673__.n = function(module) {
+/******/ 	__nested_webpack_require_669__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
 /******/ 			function getDefault() { return module['default']; } :
 /******/ 			function getModuleExports() { return module; };
-/******/ 		__nested_webpack_require_673__.d(getter, 'a', getter);
+/******/ 		__nested_webpack_require_669__.d(getter, 'a', getter);
 /******/ 		return getter;
 /******/ 	};
 /******/
 /******/ 	// Object.prototype.hasOwnProperty.call
-/******/ 	__nested_webpack_require_673__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/ 	__nested_webpack_require_669__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__nested_webpack_require_673__.p = "";
+/******/ 	__nested_webpack_require_669__.p = "";
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __nested_webpack_require_673__(__nested_webpack_require_673__.s = 2);
+/******/ 	return __nested_webpack_require_669__(__nested_webpack_require_669__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -21867,19 +21912,19 @@ exports.decode = decode;
 
 /***/ }),
 /* 2 */
-/***/ (function(module, exports, __nested_webpack_require_19905__) {
+/***/ (function(module, exports, __nested_webpack_require_19901__) {
 
 // required so we don't have to do require('pusher').default etc.
-module.exports = __nested_webpack_require_19905__(3).default;
+module.exports = __nested_webpack_require_19901__(3).default;
 
 
 /***/ }),
 /* 3 */
-/***/ (function(module, __nested_webpack_exports__, __nested_webpack_require_20109__) {
+/***/ (function(module, __nested_webpack_exports__, __nested_webpack_require_20105__) {
 
 "use strict";
 // ESM COMPAT FLAG
-__nested_webpack_require_20109__.r(__nested_webpack_exports__);
+__nested_webpack_require_20105__.r(__nested_webpack_exports__);
 
 // CONCATENATED MODULE: ./src/runtimes/web/dom/script_receiver_factory.ts
 class ScriptReceiverFactory {
@@ -21911,7 +21956,7 @@ var ScriptReceivers = new ScriptReceiverFactory('_pusher_script_', 'Pusher.Scrip
 
 // CONCATENATED MODULE: ./src/core/defaults.ts
 var Defaults = {
-    VERSION: "8.4.0-rc2",
+    VERSION: "8.3.0",
     PROTOCOL: 7,
     wsPort: 80,
     wssPort: 443,
@@ -23663,10 +23708,10 @@ class presence_channel_PresenceChannel extends private_channel_PrivateChannel {
 }
 
 // EXTERNAL MODULE: ./node_modules/@stablelib/utf8/lib/utf8.js
-var utf8 = __nested_webpack_require_20109__(1);
+var utf8 = __nested_webpack_require_20105__(1);
 
 // EXTERNAL MODULE: ./node_modules/@stablelib/base64/lib/base64.js
-var base64 = __nested_webpack_require_20109__(0);
+var base64 = __nested_webpack_require_20105__(0);
 
 // CONCATENATED MODULE: ./src/core/channels/encrypted_channel.ts
 
@@ -23792,11 +23837,6 @@ class connection_manager_ConnectionManager extends dispatcher_Dispatcher {
             }
         });
         this.updateStrategy();
-    }
-    switchCluster(key) {
-        this.key = key;
-        this.updateStrategy();
-        this.retryIn(0);
     }
     connect() {
         if (this.connection || this.runner) {
@@ -25501,12 +25541,10 @@ function getEnableStatsConfig(opts) {
     }
     return false;
 }
-const hasCustomHandler = (auth) => {
-    return 'customHandler' in auth && auth['customHandler'] != null;
-};
 function buildUserAuthenticator(opts) {
     const userAuthentication = Object.assign(Object.assign({}, defaults.userAuthentication), opts.userAuthentication);
-    if (hasCustomHandler(userAuthentication)) {
+    if ('customHandler' in userAuthentication &&
+        userAuthentication['customHandler'] != null) {
         return userAuthentication['customHandler'];
     }
     return user_authenticator(userAuthentication);
@@ -25527,17 +25565,15 @@ function buildChannelAuth(opts, pusher) {
             if ('headers' in opts.auth)
                 channelAuthorization.headers = opts.auth.headers;
         }
-        if ('authorizer' in opts) {
-            return {
-                customHandler: ChannelAuthorizerProxy(pusher, channelAuthorization, opts.authorizer)
-            };
-        }
+        if ('authorizer' in opts)
+            channelAuthorization.customHandler = ChannelAuthorizerProxy(pusher, channelAuthorization, opts.authorizer);
     }
     return channelAuthorization;
 }
 function buildChannelAuthorizer(opts, pusher) {
     const channelAuthorization = buildChannelAuth(opts, pusher);
-    if (hasCustomHandler(channelAuthorization)) {
+    if ('customHandler' in channelAuthorization &&
+        channelAuthorization['customHandler'] != null) {
         return channelAuthorization['customHandler'];
     }
     return channel_authorizer(channelAuthorization);
@@ -25744,8 +25780,7 @@ class pusher_Pusher {
         checkAppKey(app_key);
         validateOptions(options);
         this.key = app_key;
-        this.options = options;
-        this.config = getConfig(this.options, this);
+        this.config = getConfig(options, this);
         this.channels = factory.createChannels();
         this.global_emitter = new dispatcher_Dispatcher();
         this.sessionID = runtime.randomInt(1000000000);
@@ -25808,13 +25843,6 @@ class pusher_Pusher {
         if (pusher_Pusher.isReady) {
             this.connect();
         }
-    }
-    switchCluster(options) {
-        const { appKey, cluster } = options;
-        this.key = appKey;
-        this.options = Object.assign(Object.assign({}, this.options), { cluster });
-        this.config = getConfig(this.options, this);
-        this.connection.switchCluster(this.key);
     }
     channel(name) {
         return this.channels.find(name);

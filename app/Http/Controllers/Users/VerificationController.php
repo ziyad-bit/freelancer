@@ -28,7 +28,7 @@ class VerificationController extends Controller
 	//MARK: send
 	public function send():RedirectResponse
 	{
-		$this->sendEmailVerification(Auth::user());
+		$this->sendEmailVerification(Auth::user()->email, Auth::id());
 
 		return back()->with('success', 'you sent verification link successfully');
 	}
@@ -42,6 +42,6 @@ class VerificationController extends Controller
 			return to_route('verification.get')->with($message);
 		}
 
-		return to_route('profile.index')->with($message);
+		return to_route('profile.index',Auth::user()->slug)->with($message);
 	}
 }

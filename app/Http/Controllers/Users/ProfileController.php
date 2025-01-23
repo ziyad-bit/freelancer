@@ -7,6 +7,7 @@ use App\Http\Requests\ProfileRequest;
 use App\Interfaces\Repository\ProfileRepositoryInterface;
 use App\Traits\GetCountries;
 use Illuminate\Http\{RedirectResponse, Request};
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -21,7 +22,7 @@ class ProfileController extends Controller
 	}
 
 	//MARK: index
-	public function index(string $slug):View
+	public function index(string $slug)//:View
 	{
 		$data = $this->profileRepository->getUserInfo($slug);
 
@@ -41,7 +42,8 @@ class ProfileController extends Controller
 	{
 		$this->profileRepository->storeUserInfo($request);
 
-		return to_route('profile.index')->with('success', 'you add data successfully');
+		return to_route('profile.index',Auth::user()->slug)
+			->with('success', 'you add data successfully');
 	}
 
 	//MARK: edit

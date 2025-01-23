@@ -25,9 +25,9 @@ class AuthController extends Controller
 	//MARK: store
 	public function store(SignupRequest $request):View|RedirectResponse
 	{
-		$this->authRepository->storeUser($request);
+		$slug=$this->authRepository->storeUser($request);
 
-		return to_route('profile.index');
+		return to_route('profile.index', $slug);
 	}
 
 	//MARK: getLogin

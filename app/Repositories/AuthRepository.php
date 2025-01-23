@@ -4,8 +4,7 @@ namespace App\Repositories;
 
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use App\Traits\SendSmsVerification;
-use App\Traits\sendEmailVerification;
+use App\Traits\SendEmailVerification;
 use App\Interfaces\Repository\AuthRepositoryInterface;
 use Illuminate\Support\Facades\{Auth, Cache, DB, Hash};
 use App\Http\Requests\{LoginRequest, SignupRequest, SmsVerificationRequest};
@@ -13,10 +12,10 @@ use App\Traits\Slug;
 
 class AuthRepository implements AuthRepositoryInterface
 {
-	use sendEmailVerification,Slug;
+	use SendEmailVerification,Slug;
 
 	//MARK: store User   
-	public function storeUser(SignupRequest $request):void
+	public function storeUser(SignupRequest $request):string
 	{
 		$slug = $this->createSlug('users','name',$request->name);
 
@@ -32,6 +31,8 @@ class AuthRepository implements AuthRepositoryInterface
 		Auth::loginUsingId($user_id);
 
 		$this->sendEmailVerification($request->email, $user_id);
+
+		return $slug;
 	}
 
 	//MARK: login   

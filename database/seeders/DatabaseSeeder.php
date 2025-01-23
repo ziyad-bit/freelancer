@@ -13,20 +13,19 @@ class DatabaseSeeder extends Seeder
 	 */
 	public function run()
 	{
-		//  $this->call(UserSeeder::class);
-		// $this->call(User_infoSeeder::class);
-		//  $this->call(ProjectSeeder::class);
-		// $this->call(Project_infoSeeder::class);
-		// $this->call(SkillSeeder::class);
-		//   $this->call(User_skillSeeder::class);
-		// $this->call(proposalSeeder::class);
-		// $this->call(TransactionSeeder::class);
-		// $this->call(ChatroomSeeder::class);
-		// $this->call(Chat_room_userSeeder::class);
+		$this->call(UserSeeder::class);
+		$this->call(User_infoSeeder::class);
+		$this->call(ProjectSeeder::class);
+		$this->call(Project_infoSeeder::class);
+		$this->call(SkillSeeder::class);
+		$this->call(User_skillSeeder::class);
+		$this->call(proposalSeeder::class);
+		$this->call(TransactionSeeder::class);
+		$this->call(ChatroomSeeder::class);
+		$this->call(Chat_room_userSeeder::class);
 		$this->call(MessageSeeder::class);
-		// $this->call(NotificationSeeder::class);
-		// $this->call(ReviewSeeder::class);
-
-		// $this->call(Project_skillSeeder::class);
+		$this->call(NotificationSeeder::class);
+		$this->call(ReviewSeeder::class);
+		$this->call(Project_skillSeeder::class);
 	}
 }

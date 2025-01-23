@@ -18,6 +18,7 @@ class ReviewSeeder extends Seeder
 	public function run()
 	{
 		$users = collect(DB::table('users')->pluck('id')->toArray());
+		$projects = collect(DB::table('projects')->pluck('id')->toArray());
 
 		for ($i = 0; $i < 100; $i++) {
 			$date   = $this->dateRandom();
@@ -26,6 +27,7 @@ class ReviewSeeder extends Seeder
 				'rate'        => rand(1, 5),
 				'giver_id'    => $users->random(),
 				'receiver_id' => $users->random(),
+				'project_id'  => $projects->random(),
 				'created_at'  => $date,
 			]);
 		}

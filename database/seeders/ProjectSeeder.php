@@ -6,7 +6,7 @@ use Faker\Factory;
 use App\Traits\DateRandom;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
-use App\Models\{Project, skill};
+use App\Models\{Project, Skill};
 use Illuminate\Support\Facades\DB;
 
 class ProjectSeeder extends Seeder

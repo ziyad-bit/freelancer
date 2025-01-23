@@ -17,6 +17,7 @@ return new class extends Migration {
 			$table->tinyInteger('rate', false, true);
 			$table->foreignId('giver_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
 			$table->foreignId('receiver_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+			$table->foreignId('project_id')->constrained('projects')->cascadeOnDelete()->cascadeOnUpdate();
 			$table->timestamp('created_at');
 		});
 	}

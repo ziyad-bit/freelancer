@@ -24,9 +24,8 @@ class User_infoSeeder extends Seeder
 				'location'       => $faker->country(),
 				'job'            => $faker->jobTitle(),
 				'overview'       => $faker->paragraph(),
-				'card_num'       => rand(1, 5),
+				'card_num'       => rand(1000000, 5000000),
 				'type'           => Arr::random(['client', 'freelancer']),
-				'online'         => Arr::random(['online', 'offline']),
 				'user_id'        => $user,
 			]);
 		}

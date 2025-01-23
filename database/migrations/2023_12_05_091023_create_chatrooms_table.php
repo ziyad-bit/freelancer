@@ -15,7 +15,6 @@ return new class extends Migration {
 		Schema::create('chat_rooms', function (Blueprint $table) {
 			$table->uuid('id')->primary();
 			$table->foreignId('owner_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
-			$table->foreignId('receiver_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
 			$table->timestamp('created_at');
 		});
 	}

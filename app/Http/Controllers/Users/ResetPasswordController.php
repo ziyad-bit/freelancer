@@ -52,6 +52,6 @@ class ResetPasswordController extends Controller
 	{
 		$message = $this->ResetPasswordRepository->updatePassword($request);
 		
-		return to_route('profile.index')->with($message);
+		return to_route('profile.index',Auth::user()->slug)->with($message);
 	}
 }

@@ -9,6 +9,7 @@ use Vonage\Client\Credentials\Basic;
 use Laravel\Socialite\Facades\Socialite;
 use App\Interfaces\Repository\SocialiteRepositoryInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SocialiteController extends Controller
 {
@@ -21,6 +22,6 @@ class SocialiteController extends Controller
 	{
 		$socialiteRepository->callback($provider);
 
-		return to_route('profile.index');
+		return to_route('profile.index',Auth::user()->slug);
 	}
 }
