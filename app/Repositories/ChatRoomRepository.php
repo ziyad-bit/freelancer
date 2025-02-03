@@ -41,7 +41,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 
 		return [
 			'messages'           => $messages,
-			'chat_room_id'       => $chat_room_id,
+			'selected_chat_room_id'       => $chat_room_id,
 			'all_chat_rooms'     => $all_chat_rooms,
 			'show_chatroom'      => true,
 			'is_chatroom_page_1' => true,
@@ -78,7 +78,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		/**
 		user can't start chat with any client
 		*/
-		if ($receiver->type !== 'client') {
+		// if ($receiver->type !== 'client') {
 			/**
 			 * if the chat room does not exist, create a new chat room
 			*/
@@ -152,17 +152,16 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 
 			return [
 				'messages'              => $messages,
-				'chat_room_id'          => $chat_room_id,
+				// 'chat_room_id'          => $chat_room_id,
 				'all_chat_rooms'        => $all_chat_rooms,
-				'receiver'              => $receiver,
-				'selected_chat_room_id' => $selected_chat_room->chat_room_id,
+				'selected_chat_room_id' => $chat_room_id,
 				'message_id'            => $message_id,
 				'show_chatroom'         => true,
 				'is_chatroom_page_1'    => true,
 			];
-		} else {
+		// } else {
 			abort(500, 'something went wrong');
-		}
+		// }
 	}
 
 	//MARK: get chat rooms

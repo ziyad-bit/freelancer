@@ -24,34 +24,17 @@
 @if ($all_chat_rooms->count() > 0)
     @foreach ($all_chat_rooms as $i => $message)
         @php
-            if ($message->sender_id !== Auth::id()) {
-                $receiver_name = $message->sender_name;
-                $receiver_id = $message->sender_id;
-                $receiver_image = $message->sender_image;
-            } else {
-                $receiver_name = $message->receiver_name;
-                $receiver_id = $message->receiver_id;
-                $receiver_image = $message->receiver_image;
-            }
+            $receiver = get_receiver_data($message);
 
-            $is_selected_chat_room = false;
-            if (!isset($selected_chat_room_id)) {
-                if ($show_chatroom === true) {
-                    $is_selected_chat_room = $i == 0;
-                }
-            }else{
-                if ($show_chatroom === true) {
-                    $is_selected_chat_room = $message->chat_room_id === $selected_chat_room_id;
-                }
-            }
+            $receiver_name  = $receiver['receiver_name'];
+            $receiver_id    = $receiver['receiver_id'];
+            $receiver_image = $receiver['receiver_image'];
+
+            $is_selected_chat_room = get_selected_chat_room($show_chatroom,$i,$message->chat_room_id);
         @endphp
 
         @include('users.includes.chat.chat_rooms_body', [
             'chat_room_id' => $message->chat_room_id,
         ])
-    @endforeach
-@else
-    @if (isset($receiver) && !request()->ajax())
-        </p> no chat rooms</p>
-    @endif
+    @endforeach    
 @endif

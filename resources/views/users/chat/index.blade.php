@@ -22,13 +22,14 @@
     <input type="hidden" value="{{ Auth::user()->image }}" id="auth_photo">
     <input type="hidden" value="{{ Auth::id() }}" id="auth_id">
 
-    <div class="tab-content" id="nav-tabContent">
+    @if ($all_chat_rooms->count() > 0)
+        <div class="tab-content" id="nav-tabContent">
             <div class="tab-pane fade show active" id="nav-friends" role="tabpanel" aria-labelledby="nav-friends-tab">
 
                 <div class="container">
 
                     <div class="row" style="margin-top: 50px">
-                        {{-- left side which contain search bar and chatrooms--}}
+                        {{-- left side which contain search bar and chatrooms --}}
                         <div class="col-4 ">
 
                             <div class="input-group mb-3">
@@ -60,5 +61,8 @@
 
                 </div>
             </div>
-    </div>
+        </div>
+    @else
+        <h3 style="margin-top: 10px" class="text-center">no messages</h3>
+    @endif
 @endsection

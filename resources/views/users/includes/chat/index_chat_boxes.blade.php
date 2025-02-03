@@ -4,22 +4,10 @@
 @if ($all_chat_rooms->count() > 0)
     @foreach ($all_chat_rooms as $i => $chat_room)
         @php
-            if ($chat_room->sender_id !== Auth::id()) {
-                $receiver_id = $chat_room->sender_id;
-            } else {
-                $receiver_id = $chat_room->receiver_id;
-            }
+            $receiver    = get_receiver_data($chat_room);
+            $receiver_id = $receiver['receiver_id'];
 
-            $is_selected_chat_room = false;
-            if (!isset($selected_chat_room)) {
-                if ($show_chatroom === true) {
-                    $is_selected_chat_room = $i == 0;
-                }
-            }else{
-                if ($show_chatroom === true) {
-                    $is_selected_chat_room = $message->chat_room_id === $selected_chat_room_id;
-                }
-            }
+            $is_selected_chat_room = get_selected_chat_room($show_chatroom, $i, $chat_room->chat_room_id);
         @endphp
 
         @include('users.includes.chat.chat_boxes_body', [
