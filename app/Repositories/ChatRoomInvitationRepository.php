@@ -2,18 +2,15 @@
 
 namespace App\Repositories;
 
-use App\Models\User;
-use Illuminate\Support\Str;
-use App\Traits\DatabaseCache;
-use Illuminate\Http\RedirectResponse;
 use App\Classes\{ChatRooms, Messages};
+use App\Exceptions\{RecordExistException};
 use App\Http\Requests\ChatRoomRequest;
-use Illuminate\Support\Facades\{Auth, DB, Log};
+use App\Interfaces\Repository\{ChatRoomInvitationRepositoryInterface};
+use App\Models\User;
 use App\Notifications\AddUserToChatNotification;
-use App\Interfaces\Repository\ChatRoomRepositoryInterface;
-use App\Exceptions\{GeneralNotFoundException, RecordExistException};
-use App\Interfaces\Repository\ChatRoomInvitationRepositoryInterface;
-use Illuminate\Support\Collection;
+use App\Traits\DatabaseCache;
+use Illuminate\Support\Facades\{Auth, DB, Log};
+use Illuminate\Support\{Collection};
 
 class ChatRoomInvitationRepository implements ChatRoomInvitationRepositoryInterface
 {
@@ -31,16 +28,15 @@ class ChatRoomInvitationRepository implements ChatRoomInvitationRepositoryInterf
 			->distinct()
 			->get();
 	}
-	
+
 	//MARK: sendInvitation
 	public function sendInvitation(ChatRoomRequest $request):void
 	{
 		try {
-			$created_at = now();
 			$user         = Auth::user();
 			$chat_room_id = $request->chat_room_id;
 			$receiver_id  = $request->user_id;
-			$data         = $request->validated() + ['created_at' => $created_at];
+			$data         = $request->except('sender_id') + ['created_at' => now()];
 
 			DB::beginTransaction();
 
@@ -48,19 +44,10 @@ class ChatRoomInvitationRepository implements ChatRoomInvitationRepositoryInterf
 				->where(['user_id' => $receiver_id, 'chat_room_id' => $chat_room_id])
 				->first();
 
-			if (!$user_in_chatroom) {
-				DB::table('chat_room_user')->insert($data);
-
-				DB::table('messages')
-					->insert([
-						'chat_room_id' => $chat_room_id,
-						'receiver_id'  => $receiver_id,
-						'sender_id'    => $user->id,
-						'text'         => 'new_chat_room%',
-						'created_at'   =>  $created_at,
-					]);
-			} else {
+			if ($user_in_chatroom) {
 				throw new RecordExistException('user');
+			} else {
+				DB::table('chat_room_user')->insert($data);
 			}
 
 			$receiver     = User::find($request->user_id);
@@ -95,18 +82,42 @@ class ChatRoomInvitationRepository implements ChatRoomInvitationRepositoryInterf
 	// MARK: acceptInvitation
 	public function postAcceptInvitationChatroom(ChatRoomRequest $request):void
 	{
-		$auth_id      = Auth::id();
-		$chat_room_id = $request->chat_room_id;
+		try {
+			$auth_id      = Auth::id();
+			$chat_room_id = $request->chat_room_id;
 
-		DB::table('chat_room_user')
-			->where(['chat_room_id' => $chat_room_id, 'user_id' => $auth_id])
-			->update(['decision' => 'approved']);
+			DB::beginTransaction();
 
-		DB::table('notifications')
-			->where(['data->chat_room_id' => $chat_room_id, 'notifiable_id' => $auth_id])
-			->delete();
+			DB::table('messages')
+				->where(['chat_room_id' => $chat_room_id, 'last' => 1])
+				->update(['last' => 0]);
 
-		$this->forgetCache($auth_id);
+			DB::table('messages')
+				->insert([
+					'chat_room_id' => $chat_room_id,
+					'receiver_id'  => $auth_id,
+					'sender_id'    => $request->sender_id,
+					'text'         => 'new_chat_room%',
+					'created_at'   => now(),
+				]);
+
+			DB::table('chat_room_user')
+				->where(['chat_room_id' => $chat_room_id, 'user_id' => $auth_id])
+				->update(['decision' => 'approved']);
+
+			DB::table('notifications')
+				->where(['data->chat_room_id' => $chat_room_id, 'notifiable_id' => $auth_id])
+				->delete();
+
+			DB::commit();
+
+			$this->forgetCache($auth_id);
+		} catch (\Throwable $th) {
+			DB::rollBack();
+			Log::critical('database rollback and error is ' . $th->getMessage());
+
+			abort(500, 'something went wrong');
+		}
 	}
 
 	// MARK: getAcceptInvitation
@@ -115,9 +126,9 @@ class ChatRoomInvitationRepository implements ChatRoomInvitationRepositoryInterf
 		$auth_id = Auth::id();
 
 		/**
-			we will get the chat room between the authenticated user and  
+			we will get the chat room between the authenticated user and
 			user who sent the invitation
-		 * */ 
+		 * */
 		$selected_chat_room = ChatRooms::fetch(
 			['messages.chat_room_id' => $chat_room_id, 'last' => 1],
 			[]
@@ -125,7 +136,7 @@ class ChatRoomInvitationRepository implements ChatRoomInvitationRepositoryInterf
 		->groupBy('messages.id');
 
 		/**
-		 * we will get the chat rooms with last received message 
+		 * we will get the chat rooms with last received message
 		 * or last sent message
 		 */
 		$all_chat_rooms = ChatRooms::fetch(

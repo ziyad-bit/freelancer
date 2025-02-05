@@ -40,11 +40,11 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		}
 
 		return [
-			'messages'           => $messages,
+			'messages'                    => $messages,
 			'selected_chat_room_id'       => $chat_room_id,
-			'all_chat_rooms'     => $all_chat_rooms,
-			'show_chatroom'      => true,
-			'is_chatroom_page_1' => true,
+			'all_chat_rooms'              => $all_chat_rooms,
+			'show_chatroom'               => true,
+			'is_chatroom_page_1'          => true,
 		];
 	}
 
@@ -76,92 +76,84 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		$selected_chat_room = $selected_chat_room_query->first();
 
 		/**
-		user can't start chat with any client
+		 * if the chatroom does not exist, create a new chatroom
 		*/
-		// if ($receiver->type !== 'client') {
+		$created_at = now();
+		if (!$selected_chat_room) {
 			/**
-			 * if the chat room does not exist, create a new chat room
-			*/
-			$created_at = now();
-			if (!$selected_chat_room) {
-				/**
-				 * we will get all the chat rooms with last received message
-				 * or last sent message
-				 */
+			 * we will get all the chat rooms with last received message
+			 * or last sent message
+			 */
 
-				$all_chat_rooms = ChatRooms::fetch(
-					['messages.sender_id' => $auth_id, 'last' => 1],
-					['messages.receiver_id' => $auth_id, 'last' => 1],
-				)
-				->groupBy('messages.id')
-				->latest('messages.id')
-				->limit(4)
-				->get();
+			$all_chat_rooms = ChatRooms::fetch(
+				['messages.sender_id' => $auth_id, 'last' => 1],
+				['messages.receiver_id' => $auth_id, 'last' => 1],
+			)
+			->groupBy('messages.id')
+			->latest('messages.id')
+			->limit(4)
+			->get();
 
-				DB::table('chat_rooms')
-					->insert(
-						[
-							'id'          => Str::uuid(),
-							'owner_id'    => $auth_id,
-							'created_at'  => $created_at,
-						]
-					);
+			DB::table('chat_rooms')
+				->insert(
+					[
+						'id'          => Str::uuid(),
+						'owner_id'    => $auth_id,
+						'created_at'  => $created_at,
+					]
+				);
 
-				$chat_room_id = DB::table('chat_rooms')
-					->where(['created_at' => $created_at, 'owner_id' => $auth_id])
-					->value('id');
+			$chat_room_id = DB::table('chat_rooms')
+				->where(['created_at' => $created_at, 'owner_id' => $auth_id])
+				->value('id');
 
-				$message_id = DB::table('messages')
-					->insertGetId([
-						'chat_room_id' => $chat_room_id,
-						'receiver_id'  => $receiver_id,
-						'sender_id'    => $auth_id,
-						'text'         => 'new_chat_room%',
-						'created_at'   => $created_at,
-					]);
+			$message_id = DB::table('messages')
+				->insertGetId([
+					'chat_room_id' => $chat_room_id,
+					'receiver_id'  => $receiver_id,
+					'sender_id'    => $auth_id,
+					'text'         => 'new_chat_room%',
+					'created_at'   => $created_at,
+				]);
 
-				DB::table('chat_room_user')
-					->insert([
-						['chat_room_id' => $chat_room_id, 'user_id' => $auth_id],
-						['chat_room_id' => $chat_room_id, 'user_id' => $receiver_id],
-					]);
+			DB::table('chat_room_user')
+				->insert([
+					['chat_room_id' => $chat_room_id, 'user_id' => $auth_id],
+					['chat_room_id' => $chat_room_id, 'user_id' => $receiver_id],
+				]);
 
-				$selected_chat_room = $selected_chat_room_query->first();
-			} else {
-				/**
-				 * we will get all the chat rooms with last received message
-				 * or last sent message except the selected one
-				 */
-				$all_chat_rooms = ChatRooms::fetch(
-					['messages.sender_id' => $auth_id, 'last' => 1],
-					['messages.receiver_id' => $auth_id, 'last' => 1],
-				)
-				->groupBy('messages.id')
-				->latest('messages.id')
-				->limit(3)
-				->get();
+			$selected_chat_room = $selected_chat_room_query->first();
+		} else {
+			/**
+			 * we will get all the chat rooms with last received message
+			 * or last sent message except the selected one
+			 */
+			$all_chat_rooms = ChatRooms::fetch(
+				['messages.sender_id' => $auth_id, 'last' => 1],
+				['messages.receiver_id' => $auth_id, 'last' => 1],
+			)
+			->groupBy('messages.id')
+			->latest('messages.id')
+			->limit(3)
+			->get();
 
-				$messages = Messages::index($selected_chat_room->chat_room_id);
-			}
+			$messages = Messages::index($selected_chat_room->chat_room_id);
+		}
 
-			$all_chat_rooms_count = $all_chat_rooms->count();
-			$all_chat_rooms       = $all_chat_rooms
-									->union([$all_chat_rooms_count=>$selected_chat_room])
-									->unique()
-									->sortByDesc('id');
+		$all_chat_rooms_count = $all_chat_rooms->count();
+		$all_chat_rooms       = $all_chat_rooms
+								->union([$all_chat_rooms_count => $selected_chat_room])
+								->unique()
+								->sortByDesc('id');
 
-			return [
-				'messages'              => $messages,
-				// 'chat_room_id'          => $chat_room_id,
-				'all_chat_rooms'        => $all_chat_rooms,
-				'selected_chat_room_id' => $chat_room_id,
-				'message_id'            => $message_id,
-				'show_chatroom'         => true,
-				'is_chatroom_page_1'    => true,
-			];
-		// } else {
-			abort(500, 'something went wrong');
-		// }
+		return [
+			'messages'              => $messages,
+			'all_chat_rooms'        => $all_chat_rooms,
+			'selected_chat_room_id' => $chat_room_id,
+			'message_id'            => $message_id,
+			'show_chatroom'         => true,
+			'is_chatroom_page_1'    => true,
+		];
 	}
 
 	//MARK: get chat rooms

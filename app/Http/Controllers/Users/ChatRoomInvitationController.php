@@ -13,7 +13,7 @@ class ChatRoomInvitationController extends Controller
 	public function __construct(private ChatRoomInvitationRepositoryInterface $ChatRoomInvitationRepository)
 	{
 		$this->middleware(['auth', 'verifyEmail']);
-		$this->middleware('chatroom')->only(['post_accept_invitation','refuse_invitation']);
+		$this->middleware('chatroomInvitation')->only(['post_accept_invitation','refuse_invitation']);
 	}
 
 	// MARK:get_users 

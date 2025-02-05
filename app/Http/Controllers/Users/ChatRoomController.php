@@ -13,6 +13,7 @@ class ChatRoomController extends Controller
 	public function __construct(private ChatRoomRepositoryInterface $chatRoomRepository)
 	{
 		$this->middleware(['auth', 'verifyEmail']);
+		$this->middleware('chatroom')->only('fetch');
 	}
 
 	// MARK:index

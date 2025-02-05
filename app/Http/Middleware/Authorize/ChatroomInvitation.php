@@ -5,8 +5,9 @@ namespace App\Http\Middleware\Authorize;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
+use App\Exceptions\GeneralNotFoundException;
 
-class Chatroom
+class ChatroomInvitation
 {
 	/**
 	 * Handle an incoming request.
@@ -18,14 +19,12 @@ class Chatroom
 	 */
 	public function handle(Request $request, Closure $next)
 	{
-		$receiver_id   = $request->route('receiver_id');
-		$receiver_type = DB::table('user_infos')
-					->where('user_id', $receiver_id)
-					->value('type');
+		$chat_room_user = DB::table('chat_room_user')
+			->where(['chat_room_id' => $request->chat_room_id, 'user_id' => Auth::id()])
+			->first();
 
-		// user can't start chat with any client
-		if ($receiver_type !== 'freelancer') {
-			abort(500, 'something went wrong');
+		if (!$chat_room_user) {
+			throw new GeneralNotFoundException('chatroom');
 		}
 
 		return $next($request);
