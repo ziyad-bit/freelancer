@@ -14,7 +14,7 @@ return new class extends Migration {
 	{
 		Schema::create('message_files', function (Blueprint $table) {
 			$table->bigIncrements('id');
-			$table->string('file', 80);
+			$table->string('file', 80)->unique();
 			$table->string('type', 15);
 			$table->foreignId('message_id')->constrained('messages')->cascadeOnDelete()->cascadeOnUpdate();
 			$table->timestamps();

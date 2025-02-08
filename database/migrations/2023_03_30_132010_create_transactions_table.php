@@ -19,7 +19,8 @@ return new class extends Migration {
 			$table->foreignId('owner_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
 			$table->foreignId('receiver_id')->nullable()->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
 			$table->foreignId('project_id')->nullable()->constrained('projects')->cascadeOnDelete()->cascadeOnUpdate();
-			$table->timestamps();
+			$table->timestamp('created_at')->index();
+			$table->timestamp('updated_at');
 		});
 	}
 

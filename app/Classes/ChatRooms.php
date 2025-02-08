@@ -10,12 +10,16 @@ class ChatRooms
 	public static function fetch(array $last_msg_send, array $last_msg_receive, int $message_id = null,string $operator=null, string $searchName = null):Builder
 	{
 		/**
-		in case searchName is not null, we will search for the sender name or receiver name
-		in case message_id is not null, we will get more the chatrooms that have an message 
-			id less than the message_id
+		in case searchName is not null, we will search for the sender name 
+		or receiver name
+		
+		in case message_id is not null, we will get more the chatrooms 
+		that have an message id less than the message_id for infinite scrolling 
 			
-		in case last_msg_send exist, we will get the chatrooms with the last message sent
-		or in case last_msg_receive exist, we will get the chatrooms with the last message received
+		in case last_msg_send exist, we will get the chatrooms with 
+		the last message sent
+		or in case last_msg_receive exist, we will get the chatrooms 
+		with the last message received
 		 */
 		return DB::table('messages')
 			->select(
@@ -25,7 +29,6 @@ class ChatRooms
 				'receiver.name as receiver_name',
 				'receiver.image as receiver_image',
 				'chat_rooms.id as chatroom_id',
-				DB::raw('GROUP_CONCAT(DISTINCT chat_room_user.user_id) as chat_room_users_ids'),
 			)
 			->join('users as sender', 'messages.sender_id', '=', 'sender.id')
 			->join('users as receiver', 'messages.receiver_id', '=', 'receiver.id')

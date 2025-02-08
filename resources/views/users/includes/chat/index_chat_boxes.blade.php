@@ -7,7 +7,7 @@
             $receiver    = get_receiver_data($chat_room);
             $receiver_id = $receiver['receiver_id'];
 
-            $is_selected_chat_room = get_selected_chat_room($show_chatroom, $i, $chat_room->chat_room_id);
+            $is_selected_chat_room = get_selected_chat_room($show_chatroom, $i,$selected_chat_room_id ,$chat_room->chat_room_id);
         @endphp
 
         @include('users.includes.chat.chat_boxes_body', [

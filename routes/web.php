@@ -104,7 +104,7 @@ Route::namespace('Users')->controller(ChatRoomController::class)->group(function
 
 //MARK:chatroomInvitation
 Route::namespace('Users')->controller(ChatRoomInvitationController::class)->group(function () {
-	Route::get('chatrooms/users'                           , 'get_users')->name('chatrooms.get_users');
+	Route::get('chatrooms/users/{chat_room_id}'            , 'get_users')->name('chatrooms.get_users');
 	Route::post('chatrooms/send-invitation'                , 'send_user_invitation')->name('chatrooms.send_user_invitation');
 	Route::post('chatrooms/accept-invitation'              , 'post_accept_invitation')->name('chatrooms.postAcceptInvitation');
 	Route::get('chatrooms/accept-invitation/{chat_room_id}', 'get_accept_invitation')->name('chatrooms.getAcceptInvitation');

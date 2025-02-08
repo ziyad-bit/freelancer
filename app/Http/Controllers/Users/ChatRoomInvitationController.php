@@ -18,9 +18,9 @@ class ChatRoomInvitationController extends Controller
 
 	// MARK:get_users 
 	//get all users in all chatrooms to send invitation to one of them
-	public function get_users() : JsonResponse
+	public function get_users(string $chat_room_id) : JsonResponse
 	{
-		$users = $this->ChatRoomInvitationRepository->get_chatroom_users();
+		$users = $this->ChatRoomInvitationRepository->get_chatroom_users($chat_room_id);
 
 		return response()->json(['users' => $users]);
 	}

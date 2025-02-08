@@ -1,25 +1,25 @@
 const chat_room_id = document.querySelector('#chat_room_id').getAttribute('data-chat_room_id');
 
-  // MARK: leave all channels
+// MARK: leave all channels
 let subscribedChatChannels = new Set();
 
 window.onbeforeunload = function () {
     subscribedChatChannels.forEach(key => {
-          // eslint-disable-next-line no-undef
+        // eslint-disable-next-line no-undef
         Echo.leaveChannel(`chatrooms.${key}`);
     })
 }
 
-  //MARK:scroll to chatroom
+//MARK:scroll to chatroom
 if (chat_room_id) {
-    const scrollableDiv     = document.querySelector('.list_tab_users');
+    const scrollableDiv = document.querySelector('.list_tab_users');
     const elementToScrollTo = document.querySelector('.chat_room_' + chat_room_id);
-    const offsetTop         = elementToScrollTo.offsetTop;
+    const offsetTop = elementToScrollTo.offsetTop;
 
     scrollableDiv.scrollTop = offsetTop;
 }
 
-  //MARK:get Old msgs
+//MARK:get Old msgs
 let old_msg = true;
 
 function loadOldMessages() {
@@ -27,22 +27,22 @@ function loadOldMessages() {
 
     for (let i = 0; i < chat_box.length; i++) {
         chat_box[i].scrollTo({
-            top     : 1000,
+            top: 1000,
             behavior: 'smooth'
         });
 
         chat_box[i].onscroll = function () {
             if (chat_box[i].scrollTop == 0) {
                 if (old_msg == true) {
-                        let chat_room_id      = this.getAttribute('data-chat_room_id'),
-                            show_old_msgs_url = this.firstElementChild.getAttribute('data-show_old_msgs_url'),
-                            lastIndex         = show_old_msgs_url.lastIndexOf("/");
+                    let chat_room_id = this.getAttribute('data-chat_room_id'),
+                        show_old_msgs_url = this.firstElementChild.getAttribute('data-show_old_msgs_url'),
+                        lastIndex = show_old_msgs_url.lastIndexOf("/");
 
-                        show_old_msgs_url = show_old_msgs_url.substring(0, lastIndex) +'/'+ chat_room_id;
+                    show_old_msgs_url = show_old_msgs_url.substring(0, lastIndex) + '/' + chat_room_id;
 
                     const box = document.getElementsByClassName('box' + chat_room_id)[0];
 
-                      // eslint-disable-next-line no-undef
+                    // eslint-disable-next-line no-undef
                     axios.get(show_old_msgs_url)
                         .then(res => {
                             if (res.status == 200) {
@@ -52,7 +52,7 @@ function loadOldMessages() {
                                     box.insertAdjacentHTML('afterbegin', view);
 
                                     box.scrollTo({
-                                        top     : 100,
+                                        top: 100,
                                         behavior: 'smooth'
                                     })
                                 } else {
@@ -69,20 +69,20 @@ function loadOldMessages() {
 
 loadOldMessages()
 
-  //MARK:get chatrooms 
-const chat_room_box          = document.querySelector('.list_tab_users');
-let   data_chat_rooms_status = true;
+//MARK:get chatrooms 
+const chat_room_box = document.querySelector('.list_tab_users');
+let data_chat_rooms_status = true;
 
 function loadPages() {
     let show_more_chatroom_url = chat_room_box.lastElementChild.getAttribute('data-show_more_chatroom_url');
 
     if (data_chat_rooms_status) {
-          // eslint-disable-next-line no-undef
+        // eslint-disable-next-line no-undef
         axios.get(show_more_chatroom_url)
             .then(res => {
                 if (res.status == 200) {
                     let chat_room_view = res.data.chat_room_view,
-                        chat_box_view  = res.data.chat_box_view;
+                        chat_box_view = res.data.chat_box_view;
 
                     if (chat_room_view !== '') {
                         chat_room_box.insertAdjacentHTML('beforeend', chat_room_view);
@@ -105,18 +105,18 @@ chat_room_box.onscroll = function () {
     }
 }
 
-  //MARK:store message
+//MARK:store message
 function storeMsg(e) {
     e.preventDefault();
 
-    let chat_room_id  = e.target.parentElement.getAttribute('data-chat_room_id'),
+    let chat_room_id = e.target.parentElement.getAttribute('data-chat_room_id'),
         store_msg_url = e.target.parentElement.getAttribute('data-store_msg_url'),
-        form          = document.querySelector('#form' + chat_room_id),
-        formData      = new FormData(form);
+        form = document.querySelector('#form' + chat_room_id),
+        formData = new FormData(form);
 
     const msg_err = document.getElementsByClassName(`msg_err${chat_room_id}`)[0];
 
-      // eslint-disable-next-line no-undef
+    // eslint-disable-next-line no-undef
     axios.post(store_msg_url, formData)
         .then(res => {
             if (res.status == 200) {
@@ -128,12 +128,12 @@ function storeMsg(e) {
                 box.insertAdjacentHTML('beforeend', view)
 
                 msg_err.textContent = '';
-                file_number         = 0;
+                file_number = 0;
 
                 document.getElementById(`msg${chat_room_id}`).value = '';
 
                 box.scrollTo({
-                    top     : 10000,
+                    top: 10000,
                     behavior: 'smooth'
                 })
 
@@ -163,9 +163,9 @@ function storeMsg(e) {
             if (error.status == 422) {
                 let err_msgs = error.data.errors;
 
-                  // eslint-disable-next-line no-unused-vars
+                // eslint-disable-next-line no-unused-vars
                 for (const [key, value] of Object.entries(err_msgs)) {
-                    msg_err.textContent   = value[0];
+                    msg_err.textContent = value[0];
                     msg_err.style.display = '';
                 }
             }
@@ -173,17 +173,17 @@ function storeMsg(e) {
 }
 
 
-  //MARK:file upload
+//MARK:file upload
 let file_number = 0;
 
 function upload_file(path, type, form_upload, chat_room_id) {
     let upload_url = document.querySelector('#upload_url').value;
 
-    document.querySelector(`#app_input${chat_room_id}`).value   = '';
+    document.querySelector(`#app_input${chat_room_id}`).value = '';
     document.querySelector(`#video_input${chat_room_id}`).value = '';
     document.querySelector(`#image_input${chat_room_id}`).value = '';
 
-      // eslint-disable-next-line no-undef
+    // eslint-disable-next-line no-undef
     axios.post(upload_url, form_upload)
         .then(res => {
             if (res.status == 200) {
@@ -192,19 +192,19 @@ function upload_file(path, type, form_upload, chat_room_id) {
                 file_number++;
 
                 if (type === 'app') {
-                    var file_ele    = `<iframe class="file_uploaded" src="${path + file_name}"></iframe>`;
+                    var file_ele = `<iframe class="file_uploaded" src="${path + file_name}"></iframe>`;
                     var file_inputs = `<input type="hidden" class="input_files" name="files[${file_number}][name]" value="${file_name}">
                         <input type="hidden" class="input_files" name="files[${file_number}][type]" value="application">`;
                 } else if (type === 'image') {
-                      // eslint-disable-next-line no-redeclare
+                    // eslint-disable-next-line no-redeclare
                     var file_ele = `<img class="file_uploaded" src="${path + file_name}"></img>`;
-                      // eslint-disable-next-line no-redeclare
+                    // eslint-disable-next-line no-redeclare
                     var file_inputs = `<input type="hidden" class="input_files" name="files[${file_number}][name]" value="${file_name}">
                         <input type="hidden" class="input_files" name="files[${file_number}][type]" value="image">`;
                 } else {
-                      // eslint-disable-next-line no-redeclare
+                    // eslint-disable-next-line no-redeclare
                     var file_ele = `<video class="file_uploaded" src="${path + file_name}"></video>`;
-                      // eslint-disable-next-line no-redeclare
+                    // eslint-disable-next-line no-redeclare
                     var file_inputs = `<input type="hidden" class="input_files" name="files[${file_number}][name]" value="${file_name}">
                         <input type="hidden" class="input_files" name="files[${file_number}][type]" value="video">`;
                 }
@@ -222,25 +222,25 @@ function upload_file(path, type, form_upload, chat_room_id) {
             let error = err.response;
             if (error.status == 422) {
                 let err_msgs = error.data.errors;
-                  // eslint-disable-next-line no-undef
-                let   chatroom_id = e.target.getAttribute('data-chat_room_id');
-                const msg_ele     = document.querySelector(`.msg_err${chatroom_id}`);
+                // eslint-disable-next-line no-undef
+                let chatroom_id = e.target.getAttribute('data-chat_room_id');
+                const msg_ele = document.querySelector(`.msg_err${chatroom_id}`);
 
-                  // eslint-disable-next-line no-unused-vars
+                // eslint-disable-next-line no-unused-vars
                 for (const [key, value] of Object.entries(err_msgs)) {
-                    msg_ele.textContent   = value[0];
+                    msg_ele.textContent = value[0];
                     msg_ele.style.display = '';
                 }
             }
         });
 }
 
-  // eslint-disable-next-line no-undef
+// eslint-disable-next-line no-undef
 generalEventListener('input', '.file_input', e => {
     let chat_room_id = e.target.getAttribute('data-chat_room_id');
-    let file_input   = document.querySelector(`#app_input${chat_room_id}`);
-    let form         = document.querySelector(`#form_upload_app${chat_room_id}`);
-    let form_upload  = new FormData(form);
+    let file_input = document.querySelector(`#app_input${chat_room_id}`);
+    let form = document.querySelector(`#form_upload_app${chat_room_id}`);
+    let form_upload = new FormData(form);
 
     if (file_input.value) {
         let type = 'app';
@@ -250,12 +250,12 @@ generalEventListener('input', '.file_input', e => {
     }
 })
 
-  // eslint-disable-next-line no-undef
+// eslint-disable-next-line no-undef
 generalEventListener('input', '.file_input', e => {
     let chat_room_id = e.target.getAttribute('data-chat_room_id');
-    let file_input   = document.querySelector(`#image_input${chat_room_id}`);
-    let form         = document.querySelector(`#form_upload_image${chat_room_id}`);
-    let form_upload  = new FormData(form);
+    let file_input = document.querySelector(`#image_input${chat_room_id}`);
+    let form = document.querySelector(`#form_upload_image${chat_room_id}`);
+    let form_upload = new FormData(form);
 
     if (file_input.value) {
         let type = 'image';
@@ -265,12 +265,12 @@ generalEventListener('input', '.file_input', e => {
     }
 })
 
-  // eslint-disable-next-line no-undef
+// eslint-disable-next-line no-undef
 generalEventListener('input', '.file_input', e => {
     let chat_room_id = e.target.getAttribute('data-chat_room_id');
-    let file_input   = document.querySelector(`#video_input${chat_room_id}`);
-    let form         = document.querySelector(`#form_upload_video${chat_room_id}`);
-    let form_upload  = new FormData(form);
+    let file_input = document.querySelector(`#video_input${chat_room_id}`);
+    let form = document.querySelector(`#form_upload_video${chat_room_id}`);
+    let form_upload = new FormData(form);
 
     if (file_input.value) {
         let type = 'video';
@@ -280,19 +280,19 @@ generalEventListener('input', '.file_input', e => {
     }
 })
 
-  // eslint-disable-next-line no-undef
+// eslint-disable-next-line no-undef
 generalEventListener('click', '.send_btn', e => {
     storeMsg(e);
 })
 
-  // eslint-disable-next-line no-undef
+// eslint-disable-next-line no-undef
 generalEventListener('keypress', '.send_input', e => {
     if (e.keyCode == 13 && !e.shiftKey) {
         storeMsg(e);
     }
 })
 
-  //MARK: show typing
+//MARK: show typing
 let typing_users_ids = new Set();
 
 function is_typing(e) {
@@ -313,22 +313,22 @@ function is_typing(e) {
     }
 }
 
-  //MARK:sub chat channel
+//MARK:sub chat channel
 function subscribeChatChannel(chat_room_id) {
-      // eslint-disable-next-line no-undef
+    // eslint-disable-next-line no-undef
     Echo.join(`chatrooms.` + chat_room_id)
         .joining((data) => {
-            const plus_ele            = document.querySelector('.plus' + data.chat_room_id);
-            let   chat_room_users_ids = plus_ele.getAttribute('data-chat_room_users_ids');
+            const plus_ele = document.querySelector('.plus' + data.chat_room_id);
+            let chat_room_users_ids = plus_ele.getAttribute('data-chat_room_users_ids');
 
             chat_room_users_ids = chat_room_users_ids + ',' + data.user_id;
 
             plus_ele.setAttribute('data-chat_room_users_ids', chat_room_users_ids);
         })
         .listen('MessageEvent', (e) => {
-            const data         = e.data;
+            const data = e.data;
             const chat_room_id = data.chat_room_id;
-            const box          = document.querySelector(`.box${chat_room_id}`);
+            const box = document.querySelector(`.box${chat_room_id}`);
 
             box.insertAdjacentHTML('beforeend', e.view)
 
@@ -338,14 +338,14 @@ function subscribeChatChannel(chat_room_id) {
             }
 
             box.scrollTo({
-                top     : 10000,
+                top: 10000,
                 behavior: 'smooth'
             });
 
             document.querySelector(`.chat_room_${chat_room_id} div  #sender_name`).textContent = e.sender_name + ':';
 
             const msg_ele = document.querySelector(`.chat_room_${chat_room_id} div p .msg_text`);
-            const text    = data.text;
+            const text = data.text;
 
             if (text == null) {
                 msg_ele.textContent = 'file';
@@ -367,16 +367,16 @@ function subscribeChatChannel(chat_room_id) {
 }
 
 
-  //MARK:get chat msgs
-  //when click on chatroom
+//MARK:get chat msgs
+//when click on chatroom
 function getNewMessages(chat_room_id, show_msgs_url) {
     const box = document.getElementsByClassName('box' + chat_room_id)[0];
 
     let data_status_ele = document.querySelector('.chat_room_' + chat_room_id);
-    let data_status     = data_status_ele.getAttribute('data-status');
+    let data_status = data_status_ele.getAttribute('data-status');
 
     if (data_status == 'false') {
-          // eslint-disable-next-line no-undef
+        // eslint-disable-next-line no-undef
         axios.get(show_msgs_url)
             .then(res => {
                 if (res.status == 200) {
@@ -386,7 +386,7 @@ function getNewMessages(chat_room_id, show_msgs_url) {
                         box.insertAdjacentHTML('afterbegin', view);
 
                         box.scrollTo({
-                            top     : 100,
+                            top: 100,
                             behavior: 'smooth'
                         })
                     }
@@ -395,14 +395,14 @@ function getNewMessages(chat_room_id, show_msgs_url) {
                 }
             })
 
-          //subscribe chat channel and listen to event after click
+        //subscribe chat channel and listen to event after click
         subscribeChatChannel(chat_room_id);
     }
 }
 
-  // eslint-disable-next-line no-undef
+// eslint-disable-next-line no-undef
 generalEventListener('click', '.user_btn', e => {
-    let chat_room_id  = e.target.getAttribute('data-chat_room_id'),
+    let chat_room_id = e.target.getAttribute('data-chat_room_id'),
         show_msgs_url = e.target.getAttribute('data-show_msgs_url');
 
     selected_chat_room_id = chat_room_id;
@@ -418,134 +418,23 @@ let selected_chat_room_id = document.querySelector('.user_btn.active').getAttrib
 subscribeChatChannel(selected_chat_room_id);
 subscribedChatChannels.add(selected_chat_room_id)
 
-  // eslint-disable-next-line no-undef
+// eslint-disable-next-line no-undef
 generalEventListener('input', '.send_input', e => {
-    let card         = e.target.parentElement;
+    let card = e.target.parentElement;
     let chat_room_id = card.getAttribute('data-chat_room_id');
-    let user_id      = document.getElementById('auth_id').value;
+    let user_id = document.getElementById('auth_id').value;
 
-      // eslint-disable-next-line no-undef
+    // eslint-disable-next-line no-undef
     Echo.join(`chatrooms.` + chat_room_id).whisper('typing', {
-        chat_room_id   : chat_room_id,
-        user_id        : user_id,
+        chat_room_id: chat_room_id,
+        user_id: user_id,
         msg_input_value: document.querySelector('#msg' + chat_room_id).value
     });
 })
 
-  //MARK:send invitation
-  // eslint-disable-next-line no-undef
-generalEventListener('click', '.plus', e => {
-    let request_status      = e.target.getAttribute('data-request_status');
-    let chat_room_id        = e.target.getAttribute('data-chat_room_id');
-    let chatroom_users_url  = e.target.getAttribute('data-chatroom_users_url');
-    let chat_room_users_ids = e.target.getAttribute('data-chat_room_users_ids');
-    let user_names_ele      = document.querySelectorAll(`.user_names`);
-    let old_user_names_ele  = document.querySelectorAll(`.user_names${chat_room_id}`);
-
-    if (request_status  == 'false') {
-        user_names_ele.forEach(user_name => {
-            user_name.style.display = 'none';
-        });
-
-          // eslint-disable-next-line no-undef
-        axios.get(chatroom_users_url)
-            .then(res => {
-                if (res.status == 200) {
-                    let   users          = res.data.users;
-                    const add_body_modal = document.querySelector('.add_body');
-
-                    e.target.setAttribute('data-request_status', 'true');
-
-                    users.forEach(user => {
-                        if (!chat_room_users_ids.includes(user.id)) {
-                            add_body_modal.insertAdjacentHTML('beforeend',
-                                `
-                                    <li class = "list-group-item user_names user_names${chat_room_id} user${user.id}">
-                
-                                        <img class = "rounded-circle image" alt = "loading"
-                                             src   = "/storage/images/users/${user.image}">
-                                                ${user.name}
-                
-                                        <form  id   = "add_form${user.id}">
-                                        <input type = "hidden" name = "chat_room_id" value = "${chat_room_id}">
-                                        <input type = "hidden" name = "user_id" value      = "${user.id}">
-                                        </form>        
-                
-                                        <button
-                                            type  = "button"
-                                            class = "btn btn-primary add_btn" data-receiver_id = "${user.id}">
-                                            add
-                                        </button>
-                                    </li>
-                                `);
-                        }
-                    })
-                }
-            })
-    }else{
-        user_names_ele.forEach(user_name => {
-            user_name.style.display = 'none';
-        });
-
-        old_user_names_ele.forEach(user_name => {
-            user_name.style.display = '';
-        });
-    }
-})
-
-  // eslint-disable-next-line no-undef
-generalEventListener('click', '.add_btn', e => {
-    e.target.disabled = true;
-
-    let receiver_id         = e.target.getAttribute('data-receiver_id');
-    let form                = document.querySelector(`#add_form${receiver_id}`);
-    let send_invitation_url = document.querySelector(`.add_body`).getAttribute('data-send_invitation_url');
-    let data                = new FormData(form);
-    let user_ele            = document.querySelector(`.user${receiver_id}`);
-
-    const err_ele     = document.querySelector('.err_msg');
-    const success_ele = document.querySelector('.success_msg');
-
-      // eslint-disable-next-line no-undef
-    axios.post(send_invitation_url, data)
-        .then(res => {
-            if (res.status == 200) {
-                let success_msg = res.data.success_msg;
-
-                err_ele.style.display     = 'none';
-                success_ele.style.display = '';
-                success_ele.textContent   = success_msg;
-
-                user_ele.remove();
-            }
-        })
-        .catch(err => {
-            e.target.disabled = false;
-
-            let error = err.response;
-            if (error.status == 400) {
-                let error_msg = error.data.warning_msg;
-
-                success_ele.style.display = 'none';
-                err_ele.style.display     = '';
-                err_ele.textContent       = error_msg;
-
-                user_ele.remove();
-            }
-
-            if (error.status == 422 || error.status == 409) {
-                let error_msg = error.data.message;
-
-                success_ele.style.display = 'none';
-                err_ele.style.display     = '';
-                err_ele.textContent       = error_msg;
-            }
-        })
-})
-
-  //MARK:search chatrooms
+//MARK:search chatrooms
 function hide_results() {
-    const chatroom_btn   = document.getElementsByClassName('chatroom_btn');
+    const chatroom_btn = document.getElementsByClassName('chatroom_btn');
     const no_results_ele = document.getElementsByClassName('no_results');
 
     for (let i = 0; i < chatroom_btn.length; i++) {
@@ -563,7 +452,7 @@ let search_chatrooms_arr = [];
 
 function search_chatrooms() {
     let search_input_val = search_input_ele.value;
-    let search_url       = search_input_ele.getAttribute('data-search_url');
+    let search_url = search_input_ele.getAttribute('data-search_url');
 
     if (search_input_val) {
         if (search_chatrooms_arr.includes(search_input_val)) {
@@ -579,12 +468,12 @@ function search_chatrooms() {
 
         search_chatrooms_arr.unshift(search_input_val);
 
-          // eslint-disable-next-line no-undef
+        // eslint-disable-next-line no-undef
         axios.post(search_url, { 'search': search_input_val })
             .then((res) => {
                 if (res.status == 200) {
                     let chat_room_view = res.data.chat_room_view;
-                    let chat_box_view  = res.data.chat_box_view;
+                    let chat_box_view = res.data.chat_box_view;
 
                     hide_results();
 
@@ -606,7 +495,7 @@ function search_chatrooms() {
     }
 }
 
-  // eslint-disable-next-line no-undef
+// eslint-disable-next-line no-undef
 search_input_ele.addEventListener('input', debounce(() => {
     search_chatrooms();
 }, 1000))

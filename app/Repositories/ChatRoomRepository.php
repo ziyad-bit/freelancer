@@ -27,7 +27,6 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			['messages.sender_id' => $auth_id, 'last' => 1],
 			['messages.receiver_id' => $auth_id, 'last' => 1]
 		)
-		->groupBy('messages.id')
 		->latest('messages.id')
 		->limit(4)
 		->get();
@@ -52,8 +51,6 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 	public function fetchWithSelectedUser(int $receiver_id): array|RedirectResponse
 	{
 		$messages     = [];
-		$chat_room_id = null;
-		$message_id   = 0;
 		$auth_id      = Auth::id();
 
 		$receiver = DB::table('users')
@@ -89,7 +86,6 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 				['messages.sender_id' => $auth_id, 'last' => 1],
 				['messages.receiver_id' => $auth_id, 'last' => 1],
 			)
-			->groupBy('messages.id')
 			->latest('messages.id')
 			->limit(4)
 			->get();
@@ -107,8 +103,8 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 				->where(['created_at' => $created_at, 'owner_id' => $auth_id])
 				->value('id');
 
-			$message_id = DB::table('messages')
-				->insertGetId([
+			DB::table('messages')
+				->insert([
 					'chat_room_id' => $chat_room_id,
 					'receiver_id'  => $receiver_id,
 					'sender_id'    => $auth_id,
@@ -132,7 +128,6 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 				['messages.sender_id' => $auth_id, 'last' => 1],
 				['messages.receiver_id' => $auth_id, 'last' => 1],
 			)
-			->groupBy('messages.id')
 			->latest('messages.id')
 			->limit(3)
 			->get();
@@ -149,8 +144,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		return [
 			'messages'              => $messages,
 			'all_chat_rooms'        => $all_chat_rooms,
-			'selected_chat_room_id' => $chat_room_id,
-			'message_id'            => $message_id,
+			'selected_chat_room_id' => $selected_chat_room->chat_room_id,
 			'show_chatroom'         => true,
 			'is_chatroom_page_1'    => true,
 		];
@@ -169,7 +163,6 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			['messages.receiver_id' => $auth_id, 'last' => 1],
 			$message_id,
 		)
-		->groupBy('messages.id')
 		->latest('messages.id')
 		->limit(4)
 		->get();

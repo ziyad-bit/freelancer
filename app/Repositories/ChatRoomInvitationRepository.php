@@ -17,15 +17,27 @@ class ChatRoomInvitationRepository implements ChatRoomInvitationRepositoryInterf
 	use DatabaseCache;
 
 	//MARK: get Users
-	public function get_chatroom_users():Collection
+	public function get_chatroom_users(string $chat_room_id):Collection
 	{
+		$searchName = request('searchName');
+
+		/**
+			*get all users who are in other chat rooms to choose one from them
+			* to send an invitation to join the chat room
+		 */
 		return DB::table('users')
 			->select('users.id', 'name', 'image')
 			->join('chat_room_user as cru1', 'cru1.user_id', '=', 'users.id')
 			->join('chat_room_user as cru2', 'cru1.chat_room_id', '=', 'cru2.chat_room_id')
 			->where('cru2.user_id', Auth::id())
-			->where('users.id', '!=', Auth::id())
+			->whereNotIn('cru1.user_id', function ($query) use ($chat_room_id) {
+				$query->select('user_id')
+					->from('chat_room_user')
+					->where('chat_room_id', $chat_room_id);
+			})
+			->when($searchName, fn ($query) => $query->where('name', 'like', "$searchName%"))
 			->distinct()
+			->limit(10)
 			->get();
 	}
 
@@ -132,8 +144,7 @@ class ChatRoomInvitationRepository implements ChatRoomInvitationRepositoryInterf
 		$selected_chat_room = ChatRooms::fetch(
 			['messages.chat_room_id' => $chat_room_id, 'last' => 1],
 			[]
-		)
-		->groupBy('messages.id');
+		);
 
 		/**
 		 * we will get the chat rooms with last received message
@@ -143,7 +154,6 @@ class ChatRoomInvitationRepository implements ChatRoomInvitationRepositoryInterf
 			['messages.sender_id' => $auth_id, 'last' => 1],
 			['messages.receiver_id' => $auth_id, 'last' => 1]
 		)
-		->groupBy('messages.id')
 		->latest('messages.id')
 		->limit(4);
 

@@ -15,7 +15,7 @@ return new class extends Migration {
 		Schema::create('project_files', function (Blueprint $table) {
 			$table->bigIncrements('id');
 			$table->string('type', 15);
-			$table->string('file', 80);
+			$table->string('file', 80)->unique();
 			$table->foreignId('project_id')->constrained('projects')->cascadeOnDelete()->cascadeOnUpdate();
 			$table->timestamps();
 		});

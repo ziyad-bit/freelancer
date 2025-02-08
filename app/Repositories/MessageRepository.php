@@ -73,7 +73,7 @@ class MessageRepository implements MessageRepositoryInterface
 		}
 	}
 
-	// MARK: showMessage
+	// MARK: showMessages
 	//when user click on chat room
 	public function showMessages(string $chat_room_id):string
 	{

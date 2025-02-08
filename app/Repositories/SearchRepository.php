@@ -26,7 +26,6 @@ class SearchRepository implements SearchRepositoryInterface
 			null,
 			$searchName
 		)
-		->groupBy('messages.id')
 		->limit(3)
 		->get();
 

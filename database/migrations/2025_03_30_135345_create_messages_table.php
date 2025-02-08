@@ -15,7 +15,7 @@ return new class extends Migration {
 		Schema::create('messages', function (Blueprint $table) {
 			$table->id();
 			$table->text('text');
-			$table->tinyInteger('last')->default(1);
+			$table->tinyInteger('last')->index()->default(1);
 			$table->uuid('chat_room_id');
 			$table->foreign('chat_room_id')->references('id')->on('chat_rooms')->cascadeOnDelete()->cascadeOnUpdate();
 			$table->foreignId('sender_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();

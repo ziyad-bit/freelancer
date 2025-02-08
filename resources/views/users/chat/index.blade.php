@@ -5,6 +5,7 @@
 
     <script defer src="{{ asset('js/general.js') }}?v={{ filemtime(public_path('js/general.js')) }}"></script>
     <script defer src="{{ asset('js/chat/index.js') }}?v={{ filemtime(public_path('js/chat/index.js')) }}"></script>
+    <script defer src="{{ asset('js/chat/show_users.js') }}?v={{ filemtime(public_path('js/chat/index.js')) }}"></script>
 
     <title>
         {{ 'Chat - ' . config('app.name') }}

@@ -12,9 +12,17 @@
 
                 <div class="modal-body add_body"
                     data-send_invitation_url="{{ route('chatrooms.send_user_invitation') }}">
+
+                    <input type="text" id="searchName" class="form-control" placeholder="search user"
+                        style="margin: 10px;" >
+
+                    <input type="hidden" id="get_users_url" >
+                    <input type="hidden" id="chat_room_id" >
+
                     <div style="display: none" class="alert alert-success text-center success_msg"></div>
 
                     <div style="display: none" class="alert alert-danger text-center err_msg"></div>
+                    <div style="display: none" class="alert alert-warning text-center warning_msg"></div>
                 </div>
             </div>
         </div>
@@ -26,15 +34,20 @@
         @php
             $receiver = get_receiver_data($message);
 
-            $receiver_name  = $receiver['receiver_name'];
-            $receiver_id    = $receiver['receiver_id'];
+            $receiver_name = $receiver['receiver_name'];
+            $receiver_id = $receiver['receiver_id'];
             $receiver_image = $receiver['receiver_image'];
 
-            $is_selected_chat_room = get_selected_chat_room($show_chatroom,$i,$message->chat_room_id);
+            $is_selected_chat_room = get_selected_chat_room(
+                $show_chatroom,
+                $i,
+                $selected_chat_room_id,
+                $message->chat_room_id,
+            );
         @endphp
 
         @include('users.includes.chat.chat_rooms_body', [
             'chat_room_id' => $message->chat_room_id,
         ])
-    @endforeach    
+    @endforeach
 @endif
