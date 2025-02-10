@@ -5,13 +5,13 @@ namespace App\Http\Controllers\Users;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MessageRequest;
 use App\Interfaces\Repository\{FileRepositoryInterface, MessageRepositoryInterface};
-use Illuminate\Http\{JsonResponse, Request};
+use Illuminate\Http\{JsonResponse};
 
 class MessageController extends Controller
 {
 	public function __construct(private MessageRepositoryInterface $messageRepository)
 	{
-		$this->middleware(['auth','verifyEmail']);
+		$this->middleware(['auth', 'verifyEmail']);
 	}
 
 	//MARK: store

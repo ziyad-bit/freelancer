@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ChatRoomRequest;
 use App\Interfaces\Repository\ChatRoomRepositoryInterface;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\{JsonResponse, RedirectResponse};

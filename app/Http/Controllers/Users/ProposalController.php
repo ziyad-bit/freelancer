@@ -11,8 +11,8 @@ class ProposalController extends Controller
 {
 	public function __construct(private ProposalRepositoryInterface $ProposalRepository)
 	{
-		$this->middleware(['auth','verifyEmail']);
-		$this->middleware('proposal')->except(['store','show']);
+		$this->middleware(['auth', 'verifyEmail']);
+		$this->middleware('proposal')->except(['store', 'show']);
 	}
 
 	//MARK: store
@@ -26,7 +26,7 @@ class ProposalController extends Controller
 	//MARK: store
 	public function show(int $project_id):JsonResponse
 	{
-		$data=$this->ProposalRepository->showProposal($project_id);
+		$data = $this->ProposalRepository->showProposal($project_id);
 
 		return response()->json($data);
 	}

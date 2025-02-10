@@ -17,7 +17,7 @@ class ReviewSeeder extends Seeder
 	 */
 	public function run()
 	{
-		$users = collect(DB::table('users')->pluck('id')->toArray());
+		$users    = collect(DB::table('users')->pluck('id')->toArray());
 		$projects = collect(DB::table('projects')->pluck('id')->toArray());
 
 		for ($i = 0; $i < 100; $i++) {

@@ -42,6 +42,6 @@ class VerificationController extends Controller
 			return to_route('verification.get')->with($message);
 		}
 
-		return to_route('profile.index',Auth::user()->slug)->with($message);
+		return to_route('profile.index', Auth::user()->slug)->with($message);
 	}
 }

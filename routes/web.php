@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Users\SkillController;
 use App\Http\Controllers\Users\ProjectController;
 use App\Http\Controllers\Users\ProposalController;
+use App\Http\Controllers\Users\AuthProjectController;
 use App\Http\Controllers\Users\TransactionController;
 use App\Http\Controllers\Users\VerificationController;
 use App\Http\Controllers\Users\{AuthController, ChatRoomController, ChatRoomInvitationController, FileController, MessageController, MyProjectController, NotificationsController, ProfileController, ResetPasswordController, SearchController, SocialiteController};
@@ -70,10 +71,10 @@ Route::resource('project'  , ProjectController::class)->except(['index']);
 
 
 //MARK:my Project
-Route::namespace('Users')->controller(MyProjectController::class)->group(function () {
-	Route::get('/my-project/index'                                 , 'index')->name('my-project.index');
-	Route::get('/my-project/debate/create/{project_id}/{user_id}'  , 'debate_create')->name('my-project.debate_create');
-	Route::post('/my-project/debate/store'                         , 'debate_store')->name('my-project.debate_store');
+Route::namespace('Users')->controller(AuthProjectController::class)->group(function () {
+	Route::get('/auth/project/index'                                 , 'index')->name('auth.project.index');
+	Route::get('/auth/project/debate/create/{project_id}/{user_id}'  , 'debate_create')->name('auth.project.debate_create');
+	Route::post('/auth/project/debate/store'                         , 'debate_store')->name('auth.project.debate_store');
 });
 
 

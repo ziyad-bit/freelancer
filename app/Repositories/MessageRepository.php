@@ -9,7 +9,6 @@ use App\Interfaces\Repository\{FileRepositoryInterface, MessageRepositoryInterfa
 use App\Models\User;
 use App\Notifications\NewMessageNotification;
 use App\Traits\DatabaseCache;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB, Log, Notification};
 
 class MessageRepository implements MessageRepositoryInterface
@@ -57,7 +56,7 @@ class MessageRepository implements MessageRepositoryInterface
 
 			$data['text'] = $enc_text;
 
-			Notification::send($user, new NewMessageNotification($data,$auth_user->id, $auth_user->name, $auth_user->image, $notif_view));
+			Notification::send($user, new NewMessageNotification($data, $auth_user->id, $auth_user->name, $auth_user->image, $notif_view));
 
 			DB::commit();
 			Log::info('database commit and user will receive notification message');
@@ -83,9 +82,9 @@ class MessageRepository implements MessageRepositoryInterface
 	}
 
 	// MARK: show Old Msgs
-	public function showOldMessages(string $chat_room_id,int $message_id):string
+	public function showOldMessages(string $chat_room_id, int $message_id):string
 	{
-		$messages = Messages::index($chat_room_id,$message_id);
+		$messages = Messages::index($chat_room_id, $message_id);
 
 		return view('users.includes.chat.index_msgs', compact('messages'))->render();
 	}

@@ -35,14 +35,14 @@
 
             @isset($project->debate_owner_id)
                 <td>
-                    <button href="{{ route('my-project.debate_create', ['project_id' => $project->project_id, 'user_id' => $user_id]) }}"
+                    <button href="{{ route('auth.project.debate_create', ['project_id' => $project->project_id, 'user_id' => $user_id]) }}"
                         class="btn btn-dark" disabled>
                         debate
                     </button>
                 </td>
             @else
                 <td>
-                    <a href="{{ route('my-project.debate_create', ['project_id' => $project->project_id, 'user_id' => $user_id]) }}"
+                    <a href="{{ route('auth.project.debate_create', ['project_id' => $project->project_id, 'user_id' => $user_id]) }}"
                         class="btn btn-warning">
                         debate
                     </a>

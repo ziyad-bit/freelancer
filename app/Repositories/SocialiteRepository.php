@@ -2,12 +2,9 @@
 
 namespace App\Repositories;
 
-use App\Http\Requests\ProposalRequest;
-use Laravel\Socialite\Facades\Socialite;
+use App\Interfaces\Repository\{SocialiteRepositoryInterface};
 use Illuminate\Support\Facades\{Auth, DB, Hash};
-use App\Exceptions\GeneralNotFoundException;
-use App\Interfaces\Repository\ProposalRepositoryInterface;
-use App\Interfaces\Repository\SocialiteRepositoryInterface;
+use Laravel\Socialite\Facades\Socialite;
 
 class SocialiteRepository implements SocialiteRepositoryInterface
 {
@@ -15,7 +12,7 @@ class SocialiteRepository implements SocialiteRepositoryInterface
 	public function callback(string $provider): void
 	{
 		$provider_user = Socialite::driver($provider)->user();
-		$user_id     = DB::table('users')->where('email', $provider_user->email)->value('id');
+		$user_id       = DB::table('users')->where('email', $provider_user->email)->value('id');
 
 		if (!$user_id) {
 			$user_id = DB::table('users')
@@ -25,7 +22,7 @@ class SocialiteRepository implements SocialiteRepositoryInterface
 					'email_verified_at' => now(),
 					'password'          => Hash::make($provider_user->id),
 				]);
-		} 
+		}
 
 		Auth::loginUsingId($user_id);
 	}

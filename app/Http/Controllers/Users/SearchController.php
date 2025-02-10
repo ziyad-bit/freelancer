@@ -11,7 +11,7 @@ class SearchController extends Controller
 {
 	public function __construct(private SearchRepositoryInterface $SearchRepository)
 	{
-		$this->middleware(['auth','verifyEmail'])->only('index_chatrooms');
+		$this->middleware(['auth', 'verifyEmail'])->only('index_chatrooms');
 	}
 
 	// MARK: index_chatrooms

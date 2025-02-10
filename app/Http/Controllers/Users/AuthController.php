@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\{LoginRequest, SignupRequest, SmsVerificationRequest};
+use App\Http\Requests\{LoginRequest, SignupRequest};
 use App\Interfaces\Repository\AuthRepositoryInterface;
 use Illuminate\Http\{RedirectResponse, Request};
 use Illuminate\View\View;
@@ -25,7 +25,7 @@ class AuthController extends Controller
 	//MARK: store
 	public function store(SignupRequest $request):View|RedirectResponse
 	{
-		$slug=$this->authRepository->storeUser($request);
+		$slug = $this->authRepository->storeUser($request);
 
 		return to_route('profile.index', $slug);
 	}

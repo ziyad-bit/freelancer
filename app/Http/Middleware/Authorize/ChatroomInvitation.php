@@ -2,10 +2,10 @@
 
 namespace App\Http\Middleware\Authorize;
 
+use App\Exceptions\GeneralNotFoundException;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
-use App\Exceptions\GeneralNotFoundException;
 
 class ChatroomInvitation
 {

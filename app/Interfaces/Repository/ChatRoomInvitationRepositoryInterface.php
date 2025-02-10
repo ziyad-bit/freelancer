@@ -2,9 +2,8 @@
 
 namespace App\Interfaces\Repository;
 
-use Illuminate\Support\Collection;
 use App\Http\Requests\ChatRoomRequest;
-use Illuminate\Http\{JsonResponse, RedirectResponse};
+use Illuminate\Support\Collection;
 
 interface ChatRoomInvitationRepositoryInterface
 {

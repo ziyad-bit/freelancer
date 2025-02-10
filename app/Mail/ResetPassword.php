@@ -18,7 +18,7 @@ class ResetPassword extends Mailable implements ShouldQueue
 	 *
 	 * @return void
 	 */
-	public function __construct(protected string $token,protected string $email)
+	public function __construct(protected string $token, protected string $email)
 	{
 	}
 
@@ -47,7 +47,7 @@ class ResetPassword extends Mailable implements ShouldQueue
 				'url' => URL::temporarySignedRoute(
 					'reset_password.edit',
 					now()->addMinutes(30),
-					['token' => $this->token,'email' => $this->email]
+					['token' => $this->token, 'email' => $this->email]
 				),
 			],
 		);

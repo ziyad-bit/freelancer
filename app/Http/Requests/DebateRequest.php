@@ -3,8 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\File;
 
 class DebateRequest extends FormRequest
 {
@@ -26,9 +24,9 @@ class DebateRequest extends FormRequest
 	public function rules()
 	{
 		return [
-			'description'     => ['required','string','max:500','min:10'],
-			'project_id'      => ['required','numeric'],
-			'user_id'         => ['required','numeric'],
+			'description'     => ['required', 'string', 'max:500', 'min:10'],
+			'project_id'      => ['required', 'numeric'],
+			'user_id'         => ['required', 'numeric'],
 		];
 	}
 }

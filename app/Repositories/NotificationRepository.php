@@ -15,7 +15,7 @@ class NotificationRepository implements NotificationRepositoryInterface
 	public function update(): void
 	{
 		$auth_id = Auth::id();
-		
+
 		User::find($auth_id)->unreadNotifications()->update(['read_at' => now()]);
 
 		$this->forgetCache($auth_id);

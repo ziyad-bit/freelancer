@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Password;
 
 class SmsVerificationRequest extends FormRequest
 {
@@ -27,6 +26,6 @@ class SmsVerificationRequest extends FormRequest
 		return  [
 			'code_num' => 'required|numeric|digits_between:8,8',
 			'user_id'  => 'required|numeric',
-		];	
+		];
 	}
 }

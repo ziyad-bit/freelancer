@@ -13,7 +13,7 @@ class SearchRepository implements SearchRepositoryInterface
 	public function searchChatroom(SearchRequest $request):array
 	{
 		/**
-		 * we will get the chat rooms with last received message 
+		 * we will get the chat rooms with last received message
 		 * or last sent message
 		 * and we will search the chat rooms by the name of the user
 		 */
@@ -63,7 +63,7 @@ class SearchRepository implements SearchRepositoryInterface
 	**/
 	public function show_skills_after_typing(SearchRequest $request):string
 	{
-		$search = $request->search;
+		$search    = $request->search;
 		$skills    = DB::table('skills')
 					->select('skill')
 					->where('skill', 'LIKE', "{$search}%")

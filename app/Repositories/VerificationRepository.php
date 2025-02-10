@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\{Auth, Cache, DB};
 
 class VerificationRepository implements VerificationRepositoryInterface
 {
-	// updateVerify 
+	// updateVerify
 	public function updateVerify(Request $request):array
 	{
 		$auth_id = Auth::id();

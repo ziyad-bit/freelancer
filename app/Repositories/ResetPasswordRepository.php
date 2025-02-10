@@ -2,17 +2,16 @@
 
 namespace App\Repositories;
 
+use App\Interfaces\Repository\{ResetPasswordRepositoryInterface};
 use App\Mail\ResetPassword;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\{Auth, Cache, DB};
-use App\Interfaces\Repository\VerificationRepositoryInterface;
-use App\Interfaces\Repository\ResetPasswordRepositoryInterface;
+use Illuminate\Support\Facades\{Cache, DB};
+use Illuminate\Support\Str;
 
 class ResetPasswordRepository implements ResetPasswordRepositoryInterface
 {
-	// updateVerify 
+	// updateVerify
 	public function sendLink(Request $request):void
 	{
 		$email = $request->safe()->__get('email');
@@ -20,14 +19,14 @@ class ResetPasswordRepository implements ResetPasswordRepositoryInterface
 
 		Cache::put('token_' . $email, $token, now()->addMinutes(5));
 
-		Mail::to($email)->send(new ResetPassword($token,$email));
+		Mail::to($email)->send(new ResetPassword($token, $email));
 	}
 
-	// updateVerify 
+	// updateVerify
 	public function updatePassword(Request $request):array
 	{
-		$email= $request->email;
-		$token= $request->token;
+		$email = $request->email;
+		$token = $request->token;
 
 		if (Cache::has('token_' . $email)) {
 			$cached_token = Cache::get('token_' . $email);

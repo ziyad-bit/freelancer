@@ -23,11 +23,11 @@ class UserSeeder extends Seeder
 
 		for ($i = 0; $i < 100; $i++) {
 			$date   = $this->dateRandom();
-			$name = $faker->name();
+			$name   = $faker->name();
 
 			DB::table('users')->insert([
 				'name'              => $name,
-				'slug'              => Str::slug($name).'-'.$i,
+				'slug'              => Str::slug($name) . '-' . $i,
 				'email'             => $faker->unique()->safeEmail(),
 				'email_verified_at' => now(),
 				'password'          => Hash::make('12121212'),

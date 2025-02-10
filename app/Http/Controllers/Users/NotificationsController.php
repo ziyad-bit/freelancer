@@ -10,7 +10,7 @@ class NotificationsController extends Controller
 {
 	public function __construct(private NotificationRepositoryInterface $notificationsRepository)
 	{
-		$this->middleware(['auth','verifyEmail']);
+		$this->middleware(['auth', 'verifyEmail']);
 	}
 
 	//MARK: update

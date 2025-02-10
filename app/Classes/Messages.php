@@ -6,8 +6,8 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class Messages
-{    
-	public static function index(string $chat_room_id,int $message_id=null):Collection
+{
+	public static function index(string $chat_room_id, int $message_id = null):Collection
 	{
 		return DB::table('messages')
 			->join('users as sender', 'messages.sender_id', '=', 'sender.id')
@@ -24,7 +24,7 @@ class Messages
 			->where('messages.text', '!=', 'new_chat_room%')
 			->when(
 				$message_id,
-				function ($query) use($message_id) {
+				function ($query) use ($message_id) {
 					$query->Where('messages.id', '<', $message_id);
 				}
 			)

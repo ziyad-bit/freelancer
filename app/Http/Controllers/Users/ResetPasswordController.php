@@ -2,22 +2,12 @@
 
 namespace App\Http\Controllers\Users;
 
-use App\Mail\VerifyEmail;
-use App\Mail\ResetPassword;
-use Illuminate\Support\Str;
-use App\Traits\SendEmailVerification;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\ResetPasswordRequest;
-use App\Interfaces\Repository\ResetPasswordRepositoryInterface;
-use Illuminate\Contracts\View\View as ViewView;
-use Illuminate\Http\{RedirectResponse, Request};
-use App\Interfaces\Repository\VerificationRepositoryInterface;
+use App\Interfaces\Repository\{ResetPasswordRepositoryInterface};
+use Illuminate\Contracts\View\{View};
+use Illuminate\Http\{RedirectResponse};
+use Illuminate\Support\Facades\{Auth};
 
 class ResetPasswordController extends Controller
 {
@@ -42,16 +32,16 @@ class ResetPasswordController extends Controller
 	}
 
 	//MARK: update
-	public function edit(string $email,string $token):View
+	public function edit(string $email, string $token):View
 	{
-		return view('users.auth.reset_password_edit',compact('email','token'));
+		return view('users.auth.reset_password_edit', compact('email', 'token'));
 	}
 
 	//MARK: update
 	public function update(ResetPasswordRequest $request):RedirectResponse
 	{
 		$message = $this->ResetPasswordRepository->updatePassword($request);
-		
-		return to_route('profile.index',Auth::user()->slug)->with($message);
+
+		return to_route('profile.index', Auth::user()->slug)->with($message);
 	}
 }

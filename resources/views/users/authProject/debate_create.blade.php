@@ -19,7 +19,7 @@
         </div>
     @endif
 
-    <form action="{{ route('my-project.debate_store') }}" method="POST">
+    <form action="{{ route('auth.project.debate_store') }}" method="POST">
         <div class="card text-white bg-dark mb-3" style="max-width: 60rem;margin-top: 20px">
             <div class="card-header">debate</div>
             <div class="card-body">

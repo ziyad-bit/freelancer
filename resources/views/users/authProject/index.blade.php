@@ -36,7 +36,7 @@
         </thead>
         <tbody class="table_body" data-index_url="{{ route('transaction.index') }}">
 
-            @include('users.includes.myProject.table')
+            @include('users.includes.authProject.table')
 
         </tbody>
     </table>

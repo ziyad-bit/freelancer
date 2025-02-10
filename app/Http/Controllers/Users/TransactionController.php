@@ -15,7 +15,7 @@ class TransactionController extends Controller
 
 	public function __construct(private TransactionRepositoryInterface $transactionRepository)
 	{
-		$this->middleware(['auth','verifyEmail']);
+		$this->middleware(['auth', 'verifyEmail']);
 
 		$this->middleware('transaction')->only('release');
 	}

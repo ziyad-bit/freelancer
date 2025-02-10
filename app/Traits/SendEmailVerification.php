@@ -3,13 +3,13 @@
 namespace App\Traits;
 
 use App\Mail\VerifyEmail;
-use Illuminate\Support\Facades\{Cache, token, Mail};
+use Illuminate\Support\Facades\{Cache, Mail};
 use Illuminate\Support\Str;
 
 trait SendEmailVerification
 {
 	//MARK: sendEmailVerification
-	public function sendEmailVerification($email,$user_id):void
+	public function sendEmailVerification($email, $user_id):void
 	{
 		$token = Str::random(40);
 

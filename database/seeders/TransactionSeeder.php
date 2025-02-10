@@ -34,7 +34,7 @@ class TransactionSeeder extends Seeder
 				'receiver_id' => $type == 'withdraw' ? null : $users->random(),
 				'created_at'  => $date,
 				'updated_at'  => $date,
-				'id'  => Str::uuid(),
+				'id'          => Str::uuid(),
 			]);
 		}
 	}

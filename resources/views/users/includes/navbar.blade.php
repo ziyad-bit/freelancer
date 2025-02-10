@@ -31,7 +31,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('my-project.index') }}">
+                            <a class="nav-link" href="{{ route('auth.project.index') }}">
                                 my projects
                             </a>
                         </li>

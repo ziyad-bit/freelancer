@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers\Users;
 
-use Vonage\Client;
-use Vonage\SMS\Message\SMS;
 use App\Http\Controllers\Controller;
-use Vonage\Client\Credentials\Basic;
-use Laravel\Socialite\Facades\Socialite;
 use App\Interfaces\Repository\SocialiteRepositoryInterface;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Socialite\Facades\Socialite;
 
 class SocialiteController extends Controller
 {
@@ -22,6 +18,6 @@ class SocialiteController extends Controller
 	{
 		$socialiteRepository->callback($provider);
 
-		return to_route('profile.index',Auth::user()->slug);
+		return to_route('profile.index', Auth::user()->slug);
 	}
 }

@@ -13,10 +13,10 @@ class ChatRoomInvitationController extends Controller
 	public function __construct(private ChatRoomInvitationRepositoryInterface $ChatRoomInvitationRepository)
 	{
 		$this->middleware(['auth', 'verifyEmail']);
-		$this->middleware('chatroomInvitation')->only(['post_accept_invitation','refuse_invitation']);
+		$this->middleware('chatroomInvitation')->only(['post_accept_invitation', 'refuse_invitation']);
 	}
 
-	// MARK:get_users 
+	// MARK:get_users
 	//get all users in all chatrooms to send invitation to one of them
 	public function get_users(string $chat_room_id) : JsonResponse
 	{
@@ -37,8 +37,8 @@ class ChatRoomInvitationController extends Controller
 	public function post_accept_invitation(ChatRoomRequest $request):View|RedirectResponse
 	{
 		$this->ChatRoomInvitationRepository->postAcceptInvitationChatroom($request);
-	
-		return to_route('chatrooms.fetch',$request->sender_id);
+
+		return to_route('chatrooms.fetch', $request->sender_id);
 	}
 
 	// MARK:getAcceptInvitation

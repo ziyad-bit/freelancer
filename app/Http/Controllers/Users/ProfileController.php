@@ -42,7 +42,7 @@ class ProfileController extends Controller
 	{
 		$this->profileRepository->storeUserInfo($request);
 
-		return to_route('profile.index',Auth::user()->slug)
+		return to_route('profile.index', Auth::user()->slug)
 			->with('success', 'you add data successfully');
 	}
 
