@@ -19,7 +19,7 @@
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('home') }}">
-                            projects
+                            find projects
                         </a>
                     </li>
 
@@ -27,6 +27,12 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('profile.index',Auth::user()->slug) }}">
                                 profile
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('my-project.index') }}">
+                                my projects
                             </a>
                         </li>
 

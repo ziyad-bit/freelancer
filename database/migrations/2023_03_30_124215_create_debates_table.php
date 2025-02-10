@@ -12,12 +12,14 @@ return new class extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('chat_room_user', function (Blueprint $table) {
+		Schema::create('debates', function (Blueprint $table) {
 			$table->id();
-			$table->enum('decision', ['pending', 'approved'])->default('pending');
-			$table->uuid('chat_room_id');
-			$table->foreign('chat_room_id')->references('id')->on('chat_rooms')->cascadeOnDelete()->cascadeOnUpdate();
+			$table->text('description');
+			$table->uuid('transaction_id');
+			$table->foreign('transaction_id')->references('id')->on('transactions')->cascadeOnDelete()->cascadeOnUpdate();
+			$table->foreignId('owner_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
 			$table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+			$table->foreignId('project_id')->constrained('projects')->cascadeOnDelete()->cascadeOnUpdate();
 			$table->timestamp('created_at');
 		});
 	}
@@ -29,6 +31,6 @@ return new class extends Migration {
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('chat_room_user');
+		Schema::dropIfExists('projects');
 	}
 };

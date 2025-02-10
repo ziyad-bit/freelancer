@@ -6,7 +6,7 @@ use App\Http\Controllers\Users\ProjectController;
 use App\Http\Controllers\Users\ProposalController;
 use App\Http\Controllers\Users\TransactionController;
 use App\Http\Controllers\Users\VerificationController;
-use App\Http\Controllers\Users\{AuthController, ChatRoomController, ChatRoomInvitationController, FileController, MessageController, NotificationsController, ProfileController, ResetPasswordController, SearchController, SocialiteController};
+use App\Http\Controllers\Users\{AuthController, ChatRoomController, ChatRoomInvitationController, FileController, MessageController, MyProjectController, NotificationsController, ProfileController, ResetPasswordController, SearchController, SocialiteController};
 
 /*
 |--------------------------------------------------------------------------
@@ -64,9 +64,17 @@ Route::delete('/project-skill/{id}' ,[SkillController::class,'destroy_project_sk
 Route::resource('skill'             , SkillController::class)->except(['edit', 'update']);
 
 
-//MARK:Project
+//MARK:find Project
 Route::any('/'             ,[ProjectController::class,'fetch'])->name('home');
 Route::resource('project'  , ProjectController::class)->except(['index']);
+
+
+//MARK:my Project
+Route::namespace('Users')->controller(MyProjectController::class)->group(function () {
+	Route::get('/my-project/index'                                 , 'index')->name('my-project.index');
+	Route::get('/my-project/debate/create/{project_id}/{user_id}'  , 'debate_create')->name('my-project.debate_create');
+	Route::post('/my-project/debate/store'                         , 'debate_store')->name('my-project.debate_store');
+});
 
 
 //MARK:file

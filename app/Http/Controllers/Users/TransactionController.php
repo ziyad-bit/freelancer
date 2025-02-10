@@ -26,7 +26,7 @@ class TransactionController extends Controller
 		$transactions = $this->transactionRepository->index_transaction($created_at);
 
 		if (request()->ajax()) {
-			$view = view('users.includes.transaction.table', compact('transactions'))->render();
+			$view = view('users.includes.transaction.index', compact('transactions'))->render();
 
 			return  response()->json(['view' => $view]);
 		}
