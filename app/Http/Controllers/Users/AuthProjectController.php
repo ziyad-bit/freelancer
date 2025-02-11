@@ -12,6 +12,7 @@ class AuthProjectController extends Controller
 {
 	public function __construct(private AuthProjectRepositoryInterface $authProjectRepository)
 	{
+		$this->middleware(['auth', 'verifyEmail']);
 	}
 
 	// MARK: index

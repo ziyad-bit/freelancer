@@ -40,6 +40,10 @@ return [
 			'driver'   => 'session',
 			'provider' => 'users',
 		],
+		'admins' => [
+			'driver'   => 'session',
+			'provider' => 'admins',
+		],
 	],
 
 	/*
@@ -65,10 +69,10 @@ return [
 			'table'  => 'users',
 		],
 
-		// 'users' => [
-		//     'driver' => 'database',
-		//     'table' => 'users',
-		// ],
+		'admins' => [
+			'driver' => 'database',
+			'table'  => 'admins',
+		],
 	],
 
 	/*

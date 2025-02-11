@@ -42,7 +42,7 @@ class AuthController extends Controller
 		$response = $this->authRepository->login($request);
 
 		if ($response === 'error') {
-			return to_route('login')->with(['error' => 'incorrect password or email']);
+			return to_route('user.login')->with(['error' => 'incorrect password or email']);
 		}
 
 		return redirect()->intended();
@@ -53,6 +53,6 @@ class AuthController extends Controller
 	{
 		$this->authRepository->logoutUser($request);
 
-		return to_route('login');
+		return to_route('user.login');
 	}
 }

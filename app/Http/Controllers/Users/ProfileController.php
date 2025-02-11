@@ -74,6 +74,6 @@ class ProfileController extends Controller
 	{
 		$this->profileRepository->deleteUserInfo($request);
 
-		return to_route('login');
+		return to_route('user.login');
 	}
 }

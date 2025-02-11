@@ -26,7 +26,7 @@ class AuthRepository implements AuthRepositoryInterface
 
 		$user_id = DB::table('users')->insertGetId($data);
 
-		Auth::loginUsingId($user_id);
+		Auth::guard('web')->loginUsingId($user_id);
 
 		$this->sendEmailVerification($request->email, $user_id);
 
@@ -38,7 +38,7 @@ class AuthRepository implements AuthRepositoryInterface
 	{
 		$credentials = $request->only('email', 'password');
 
-		if (!auth()->attempt($credentials, $request->filled('remember_me'))) {
+		if (!auth()->guard('web')->attempt($credentials, $request->filled('remember_me'))) {
 			return 'error';
 		}
 
@@ -50,7 +50,7 @@ class AuthRepository implements AuthRepositoryInterface
 	//MARK: logout
 	public function logoutUser(Request $request):void
 	{
-		Auth::logout();
+		Auth::guard('web')->logout();
 
 		$request->session()->invalidate();
 

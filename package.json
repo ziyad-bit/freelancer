@@ -12,7 +12,9 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.16.0",
+        "@popperjs/core": "^2.11.6",
         "axios": "^0.25",
+        "bootstrap": "^5.2.3",
         "eslint": "^9.16.0",
         "globals": "^15.13.0",
         "laravel-echo": "^1.16.1",
@@ -20,7 +22,8 @@
         "lodash": "^4.17.19",
         "postcss": "^8.1.14",
         "prettier": "^3.4.2",
-        "pusher-js": "^8.3.0"
+        "pusher-js": "^8.3.0",
+        "sass": "^1.56.1"
     },
     "dependencies": {
         "https-proxy-agent": "^7.0.2",

@@ -30,7 +30,7 @@ class UserSeeder extends Seeder
 				'slug'              => Str::slug($name) . '-' . $i,
 				'email'             => $faker->unique()->safeEmail(),
 				'email_verified_at' => now(),
-				'password'          => Hash::make('12121212'),
+				'password'          => Hash::make('13131313'),
 				'remember_token'    => Str::random(10),
 				'image'             => 'Unknown-person.gif',
 				'created_at'        => $date,

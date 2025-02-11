@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Users\SkillController;
 use App\Http\Controllers\Users\ProjectController;
@@ -22,9 +23,9 @@ use App\Http\Controllers\Users\{AuthController, ChatRoomController, ChatRoomInvi
 
 //MARK:Auth
 Route::namespace('Users')->controller(AuthController::class)->group(function () {
-	Route::get('/get/login'      	  , 'getLogin')->name('login');
-	Route::post('/post/login'         , 'postLogin')->name('post.login');
-	Route::post('/logout'             , 'logout')->name('logout');
+	Route::get('/get/login'      	  , 'getLogin')->name('user.login');
+	Route::post('/post/login'         , 'postLogin')->name('post.user.login');
+	Route::post('/logout'             , 'logout')->name('user.logout');
 	Route::get('/get/signup'          , 'create')->name('signup');
 	Route::post('/post/signup'        , 'store')->name('post.signup');
 });
@@ -70,7 +71,7 @@ Route::any('/'             ,[ProjectController::class,'fetch'])->name('home');
 Route::resource('project'  , ProjectController::class)->except(['index']);
 
 
-//MARK:my Project
+//MARK:auth Project
 Route::namespace('Users')->controller(AuthProjectController::class)->group(function () {
 	Route::get('/auth/project/index'                                 , 'index')->name('auth.project.index');
 	Route::get('/auth/project/debate/create/{project_id}/{user_id}'  , 'debate_create')->name('auth.project.debate_create');
