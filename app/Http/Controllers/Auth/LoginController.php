@@ -11,6 +11,8 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
 {
+    use AuthenticatesUsers;
+
     /**
      * Create a new controller instance.
      *
@@ -26,7 +28,7 @@ class LoginController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-		if (auth()->guard('admins')->attempt($credentials, $request->filled('remember_me'))) {
+		if (auth()->guard('admins')->attempt($credentials, $request->filled('remember'))) {
 			return redirect()->intended('admin/home');
         } else {
             return redirect()->back()->with(['error' => 'incorrect password or email']);

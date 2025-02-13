@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Classes\User;
 use App\Http\Requests\ProfileRequest;
 use App\Interfaces\Repository\ProfileRepositoryInterface;
 use App\Traits\File;
@@ -15,36 +16,7 @@ class ProfileRepository implements ProfileRepositoryInterface
 	//MARK: getUserInfo
 	public function getUserInfo(string $slug):array
 	{
-		$user_info = DB::table('users')
-			->select(
-				'users.*',
-				'location',
-				'job',
-				'overview',
-				DB::raw('Group_concat(Distinct Concat(skill,":",user_skill.id) ) as skills'),
-				DB::raw('ROUND(AVG(rate), 1) as review'),
-				DB::raw('IFNULL(transaction_data.total_amount, 0) as total_amount')
-			)
-			->leftJoin('user_skill', 'users.id', '=', 'user_skill.user_id')
-			->leftJoin('skills', 'skills.id', '=', 'user_skill.skill_id')
-			->leftJoin('user_infos', 'user_infos.user_id', '=', 'users.id')
-			->leftJoin('reviews', 'reviews.receiver_id', '=', 'users.id')
-			->leftJoin(
-				DB::raw(
-					'(
-					SELECT receiver_id, SUM(amount) as total_amount 
-					FROM transactions 
-					WHERE type = "release" 
-					GROUP BY receiver_id
-					) as transaction_data'
-				),
-				'transaction_data.receiver_id',
-				'=',
-				'users.id'
-			)
-			->where('users.slug', $slug)
-			->groupBy('users.id')
-			->first();
+		$user_info = User::index($slug);
 
 		//show the last 10 projects which the user has received the money
 		$projects = DB::table('projects')
