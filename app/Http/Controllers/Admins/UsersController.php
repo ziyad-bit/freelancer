@@ -3,80 +3,73 @@
 namespace App\Http\Controllers\Admins;
 
 use App\Classes\User;
-use App\Traits\Slug;
-use Illuminate\View\View;
-use Illuminate\Support\Facades\DB;
+use App\Exceptions\GeneralNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SignupRequest;
+use App\Interfaces\Repository\Admins\UserRepositoryInterface;
+use App\Traits\Slug;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 class UsersController extends Controller
 {
-	use Slug;
-
-	public function __construct() 
+	public function __construct(private UserRepositoryInterface $userRepository)
 	{
 		$this->middleware('auth:admins');
 	}
 
-    // MARK: index   
+	// MARK: index
 	public function index():View
 	{
-		$users = DB::table('users')
-			->select('id','name','slug')
-			->paginate(10);
+		$users = $this->userRepository->indexUser();
 
-		return view('admins.user.index',compact('users'));
+		return view('admins.user.index', compact('users'));
 	}
 
-    // MARK: create   
+	// MARK: create
 	public function create():View
 	{
 		return view('admins.user.create');
 	}
 
-    // MARK: store   
-    public function store(SignupRequest $request):RedirectResponse
+	// MARK: store
+	public function store(SignupRequest $request):RedirectResponse
 	{
-		$slug = $this->createSlug('users', 'name', $request->name);
+		$this->userRepository->storeUser($request);
 
-		$data = $request->safe()->except('password') +
-			[
-				'password'   => $request->password,
-				'created_at' => now(),
-				'slug'       => $slug,
-			];
-
-		DB::table('users')->insert($data);
-
-		return to_route('admin.user.create')->with('success','User is created successfully');
+		return to_route('admin.user.create')->with('success', 'User is created successfully');
 	}
 
-    // MARK: show   
+	// MARK: show
 	public function show(string $slug):View
 	{
 		$user = User::index($slug);
 
-		return view('admins.user.show',compact('user'));
+		return view('admins.user.show', compact('user'));
 	}
 
-    // MARK: edit   
+	// MARK: edit
 	public function edit(int $id):View
 	{
-		$user = DB::table('users')->where('id',$id)->first();
+		$user = $this->userRepository->editUser($id);
 
-		return view('admins.user.edit',compact('user'));
+		return view('admins.user.edit', compact('user'));
 	}
 
-    // MARK: update   
-	public function update( $request , int $id):RedirectResponse
+	// MARK: update
+	public function update(SignupRequest $request, int $id):RedirectResponse
 	{
-		return to_route('');
+		$this->userRepository->updateUser($request, $id);
+
+		return to_route('admin.user.edit', $id)->with('success', 'User is updated successfully');
 	}
 
-    // MARK: destroy   
+	// MARK: destroy
 	public function destroy(int $id):RedirectResponse
 	{
-		return to_route('');
+		$this->userRepository->deleteUser($id);
+
+		return to_route('admin.user.index')->with('success', 'User is deleted successfully');
 	}
 }

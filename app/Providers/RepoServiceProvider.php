@@ -2,11 +2,13 @@
 
 namespace App\Providers;
 
-use App\Interfaces\Repository\{AuthProjectRepositoryInterface, AuthRepositoryInterface, ChatRoomInvitationRepositoryInterface, ChatRoomRepositoryInterface, FileRepositoryInterface, MessageRepositoryInterface, NotificationRepositoryInterface, ProfileRepositoryInterface, ProjectRepositoryInterface, ProposalRepositoryInterface, ResetPasswordRepositoryInterface, SearchRepositoryInterface, SkillRepositoryInterface, SocialiteRepositoryInterface, TransactionRepositoryInterface, VerificationRepositoryInterface};
-use App\Repositories\AuthProjectRepository;
-use App\Repositories\{AuthRepository, ChatRoomInvitationRepository, ChatRoomRepository, FileRepository, MessageRepository, NotificationRepository, ProfileRepository, ProjectRepository, ProposalRepository, ResetPasswordRepository, SearchRepository, SkillRepository, SocialiteRepository, TransactionRepository, VerificationRepository};
-use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
+use App\Repositories\AuthProjectRepository;
+use Illuminate\Contracts\Support\DeferrableProvider;
+use App\Interfaces\Repository\Admins\UserRepositoryInterface;
+use App\Repositories\{AuthRepository, ChatRoomInvitationRepository, ChatRoomRepository, FileRepository, MessageRepository, NotificationRepository, ProfileRepository, ProjectRepository, ProposalRepository, ResetPasswordRepository, SearchRepository, SkillRepository, SocialiteRepository, TransactionRepository, VerificationRepository};
+use App\Interfaces\Repository\{AuthProjectRepositoryInterface, AuthRepositoryInterface, ChatRoomInvitationRepositoryInterface, ChatRoomRepositoryInterface, FileRepositoryInterface, MessageRepositoryInterface, NotificationRepositoryInterface, ProfileRepositoryInterface, ProjectRepositoryInterface, ProposalRepositoryInterface, ResetPasswordRepositoryInterface, SearchRepositoryInterface, SkillRepositoryInterface, SocialiteRepositoryInterface, TransactionRepositoryInterface, UserRepositoryInterface as RepositoryUserRepositoryInterface, VerificationRepositoryInterface};
+use App\Repositories\Admins\UserRepository;
 
 class RepoServiceProvider extends ServiceProvider implements DeferrableProvider
 {
@@ -33,6 +35,9 @@ class RepoServiceProvider extends ServiceProvider implements DeferrableProvider
 		$this->app->bind(ChatRoomInvitationRepositoryInterface::class, ChatRoomInvitationRepository::class);
 		$this->app->bind(SocialiteRepositoryInterface::class, SocialiteRepository::class);
 		$this->app->bind(AuthProjectRepositoryInterface::class, AuthProjectRepository::class);
+
+		//MARK:admins
+		$this->app->bind(UserRepositoryInterface::class, UserRepository::class);
 	}
 
 
@@ -55,6 +60,9 @@ class RepoServiceProvider extends ServiceProvider implements DeferrableProvider
 			ChatRoomInvitationRepositoryInterface::class,
 			SocialiteRepositoryInterface::class,
 			AuthProjectRepositoryInterface::class,
+
+			//MARK:admins
+			UserRepositoryInterface::class
 		];
 	}
 

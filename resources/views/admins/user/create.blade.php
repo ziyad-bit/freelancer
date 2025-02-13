@@ -8,9 +8,9 @@
             </div>
         @endif
 
-        <div class="row justify-content-center" style="margin-top:50px">
+        <div class="row justify-content-center" >
             <div class="col-md-8">
-                <div class="card text-white bg-dark mb-3">
+                <div class="card text-white bg-dark mb-3 m-3" >
                     <div class="card-header">
                         add
                     </div>
