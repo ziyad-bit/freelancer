@@ -50,7 +50,7 @@
         </span>
 
         <span style="margin-left: 10px">
-            <a class="nav-link" style="display: inline;font-weight: bold" href="{{ route('profile.index',$proposal->slug) }}">
+            <a class="nav-link" style="display: inline;font-weight: bold" href="{{ route('profile.get',$proposal->slug) }}">
                 name: {{ $proposal->name }}
             </a>
         </span>

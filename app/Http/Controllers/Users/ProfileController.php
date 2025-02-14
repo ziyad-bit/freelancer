@@ -21,8 +21,8 @@ class ProfileController extends Controller
 		$this->middleware('profile')->only(['create', 'store']);
 	}
 
-	//MARK: index
-	public function index(string $slug)//:View
+	//MARK: get
+	public function get(string $slug):View
 	{
 		$data = $this->profileRepository->getUserInfo($slug);
 
@@ -42,7 +42,7 @@ class ProfileController extends Controller
 	{
 		$this->profileRepository->storeUserInfo($request);
 
-		return to_route('profile.index', Auth::user()->slug)
+		return to_route('profile.get', Auth::user()->slug)
 			->with('success', 'you add data successfully');
 	}
 

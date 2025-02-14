@@ -25,7 +25,7 @@
 
                     @auth
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('profile.index',Auth::user()->slug) }}">
+                            <a class="nav-link" href="{{ route('profile.get',Auth::user()->slug) }}">
                                 profile
                             </a>
                         </li>

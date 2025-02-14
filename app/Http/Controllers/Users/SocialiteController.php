@@ -18,6 +18,6 @@ class SocialiteController extends Controller
 	{
 		$socialiteRepository->callback($provider);
 
-		return to_route('profile.index', Auth::user()->slug);
+		return to_route('profile.get', Auth::user()->slug);
 	}
 }

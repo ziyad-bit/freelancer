@@ -2,12 +2,13 @@
 
 namespace App\Repositories;
 
-use App\Classes\User;
-use App\Http\Requests\ProfileRequest;
-use App\Interfaces\Repository\ProfileRepositoryInterface;
 use App\Traits\File;
+use App\Classes\User;
 use Illuminate\Http\Request;
+use App\Http\Requests\ProfileRequest;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\{Auth, DB, Validator};
+use App\Interfaces\Repository\ProfileRepositoryInterface;
 
 class ProfileRepository implements ProfileRepositoryInterface
 {
@@ -36,8 +37,14 @@ class ProfileRepository implements ProfileRepositoryInterface
 	public function storeUserInfo(ProfileRequest $request):void
 	{
 		$user_id = Auth::id();
-		$data    = $request->safe()->except('image') + ['user_id' => $user_id];
-		$image   = $this->uploadAndResize($request, 199, 'users');
+		$data    = $request->safe()->except('image','front_id_image','back_id_image') 
+					+ ['user_id' => $user_id];
+
+		$front_id_image = $this->uploadAndResize($request,300 ,'users','front_id_image');
+		$back_id_image  = $this->uploadAndResize($request,300 ,'users','back_id_image');
+		$image          = $this->uploadAndResize($request, 199, 'users');
+
+		$data= $data + ['front_id_image' => $front_id_image, 'back_id_image' => $back_id_image];
 
 		DB::table('user_infos')->insert($data);
 
@@ -46,7 +53,7 @@ class ProfileRepository implements ProfileRepositoryInterface
 		$request->session()->regenerate();
 	}
 
-	//MARK: updateUserInfo
+	//MARK: editUserInfo
 	public function editUserInfo():?object
 	{
 		request()->session()->regenerate();

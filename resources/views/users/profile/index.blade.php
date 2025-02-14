@@ -24,7 +24,7 @@
     <div class="alert alert-success text-center success_msg" style="display: none"></div>
 
     @if ($user_info->id === Auth::id())
-        @if (!$user_info)
+        @if (!$user_info->location)
             <a class="btn btn-primary" href="{{ route('profile.create') }}" style="margin-left:270px; margin-top:70px;"
                 role="button">
                 complete profile

@@ -89,6 +89,31 @@
                     @enderror
                 </div>
 
+                <div class="form-group" style="margin-top: 20px;width: 50%">
+                    <label for="exampleInputEmail1">
+                        front of id card image
+                    </label>
+                    
+                    <input type="file"  name="front_id_image" class="form-control" aria-describedby="emailHelp">
+                    @error('front_id_image')
+                        <small style="color: red">
+                            {{ $message }}
+                        </small>
+                    @enderror
+                </div>
+
+                <div class="form-group" style="margin-top: 20px;width: 50%">
+                    <label for="exampleInputEmail1">
+                        back of id card image
+                    </label>
+
+                    <input type="file"  name="back_id_image" class="form-control" aria-describedby="emailHelp">
+                    @error('back_id_image')
+                        <small style="color: red">
+                            {{ $message }}
+                        </small>
+                    @enderror
+                </div>
             </div>
         </div>
 

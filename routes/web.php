@@ -55,7 +55,7 @@ Route::namespace('Users')->controller(SocialiteController::class)->group(functio
 
 //MARK:Profile
 Route::namespace('Users')->controller(ProfileController::class)->group(function () {
-	Route::get('/profile/{slug}', 'index')->name('profile.index');
+	Route::get('/profile/get/{slug}', 'get')->name('profile.get');
 	Route::get('/profile/delete', 'delete')->name('profile.delete');
 });
 

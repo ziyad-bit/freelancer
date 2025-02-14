@@ -16,6 +16,8 @@ return new class extends Migration {
 			$table->id();
 			$table->string('location', 100);
 			$table->string('job', 50);
+			$table->string('front_id_image', 86)->nullable();
+			$table->string('back_id_image', 86)->nullable();
 			$table->text('overview');
 			$table->bigInteger('card_num', false, true);
 			$table->enum('type', ['client', 'freelancer']);
