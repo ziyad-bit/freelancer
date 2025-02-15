@@ -8,4 +8,6 @@ Auth::routes();
 
 Route::get('home', [App\Http\Controllers\HomeController::class, 'index'])->name('admin.home');
 
+//MARK:users
+Route::put('/user/verify/{slug}' ,[UsersController::class,'verify'])->name('user.verify');
 Route::resource('user' , UsersController::class);

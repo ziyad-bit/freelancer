@@ -13,6 +13,15 @@
             edit 
         </a>
 
+        <form action="{{ route('admin.user.verify', $user->slug) }}" method="POST" class="m-1 d-inline">
+            @csrf
+            @method('put')
+
+            <button class="btn btn-success m-1" role="button">
+                verify 
+            </button>
+        </form>
+
         {{-- user data --}}
         <div class="card mb-3 card_profile" style="margin-top: 15px">
             <div class="row no-gutters">

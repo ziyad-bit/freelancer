@@ -32,6 +32,7 @@ class ProfileRequest extends FormRequest
 			'type'           => 'required|string',
 			'job'            => 'required|string|max:30|min:3',
 			'overview'       => 'required|string|max:250|min:3',
+			'card_num'       => 'required|numeric|digits_between:12,16',
 			'image'          => $required . '|image|mimes:jpg,gif,jpeg,png,webp|max:8000',
 			'front_id_image' => [$required, File::image()->types(['jpg', 'jpeg', 'gif', 'webp', 'png'])->max(8 * 1024)],
 			'back_id_image'  => [$required, File::image()->types(['jpg', 'jpeg', 'gif', 'webp', 'png'])->max(8 * 1024)],

@@ -77,6 +77,19 @@
                     @enderror
                 </div>
 
+                <div class="form-group">
+                    <label for="exampleInputPassword1">
+                        card number
+                    </label>
+
+                    <input required max="16" min="12" type="text" name="card_num" class="form-control" ></input>
+                    @error('card_num')
+                        <small style="color: red">
+                            {{ $message }}
+                        </small>
+                    @enderror
+                </div>
+
                 <div class="form-group" style="margin-top: 20px;width: 50%">
                     <label for="exampleInputEmail1">
                         photo 
@@ -118,7 +131,8 @@
         </div>
 
         <button type="submit" class="btn btn-primary"
-            style="margin-top: 10px;margin-bottom: 10px">{{ __('add') }}</button>
-
+            style="margin-top: 10px;margin-bottom: 10px">
+            add
+        </button>
     </form>
 @endsection

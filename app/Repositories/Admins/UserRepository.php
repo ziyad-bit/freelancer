@@ -41,6 +41,30 @@ class UserRepository implements AdminsUserRepositoryInterface
 		DB::table('users')->insert($data);
 	}
 
+	//MARK: showUser
+	public function showUser(string $slug):stdClass
+	{
+		$user_query = DB::table('users')->where('slug', $slug);
+
+		if (!$user_query->exists()) {
+			throw new GeneralNotFoundException('User');
+		}
+
+		return User::index($slug);
+	}
+
+	//MARK: verifyUser
+	public function verifyUser(string $slug):void
+	{
+		$user_query = DB::table('users')->where('slug', $slug);
+
+		if (!$user_query->exists()) {
+			throw new GeneralNotFoundException('User');
+		}
+
+		$user_query->update(['profile_verified_at' => now()]);
+	}
+
 	//MARK: editUser
 	public function editUser(int $id):stdClass
 	{

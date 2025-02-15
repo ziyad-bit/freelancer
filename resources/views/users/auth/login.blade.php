@@ -8,11 +8,13 @@
     @if (Session::has('success'))
         <div class="alert alert-danger text-center">{{ Session::get('success') }}</div>
     @endif
-    
+
     <div class="row justify-content-center" style="margin-top:50px">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
+                <div class="card-header">
+                    Login
+                </div>
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('post.user.login') }}">
@@ -20,12 +22,13 @@
 
                         <div class="row mb-3">
                             <label for="email"
-                                class="col-md-4 col-form-label text-md-end">{{ __('E-Mail Address') }}</label>
+                                class="col-md-4 col-form-label text-md-end">
+                                {{ __('E-Mail Address') }}
+                            </label>
 
                             <div class="col-md-6">
-                                <input id="email"  value=""
-                                    class="form-control" name="email"
-                                    required autocomplete="email" autofocus>
+                                <input id="email" value="" class="form-control" name="email" required
+                                    autocomplete="email" autofocus>
                             </div>
                         </div>
 
@@ -33,8 +36,8 @@
                             <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
 
                             <div class="col-md-6">
-                                <input id="password" type="password" value="12121212"
-                                    class="form-control" name="password" required>
+                                <input id="password" type="password" value="13131313" class="form-control" name="password"
+                                    required>
                             </div>
                         </div>
 
@@ -57,7 +60,7 @@
                                     {{ __('Login') }}
                                 </button>
 
-                                <a class="btn btn-primary" href="{{route('auth.redirect','google')}}">
+                                <a class="btn btn-primary" href="{{ route('auth.redirect', 'google') }}">
                                     Login with Google
                                 </a>
 

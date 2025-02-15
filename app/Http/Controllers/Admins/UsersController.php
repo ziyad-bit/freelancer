@@ -44,9 +44,17 @@ class UsersController extends Controller
 	// MARK: show
 	public function show(string $slug):View
 	{
-		$user = User::index($slug);
+		$user = $this->userRepository->showUser($slug);
 
 		return view('admins.user.show', compact('user'));
+	}
+
+	// MARK: verify
+	public function verify(string $slug):RedirectResponse
+	{
+		$this->userRepository->verifyUser($slug);
+
+		return to_route('admin.user.show',$slug)->with('success', 'User is verified successfully');
 	}
 
 	// MARK: edit
