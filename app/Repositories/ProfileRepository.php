@@ -2,13 +2,12 @@
 
 namespace App\Repositories;
 
-use App\Traits\File;
 use App\Classes\User;
-use Illuminate\Http\Request;
 use App\Http\Requests\ProfileRequest;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\{Auth, DB, Validator};
 use App\Interfaces\Repository\ProfileRepositoryInterface;
+use App\Traits\File;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\{Auth, DB, Log, Validator};
 
 class ProfileRepository implements ProfileRepositoryInterface
 {
@@ -37,14 +36,14 @@ class ProfileRepository implements ProfileRepositoryInterface
 	public function storeUserInfo(ProfileRequest $request):void
 	{
 		$user_id = Auth::id();
-		$data    = $request->safe()->except('image','front_id_image','back_id_image') 
-					+ ['user_id' => $user_id];
+		$data    = $request->safe()->except('image', 'front_id_image', 'back_id_image')
+					 + ['user_id' => $user_id];
 
-		$front_id_image = $this->uploadAndResize($request,300 ,'users','front_id_image');
-		$back_id_image  = $this->uploadAndResize($request,300 ,'users','back_id_image');
+		$front_id_image = $this->uploadAndResize($request, 300, 'users', 'front_id_image');
+		$back_id_image  = $this->uploadAndResize($request, 300, 'users', 'back_id_image');
 		$image          = $this->uploadAndResize($request, 199, 'users');
 
-		$data= $data + ['front_id_image' => $front_id_image, 'back_id_image' => $back_id_image];
+		$data = $data + ['front_id_image' => $front_id_image, 'back_id_image' => $back_id_image];
 
 		DB::table('user_infos')->insert($data);
 
@@ -67,18 +66,33 @@ class ProfileRepository implements ProfileRepositoryInterface
 		$user_id = Auth::id();
 		$data    = $request->safe()->except('image');
 
-		DB::table('user_infos')->where('user_id', $user_id)->update($data);
+		try {
+			DB::beginTransaction();
 
-		if ($request->has('image')) {
-			$user_query = DB::table('users')->where('id', $user_id);
-			$old_image  = $user_query->value('image');
+			DB::table('user_infos')->where('user_id', $user_id)->update($data);
 
-			$new_image = $this->updateImage($request, 199, $old_image);
+			if ($request->has('image')) {
+				$user_query = DB::table('users')->where('id', $user_id);
+				$old_image  = $user_query->value('image');
 
-			$user_query->update(['image' => $new_image]);
+				$new_image = $this->updateImage($request, 199, $old_image);
+
+				$user_query->update(['image' => $new_image]);
+			}
+
+			DB::table('users')
+				->where('id',$user_id)
+				->update(['profile_verified_at'=>null]);
+
+			DB::commit();
+			
+			$request->session()->regenerate();
+		} catch (\Throwable $th) {
+			DB::rollBack();
+			Log::critical('rollback database and error is '.$th->getMessage());
+
+			abort(500,'something went wrong');
 		}
-
-		$request->session()->regenerate();
 	}
 
 	//MARK: deleteUserInfo

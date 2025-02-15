@@ -14,7 +14,8 @@
         @method('put')
 
         <div class="card text-white bg-dark mb-3" style="max-width: 34rem;margin-top: 20px">
-            <div class="card-header">{{ __('add group') }}</div>
+            <div class="card-header">update profile</div>
+
             <div class="card-body">
 
                 <div class="form-group">
@@ -52,6 +53,19 @@
                     </select>
 
                     @error('type')
+                        <small style="color: red">
+                            {{ $message }}
+                        </small>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="exampleInputPassword1">
+                        card number
+                    </label>
+
+                    <input required maxlength="16" value="{{$user_info->card_num}}" minlength="12" type="text" name="card_num" class="form-control" ></input>
+                    @error('card_num')
                         <small style="color: red">
                             {{ $message }}
                         </small>
@@ -101,7 +115,9 @@
         </div>
 
         <button type="submit" class="btn btn-primary"
-            style="margin-top: 10px;margin-bottom: 10px">{{ __('add') }}</button>
+            style="margin-top: 10px;margin-bottom: 10px">
+            update
+        </button>
 
     </form>
 @endsection

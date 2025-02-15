@@ -60,7 +60,7 @@ class ProfileController extends Controller
 	{
 		$this->profileRepository->updateUserInfo($request);
 
-		return to_route('profile.edit', 'auth')->with('success', 'you updated profile successfully');
+		return to_route('profile.edit', 'auth')->with('success', 'you updated profile successfully and admin will verify your profile within 1 hour');
 	}
 
 	//MARK: delete

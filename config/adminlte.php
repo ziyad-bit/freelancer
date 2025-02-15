@@ -338,6 +338,12 @@ return [
             'url' => 'admin/user',
             'icon' => 'fas fa-solid fa-users',
         ],
+
+        [
+            'text' => 'admins',
+            'url' => 'admin/admin',
+            'icon' => 'fas fa-solid fa-user-tie',
+        ],
         [
             'text' => 'change_password',
             'url' => 'admin/settings',

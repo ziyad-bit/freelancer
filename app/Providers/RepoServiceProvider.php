@@ -8,6 +8,8 @@ use Illuminate\Contracts\Support\DeferrableProvider;
 use App\Interfaces\Repository\Admins\UserRepositoryInterface;
 use App\Repositories\{AuthRepository, ChatRoomInvitationRepository, ChatRoomRepository, FileRepository, MessageRepository, NotificationRepository, ProfileRepository, ProjectRepository, ProposalRepository, ResetPasswordRepository, SearchRepository, SkillRepository, SocialiteRepository, TransactionRepository, VerificationRepository};
 use App\Interfaces\Repository\{AuthProjectRepositoryInterface, AuthRepositoryInterface, ChatRoomInvitationRepositoryInterface, ChatRoomRepositoryInterface, FileRepositoryInterface, MessageRepositoryInterface, NotificationRepositoryInterface, ProfileRepositoryInterface, ProjectRepositoryInterface, ProposalRepositoryInterface, ResetPasswordRepositoryInterface, SearchRepositoryInterface, SkillRepositoryInterface, SocialiteRepositoryInterface, TransactionRepositoryInterface, UserRepositoryInterface as RepositoryUserRepositoryInterface, VerificationRepositoryInterface};
+use App\Interfaces\Repository\Admins\AdminRepositoryInterface;
+use App\Repositories\Admins\AdminRepository;
 use App\Repositories\Admins\UserRepository;
 
 class RepoServiceProvider extends ServiceProvider implements DeferrableProvider
@@ -38,6 +40,7 @@ class RepoServiceProvider extends ServiceProvider implements DeferrableProvider
 
 		//MARK:admins
 		$this->app->bind(UserRepositoryInterface::class, UserRepository::class);
+		$this->app->bind(AdminRepositoryInterface::class, AdminRepository::class);
 	}
 
 
@@ -62,7 +65,8 @@ class RepoServiceProvider extends ServiceProvider implements DeferrableProvider
 			AuthProjectRepositoryInterface::class,
 
 			//MARK:admins
-			UserRepositoryInterface::class
+			UserRepositoryInterface::class,
+			AdminRepositoryInterface::class
 		];
 	}
 

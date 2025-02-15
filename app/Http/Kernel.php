@@ -59,6 +59,7 @@ class Kernel extends HttpKernel
 	protected $routeMiddleware = [
 		'auth'               => \App\Http\Middleware\Authenticate::class,
 		'verifyEmail'        => \App\Http\Middleware\VerifyEmail::class,
+		'verifyProfile'        => \App\Http\Middleware\VerifyProfile::class,
 		'profile'            => \App\Http\Middleware\Authorize\Profile::class,
 		'skill'              => \App\Http\Middleware\Authorize\Skill::class,
 		'chatroomInvitation' => \App\Http\Middleware\Authorize\ChatroomInvitation::class,

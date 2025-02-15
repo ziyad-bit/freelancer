@@ -1,4 +1,4 @@
-@extends('layouts.adminApp')
+@extends('adminlte::page')
 
 @section('content')
 @if (Session::has('success'))
@@ -6,21 +6,22 @@
 @endif
 
 <div class="container">
-    <div class="row justify-content-center" style="margin-top: 100px">
+    <div class="row justify-content-center" >
         <div class="col-md-8">
-            <div class="card">
+            <div class="card text-white bg-dark mb-3 m-3">
                 <div class="card-header">{{ __('add') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('admins.create') }}">
+                    <form method="POST" action="{{ route('admin.create') }}">
                         @csrf
-                        <input type="hidden" value="1" name="photo_id">
-                        
-                        <div class="form-group ">
-                            <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>
+                        <div class="row mb-3">
+                            <label for="name"
+                                class="col-md-3 col-form-label text-md-end">{{ __('Name') }}</label>
 
-                            <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" min="3" max="50" required autocomplete="name" autofocus>
+                            <div class="col-md-7">
+                                <input id="name" type="text"
+                                    class="form-control @error('name') is-invalid @enderror" name="name"
+                                    value="{{ old('name') }}" required autocomplete="name" autofocus>
 
                                 @error('name')
                                     <span class="invalid-feedback" role="alert">
@@ -30,13 +31,14 @@
                             </div>
                         </div>
 
-                        
+                        <div class="row mb-3">
+                            <label for="email"
+                                class="col-md-3 col-form-label text-md-end">{{ __('E-Mail Address') }}</label>
 
-                        <div class="form-group ">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" min="10" max="50" required autocomplete="email">
+                            <div class="col-md-7">
+                                <input id="email" type="email"
+                                    class="form-control @error('email') is-invalid @enderror" name="email"
+                                    value="{{ old('email') }}" required autocomplete="email">
 
                                 @error('email')
                                     <span class="invalid-feedback" role="alert">
@@ -46,11 +48,18 @@
                             </div>
                         </div>
 
-                        <div class="form-group ">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
+                        <div class="row mb-3">
+                            <label for="password"
+                                class="col-md-3 col-form-label text-md-end">{{ __('Password') }}</label>
 
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" min="8" max="50" required autocomplete="new-password">
+                            <div class="col-md-7">
+                                <input id="password" type="password"
+                                    class="form-control @error('password') is-invalid @enderror" name="password"
+                                    required autocomplete="new-password">
+
+                                <span class="text-muted" style="font-size: small">
+                                    should contain mixed case , symbol and number
+                                </span>
 
                                 @error('password')
                                     <span class="invalid-feedback" role="alert">
@@ -60,9 +69,23 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary" style="margin-top: 10px">
-                            {{ __('add') }}
-                        </button>
+                        <div class="row mb-3">
+                            <label for="password-confirm"
+                                class="col-md-3 col-form-label text-md-end">{{ __('Confirm Password') }}</label>
+
+                            <div class="col-md-7">
+                                <input id="password-confirm" type="password" class="form-control"
+                                    name="password_confirmation" required autocomplete="new-password">
+                            </div>
+                        </div>
+
+                        <div class="row mb-0">
+                            <div class="col-md-7 offset-md-3">
+                                <button type="submit" class="btn btn-primary">
+                                    add
+                                </button>
+                            </div>
+                        </div>
 
                     </form>
                 </div>

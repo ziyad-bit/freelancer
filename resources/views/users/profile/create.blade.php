@@ -82,7 +82,7 @@
                         card number
                     </label>
 
-                    <input required max="16" min="12" type="text" name="card_num" class="form-control" ></input>
+                    <input required maxlength="16" minlength="12" type="text" name="card_num" class="form-control" ></input>
                     @error('card_num')
                         <small style="color: red">
                             {{ $message }}
