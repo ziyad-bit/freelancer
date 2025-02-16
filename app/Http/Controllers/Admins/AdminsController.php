@@ -34,7 +34,7 @@ class AdminsController extends Controller
 	{
 		$this->adminRepository->storeAdmin($request);
 
-		return to_route('admin.admin.create')->with('success', 'admin is created successfully');
+		return to_route('admin.create')->with('success', 'admin is created successfully');
 	}
 
 	// MARK: show
@@ -50,7 +50,7 @@ class AdminsController extends Controller
 	{
 		$this->adminRepository->verifyAdmin($slug);
 
-		return to_route('admin.admin.show',$slug)->with('success', 'admin is verified successfully');
+		return to_route('admin.show',$slug)->with('success', 'admin is verified successfully');
 	}
 
 	// MARK: edit
@@ -66,7 +66,7 @@ class AdminsController extends Controller
 	{
 		$this->adminRepository->updateAdmin($request, $id);
 
-		return to_route('admin.admin.edit', $id)->with('success', 'admin is updated successfully');
+		return to_route('admin.edit', $id)->with('success', 'admin is updated successfully');
 	}
 
 	// MARK: destroy
@@ -74,6 +74,6 @@ class AdminsController extends Controller
 	{
 		$this->adminRepository->deleteAdmin($id);
 
-		return to_route('admin.admin.index')->with('success', 'admin is deleted successfully');
+		return to_route('admin.index')->with('success', 'admin is deleted successfully');
 	}
 }

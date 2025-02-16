@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\{File, Password};
+use Illuminate\Validation\Rules\{Password};
 
 class SignupRequest extends FormRequest
 {
@@ -27,12 +27,17 @@ class SignupRequest extends FormRequest
 	public function rules()
 	{
 		$password_required = $this->method() === 'PUT' ? 'nullable' : 'required';
+		if ($this->routeIs('admin.*')) {
+			$email_rule = Rule::unique('admins')->ignore($this->admin);
+		} else {
+			$email_rule = Rule::unique('users')->ignore($this->user);
+		}
 
 		return  [
-			'name'           => 'required|string|max:50|min:3',
-			'email'          => ['required', 'email', 'max:40', 'min:10', Rule::unique('users')->ignore($this->user)],
-			'password' 		 => [$password_required, 'confirmed', 'string', Password::min(8),
-			
+			'name'     => 'required|string|max:50|min:3',
+			'email'    => ['required', 'email', 'max:40', 'min:10', $email_rule],
+			'password' => [$password_required, 'confirmed', 'string', Password::min(8),
+
 				// ->mixedCase()
 				// ->numbers()
 				// ->symbols()

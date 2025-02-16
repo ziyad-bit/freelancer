@@ -12,7 +12,7 @@
                 <div class="card-header">{{ __('add') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('admin.create') }}">
+                    <form method="POST" action="{{ route('admin.store') }}">
                         @csrf
                         <div class="row mb-3">
                             <label for="name"

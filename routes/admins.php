@@ -16,6 +16,7 @@ Route::resource('user' , UsersController::class);
 //MARK:admins
 Route::resource('admin' , AdminsController::class)
     ->names([
+        'index'=>'index',
         'create'=>'create',
         'store'=>'store',
         'show'=>'show',

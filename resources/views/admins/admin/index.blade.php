@@ -17,7 +17,7 @@
         add
     </a>
 
-    <table class="table" style="margin-top: 20px">
+    <table class="table table-striped  table-hover m-1" >
         <thead class="thead-dark">
             <tr>
                 <th scope="col">ID</th>
