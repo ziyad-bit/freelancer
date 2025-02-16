@@ -16,7 +16,7 @@ class FileRepository implements FileRepositoryInterface
 	// MARK: download_file
 	public function download_file(string $file, string $type, string $dir):StreamedResponse
 	{
-		$path = $type . 's/' . $dir . '/';
+		$path = 'public/'.$type . 's/' . $dir . '/';
 
 		if (!Storage::has($path . $file)) {
 			throw new GeneralNotFoundException('file');
@@ -69,7 +69,7 @@ class FileRepository implements FileRepositoryInterface
 	// MARK: destroy_file
 	public function destroy_file(string $file, string $type, string $dir):void
 	{
-		$path = $type . 's/' . $dir . '/';
+		$path = 'public/'.$type . 's/' . $dir . '/';
 
 		$storage_file = Storage::has($path . $file);
 		$file_query   = DB::table('project_files')->where('file', $file);

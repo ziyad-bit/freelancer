@@ -25,10 +25,12 @@
 
     @if ($user_info->id === Auth::id())
         @if (Auth::user()->profile_verified_at === null)
-            <a class="btn btn-primary" href="{{ route('profile.create') }}" style="margin-left:270px; margin-top:70px;"
-                role="button">
-                complete profile
-            </a>
+            @if (!$user_info->location)
+                <a class="btn btn-primary" href="{{ route('profile.create') }}" style="margin-left:270px; margin-top:70px;"
+                    role="button">
+                    complete profile
+                </a>
+            @endif
         @else
             <a class="btn btn-primary" href="{{ route('profile.edit', 'auth') }}"
                 style="margin-left:270px; margin-top:70px;" role="button">

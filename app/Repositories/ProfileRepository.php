@@ -37,7 +37,7 @@ class ProfileRepository implements ProfileRepositoryInterface
 	{
 		$user_id = Auth::id();
 		$data    = $request->safe()->except('image', 'front_id_image', 'back_id_image')
-					 + ['user_id' => $user_id];
+					+ ['user_id' => $user_id];
 
 		$front_id_image = $this->uploadAndResize($request, 300, 'users', 'front_id_image');
 		$back_id_image  = $this->uploadAndResize($request, 300, 'users', 'back_id_image');
@@ -81,17 +81,17 @@ class ProfileRepository implements ProfileRepositoryInterface
 			}
 
 			DB::table('users')
-				->where('id',$user_id)
-				->update(['profile_verified_at'=>null]);
+				->where('id', $user_id)
+				->update(['profile_verified_at' => null]);
 
 			DB::commit();
-			
+
 			$request->session()->regenerate();
 		} catch (\Throwable $th) {
 			DB::rollBack();
-			Log::critical('rollback database and error is '.$th->getMessage());
+			Log::critical('rollback database and error is ' . $th->getMessage());
 
-			abort(500,'something went wrong');
+			abort(500, 'something went wrong');
 		}
 	}
 

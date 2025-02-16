@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admins\AdminsController;
+use App\Http\Controllers\Admins\ProjectsController;
 use App\Http\Controllers\Admins\UsersController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -24,3 +25,7 @@ Route::resource('admin' , AdminsController::class)
         'update'=>'update',
         'destroy'=>'destroy',
     ]);
+
+
+//MARK:projects
+Route::resource('project' , ProjectsController::class);

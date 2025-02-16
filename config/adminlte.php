@@ -345,6 +345,11 @@ return [
             'icon' => 'fas fa-solid fa-user-tie',
         ],
         [
+            'text' => 'projects',
+            'url' => 'admin/project',
+            'icon' => 'fas fa-solid fa-r-project',
+        ],
+        [
             'text' => 'change_password',
             'url' => 'admin/settings',
             'icon' => 'fas fa-fw fa-lock',
