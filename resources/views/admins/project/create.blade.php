@@ -25,7 +25,7 @@
     @endif
     <div class="row justify-content-center">
 
-        <form method="POST" id="form" action="{{ route('project.store') }}" enctype="multipart/form-data">
+        <form method="POST" id="form" action="{{ route('admin.project.store') }}" enctype="multipart/form-data">
             @csrf
 
             <div class="card text-white bg-dark mb-3 " style="max-width: 34rem;margin-top: 20px">

@@ -13,9 +13,11 @@ return new class extends Migration {
 	public function up()
 	{
 		Schema::create('project_infos', function (Blueprint $table) {
+			$table->id();
 			$table->smallInteger('min_price', false, true);
 			$table->smallInteger('max_price', false, true);
 			$table->tinyInteger('num_of_days', false, true);
+			$table->enum('exp', ['active', 'inactive'])->default('inactive');
 			$table->enum('exp', ['beginner', 'intermediate', 'experienced']);
 			$table->foreignId('project_id')->constrained('projects')->cascadeOnDelete()->cascadeOnUpdate();
 		});

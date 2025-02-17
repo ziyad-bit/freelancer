@@ -17,7 +17,8 @@ return new class extends Migration {
 			$table->string('title', 100)->fulltext();
 			$table->string('slug', 103)->unique();
 			$table->text('content');
-			$table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+			$table->foreignId('user_id')->nullable()->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+			$table->foreignId('admin_id')->nullable()->constrained('admins')->cascadeOnDelete()->cascadeOnUpdate();
 			$table->timestamps();
 		});
 	}

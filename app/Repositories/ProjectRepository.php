@@ -57,6 +57,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 						});
 					}
 				)
+				->where('active','active')
 				->groupBy('projects.id')
 				->latest('projects.id')
 				->cursorPaginate(10);
@@ -85,8 +86,6 @@ class ProjectRepository implements ProjectRepositoryInterface
 	public function storeProject(ProjectRequest $request, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):void
 	{
 		try {
-		
-		
 			DB::beginTransaction();
 			$slug = $this->createSlug('projects', 'title', $request->title);
 

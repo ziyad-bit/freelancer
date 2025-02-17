@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admins;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectRequest;
 use App\Interfaces\Repository\Admins\ProjectRepositoryInterface;
+use App\Interfaces\Repository\FileRepositoryInterface;
+use App\Interfaces\Repository\SkillRepositoryInterface;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -29,17 +31,19 @@ class ProjectsController extends Controller
 	}
 
     // MARK: store   
-    public function store(ProjectRequest $request):RedirectResponse
+    public function store(ProjectRequest $request, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):RedirectResponse
 	{
-		$this->projectRepository->storeProject($request);
+		$this->projectRepository->storeProject($request,$fileRepository,$skillRepository);
 
 		return to_route('admin.project.create')->with('success','project is created successfully');
 	}
 
     // MARK: show   
-	public function show(int $id):View
+	public function show(string $slug):View
 	{
-		return view('');
+		$data = $this->projectRepository->showProject($slug);
+
+		return view('admins.project.show', $data);
 	}
 
     // MARK: edit   

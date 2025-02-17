@@ -23,7 +23,7 @@
     @endif
 
 @empty
-    @if ($project_user_id !== Auth::id())
+    @if ($project->user_id !== Auth::id())
         @include('users.project.proposal_form')
     @endif
 @endforelse

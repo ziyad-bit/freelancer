@@ -33,7 +33,7 @@
                     <td>{{ $project->title }}</td>
                     <td>{{ $project->created_at }}</td>
                     <td>
-                        <a href="{{ route('admin.project.show',$project->id) }}" class='btn btn-success'>
+                        <a href="{{ route('admin.project.show',$project->slug) }}" class='btn btn-success'>
                             show
                         </a>
 
