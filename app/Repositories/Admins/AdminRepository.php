@@ -22,6 +22,7 @@ class AdminRepository implements AdminRepositoryInterface
 	{
 		return DB::table('admins')
 			->select('id', 'name', 'created_at')
+			->latest('id')
 			->paginate(10);
 	}
 

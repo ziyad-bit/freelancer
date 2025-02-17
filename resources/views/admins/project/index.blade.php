@@ -21,8 +21,9 @@
         <thead class="thead-dark">
             <tr>
                 <th scope="col">ID</th>
-                <th scope="col">name</th>
+                <th scope="col">title</th>
                 <th scope="col">created at</th>
+                <th scope="col">active</th>
                 <th scope="col">control</th>
             </tr>
         </thead>
@@ -32,16 +33,18 @@
                     <th scope="row">{{ $project->id }}</th>
                     <td>{{ $project->title }}</td>
                     <td>{{ $project->created_at }}</td>
+                    <td>{{ $project->active }}</td>
+
                     <td>
                         <a href="{{ route('admin.project.show',$project->slug) }}" class='btn btn-success'>
                             show
                         </a>
 
-                        <a href="{{ route('admin.project.edit',$project->id) }}" class='btn btn-primary'>
+                        <a href="{{ route('admin.project.edit',$project->slug) }}" class='btn btn-primary'>
                             edit
                         </a>
 
-                        <form action="{{ route('admin.project.destroy', $project->id) }}" method="POST" class="m-1 d-inline">
+                        <form action="{{ route('admin.project.destroy', $project->slug) }}" method="POST" class="m-1 d-inline">
                             @csrf
                             @method('delete')
 

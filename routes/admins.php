@@ -28,4 +28,5 @@ Route::resource('admin' , AdminsController::class)
 
 
 //MARK:projects
+Route::put('/project/active/{id}' ,[ProjectsController::class,'active'])->name('project.active');
 Route::resource('project' , ProjectsController::class);

@@ -22,6 +22,7 @@ class UserRepository implements UserRepositoryInterface
 	{
 		return DB::table('users')
 			->select('id', 'name', 'slug')
+			->latest('id')
 			->paginate(10);
 	}
 

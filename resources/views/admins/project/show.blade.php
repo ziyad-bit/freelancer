@@ -97,6 +97,18 @@
         <div class="alert alert-success text-center">{{ Session::get('success') }}</div>
     @endif
 
+    @if ($project->active !== 'active')
+        <form action="{{ route('admin.project.active', $project->id) }}" method="POST" class="m-1 d-inline">
+            @csrf
+            @method('put')
+
+            <button type="submit" class="btn btn-success">
+                active
+            </button>
+        </form>
+    @endif
+
+
     <!-- project details -->
     <div class="card-body" style="margin-top: 25px">
         <h5 class="card-title" style="margin-right: 15px">{{ $project->title }}</h5>
