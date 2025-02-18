@@ -26,7 +26,7 @@ class DebateRequest extends FormRequest
 		return [
 			'description'     => ['required', 'string', 'max:500', 'min:10'],
 			'project_id'      => ['required', 'numeric'],
-			'user_id'         => ['required', 'numeric'],
+			'opponent_id'         => ['required', 'numeric'],
 		];
 	}
 }

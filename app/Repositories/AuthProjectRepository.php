@@ -13,7 +13,7 @@ class AuthProjectRepository implements AuthProjectRepositoryInterface
 {
 	use DatabaseCache;
 
-	// MARK: indexChatroom
+	// MARK: index Projects
 	public function indexAuthProjects():Collection
 	{
 		$auth_id  = Auth::id();
@@ -43,7 +43,7 @@ class AuthProjectRepository implements AuthProjectRepositoryInterface
 				->get();
 	}
 
-	// MARK: fetch
+	// MARK: store Debate
 	public function storeDebateData(DebateRequest $request): void
 	{
 		$transaction_id = DB::table('transactions')
@@ -60,7 +60,7 @@ class AuthProjectRepository implements AuthProjectRepositoryInterface
 
 		$data = $request->validated() + [
 			'transaction_id' => $transaction_id,
-			'owner_id'       => Auth::id(),
+			'initiator_id'       => Auth::id(),
 			'created_at'     => now(),
 		];
 

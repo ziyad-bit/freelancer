@@ -15,10 +15,11 @@ return new class extends Migration {
 		Schema::create('debates', function (Blueprint $table) {
 			$table->id();
 			$table->text('description');
+			$table->enum('status',['finished','unfinished'])->default('unfinished');
 			$table->uuid('transaction_id');
 			$table->foreign('transaction_id')->references('id')->on('transactions')->cascadeOnDelete()->cascadeOnUpdate();
-			$table->foreignId('owner_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
-			$table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+			$table->foreignId('initiator_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+			$table->foreignId('opponent_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
 			$table->foreignId('project_id')->constrained('projects')->cascadeOnDelete()->cascadeOnUpdate();
 			$table->timestamp('created_at');
 		});

@@ -38,9 +38,8 @@
                         <small style="color: red">{{ $message }}</small>
                     @enderror
 
-
                     <input type="hidden" name="project_id" value="{{ $project_id }}">
-                    <input type="hidden" name="user_id" value="{{ $user_id }}">
+                    <input type="hidden" name="opponent_id" value="{{ $user_id }}">
                 </div>
             </div>
 
@@ -49,6 +48,5 @@
         <button type="submit" style="margin-top: 5px"class="btn btn-primary">
             submit
         </button>
-
     </form>
 @endsection

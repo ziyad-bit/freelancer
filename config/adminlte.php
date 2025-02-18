@@ -350,6 +350,11 @@ return [
             'icon' => 'fas fa-solid fa-r-project',
         ],
         [
+            'text' => 'debates',
+            'url' => 'admin/debate',
+            'icon' => 'fas fa-regular fa-comments',
+        ],
+        [
             'text' => 'change_password',
             'url' => 'admin/settings',
             'icon' => 'fas fa-fw fa-lock',
