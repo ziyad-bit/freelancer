@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('header')
-    <link rel="stylesheet" href="{{ asset('css/chat/index.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ asset('css/chat/index.css') }}?v={{ filemtime(public_path('css/chat/index.css')) }}" type="text/css" />
 
     <script defer src="{{ asset('js/general.js') }}?v={{ filemtime(public_path('js/general.js')) }}"></script>
     <script defer src="{{ asset('js/chat/index.js') }}?v={{ filemtime(public_path('js/chat/index.js')) }}"></script>

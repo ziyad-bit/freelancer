@@ -13,6 +13,15 @@
             edit 
         </a> --}}
 
+        <a class="btn btn-primary m-1"
+            href="{{ route('admin.debate.access_chat', [
+                'initiator_id' => $debate->initiator_id,
+                'opponent_id' => $debate->opponent_id,
+            ]) }}"
+            role="button">
+            access chat
+        </a>
+
         <!-- debate details -->
         <div class="card-body" style="margin-top: 25px">
             <a href="{{ route('admin.project.show', $debate->slug) }}">

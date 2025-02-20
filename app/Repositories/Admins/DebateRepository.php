@@ -2,13 +2,14 @@
 
 namespace App\Repositories\Admins;
 
-use App\Classes\Debate;
 use App\Exceptions\GeneralNotFoundException;
 use App\Http\Requests\{DebateRequest};
-use App\Interfaces\Repository\{FileRepositoryInterface, SkillRepositoryInterface};
 use App\Interfaces\Repository\Admins\DebateRepositoryInterface;
+use App\Interfaces\Repository\{FileRepositoryInterface, SkillRepositoryInterface};
 use App\Traits\{Slug};
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Pagination\{LengthAwarePaginator};
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\{Auth, DB, Log};
 use stdClass;
 
@@ -33,39 +34,44 @@ class DebateRepository implements DebateRepositoryInterface
 			->paginate(10);
 	}
 
+	//MARK: accessChat
+	public function accessChatDebate(int $initiator_id, int $opponent_id,int $message_id=null):Collection
+	{
+		return DB::table('messages')
+			->select(
+				'name as sender_name',
+				'slug',
+				'image as sender_image',
+				'text',
+				'messages.id',
+				'messages.created_at',
+				DB::raw('GROUP_CONCAT(message_files.file order by message_files.file) as files_name'),
+				DB::raw('GROUP_CONCAT(message_files.type order by message_files.file) as files_type'),
+			)
+			->join('users', 'messages.sender_id', '=', 'users.id')
+			->leftJoin('message_files', 'messages.id', '=', 'message_files.message_id')
+			->whereIn('chat_room_id', function ($query) use ($initiator_id, $opponent_id) {
+				$query->from('chat_room_user')
+					->select('chat_room_id')
+					->whereIn('user_id', [$initiator_id, $opponent_id])
+					->groupBy('chat_room_id')
+					->havingRaw('COUNT(DISTINCT user_id) = 2');
+			})
+			->when(
+				$message_id,
+				function ($query) use ($message_id) {
+					$query->Where('messages.id', '<', $message_id);
+				}
+			)
+			->groupBy('messages.id')
+			->latest('messages.created_at')
+			->limit(4)
+			->get();
+	}
+
 	//MARK: storeDebate
 	public function storeDebate(DebateRequest $request, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):void
 	{
-		try {
-			DB::beginTransaction();
-			$slug = $this->createSlug('Debates', 'title', $request->title);
-
-			$Debate_data = $request->safe()->only(['title', 'content']) +
-						[
-							'admin_id'    => Auth::guard('admins')->id(),
-							'created_at'  => now(),
-							'slug'        => $slug,
-						];
-
-			$Debate_id  = DB::table('Debates')->insertGetId($Debate_data);
-
-			$Debate_info_data = ['Debate_id' => $Debate_id]  +
-					$request->safe()->only(['num_of_days', 'min_price', 'max_price', 'exp']);
-
-			DB::table('Debate_infos')->insert($Debate_info_data);
-
-			$fileRepository->insert_file($request, 'Debate_files', 'Debate_id', $Debate_id);
-
-			$skillRepository->storeSkill($request, 'Debate_skill', 'Debate_id', $Debate_id);
-			DB::commit();
-
-			Log::info('database commit');
-		} catch (\Throwable $th) {
-			DB::rollBack();
-			Log::critical('database rollback and error is ' . $th->getMessage());
-
-			abort(500, 'something went wrong');
-		}
 	}
 
 	//MARK: showDebate
@@ -79,8 +85,10 @@ class DebateRepository implements DebateRepositoryInterface
 				'debates.created_at',
 				'initiator.name as initiator_name',
 				'initiator.slug as initiator_slug',
+				'initiator.id as initiator_id',
 				'opponent.name as opponent_name',
 				'opponent.slug as opponent_slug',
+				'opponent.id as opponent_id',
 				'amount',
 				'title',
 				'content',
@@ -92,10 +100,9 @@ class DebateRepository implements DebateRepositoryInterface
 			->join('transactions', 'debates.transaction_id', '=', 'transactions.id')
 			->join('projects', 'debates.project_id', '=', 'projects.id')
 			->join('project_infos', 'projects.id', '=', 'project_infos.project_id')
-			->where('debates.id',$id)
+			->where('debates.id', $id)
 			->latest('debates.id')
 			->first();
-
 	}
 
 	//MARK: editDebate

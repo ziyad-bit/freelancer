@@ -8,11 +8,12 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use App\Http\Requests\{DebateRequest, SearchRequest, SignupRequest};
 use App\Interfaces\Repository\FileRepositoryInterface;
 use App\Interfaces\Repository\SkillRepositoryInterface;
+use Illuminate\Support\Collection;
 
 interface DebateRepositoryInterface
 {
 	public function indexDebate():LengthAwarePaginator;
-	public function storeDebate(DebateRequest $request, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):void;
+	public function accessChatDebate(int $initiator_id,int $opponent_id,int $message_id=null):Collection;
 	public function showDebate(int $id):stdClass;
 	public function activeDebate(int $id):void;
 	public function editDebate(string $slug):stdClass;

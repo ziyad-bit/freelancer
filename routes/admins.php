@@ -29,4 +29,5 @@ Route::put('/project/active/{id}', [ProjectsController::class, 'active'])->name(
 Route::resource('project', ProjectsController::class);
 
 //MARK:debates
+Route::get('/debate/access/chat/{initiator_id}/{opponent_id}/{message_id?}', [DebatesController::class, 'access_chat'])->name('debate.access_chat');
 Route::resource('debate', DebatesController::class);

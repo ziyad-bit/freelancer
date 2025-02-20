@@ -29,9 +29,13 @@ class DebatesController extends Controller
 	}
 
     // MARK: store   
-    public function store( $request):RedirectResponse
+    public function access_chat(int $initiator_id,int $opponent_id,int $message_id=null):View
 	{
-		return to_route('');
+		$messages=$this->debateRepository->accessChatDebate($initiator_id,$opponent_id);
+		
+		$i=count($messages);
+
+		return view('admins.debate.chat',compact('messages'));
 	}
 
     // MARK: show   
