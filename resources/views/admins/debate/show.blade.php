@@ -8,10 +8,33 @@
             </div>
         @endif
 
-        {{-- <a class="btn btn-primary m-1" href="{{ route('admin.edit', $admin->id) }}" 
-            role="button">
-            edit 
-        </a> --}}
+        @if ($debate->status === 'finished')
+            <div class="alert alert-success text-center">
+                debate is finished
+            </div>
+        @else
+            <form action="{{ route('admin.debate.update', $debate->transaction_id) }}" method="POST" class="m-1 d-inline">
+                @csrf
+                @method('put')
+
+                <input type="hidden" name="receiver_id" value="{{ $debate->initiator_id }}">
+
+                <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-danger">
+                    release milestone to initiator
+                </button>
+            </form>
+
+            <form action="{{ route('admin.debate.update', $debate->transaction_id) }}" method="POST" class="m-1 d-inline">
+                @csrf
+                @method('put')
+
+                <input type="hidden" name="receiver_id" value="{{ $debate->opponent_id }}">
+
+                <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-danger">
+                    release milestone to opponent
+                </button>
+            </form>
+        @endif
 
         <a class="btn btn-primary m-1"
             href="{{ route('admin.debate.access_chat', [

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Users;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MessageRequest;
 use App\Interfaces\Repository\{FileRepositoryInterface, MessageRepositoryInterface};
-use Illuminate\Http\{JsonResponse};
+use Illuminate\Http\JsonResponse;
 
 class MessageController extends Controller
 {

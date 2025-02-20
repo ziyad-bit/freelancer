@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ResetPasswordRequest;
-use App\Interfaces\Repository\{ResetPasswordRepositoryInterface};
-use Illuminate\Contracts\View\{View};
-use Illuminate\Http\{RedirectResponse};
-use Illuminate\Support\Facades\{Auth};
+use App\Interfaces\Repository\ResetPasswordRepositoryInterface;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 
 class ResetPasswordController extends Controller
 {

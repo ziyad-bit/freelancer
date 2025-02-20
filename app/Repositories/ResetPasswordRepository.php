@@ -2,11 +2,10 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\Repository\{ResetPasswordRepositoryInterface};
+use App\Interfaces\Repository\ResetPasswordRepositoryInterface;
 use App\Mail\ResetPassword;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\{Cache, DB};
+use Illuminate\Support\Facades\{Cache, DB, Mail};
 use Illuminate\Support\Str;
 
 class ResetPasswordRepository implements ResetPasswordRepositoryInterface

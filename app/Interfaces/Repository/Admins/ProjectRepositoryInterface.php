@@ -2,12 +2,10 @@
 
 namespace App\Interfaces\Repository\Admins;
 
-use stdClass;
-use Illuminate\Pagination\Paginator;
+use App\Http\Requests\ProjectRequest;
+use App\Interfaces\Repository\{FileRepositoryInterface, SkillRepositoryInterface};
 use Illuminate\Pagination\LengthAwarePaginator;
-use App\Http\Requests\{ProjectRequest, SearchRequest, SignupRequest};
-use App\Interfaces\Repository\FileRepositoryInterface;
-use App\Interfaces\Repository\SkillRepositoryInterface;
+use stdClass;
 
 interface ProjectRepositoryInterface
 {
@@ -16,6 +14,6 @@ interface ProjectRepositoryInterface
 	public function showProject(string $slug):array;
 	public function activeProject(int $id):void;
 	public function editProject(string $slug):stdClass;
-	public function updateProject(ProjectRequest $request,FileRepositoryInterface $fileRepository,SkillRepositoryInterface $skillRepository,string $slug):void;
+	public function updateProject(ProjectRequest $request, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository, string $slug):void;
 	public function deleteProject(string $slug):void;
 }

@@ -2,10 +2,9 @@
 
 namespace App\Interfaces\Repository\Admins;
 
-use stdClass;
-use Illuminate\Pagination\Paginator;
+use App\Http\Requests\SignupRequest;
 use Illuminate\Pagination\LengthAwarePaginator;
-use App\Http\Requests\{ProjectRequest, SearchRequest, SignupRequest};
+use stdClass;
 
 interface UserRepositoryInterface
 {
@@ -14,6 +13,6 @@ interface UserRepositoryInterface
 	public function showUser(string $slug):stdClass;
 	public function verifyUser(string $slug):void;
 	public function editUser(int $id):stdClass;
-	public function updateUser(SignupRequest $request,int $id):void;
+	public function updateUser(SignupRequest $request, int $id):void;
 	public function deleteUser(int $id):void;
 }

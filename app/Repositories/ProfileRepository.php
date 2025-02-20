@@ -37,7 +37,7 @@ class ProfileRepository implements ProfileRepositoryInterface
 	{
 		$user_id = Auth::id();
 		$data    = $request->safe()->except('image', 'front_id_image', 'back_id_image')
-					+ ['user_id' => $user_id];
+					 + ['user_id' => $user_id];
 
 		$front_id_image = $this->uploadAndResize($request, 300, 'users', 'front_id_image');
 		$back_id_image  = $this->uploadAndResize($request, 300, 'users', 'back_id_image');

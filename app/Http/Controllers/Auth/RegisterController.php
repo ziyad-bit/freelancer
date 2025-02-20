@@ -2,6 +2,6 @@
 
 namespace App\Http\Controllers\Auth;
 
-class RegisterController {
-    
+class RegisterController
+{
 }

@@ -2,12 +2,12 @@
 
 namespace App\Repositories;
 
-use App\Exceptions\{RecordExistException};
+use App\Exceptions\RecordExistException;
 use App\Http\Requests\DebateRequest;
 use App\Interfaces\Repository\AuthProjectRepositoryInterface;
 use App\Traits\DatabaseCache;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\{Auth, DB};
-use Illuminate\Support\{Collection};
 
 class AuthProjectRepository implements AuthProjectRepositoryInterface
 {
@@ -59,9 +59,9 @@ class AuthProjectRepository implements AuthProjectRepositoryInterface
 		}
 
 		$data = $request->validated() + [
-			'transaction_id' => $transaction_id,
+			'transaction_id'     => $transaction_id,
 			'initiator_id'       => Auth::id(),
-			'created_at'     => now(),
+			'created_at'         => now(),
 		];
 
 		DB::table('debates')->insert($data);

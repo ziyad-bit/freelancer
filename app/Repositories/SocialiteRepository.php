@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\Repository\{SocialiteRepositoryInterface};
+use App\Interfaces\Repository\SocialiteRepositoryInterface;
 use Illuminate\Support\Facades\{Auth, DB, Hash};
 use Laravel\Socialite\Facades\Socialite;
 

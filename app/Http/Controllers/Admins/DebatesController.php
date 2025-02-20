@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admins;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ReleaseRequest;
 use App\Interfaces\Repository\Admins\DebateRepositoryInterface;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -14,53 +16,39 @@ class DebatesController extends Controller
 		$this->middleware('auth:admins');
 	}
 
-    // MARK: index   
+	// MARK: index
 	public function index():View
 	{
-		$debates=$this->debateRepository->indexDebate();
+		$debates = $this->debateRepository->indexDebate();
 
-		return view('admins.debate.index',compact('debates'));
+		return view('admins.debate.index', compact('debates'));
 	}
 
-    // MARK: create   
-	public function create():View
-	{
-		return view('');
-	}
-
-    // MARK: store   
-    public function access_chat(int $initiator_id,int $opponent_id,int $message_id=null):View
-	{
-		$messages=$this->debateRepository->accessChatDebate($initiator_id,$opponent_id);
-		
-		$i=count($messages);
-
-		return view('admins.debate.chat',compact('messages'));
-	}
-
-    // MARK: show   
+	// MARK: show
 	public function show(int $id):View
 	{
-		$debate=$this->debateRepository->showDebate($id);
+		$debate = $this->debateRepository->showDebate($id);
 
-		return view('admins.debate.show',compact('debate'));
+		return view('admins.debate.show', compact('debate'));
 	}
 
-    // MARK: edit   
-	public function edit(int $id):View
+	// MARK: store
+	public function access_chat(int $initiator_id, int $opponent_id, int $message_id = null):View|JsonResponse
 	{
-		return view('');
+		$messages = $this->debateRepository->accessChatDebate($initiator_id, $opponent_id, $message_id);
+
+		if (request()->ajax()) {
+			return response()->json(['messages' => $messages]);
+		}
+
+		return view('admins.debate.chat', compact('messages','opponent_id','initiator_id'));
 	}
 
-    // MARK: update   
-	public function update( $request , int $id):RedirectResponse
+	// MARK: update
+	public function update(ReleaseRequest $request,string $id):RedirectResponse
 	{
-		return to_route('');
-	}
+		$this->debateRepository->updateDebate($request,$id);
 
-    // MARK: destroy   
-	public function destroy(int $id):RedirectResponse
-	{
-		return to_route('');
+		return redirect()->back()->with('success', 'you released milestone successfully');
 	}
 }

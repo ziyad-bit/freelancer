@@ -3,14 +3,14 @@
 namespace App\Repositories;
 
 use App\Classes\{ChatRooms, Messages};
-use App\Exceptions\{RecordExistException};
+use App\Exceptions\RecordExistException;
 use App\Http\Requests\ChatRoomRequest;
-use App\Interfaces\Repository\{ChatRoomInvitationRepositoryInterface};
+use App\Interfaces\Repository\ChatRoomInvitationRepositoryInterface;
 use App\Models\User;
 use App\Notifications\AddUserToChatNotification;
 use App\Traits\DatabaseCache;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\{Auth, DB, Log};
-use Illuminate\Support\{Collection};
 
 class ChatRoomInvitationRepository implements ChatRoomInvitationRepositoryInterface
 {

@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers\Admins;
 
-use App\Classes\User;
-use App\Exceptions\GeneralNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SignupRequest;
 use App\Interfaces\Repository\Admins\UserRepositoryInterface;
-use App\Traits\Slug;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class UsersController extends Controller
@@ -54,7 +50,7 @@ class UsersController extends Controller
 	{
 		$this->userRepository->verifyUser($slug);
 
-		return to_route('admin.user.show',$slug)->with('success', 'User is verified successfully');
+		return to_route('admin.user.show', $slug)->with('success', 'User is verified successfully');
 	}
 
 	// MARK: edit

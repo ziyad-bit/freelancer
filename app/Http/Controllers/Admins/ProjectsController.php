@@ -49,24 +49,24 @@ class ProjectsController extends Controller
 	public function active(int $id):RedirectResponse
 	{
 		$this->projectRepository->activeProject($id);
-	
-		return to_route('admin.project.index')->with('success','you activated the project successfully');
+
+		return to_route('admin.project.index')->with('success', 'you activated the project successfully');
 	}
 
 	// MARK: edit
 	public function edit(string $slug):View
 	{
-		$project=$this->projectRepository->editProject($slug);
+		$project = $this->projectRepository->editProject($slug);
 
-		return view('admins.project.edit',compact('project'));
+		return view('admins.project.edit', compact('project'));
 	}
 
 	// MARK: update
-	public function update(ProjectRequest $request,FileRepositoryInterface $fileRepository,SkillRepositoryInterface $skillRepository,string $slug):RedirectResponse
+	public function update(ProjectRequest $request, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository, string $slug):RedirectResponse
 	{
-		$this->projectRepository->updateProject($request,$fileRepository,$skillRepository,$slug);
+		$this->projectRepository->updateProject($request, $fileRepository, $skillRepository, $slug);
 
-		return to_route('admin.project.edit',$slug)->with('success','you updated project successfully');
+		return to_route('admin.project.edit', $slug)->with('success', 'you updated project successfully');
 	}
 
 	// MARK: destroy
@@ -74,6 +74,6 @@ class ProjectsController extends Controller
 	{
 		$this->projectRepository->deleteProject($slug);
 
-		return to_route('admin.project.index')->with('success','you deleted the project successfully');
+		return to_route('admin.project.index')->with('success', 'you deleted the project successfully');
 	}
 }

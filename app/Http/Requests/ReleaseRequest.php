@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Traits\GetFunds;
 use Illuminate\Foundation\Http\FormRequest;
 
-class DebateRequest extends FormRequest
+class ReleaseRequest extends FormRequest
 {
 	/**
 	 * Determine if the user is authorized to make this request.
@@ -24,9 +25,7 @@ class DebateRequest extends FormRequest
 	public function rules()
 	{
 		return [
-			'description'         => ['required', 'string', 'max:500', 'min:10'],
-			'project_id'          => ['required', 'numeric'],
-			'opponent_id'         => ['required', 'numeric'],
+			'receiver_id' => 'required|numeric',
 		];
 	}
 }

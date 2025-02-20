@@ -2,7 +2,7 @@
 
 namespace App\Interfaces\Repository;
 
-use App\Http\Requests\{DebateRequest};
+use App\Http\Requests\DebateRequest;
 use Illuminate\Support\Collection;
 
 interface AuthProjectRepositoryInterface

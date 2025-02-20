@@ -3,12 +3,12 @@
 namespace App\Repositories\Admins;
 
 use App\Exceptions\GeneralNotFoundException;
-use App\Http\Requests\{DebateRequest};
+use App\Http\Requests\DebateRequest;
+use App\Http\Requests\ReleaseRequest;
 use App\Interfaces\Repository\Admins\DebateRepositoryInterface;
 use App\Interfaces\Repository\{FileRepositoryInterface, SkillRepositoryInterface};
-use App\Traits\{Slug};
-use Illuminate\Cache\RateLimiting\Limit;
-use Illuminate\Pagination\{LengthAwarePaginator};
+use App\Traits\Slug;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\{Auth, DB, Log};
 use stdClass;
@@ -34,10 +34,42 @@ class DebateRepository implements DebateRepositoryInterface
 			->paginate(10);
 	}
 
-	//MARK: accessChat
-	public function accessChatDebate(int $initiator_id, int $opponent_id,int $message_id=null):Collection
+	//MARK: showDebate
+	public function showDebate(int $id):stdClass
 	{
-		return DB::table('messages')
+		return DB::table('debates')
+			->select(
+				'debates.id',
+				'debates.description',
+				'status',
+				'debates.created_at',
+				'initiator.name as initiator_name',
+				'initiator.slug as initiator_slug',
+				'initiator.id as initiator_id',
+				'opponent.name as opponent_name',
+				'opponent.slug as opponent_slug',
+				'opponent.id as opponent_id',
+				'amount',
+				'transactions.id as transaction_id',
+				'title',
+				'content',
+				'num_of_days',
+				'projects.slug',
+			)
+			->join('users as initiator', 'debates.initiator_id', '=', 'initiator.id')
+			->join('users as opponent', 'debates.opponent_id', '=', 'opponent.id')
+			->join('transactions', 'debates.transaction_id', '=', 'transactions.id')
+			->join('projects', 'debates.project_id', '=', 'projects.id')
+			->join('project_infos', 'projects.id', '=', 'project_infos.project_id')
+			->where('debates.id', $id)
+			->latest('debates.id')
+			->first();
+	}
+
+	//MARK: accessChat
+	public function accessChatDebate(int $initiator_id, int $opponent_id, int $message_id = null):Collection|string
+	{
+		$messages= DB::table('messages')
 			->select(
 				'name as sender_name',
 				'slug',
@@ -64,119 +96,36 @@ class DebateRepository implements DebateRepositoryInterface
 				}
 			)
 			->groupBy('messages.id')
-			->latest('messages.created_at')
+			->latest('messages.id')
 			->limit(4)
 			->get();
-	}
 
-	//MARK: storeDebate
-	public function storeDebate(DebateRequest $request, FileRepositoryInterface $fileRepository, SkillRepositoryInterface $skillRepository):void
-	{
-	}
-
-	//MARK: showDebate
-	public function showDebate(int $id):stdClass
-	{
-		return DB::table('debates')
-			->select(
-				'debates.id',
-				'debates.description',
-				'status',
-				'debates.created_at',
-				'initiator.name as initiator_name',
-				'initiator.slug as initiator_slug',
-				'initiator.id as initiator_id',
-				'opponent.name as opponent_name',
-				'opponent.slug as opponent_slug',
-				'opponent.id as opponent_id',
-				'amount',
-				'title',
-				'content',
-				'num_of_days',
-				'projects.slug',
-			)
-			->join('users as initiator', 'debates.initiator_id', '=', 'initiator.id')
-			->join('users as opponent', 'debates.opponent_id', '=', 'opponent.id')
-			->join('transactions', 'debates.transaction_id', '=', 'transactions.id')
-			->join('projects', 'debates.project_id', '=', 'projects.id')
-			->join('project_infos', 'projects.id', '=', 'project_infos.project_id')
-			->where('debates.id', $id)
-			->latest('debates.id')
-			->first();
-	}
-
-	//MARK: editDebate
-	public function activeDebate(int $id):void
-	{
-		$Debate_query = DB::table('Debate_infos')->where('Debate_id', $id);
-
-		if (!$Debate_query->exists()) {
-			throw new GeneralNotFoundException('Debate');
+		if (request()->ajax()) {
+			return view('users.includes.chat.index_msgs', compact('messages'))->render();
 		}
 
-		$Debate_query->update(['active' => 'active']);
+		return $messages;
 	}
 
-	//MARK: editDebate
-	public function editDebate(string $id):stdClass
+	//MARK: updateDebate
+	public function updateDebate(ReleaseRequest $request,string $transaction_id):void 
 	{
-		$Debate = DB::table('Debate_infos')->where('Debate_id', $id);
+		$transaction_query = DB::table('transactions')->where('id', $transaction_id);
 
-		if (!$Debate) {
-			throw new GeneralNotFoundException('Debate');
+		if (!$transaction_query->exists()) {
+			throw new GeneralNotFoundException('Transaction');
 		}
 
-		return $Debate->first();
-	}
+		$transaction_query ->update([
+			'type' => 'release',
+			'receiver_id' => $request->receiver_id,
+			'owner_id' => Auth::id()
+		]);
 
-	//MARK:   updateDebate
-	public function updateDebate(
-		DebateRequest $request,
-		FileRepositoryInterface $fileRepository,
-		SkillRepositoryInterface $skillRepository,
-		string $slug,
-	):void {
-		try {
-			$Debate_data      = $request->safe()->only(['title', 'content']) + ['user_id' => Auth::id(), 'created_at' => now()];
-			$Debate_info_data = $request->safe()->only(['num_of_days', 'min_price', 'max_price', 'exp']);
-
-			$Debate_query = DB::table('Debates')->where('slug', $slug);
-			$Debate       = $Debate_query->first();
-
-			if (!$Debate) {
-				throw new GeneralNotFoundException('Debate');
-			}
-
-			DB::beginTransaction();
-
-			$Debate_query->update($Debate_data);
-
-			DB::table('Debate_infos')->where('Debate_id', $Debate->id)->update($Debate_info_data);
-
-			$fileRepository->insert_file($request, 'Debate_files', 'Debate_id', $Debate->id);
-
-			$skillRepository->storeSkill($request, 'Debate_skill', 'Debate_id', $Debate->id);
-			DB::commit();
-
-			Log::info('database commit');
-		} catch (\Throwable $th) {
-			DB::rollBack();
-			Log::critical('database rollback and error is' . $th->getMessage());
-
-			abort(500, 'something went wrong');
-		}
-	}
-
-	//MARK: deleteDebate
-	public function deleteDebate(string $slug):void
-	{
-		$Debate_query = DB::table('Debates')->where('slug', $slug);
-		$Debate_id    = $Debate_query->value('id');
-
-		if (!$Debate_id) {
-			throw new GeneralNotFoundException('Debate');
-		}
-
-		$Debate_query->delete();
+		DB::table('Debates')
+			->where('transaction_id', $transaction_id)
+			->update([
+				'status' => 'finished',
+			]);
 	}
 }

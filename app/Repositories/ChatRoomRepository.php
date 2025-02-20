@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Classes\{ChatRooms, Messages};
-use App\Exceptions\{GeneralNotFoundException};
+use App\Exceptions\GeneralNotFoundException;
 use App\Interfaces\Repository\ChatRoomRepositoryInterface;
 use App\Models\User;
 use App\Traits\DatabaseCache;

@@ -2,12 +2,11 @@
 
 namespace App\Repositories;
 
-use App\Traits\{GetCursor, Slug};
-use Illuminate\Support\Facades\Storage;
 use App\Exceptions\GeneralNotFoundException;
-use Illuminate\Support\Facades\{Auth, DB, Log};
 use App\Http\Requests\{ProjectRequest, SearchRequest};
 use App\Interfaces\Repository\{FileRepositoryInterface, ProjectRepositoryInterface, SkillRepositoryInterface};
+use App\Traits\{GetCursor, Slug};
+use Illuminate\Support\Facades\{Auth, DB, Log};
 
 class ProjectRepository implements ProjectRepositoryInterface
 {
@@ -57,7 +56,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 						});
 					}
 				)
-				->where('active','active')
+				->where('active', 'active')
 				->groupBy('projects.id')
 				->latest('projects.id')
 				->cursorPaginate(10);

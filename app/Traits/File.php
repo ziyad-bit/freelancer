@@ -15,16 +15,16 @@ trait File
 
 		$fileName = $file->hashName();
 
-		Storage::putFileAs('public/'.$path, $file, $fileName);
+		Storage::putFileAs('public/' . $path, $file, $fileName);
 
 		return $fileName;
 	}
 
 	//MARK: uploadAndResize
-	public function uploadAndResize(object $request, int $width = null, string $path,string $input_name='image', int $height = null):string
+	public function uploadAndResize(object $request, int $width = null, string $path, string $input_name = 'image', int $height = null):string
 	{
 		$file = $request->file($input_name);
-		
+
 		$name = $file->hashName();
 
 		$img = Image::make($file)->resize($width, $height, function ($constraint) {
@@ -49,7 +49,6 @@ trait File
 	//MARK: dropZoneUpload
 	public function dropZoneUpload(Request $request, string $path, string $type):array
 	{
-
 		$file_name          = $this->upload($request, $path, $type);
 		$original_name      = $request->file($type)->getClientOriginalName();
 

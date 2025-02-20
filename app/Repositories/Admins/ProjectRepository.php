@@ -4,11 +4,11 @@ namespace App\Repositories\Admins;
 
 use App\Classes\Project;
 use App\Exceptions\GeneralNotFoundException;
-use App\Http\Requests\{ProjectRequest};
+use App\Http\Requests\ProjectRequest;
 use App\Interfaces\Repository\Admins\ProjectRepositoryInterface;
 use App\Interfaces\Repository\{FileRepositoryInterface, SkillRepositoryInterface};
-use App\Traits\{Slug};
-use Illuminate\Pagination\{LengthAwarePaginator};
+use App\Traits\Slug;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\{Auth, DB, Log};
 use stdClass;
 

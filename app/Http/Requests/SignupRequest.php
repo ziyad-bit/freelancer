@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\{Password};
+use Illuminate\Validation\Rules\Password;
 
 class SignupRequest extends FormRequest
 {

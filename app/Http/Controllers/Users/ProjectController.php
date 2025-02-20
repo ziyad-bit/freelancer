@@ -14,7 +14,7 @@ class ProjectController extends Controller
 	{
 		$this->middleware(['auth', 'verifyEmail'])->except('fetch');
 		$this->middleware('project')->only(['destroy', 'edit', 'update']);
-		$this->middleware('verifyProfile')->except(['fetch','show']);
+		$this->middleware('verifyProfile')->except(['fetch', 'show']);
 	}
 
 	//MARK: fetch

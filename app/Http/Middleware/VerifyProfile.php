@@ -17,11 +17,11 @@ class VerifyProfile
 	 */
 	public function handle(Request $request, Closure $next):mixed
 	{
-		$user =Auth::user();
-		
+		$user = Auth::user();
+
 		if ($user->profile_verified_at === null) {
 			if (!$request->expectsJson()) {
-				return to_route('profile.get',$user->slug)->with('error','you should verify your profile');
+				return to_route('profile.get', $user->slug)->with('error', 'you should verify your profile');
 			} else {
 				return abort(403, 'you should verify your profile');
 			}

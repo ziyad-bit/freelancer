@@ -2,19 +2,12 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use App\Repositories\AuthProjectRepository;
+use App\Interfaces\Repository\Admins\{AdminRepositoryInterface, DebateRepositoryInterface, ProjectRepositoryInterface as AdminsProjectRepositoryInterface, UserRepositoryInterface};
+use App\Interfaces\Repository\{AuthProjectRepositoryInterface, AuthRepositoryInterface, ChatRoomInvitationRepositoryInterface, ChatRoomRepositoryInterface, FileRepositoryInterface, MessageRepositoryInterface, NotificationRepositoryInterface, ProfileRepositoryInterface, ProjectRepositoryInterface, ProposalRepositoryInterface, ResetPasswordRepositoryInterface, SearchRepositoryInterface, SkillRepositoryInterface, SocialiteRepositoryInterface, TransactionRepositoryInterface, VerificationRepositoryInterface};
+use App\Repositories\Admins\{AdminRepository, DebateRepository, ProjectRepository as AdminsProjectRepository, UserRepository};
+use App\Repositories\{AuthProjectRepository, AuthRepository, ChatRoomInvitationRepository, ChatRoomRepository, FileRepository, MessageRepository, NotificationRepository, ProfileRepository, ProjectRepository, ProposalRepository, ResetPasswordRepository, SearchRepository, SkillRepository, SocialiteRepository, TransactionRepository, VerificationRepository};
 use Illuminate\Contracts\Support\DeferrableProvider;
-use App\Interfaces\Repository\Admins\UserRepositoryInterface;
-use App\Repositories\{AuthRepository, ChatRoomInvitationRepository, ChatRoomRepository, FileRepository, MessageRepository, NotificationRepository, ProfileRepository, ProjectRepository, ProposalRepository, ResetPasswordRepository, SearchRepository, SkillRepository, SocialiteRepository, TransactionRepository, VerificationRepository};
-use App\Interfaces\Repository\{AuthProjectRepositoryInterface, AuthRepositoryInterface, ChatRoomInvitationRepositoryInterface, ChatRoomRepositoryInterface, FileRepositoryInterface, MessageRepositoryInterface, NotificationRepositoryInterface, ProfileRepositoryInterface, ProjectRepositoryInterface, ProposalRepositoryInterface, ResetPasswordRepositoryInterface, SearchRepositoryInterface, SkillRepositoryInterface, SocialiteRepositoryInterface, TransactionRepositoryInterface, UserRepositoryInterface as RepositoryUserRepositoryInterface, VerificationRepositoryInterface};
-use App\Interfaces\Repository\Admins\AdminRepositoryInterface;
-use App\Interfaces\Repository\Admins\DebateRepositoryInterface;
-use App\Interfaces\Repository\Admins\ProjectRepositoryInterface as AdminsProjectRepositoryInterface;
-use App\Repositories\Admins\AdminRepository;
-use App\Repositories\Admins\DebateRepository;
-use App\Repositories\Admins\ProjectRepository as AdminsProjectRepository;
-use App\Repositories\Admins\UserRepository;
+use Illuminate\Support\ServiceProvider;
 
 class RepoServiceProvider extends ServiceProvider implements DeferrableProvider
 {
@@ -45,8 +38,8 @@ class RepoServiceProvider extends ServiceProvider implements DeferrableProvider
 		//MARK:admins
 		$this->app->bind(UserRepositoryInterface::class, UserRepository::class);
 		$this->app->bind(AdminRepositoryInterface::class, AdminRepository::class);
-		$this->app->bind(AdminsProjectRepositoryInterface::class,AdminsProjectRepository::class);
-		$this->app->bind(DebateRepositoryInterface::class,DebateRepository::class);
+		$this->app->bind(AdminsProjectRepositoryInterface::class, AdminsProjectRepository::class);
+		$this->app->bind(DebateRepositoryInterface::class, DebateRepository::class);
 	}
 
 

@@ -50,7 +50,7 @@ class AdminsController extends Controller
 	{
 		$this->adminRepository->verifyAdmin($slug);
 
-		return to_route('admin.show',$slug)->with('success', 'admin is verified successfully');
+		return to_route('admin.show', $slug)->with('success', 'admin is verified successfully');
 	}
 
 	// MARK: edit

@@ -2,6 +2,6 @@
 
 namespace App\Http\Controllers\Auth;
 
-class ResetPasswordController {
-    
+class ResetPasswordController
+{
 }

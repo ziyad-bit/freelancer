@@ -2,17 +2,11 @@
 
 namespace App\Repositories\Admins;
 
-use App\Classes\Admin;
 use App\Exceptions\GeneralNotFoundException;
-use App\Http\Requests\ProfileRequest;
 use App\Http\Requests\SignupRequest;
 use App\Interfaces\Repository\Admins\AdminRepositoryInterface;
-use App\Interfaces\Repository\ProfileRepositoryInterface;
-use App\Traits\File;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\{Auth, DB, Validator};
+use Illuminate\Support\Facades\DB;
 use stdClass;
 
 class AdminRepository implements AdminRepositoryInterface
@@ -47,7 +41,7 @@ class AdminRepository implements AdminRepositoryInterface
 			throw new GeneralNotFoundException('Admin');
 		}
 
-		return DB::table('admins')->where('id',$id)->first();
+		return DB::table('admins')->where('id', $id)->first();
 	}
 
 	//MARK: editAdmin
@@ -64,7 +58,7 @@ class AdminRepository implements AdminRepositoryInterface
 	}
 
 	//MARK: updateAdmin
-	public function updateAdmin(SignupRequest $request,int $id):void
+	public function updateAdmin(SignupRequest $request, int $id):void
 	{
 		$admin_query = DB::table('admins')->where('id', $id);
 		$admin_id    = $admin_query->value('id');
