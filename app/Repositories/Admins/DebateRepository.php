@@ -3,10 +3,8 @@
 namespace App\Repositories\Admins;
 
 use App\Exceptions\GeneralNotFoundException;
-use App\Http\Requests\DebateRequest;
-use App\Http\Requests\ReleaseRequest;
+use App\Http\Requests\{ReleaseRequest};
 use App\Interfaces\Repository\Admins\DebateRepositoryInterface;
-use App\Interfaces\Repository\{FileRepositoryInterface, SkillRepositoryInterface};
 use App\Traits\Slug;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -69,7 +67,7 @@ class DebateRepository implements DebateRepositoryInterface
 	//MARK: accessChat
 	public function accessChatDebate(int $initiator_id, int $opponent_id, int $message_id = null):Collection|string
 	{
-		$messages= DB::table('messages')
+		$messages = DB::table('messages')
 			->select(
 				'name as sender_name',
 				'slug',
@@ -108,24 +106,36 @@ class DebateRepository implements DebateRepositoryInterface
 	}
 
 	//MARK: updateDebate
-	public function updateDebate(ReleaseRequest $request,string $transaction_id):void 
+	public function updateDebate(ReleaseRequest $request, string $debate_id):void
 	{
-		$transaction_query = DB::table('transactions')->where('id', $transaction_id);
+		try {
+			$debate_query = DB::table('debates')->where('id', $debate_id);
 
-		if (!$transaction_query->exists()) {
-			throw new GeneralNotFoundException('Transaction');
+			$transaction_id = $debate_query->lockForUpdate()->value('transaction_id');
+
+			if (!$transaction_id) {
+				throw new GeneralNotFoundException('debate');
+			}
+
+			DB::beginTransaction();
+
+			$debate_query->update(['status' => 'finished']);
+
+			DB::table('transactions')
+				->where('id', $transaction_id)
+				->update([
+					'type'        => 'release',
+					'receiver_id' => $request->receiver_id,
+					'owner_id'    => Auth::id(),
+				]);
+
+			DB::commit();
+			Log::info('database commit');
+		} catch (\Throwable $th) {
+			DB::rollBack();
+			Log::critical('database rollback and error is' . $th->getMessage());
+
+			abort(500, 'something went wrong');
 		}
-
-		$transaction_query ->update([
-			'type' => 'release',
-			'receiver_id' => $request->receiver_id,
-			'owner_id' => Auth::id()
-		]);
-
-		DB::table('Debates')
-			->where('transaction_id', $transaction_id)
-			->update([
-				'status' => 'finished',
-			]);
 	}
 }

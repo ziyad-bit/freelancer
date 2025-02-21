@@ -128,7 +128,7 @@ class TransactionRepository implements TransactionRepositoryInterface
 			$amount      = $request->safe()->__get('amount');
 			$trans_query = DB::table('transactions')->where('id', $request->id);
 
-			$trans = $trans_query->first();
+			$trans = $trans_query->lockForUpdate()->first();
 			if (!$trans) {
 				throw new GeneralNotFoundException('transaction');
 			}

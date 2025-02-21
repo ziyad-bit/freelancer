@@ -103,7 +103,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 			$project_info_data = $request->safe()->only(['num_of_days', 'min_price', 'max_price', 'exp']);
 
 			$project_query = DB::table('projects')->where('slug', $slug);
-			$project       = $project_query->first();
+			$project       = $project_query->lockForUpdate()->first();
 
 			if (!$project) {
 				throw new GeneralNotFoundException('project');

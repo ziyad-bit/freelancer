@@ -52,8 +52,9 @@ class UserRepository implements UserRepositoryInterface
 	public function verifyUser(string $slug):void
 	{
 		$user_query = DB::table('users')->where('slug', $slug);
+		$user       = $user_query->lockForUpdate()->first();
 
-		if (!$user_query->exists()) {
+		if (!$user_query) {
 			throw new GeneralNotFoundException('User');
 		}
 
@@ -77,7 +78,7 @@ class UserRepository implements UserRepositoryInterface
 	public function updateUser(SignupRequest $request, int $id):void
 	{
 		$user_query = DB::table('users')->where('id', $id);
-		$user_id    = $user_query->value('id');
+		$user_id    = $user_query->lockForUpdate()->value('id');
 
 		if (!$user_id) {
 			throw new GeneralNotFoundException('User');

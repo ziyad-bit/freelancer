@@ -12,10 +12,9 @@ trait File
 	public function upload(object $request, string $path, string $type):string
 	{
 		$file     = $request->file($type);
-
 		$fileName = $file->hashName();
 
-		Storage::putFileAs('public/' . $path, $file, $fileName);
+		Storage::putFileAs($path, $file, $fileName);
 
 		return $fileName;
 	}
@@ -24,14 +23,13 @@ trait File
 	public function uploadAndResize(object $request, int $width = null, string $path, string $input_name = 'image', int $height = null):string
 	{
 		$file = $request->file($input_name);
-
 		$name = $file->hashName();
 
 		$img = Image::make($file)->resize($width, $height, function ($constraint) {
 			$constraint->aspectRatio();
 		})->encode();
 
-		Storage::put('public/images/' . $path . '/' . $name, $img);
+		Storage::put('images/' . $path . '/' . $name, $img);
 
 		return $name;
 	}
@@ -39,7 +37,7 @@ trait File
 	//MARK: update
 	public function updateImage(object $request, int $width = null, string $old_image, string $path = 'users', int $height = null):string
 	{
-		Storage::delete('public/images/' . $path . '/' . $old_image);
+		Storage::delete('images/' . $path . '/' . $old_image);
 
 		$image = $this->uploadAndResize($request, $width, $path, $height);
 
@@ -49,8 +47,8 @@ trait File
 	//MARK: dropZoneUpload
 	public function dropZoneUpload(Request $request, string $path, string $type):array
 	{
-		$file_name          = $this->upload($request, $path, $type);
-		$original_name      = $request->file($type)->getClientOriginalName();
+		$file_name      = $this->upload($request, $path, $type);
+		$original_name  = $request->file($type)->getClientOriginalName();
 
 		return ['file_name' => $file_name, 'original_name' => $original_name];
 	}

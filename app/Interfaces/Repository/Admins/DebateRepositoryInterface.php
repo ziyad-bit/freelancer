@@ -14,5 +14,5 @@ interface DebateRepositoryInterface
 	public function indexDebate():LengthAwarePaginator;
 	public function accessChatDebate(int $initiator_id, int $opponent_id, int $message_id = null):Collection|string;
 	public function showDebate(int $id):stdClass;
-	public function updateDebate(ReleaseRequest $request,string $transaction):void;
+	public function updateDebate(ReleaseRequest $request,string $transaction_id):void;
 }

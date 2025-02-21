@@ -61,7 +61,7 @@ class AdminRepository implements AdminRepositoryInterface
 	public function updateAdmin(SignupRequest $request, int $id):void
 	{
 		$admin_query = DB::table('admins')->where('id', $id);
-		$admin_id    = $admin_query->value('id');
+		$admin_id    = $admin_query->lockForUpdate()->value('id');
 
 		if (!$admin_id) {
 			throw new GeneralNotFoundException('Admin');

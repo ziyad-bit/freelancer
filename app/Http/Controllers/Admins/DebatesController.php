@@ -14,6 +14,7 @@ class DebatesController extends Controller
 	public function __construct(private DebateRepositoryInterface $debateRepository)
 	{
 		$this->middleware('auth:admins');
+		$this->middleware('transaction_debate')->only('update');
 	}
 
 	// MARK: index
@@ -45,9 +46,9 @@ class DebatesController extends Controller
 	}
 
 	// MARK: update
-	public function update(ReleaseRequest $request,string $id):RedirectResponse
+	public function update(ReleaseRequest $request,string $transaction_id):RedirectResponse
 	{
-		$this->debateRepository->updateDebate($request,$id);
+		$this->debateRepository->updateDebate($request,$transaction_id);
 
 		return redirect()->back()->with('success', 'you released milestone successfully');
 	}

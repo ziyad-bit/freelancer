@@ -8,12 +8,8 @@
             </div>
         @endif
 
-        @if ($debate->status === 'finished')
-            <div class="alert alert-success text-center">
-                debate is finished
-            </div>
-        @else
-            <form action="{{ route('admin.debate.update', $debate->transaction_id) }}" method="POST" class="m-1 d-inline">
+        @if ($debate->status === 'unfinished')
+            <form action="{{ route('admin.debate.update', $debate->id) }}" method="POST" class="m-1 d-inline">
                 @csrf
                 @method('put')
 
@@ -24,7 +20,7 @@
                 </button>
             </form>
 
-            <form action="{{ route('admin.debate.update', $debate->transaction_id) }}" method="POST" class="m-1 d-inline">
+            <form action="{{ route('admin.debate.update', $debate->id) }}" method="POST" class="m-1 d-inline">
                 @csrf
                 @method('put')
 
