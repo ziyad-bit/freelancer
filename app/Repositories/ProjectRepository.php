@@ -29,24 +29,23 @@ class ProjectRepository implements ProjectRepositoryInterface
 		$max_price      = $request->max_price;
 		$exp            = $request->exp ?? [];
 
-
 		$projects_query = DB::table('projects')
-			->select(
-				'projects.*',
-				'project_infos.*',
-				'location',
-				'card_num',
-				DB::raw('IFNULL(ROUND(AVG(rate), 1),0) as review'),
-				DB::raw('GROUP_CONCAT(DISTINCT skills.skill) as skills_names'),
-				DB::raw('COUNT(DISTINCT proposals.id) as proposals_count')
-			)
-			->join('project_infos', 'projects.id', '=', 'project_infos.project_id')
-			->join('project_skill', 'projects.id', '=', 'project_skill.project_id')
-			->join('skills', 'project_skill.skill_id', '=', 'skills.id')
-			->join('users', 'users.id', '=', 'projects.user_id')
-			->join('user_infos', 'users.id', '=', 'user_infos.user_id')
-			->leftJoin('reviews', 'reviews.receiver_id', '=', 'users.id')
-			->leftJoin('proposals', 'projects.id', '=', 'proposals.project_id');
+					->select(
+						'projects.*',
+						'project_infos.*',
+						'location',
+						'card_num',
+						DB::raw('IFNULL(ROUND(AVG(rate), 1),0) as review'),
+						DB::raw('GROUP_CONCAT(DISTINCT skills.skill) as skills_names'),
+						DB::raw('COUNT(DISTINCT proposals.id) as proposals_count')
+					)
+					->join('project_infos', 'projects.id', '=', 'project_infos.project_id')
+					->join('project_skill', 'projects.id', '=', 'project_skill.project_id')
+					->join('skills', 'project_skill.skill_id', '=', 'skills.id')
+					->join('users', 'users.id', '=', 'projects.user_id')
+					->join('user_infos', 'users.id', '=', 'user_infos.user_id')
+					->leftJoin('reviews', 'reviews.receiver_id', '=', 'users.id')
+					->leftJoin('proposals', 'projects.id', '=', 'proposals.project_id');
 
 		$projects_query = $projects_query
 					->when(
@@ -67,7 +66,6 @@ class ProjectRepository implements ProjectRepositoryInterface
 						}
 					);
 
-
 		if ($num_of_days) {
 			$projects_query = $projects_query
 							->where('project_infos.num_of_days', '<=', $request->num_of_days);
@@ -80,8 +78,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 		}
 
 		if ($exp !== []) {
-			$projects_query = $projects_query
-				->whereIn('exp', $request->exp);
+			$projects_query = $projects_query->whereIn('exp', $request->exp);
 		}
 
 		$projects = $projects_query

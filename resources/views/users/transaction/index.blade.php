@@ -3,7 +3,7 @@
 @section('header')
     <link rel="stylesheet" href="{{ asset('css/users/profile/index.css') }}">
 
-    <script defer src="{{ asset('js/transaction/index.js') }}?v={{ filemtime(public_path('js/profile/index.js')) }}">
+    <script defer src="{{ asset('js/transaction/index.js') }}?v={{ filemtime(public_path('js/transaction/index.js')) }}">
     </script>
 
     <title>

@@ -3,7 +3,7 @@
 @section('header')
     <link rel="stylesheet" href="{{ asset('css/users/profile/index.css') }}">
 
-    <script defer src="{{ asset('js/project/index.js') }}?v={{ filemtime(public_path('js/profile/index.js')) }}"></script>
+    <script defer src="{{ asset('js/project/index.js') }}?v={{ filemtime(public_path('js/project/index.js')) }}"></script>
 
     @auth
         <title>
@@ -31,14 +31,6 @@
 
     <div class="row">
         <div class="col-2" style="margin-top: 25px">
-            @php
-                $search      = $search ?? '';
-                $num_of_days = $num_of_days ?? '';
-                $min_price   = $min_price ?? '';
-                $max_price   = $max_price ?? '';
-                $exp         = $exp ?? '';
-            @endphp
-
             <form action="{{ route('home') }}" id="filter_form" method="post">
                 @csrf
 

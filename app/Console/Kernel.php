@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Jobs\ReleaseMilestone;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\Log;
@@ -18,8 +19,7 @@ class Kernel extends ConsoleKernel
 	protected function schedule(Schedule $schedule)
 	{
 		$schedule->command('backup:clean')
-				->weekly()
-				->at('01:00')
+				->everyMinute()
 				->onFailure(function () {
 					Log::critical('clean Backup failed');
 				})
@@ -28,14 +28,15 @@ class Kernel extends ConsoleKernel
 				});
 
 		$schedule->command('backup:run')
-				->daily()
-				->at('01:30')
+				->everyMinute()
 				->onFailure(function () {
 					Log::critical('Backup failed');
 				})
 				->onSuccess(function () {
 					Log::info('Backup succeeded');
 				});
+
+		$schedule->job(new ReleaseMilestone)->everyMinute();
 	}
 
 	/**

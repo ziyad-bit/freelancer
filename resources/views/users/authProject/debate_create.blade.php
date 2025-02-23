@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('header')
-    <script defer src="{{ asset('js/transaction/create.js') }}?v={{ filemtime(public_path('js/profile/index.js')) }}">
+    <script defer src="{{ asset('js/transaction/create.js') }}?v={{ filemtime(public_path('js/transaction/index.js')) }}">
     </script>
 
     <title>
