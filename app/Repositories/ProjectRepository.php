@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Exceptions\GeneralNotFoundException;
-use App\Http\Requests\{ProjectRequest, SearchRequest};
+use App\Http\Requests\{FilterRequest, ProjectRequest};
 use App\Interfaces\Repository\{FileRepositoryInterface, ProjectRepositoryInterface, SkillRepositoryInterface};
 use App\Traits\{GetCursor, Slug};
 use Illuminate\Support\Facades\{Auth, DB, Log};
@@ -13,53 +13,82 @@ class ProjectRepository implements ProjectRepositoryInterface
 	use GetCursor,Slug;
 
 	//MARK:   fetchProjects
-	public function fetchProjects(SearchRequest $request):array
+	public function fetchProjects(FilterRequest $request):array
 	{
 		/**
 			in case of search, we will search in project title and skills.
 			in case search is empty, we will get
-			project skills which match user skills if user is authenticated
+			project which match user skills if user is authenticated
+			if user is not authenticated, we will get all projects.
+			user can filter projects by number of days, price and experience.
 		 */
-		$auth_id  = Auth::id();
-		$search   = $request->input('search');
-		$projects = DB::table('projects')
-				->select(
-					'projects.*',
-					'project_infos.*',
-					'location',
-					'card_num',
-					DB::raw('IFNULL(ROUND(AVG(rate), 1),0) as review'),
-					DB::raw('GROUP_CONCAT(DISTINCT skills.skill) as skills_names'),
-					DB::raw('COUNT(DISTINCT proposals.id) as proposals_count')
-				)
-				->join('project_infos', 'projects.id', '=', 'project_infos.project_id')
-				->join('project_skill', 'projects.id', '=', 'project_skill.project_id')
-				->join('skills', 'project_skill.skill_id', '=', 'skills.id')
-				->join('users', 'users.id', '=', 'projects.user_id')
-				->join('user_infos', 'users.id', '=', 'user_infos.user_id')
-				->leftJoin('reviews', 'reviews.receiver_id', '=', 'users.id')
-				->leftJoin('proposals', 'projects.id', '=', 'proposals.project_id')
-				->when(
-					$search,
-					function ($query) use ($search) {
-						$query->where(function ($query) use ($search) {
-							$query->where('title', 'LIKE', "{$search}%")
-								->orWhere('skills.skill', 'LIKE', "{$search}%");
-						});
-					},
-					function ($query) use ($auth_id) {
-						$query->when(Auth::check(), function ($query) use ($auth_id) {
-							$query->join('user_skill', function ($join) use ($auth_id) {
-								$join->on('project_skill.skill_id', '=', 'user_skill.skill_id')
-									->where('user_skill.user_id', '=', $auth_id);
+		$auth_id        = Auth::id();
+		$search         = $request->search;
+		$num_of_days    = $request->num_of_days;
+		$min_price      = $request->min_price;
+		$max_price      = $request->max_price;
+		$exp            = $request->exp ?? [];
+
+
+		$projects_query = DB::table('projects')
+			->select(
+				'projects.*',
+				'project_infos.*',
+				'location',
+				'card_num',
+				DB::raw('IFNULL(ROUND(AVG(rate), 1),0) as review'),
+				DB::raw('GROUP_CONCAT(DISTINCT skills.skill) as skills_names'),
+				DB::raw('COUNT(DISTINCT proposals.id) as proposals_count')
+			)
+			->join('project_infos', 'projects.id', '=', 'project_infos.project_id')
+			->join('project_skill', 'projects.id', '=', 'project_skill.project_id')
+			->join('skills', 'project_skill.skill_id', '=', 'skills.id')
+			->join('users', 'users.id', '=', 'projects.user_id')
+			->join('user_infos', 'users.id', '=', 'user_infos.user_id')
+			->leftJoin('reviews', 'reviews.receiver_id', '=', 'users.id')
+			->leftJoin('proposals', 'projects.id', '=', 'proposals.project_id');
+
+		$projects_query = $projects_query
+					->when(
+						$search,
+						function ($query) use ($search) {
+							$query->where(function ($query) use ($search) {
+								$query->where('title', 'LIKE', "{$search}%")
+									->orWhere('skills.skill', 'LIKE', "{$search}%");
 							});
-						});
-					}
-				)
-				->where('active', 'active')
-				->groupBy('projects.id')
-				->latest('projects.id')
-				->cursorPaginate(10);
+						},
+						function ($query) use ($auth_id) {
+							$query->when(Auth::check(), function ($query) use ($auth_id) {
+								$query->join('user_skill', function ($join) use ($auth_id) {
+									$join->on('project_skill.skill_id', '=', 'user_skill.skill_id')
+										->where('user_skill.user_id', '=', $auth_id);
+								});
+							});
+						}
+					);
+
+
+		if ($num_of_days) {
+			$projects_query = $projects_query
+							->where('project_infos.num_of_days', '<=', $request->num_of_days);
+		}
+
+		if ($min_price) {
+			$projects_query = $projects_query
+					->where('min_price','>=' ,$request->min_price)
+					->where('max_price','<=' ,$request->max_price);
+		}
+
+		if ($exp !== []) {
+			$projects_query = $projects_query
+				->whereIn('exp', $request->exp);
+		}
+
+		$projects = $projects_query
+					->where('active', 'active')
+					->groupBy('projects.id')
+					->latest('projects.id')
+					->cursorPaginate(5);
 
 		if ($search && Auth::check()) {
 			DB::table('searches')
@@ -78,7 +107,16 @@ class ProjectRepository implements ProjectRepositoryInterface
 			return ['view' => $view, 'cursor' => $cursor];
 		}
 
-		return ['projects' => $projects, 'search' => $search, 'cursor' => $cursor];
+		return [
+			'projects'      => $projects,
+			'search'        => $search,
+			'search'        => $search,
+			'min_price'     => $min_price,
+			'max_price'     => $max_price,
+			'num_of_days'   => $num_of_days,
+			'exp'           => $exp,
+			'cursor'        => $cursor,
+		];
 	}
 
 	//MARK:storeProject

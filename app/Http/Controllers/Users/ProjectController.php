@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\{ProjectRequest, SearchRequest};
+use App\Http\Requests\{FilterRequest, ProjectRequest, SearchRequest};
 use App\Interfaces\Repository\{FileRepositoryInterface, ProjectRepositoryInterface, SkillRepositoryInterface};
 use Illuminate\Http\{JsonResponse, RedirectResponse};
 use Illuminate\View\View;
@@ -18,7 +18,7 @@ class ProjectController extends Controller
 	}
 
 	//MARK: fetch
-	public function fetch(SearchRequest $request):View|JsonResponse
+	public function fetch(FilterRequest $request):View|JsonResponse
 	{
 		$data = $this->projectRepository->fetchProjects($request);
 

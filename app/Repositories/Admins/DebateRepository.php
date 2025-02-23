@@ -109,8 +109,7 @@ class DebateRepository implements DebateRepositoryInterface
 	public function updateDebate(ReleaseRequest $request, string $debate_id):void
 	{
 		try {
-			$debate_query = DB::table('debates')->where('id', $debate_id);
-
+			$debate_query   = DB::table('debates')->where('id', $debate_id);
 			$transaction_id = $debate_query->lockForUpdate()->value('transaction_id');
 
 			if (!$transaction_id) {

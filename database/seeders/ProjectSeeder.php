@@ -22,7 +22,8 @@ class ProjectSeeder extends Seeder
 	{
 		$faker = Factory::create();
 		$users = collect(DB::table('users')->pluck('id')->toArray());
-		$title = $faker->words(3, true);
+		$content = $faker->paragraph();
+		$title = Str::limit($content, 30);
 
 		for ($i = 0; $i < 100; $i++) {
 			$date   = $this->dateRandom();
@@ -30,7 +31,7 @@ class ProjectSeeder extends Seeder
 			$project = Project::create([
 				'title'      => $title,
 				'slug'       => Str::slug($title) . '-' . $i,
-				'content'    => $faker->paragraph(),
+				'content'    => $content,
 				'user_id'    => $users->random(),
 				'created_at' => $date,
 				'updated_at' => $date,
