@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -44,9 +45,13 @@ class Handler extends ExceptionHandler
 			abort(409, $e->getMessage());
 		});
 
+		$this->renderable(function (NotFoundHttpException $e) {
+			abort(404, 'url not found');
+		});
+
 		$this->reportable(
 			function (Throwable $e) {
-				// abort(500, 'Something went wrong');
+				abort(500, 'Something went wrong');
 			}
 		);
 	}

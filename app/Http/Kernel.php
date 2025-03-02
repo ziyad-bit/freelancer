@@ -40,6 +40,7 @@ class Kernel extends HttpKernel
 			\Illuminate\Routing\Middleware\SubstituteBindings::class,
 			\App\Http\Middleware\OnlineUser::class,
 			\App\Http\Middleware\Logging::class,
+			'throttle:web',
 		],
 
 		'api' => [
