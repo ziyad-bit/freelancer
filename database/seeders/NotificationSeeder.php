@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Traits\DateRandom;
 use Faker\Factory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -19,16 +18,19 @@ class NotificationSeeder extends Seeder
 		$users     = collect(DB::table('users')->pluck('id')->toArray());
 		$faker     = Factory::create();
 
-		foreach ($users as  $user) {
-			$date   = $faker->dateTimeBetween('-5 years');
+		foreach ($users as $user) {
+			$date        = $faker->dateTimeBetween('-5 years');
 			$sender_id   = $users->random();
-			$sender_name = DB::table('users')->where('id', $sender_id)->value('name');
+			$sender      = DB::table('users')
+					->select('name', 'image')
+					->where('id', $sender_id)
+					->first();
 
 			$data  = [
 				'text'         => encrypt($faker->sentence),
 				'sender_id'    => $sender_id,
-				'sender_image' => $faker->sentence,
-				'sender_name'  => $sender_name,
+				'sender_image' => $sender->image,
+				'sender_name'  => $sender->name,
 			];
 
 			DB::table('notifications')->insert([

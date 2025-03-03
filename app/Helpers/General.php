@@ -2,10 +2,10 @@
 
 use Illuminate\Support\Facades\Auth;
 
-function get_selected_chat_room(bool $show_chatroom, int $i, ?string $selected_chat_room_id ,string $chat_room_id) : bool
+function get_selected_chat_room(bool $show_chatroom, int $i, string $selected_chat_room_id='' ,string $chat_room_id) : bool
 {
 	$is_selected_chat_room = false;
-	if (!isset($selected_chat_room_id)) {
+	if ($selected_chat_room_id =='') {
 		if ($show_chatroom === true) {
 			$is_selected_chat_room = $i == 0;
 		}

@@ -46,7 +46,7 @@ class UserRepository implements UserRepositoryInterface
 			throw new GeneralNotFoundException('User');
 		}
 
-		return Users::index($slug);
+		return User::index($slug);
 	}
 
 	//MARK: verifyUser

@@ -101,8 +101,18 @@
 
                         <li class="list-group-item items_list">
                             <span class="name_profile">earn</span>:
-                            @if ($user_info->review)
+                            @if ($user_info->total_amount)
                                 <span class="user_marital_status">${{ $user_info->total_amount }}</span>
+                            @else
+                                __
+                            @endif
+
+                        </li>
+
+                        <li class="list-group-item items_list">
+                            <span class="name_profile">available</span>:
+                            @if ($available_money)
+                                <span class="user_marital_status">${{ $available_money }}</span>
                             @else
                                 __
                             @endif
@@ -168,16 +178,17 @@
                     $skill = strtok($skill, ':');
                 @endphp
 
-                <li class="list-group-item user_skill{{ $skill_id }}">{{ $skill }}
-                    <button class="btn btn-danger delete_btn" id="{{ $skill_id }}" style="float: right;">
-                        delete
-                    </button>
+                @if (Auth::id() === $user_info->id)
+                    <li class="list-group-item user_skill{{ $skill_id }}">{{ $skill }}
+                        <button class="btn btn-danger delete_btn" id="{{ $skill_id }}" style="float: right;">
+                            delete
+                        </button>
 
-                    <input type="hidden" value="{{ route('skill.destroy', $skill_id) }}"
-                        id="delete_route{{ $skill_id }}">
-                </li>
+                        <input type="hidden" value="{{ route('skill.destroy', $skill_id) }}"
+                            id="delete_route{{ $skill_id }}">
+                    </li>
+                @endif
             @endforeach
         </ol>
     @endif
-
 @endsection

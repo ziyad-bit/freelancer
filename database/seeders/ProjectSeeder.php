@@ -20,11 +20,11 @@ class ProjectSeeder extends Seeder
 	{
 		$faker = Factory::create();
 		$users = collect(DB::table('users')->pluck('id')->toArray());
-		$content = $faker->paragraph();
-		$title = Str::limit($content, 30);
-
+		
 		foreach ($users as $i => $user) {
 			$date   = $faker->dateTimeBetween('-5 years');
+			$content = $faker->paragraph();
+			$title = Str::limit($content, 30);
 
 			$project = Project::create([
 				'title'      => $title,

@@ -32,7 +32,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		->get();
 
 		$messages     = [];
-		$chat_room_id = null;
+		$chat_room_id = '';
 
 		if ($all_chat_rooms->count() > 0) {
 			$messages = Messages::index($all_chat_rooms[0]->chat_room_id);
@@ -168,7 +168,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		->get();
 
 		$data = [
-			'selected_chat_room_id' => null,
+			'selected_chat_room_id' => '',
 			'messages'              => [],
 			'show_chatroom'         => false,
 			'is_chatroom_page_1'    => true,

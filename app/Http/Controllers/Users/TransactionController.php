@@ -21,7 +21,7 @@ class TransactionController extends Controller
 	}
 
 	// MARK: index
-	public function index(?string $created_at):View|JsonResponse
+	public function index(string $created_at=''):View|JsonResponse
 	{
 		$transactions = $this->transactionRepository->index_transaction($created_at);
 

@@ -14,7 +14,7 @@ class AuthController extends Controller
 	{
 		$this->middleware('auth')->only('logout');
 		$this->middleware('guest')->except('logout');
-		$this->middleware('throttle:3,180')->only('postLogin');
+		// $this->middleware('throttle:3,180')->only('postLogin');
 	}
 
 	//MARK: create
