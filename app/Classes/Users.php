@@ -5,7 +5,7 @@ namespace App\Classes;
 use Illuminate\Support\Facades\DB;
 use stdClass;
 
-class User
+class Users
 {
 	public static function index(string $slug):stdClass
 	{

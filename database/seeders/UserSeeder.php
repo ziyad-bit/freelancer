@@ -10,8 +10,6 @@ use Illuminate\Support\Str;
 
 class UserSeeder extends Seeder
 {
-	use DateRandom;
-
 	/**
 	 * Run the database seeds.
 	 *
@@ -22,7 +20,7 @@ class UserSeeder extends Seeder
 		$faker = Factory::create();
 
 		for ($i = 0; $i < 100; $i++) {
-			$date   = $this->dateRandom();
+			$date   = $faker->dateTimeBetween('-5 years');
 			$name   = $faker->name();
 
 			DB::table('users')->insert([

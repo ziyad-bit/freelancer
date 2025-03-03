@@ -141,7 +141,7 @@ class ChatRoomInvitationRepository implements ChatRoomInvitationRepositoryInterf
 			we will get the chat room between the authenticated user and
 			user who sent the invitation
 		 * */
-		$selected_chat_room = ChatRooms::fetch(
+		$selected_chat_room = ChatRooms::index(
 			['messages.chat_room_id' => $chat_room_id, 'last' => 1],
 			[]
 		);
@@ -150,7 +150,7 @@ class ChatRoomInvitationRepository implements ChatRoomInvitationRepositoryInterf
 		 * we will get the chat rooms with last received message
 		 * or last sent message
 		 */
-		$all_chat_rooms = ChatRooms::fetch(
+		$all_chat_rooms = ChatRooms::index(
 			['messages.sender_id' => $auth_id, 'last' => 1],
 			['messages.receiver_id' => $auth_id, 'last' => 1]
 		)

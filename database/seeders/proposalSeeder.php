@@ -10,8 +10,6 @@ use Illuminate\Support\Facades\DB;
 
 class proposalSeeder extends Seeder
 {
-	use DateRandom;
-
 	/**
 	 * Run the database seeds.
 	 *
@@ -24,7 +22,7 @@ class proposalSeeder extends Seeder
 		$projects = collect(DB::table('projects')->pluck('id')->toArray());
 
 		for ($i = 0; $i < 100; $i++) {
-			$date   = $this->dateRandom();
+			$date   = $faker->dateTimeBetween('-5 years');
 
 			DB::table('proposals')->insert([
 				'content'     => $faker->paragraph(),

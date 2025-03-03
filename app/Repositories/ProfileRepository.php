@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Classes\User;
+use App\Classes\Users;
 use App\Http\Requests\ProfileRequest;
 use App\Interfaces\Repository\ProfileRepositoryInterface;
 use App\Traits\File;
@@ -16,7 +17,7 @@ class ProfileRepository implements ProfileRepositoryInterface
 	//MARK: getUserInfo
 	public function getUserInfo(string $slug):array
 	{
-		$user_info = User::index($slug);
+		$user_info = Users::index($slug);
 
 		//show the last 10 projects which the user has received the money
 		$projects = DB::table('projects')
@@ -37,7 +38,7 @@ class ProfileRepository implements ProfileRepositoryInterface
 	{
 		$user_id = Auth::id();
 		$data    = $request->safe()->except('image', 'front_id_image', 'back_id_image')
-					 + ['user_id' => $user_id];
+					+ ['user_id' => $user_id];
 
 		$front_id_image = $this->uploadAndResize($request, 300, 'users', 'front_id_image');
 		$back_id_image  = $this->uploadAndResize($request, 300, 'users', 'back_id_image');

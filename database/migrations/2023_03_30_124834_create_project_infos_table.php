@@ -17,7 +17,7 @@ return new class extends Migration {
 			$table->smallInteger('min_price', false, true);
 			$table->smallInteger('max_price', false, true);
 			$table->tinyInteger('num_of_days', false, true);
-			$table->enum('exp', ['active', 'inactive'])->default('inactive');
+			$table->enum('active', ['active', 'inactive'])->default('inactive');
 			$table->enum('exp', ['beginner', 'intermediate', 'experienced']);
 			$table->foreignId('project_id')->constrained('projects')->cascadeOnDelete()->cascadeOnUpdate();
 		});

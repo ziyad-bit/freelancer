@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class ChatRooms
 {
-	public static function fetch(array $last_msg_send, array $last_msg_receive, int $message_id = null, string $operator = null, string $searchName = null):Builder
+	public static function index(array $last_msg_send, array $last_msg_receive, int $message_id=0,  string $searchName=''):Builder
 	{
 		/**
 		in case searchName is not null, we will search for the sender name
@@ -34,18 +34,18 @@ class ChatRooms
 			->join('users as receiver', 'messages.receiver_id', '=', 'receiver.id')
 			->join('chat_rooms', 'messages.chat_room_id', '=', 'chat_rooms.id')
 			->join('chat_room_user', 'messages.chat_room_id', '=', 'chat_room_user.chat_room_id')
-			->when($searchName != null, function ($query) use ($searchName) {
+			->when($searchName!='' , function ($query) use ($searchName) {
 				$query->where(function ($query) use ($searchName) {
 					$query->where('sender.name', 'LIKE', "{$searchName}%")
 						->orWhere('receiver.name', 'LIKE', "{$searchName}%");
 				});
 			})
-			->when($message_id, fn ($query) => $query->where('messages.id', '<', $message_id))
+			->when($message_id!=0, fn ($query) => $query->where('messages.id', '<', $message_id))
 			->where($last_msg_send)
 			->when($last_msg_receive != [], function ($query) use ($last_msg_receive, $message_id) {
 				$query->orwhere(function ($query) use ($last_msg_receive, $message_id) {
 					$query->where($last_msg_receive)
-						->when($message_id, fn ($query) => $query->where('messages.id', '<', $message_id));
+						->when($message_id!=0, fn ($query) => $query->where('messages.id', '<', $message_id));
 				});
 			});
 	}

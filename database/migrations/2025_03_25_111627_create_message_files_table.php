@@ -28,6 +28,6 @@ return new class extends Migration {
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('project_files');
+		Schema::dropIfExists('message_files');
 	}
 };

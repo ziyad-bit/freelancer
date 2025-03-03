@@ -36,12 +36,13 @@
 
                 <h4>search</h4>
                 <div class="form-group pb-3">
-                    <input type="text" class="form-control"  name="search" value="{{ old('search',$search) }}">
+                    <input type="text" class="form-control" name="search" value="{{ old('search', $search) }}">
                 </div>
 
                 <h4> max number of days</h4>
                 <div class="form-group pb-3">
-                    <input type="number" name="num_of_days" class="form-control" value="{{ old('num_of_days',$num_of_days) }}">
+                    <input type="number" name="num_of_days" class="form-control"
+                        value="{{ old('num_of_days', $num_of_days) }}">
                 </div>
 
                 @error('num_of_days')
@@ -51,14 +52,14 @@
 
                 <h4>price</h4>
                 <div class="form-group pb-3">
-                    <input type="number" name="min_price" class="form-control" value="{{ old('min_price',$min_price) }}"
+                    <input type="number" name="min_price" class="form-control" value="{{ old('min_price', $min_price) }}"
                         placeholder="min">
 
                     @error('min_price')
                         <small style="color: red">{{ $message }}</small>
                     @enderror
 
-                    <input type="number" name="max_price" class="form-control" value="{{ old('max_price',$max_price) }}"
+                    <input type="number" name="max_price" class="form-control" value="{{ old('max_price', $max_price) }}"
                         placeholder="max" style="margin-top: 5px">
 
                     @error('max_price')
@@ -72,7 +73,7 @@
                     <div class="form-check">
                         <label class="form-check-label">
                             <input type="checkbox" class="form-check-input" name="exp[]" value="beginner"
-                            @checked(in_array('beginner',old('exp',$exp)))>
+                                @checked(in_array('beginner', old('exp', $exp)))>
                             beginner
                         </label>
                     </div>
@@ -80,7 +81,7 @@
                     <div class="form-check">
                         <label class="form-check-label">
                             <input type="checkbox" class="form-check-input" name="exp[]" value="intermediate"
-                                @checked(in_array('intermediate',old('exp',$exp)))>
+                                @checked(in_array('intermediate', old('exp', $exp)))>
                             intermediate
                         </label>
                     </div>
@@ -88,14 +89,14 @@
                     <div class="form-check">
                         <label class="form-check-label">
                             <input type="checkbox" class="form-check-input" name="exp[]" value="experienced"
-                                @checked(in_array('experienced',old('exp',$exp)))>
+                                @checked(in_array('experienced', old('exp', $exp)))>
                             experienced
                         </label>
                     </div>
                 </div>
 
                 <div class="form-group pb-3">
-                    <button type="submit"  class="btn btn-primary btn-block">
+                    <button type="submit" class="btn btn-primary btn-block">
                         Search
                     </button>
 
@@ -108,9 +109,11 @@
         </div>
 
         <div class="col-10">
-            <a class="btn btn-primary" href="{{ route('project.create') }}" style="margin-top: 25px" role="button">
-                add project
-            </a>
+            @auth
+                <a class="btn btn-primary" href="{{ route('project.create') }}" style="margin-top: 25px" role="button">
+                    add project
+                </a>
+            @endauth
 
             <div class="card" style="margin-top: 5px">
                 <div class="card-header">

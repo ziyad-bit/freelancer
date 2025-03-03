@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\DB;
 
 class ChatroomSeeder extends Seeder
 {
-	use DateRandom;
 	/**
 	 * Run the database seeds.
 	 *
@@ -20,12 +19,12 @@ class ChatroomSeeder extends Seeder
 		$faker   = Factory::create();
 		$users   = collect(DB::table('users')->pluck('id')->toArray());
 
-		for ($i = 0; $i < 100; $i++) {
-			$date   = $this->dateRandom();
+		foreach ($users as $i => $user) {
+			$date   = $faker->dateTimeBetween('-5 years');
 
 			DB::table('chat_rooms')->insert([
 				'id'          => $faker->uuid(),
-				'owner_id'    => $users->random(),
+				'owner_id'    => $user,
 				'created_at'  => $date,
 			]);
 		}

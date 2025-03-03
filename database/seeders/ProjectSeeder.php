@@ -11,8 +11,6 @@ use Illuminate\Support\Str;
 
 class ProjectSeeder extends Seeder
 {
-	use DateRandom;
-
 	/**
 	 * Run the database seeds.
 	 *
@@ -25,14 +23,14 @@ class ProjectSeeder extends Seeder
 		$content = $faker->paragraph();
 		$title = Str::limit($content, 30);
 
-		for ($i = 0; $i < 100; $i++) {
-			$date   = $this->dateRandom();
+		foreach ($users as $i => $user) {
+			$date   = $faker->dateTimeBetween('-5 years');
 
 			$project = Project::create([
 				'title'      => $title,
 				'slug'       => Str::slug($title) . '-' . $i,
 				'content'    => $content,
-				'user_id'    => $users->random(),
+				'user_id'    => $user,
 				'created_at' => $date,
 				'updated_at' => $date,
 			]);

@@ -65,7 +65,7 @@ class DebateRepository implements DebateRepositoryInterface
 	}
 
 	//MARK: accessChat
-	public function accessChatDebate(int $initiator_id, int $opponent_id, int $message_id = null):Collection|string
+	public function accessChatDebate(int $initiator_id, int $opponent_id, int $message_id = 0):Collection|string
 	{
 		$messages = DB::table('messages')
 			->select(
@@ -88,7 +88,7 @@ class DebateRepository implements DebateRepositoryInterface
 					->havingRaw('COUNT(DISTINCT user_id) = 2');
 			})
 			->when(
-				$message_id,
+				$message_id!=0,
 				function ($query) use ($message_id) {
 					$query->Where('messages.id', '<', $message_id);
 				}

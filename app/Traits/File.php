@@ -20,10 +20,14 @@ trait File
 	}
 
 	//MARK: uploadAndResize
-	public function uploadAndResize(object $request, int $width = null, string $path, string $input_name = 'image', int $height = null):string
+	public function uploadAndResize(object $request, int $width = 0, string $path, string $input_name = 'image', int $height = 0):string
 	{
+
 		$file = $request->file($input_name);
 		$name = $file->hashName();
+
+		$width  = $width == 0 ? null : $width;
+		$height = $height == null ? null : $height;
 
 		$img = Image::make($file)->resize($width, $height, function ($constraint) {
 			$constraint->aspectRatio();
@@ -35,11 +39,11 @@ trait File
 	}
 
 	//MARK: update
-	public function updateImage(object $request, int $width = null, string $old_image, string $path = 'users', int $height = null):string
+	public function updateImage(object $request, int $width = 0, string $old_image, string $path = 'users', int $height = 0):string
 	{
 		Storage::delete('images/' . $path . '/' . $old_image);
 
-		$image = $this->uploadAndResize($request, $width, $path, $height);
+		$image = $this->uploadAndResize($request, $width, $path,'image' ,$height);
 
 		return $image;
 	}

@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\DB;
 
 class MessageSeeder extends Seeder
 {
-	use DateRandom;
 	/**
 	 * Run the database seeds.
 	 *
@@ -21,12 +20,12 @@ class MessageSeeder extends Seeder
 		$users       = collect(DB::table('users')->pluck('id')->toArray());
 		$chatrooms   = collect(DB::table('chat_rooms')->pluck('id')->toArray());
 
-		for ($i = 0; $i < 100; $i++) {
-			$date   = $this->dateRandom();
+		foreach ($users as $user) {
+			$date   = $faker->dateTimeBetween('-5 years');
 
 			DB::table('messages')->insert([
 				'text'         => encrypt($faker->sentence(3)),
-				'sender_id'    => $users->random(),
+				'sender_id'    => $user,
 				'receiver_id'  => $users->random(),
 				'chat_room_id' => $chatrooms->random(),
 				'created_at'   => $date,

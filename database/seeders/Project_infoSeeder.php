@@ -26,6 +26,7 @@ class Project_infoSeeder extends Seeder
 				'num_of_days' => rand(1, 30),
 				'exp'         => Arr::random(['beginner', 'intermediate', 'experienced']),
 				'project_id'  => $project,
+				'active'  => Arr::random(['active', 'inactive']),
 			]);
 		}
 	}

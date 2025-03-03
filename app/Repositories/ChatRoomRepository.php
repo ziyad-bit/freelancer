@@ -23,7 +23,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		 * or last sent message
 		 */
 		$auth_id        = Auth::id();
-		$all_chat_rooms = ChatRooms::fetch(
+		$all_chat_rooms = ChatRooms::index(
 			['messages.sender_id' => $auth_id, 'last' => 1],
 			['messages.receiver_id' => $auth_id, 'last' => 1]
 		)
@@ -64,7 +64,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		}
 
 		//we will get the chat room between the authenticated user and the selected user
-		$selected_chat_room_query = ChatRooms::fetch(
+		$selected_chat_room_query = ChatRooms::index(
 			['messages.sender_id' => $auth_id, 'messages.receiver_id' => $receiver_id, 'last' => 1],
 			['messages.receiver_id' => $auth_id, 'messages.sender_id' => $receiver_id, 'last' => 1]
 		)
@@ -82,7 +82,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			 * or last sent message
 			 */
 
-			$all_chat_rooms = ChatRooms::fetch(
+			$all_chat_rooms = ChatRooms::index(
 				['messages.sender_id' => $auth_id, 'last' => 1],
 				['messages.receiver_id' => $auth_id, 'last' => 1],
 			)
@@ -124,7 +124,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			 * we will get all the chat rooms with last received message
 			 * or last sent message except the selected one
 			 */
-			$all_chat_rooms = ChatRooms::fetch(
+			$all_chat_rooms = ChatRooms::index(
 				['messages.sender_id' => $auth_id, 'last' => 1],
 				['messages.receiver_id' => $auth_id, 'last' => 1],
 			)
@@ -158,7 +158,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			with last received message or last sent message
 		 */
 		$auth_id        = Auth::id();
-		$all_chat_rooms = ChatRooms::fetch(
+		$all_chat_rooms = ChatRooms::index(
 			['messages.sender_id' => $auth_id, 'last' => 1],
 			['messages.receiver_id' => $auth_id, 'last' => 1],
 			$message_id,

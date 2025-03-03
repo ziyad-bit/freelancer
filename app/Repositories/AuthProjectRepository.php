@@ -30,7 +30,7 @@ class AuthProjectRepository implements AuthProjectRepositoryInterface
 					'transactions.id as transaction_id',
 					'type',
 					'amount',
-					'debates.owner_id as debate_owner_id',
+					'debates.initiator_id as debate_initiator_id',
 				)
 				->join('users as project_owner', 'projects.user_id', '=', 'project_owner.id')
 				->leftJoin('proposals', 'projects.id', '=', 'proposals.project_id')

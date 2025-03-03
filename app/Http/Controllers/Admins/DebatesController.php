@@ -34,7 +34,7 @@ class DebatesController extends Controller
 	}
 
 	// MARK: store
-	public function access_chat(int $initiator_id, int $opponent_id, int $message_id = null):View|JsonResponse
+	public function access_chat(int $initiator_id, int $opponent_id, int $message_id=0):View|JsonResponse
 	{
 		$messages = $this->debateRepository->accessChatDebate($initiator_id, $opponent_id, $message_id);
 

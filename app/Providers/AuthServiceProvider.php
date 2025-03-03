@@ -23,8 +23,6 @@ class AuthServiceProvider extends ServiceProvider
 	 */
 	public function boot()
 	{
-		$this->registerPolicies();
-
 		LogViewer::auth(function ($request) {
 			return $request->user() && in_array($request->user()->email, [
 				'grimes.jaron@example.org',

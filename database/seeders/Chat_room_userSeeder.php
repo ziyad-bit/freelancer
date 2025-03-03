@@ -3,12 +3,12 @@
 namespace Database\Seeders;
 
 use App\Traits\DateRandom;
+use Faker\Factory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class Chat_room_userSeeder extends Seeder
 {
-	use DateRandom;
 	/**
 	 * Run the database seeds.
 	 *
@@ -18,13 +18,14 @@ class Chat_room_userSeeder extends Seeder
 	{
 		$users         = collect(DB::table('users')->pluck('id')->toArray());
 		$chat_room_ids = collect(DB::table('chat_rooms')->pluck('id')->toArray());
+		$faker = Factory::create();
 
-		for ($i = 0; $i < 100; $i++) {
-			$date   = $this->dateRandom();
+		foreach ($users as $i => $user) {
+			$date   = $faker->dateTimeBetween('-5 years');
 
 			DB::table('chat_room_user')->insert([
 				'chat_room_id'   => $chat_room_ids->random(),
-				'user_id'        => $users->random(),
+				'user_id'        => $user,
 				'created_at'     => $date,
 			]);
 		}

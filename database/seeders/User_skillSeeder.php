@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\{Skill, User};
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class User_skillSeeder extends Seeder
 {
@@ -14,8 +15,10 @@ class User_skillSeeder extends Seeder
 	 */
 	public function run()
 	{
-		for ($i = 0; $i < 100; $i++) {
-			$user = User::inRandomOrder()->first();
+		$users  = collect(DB::table('users')->pluck('id')->toArray());
+
+		foreach ($users as $user) {
+			$user = User::where('id',$user)->first();
 
 			$skills = Skill::inRandomOrder()->take(2)->pluck('id')->toArray();
 			$user->user_skills()->attach($skills);
