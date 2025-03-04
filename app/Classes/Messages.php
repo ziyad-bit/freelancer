@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class Messages
 {
-	public static function index(string $chat_room_id, int $message_id=0 ):Collection
+	public static function index(string $chat_room_id, string $created_at='' ):Collection
 	{
 		return DB::table('messages')
 			->join('users as sender', 'messages.sender_id', '=', 'sender.id')
@@ -23,14 +23,14 @@ class Messages
 			->where('messages.chat_room_id', $chat_room_id)
 			->where('messages.text', '!=', 'new_chat_room%')
 			->when(
-				$message_id!=0,
-				function ($query) use ($message_id) {
-					$query->Where('messages.id', '<', $message_id);
+				$created_at!='',
+				function ($query) use ($created_at) {
+					$query->Where('messages.created_at', '<', $created_at);
 				}
 			)
 			->groupBy('messages.id')
-			->orderBy('id', 'desc')
-			->limit(6)
+			->latest('messages.created_at')
+			->limit(4)
 			->get();
 	}
 }

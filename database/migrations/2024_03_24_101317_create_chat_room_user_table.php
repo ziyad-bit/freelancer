@@ -18,7 +18,7 @@ return new class extends Migration {
 			$table->uuid('chat_room_id');
 			$table->foreign('chat_room_id')->references('id')->on('chat_rooms')->cascadeOnDelete()->cascadeOnUpdate();
 			$table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
-			$table->timestamp('created_at');
+			$table->timestamp('created_at')->nullable();
 		});
 	}
 

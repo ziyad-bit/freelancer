@@ -35,10 +35,7 @@ function loadOldMessages() {
             if (chat_box[i].scrollTop == 0) {
                 if (old_msg == true) {
                     let chat_room_id = this.getAttribute('data-chat_room_id'),
-                        show_old_msgs_url = this.firstElementChild.getAttribute('data-show_old_msgs_url'),
-                        lastIndex = show_old_msgs_url.lastIndexOf("/");
-
-                    show_old_msgs_url = show_old_msgs_url.substring(0, lastIndex) + '/' + chat_room_id;
+                        show_old_msgs_url = this.firstElementChild.getAttribute('data-show_old_msgs_url');
 
                     const box = document.getElementsByClassName('box' + chat_room_id)[0];
 

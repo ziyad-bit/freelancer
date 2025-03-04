@@ -2,7 +2,7 @@
     @for ($i = count($messages) - 1; $i >= 0; $i--)
         <img id="{{ $messages[$i]->id }}" class="rounded-circle image"
             src={{ asset('storage/images/users/' . $messages[$i]->sender_image) }}
-            data-show_old_msgs_url="{{ route('message.show_old', ['chat_room_id'=>0,'message_id'=>$messages[$i]->id]) }}"
+            data-show_old_msgs_url="{{ route('message.show', ['chat_room_id'=>$messages[$i]->chat_room_id,'created_at'=>$messages[$i]->created_at]) }}"
             alt="loading">
 
         <span class="user_name">

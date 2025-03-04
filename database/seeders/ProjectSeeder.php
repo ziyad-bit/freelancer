@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\{Project, Skill};
-use App\Traits\DateRandom;
+use App\Traits\{SortedDates};
 use Faker\Factory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 
 class ProjectSeeder extends Seeder
 {
+	use SortedDates;
 	/**
 	 * Run the database seeds.
 	 *
@@ -20,11 +21,12 @@ class ProjectSeeder extends Seeder
 	{
 		$faker = Factory::create();
 		$users = collect(DB::table('users')->pluck('id')->toArray());
-		
+		$dates = $this->getAscSortedDates($faker, 100);
+
 		foreach ($users as $i => $user) {
-			$date   = $faker->dateTimeBetween('-5 years');
+			$date    = $dates[$i];
 			$content = $faker->paragraph();
-			$title = Str::limit($content, 30);
+			$title   = Str::limit($content, 30,'');
 
 			$project = Project::create([
 				'title'      => $title,

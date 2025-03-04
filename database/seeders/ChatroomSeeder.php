@@ -2,7 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Traits\DateRandom;
+use App\Models\Chatroom;
+use App\Models\User;
 use Faker\Factory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -19,14 +20,18 @@ class ChatroomSeeder extends Seeder
 		$faker   = Factory::create();
 		$users   = collect(DB::table('users')->pluck('id')->toArray());
 
-		foreach ($users as $i => $user) {
-			$date   = $faker->dateTimeBetween('-5 years');
-
-			DB::table('chat_rooms')->insert([
+		foreach ($users as $user) {
+			$chatroom = Chatroom::create([
 				'id'          => $faker->uuid(),
 				'owner_id'    => $user,
-				'created_at'  => $date,
 			]);
+
+			$users = User::inRandomOrder()->take(3)->pluck('id')->toArray();
+			$chatroom->chatroom_user()->attach($users);
+
+			Chatroom::query()
+				->where('user_id',$users)
+				->update(['decision'=>'approved','created_at'=>now()]);
 		}
 	}
 }

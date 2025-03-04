@@ -23,17 +23,9 @@ class MessageController extends Controller
 	}
 
 	//MARK: show
-	public function show(string $chat_box_id):JsonResponse
+	public function show(string $chat_box_id,string $created_at = ''):JsonResponse
 	{
-		$view = $this->messageRepository->showMessages($chat_box_id);
-
-		return response()->json(['view' => $view]);
-	}
-
-	//MARK:show_old
-	public function show_old(int $message_id, string $chat_room_id):JsonResponse
-	{
-		$view = $this->messageRepository->showOldMessages($chat_room_id, $message_id);
+		$view = $this->messageRepository->showMessages($chat_box_id,$created_at);
 
 		return response()->json(['view' => $view]);
 	}

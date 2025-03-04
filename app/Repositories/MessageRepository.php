@@ -74,17 +74,9 @@ class MessageRepository implements MessageRepositoryInterface
 
 	// MARK: showMessages
 	//when user click on chat room
-	public function showMessages(string $chat_room_id):string
+	public function showMessages(string $chat_room_id, string $created_at=''):string
 	{
-		$messages = Messages::index($chat_room_id);
-
-		return view('users.includes.chat.index_msgs', compact('messages'))->render();
-	}
-
-	// MARK: show Old Msgs
-	public function showOldMessages(string $chat_room_id, int $message_id):string
-	{
-		$messages = Messages::index($chat_room_id, $message_id);
+		$messages = Messages::index($chat_room_id,$created_at);
 
 		return view('users.includes.chat.index_msgs', compact('messages'))->render();
 	}

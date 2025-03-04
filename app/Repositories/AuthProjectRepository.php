@@ -40,6 +40,8 @@ class AuthProjectRepository implements AuthProjectRepositoryInterface
 				->where('projects.user_id', $auth_id)
 				->where('type', '!=', 'withdraw')
 				->orWhere(fn ($query) => $query->where(['proposals.user_id' => $auth_id, 'proposals.approval' => 'approved']))
+				->latest('projects.created_at')
+				->limit(10)
 				->get();
 	}
 
