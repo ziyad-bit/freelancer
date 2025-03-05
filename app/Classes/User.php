@@ -2,8 +2,7 @@
 
 namespace App\Classes;
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\{Auth, DB};
 use stdClass;
 
 class User
@@ -57,7 +56,7 @@ class User
 					'=',
 					'users.id'
 				)
-				->where('users.slug',Auth::user()->slug)
+				->where('users.slug', Auth::user()->slug)
 				->groupBy('users.id')
 				->first();
 	}

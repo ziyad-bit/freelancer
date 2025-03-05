@@ -19,7 +19,7 @@ class SearchRepository implements SearchRepositoryInterface
 		 */
 		$searchName     = $request->safe()->search;
 		$auth_id        = Auth::id();
-		$all_chat_rooms = ChatRooms::index(0,$searchName)->limit(3)->get();
+		$all_chat_rooms = ChatRooms::index(0, $searchName)->limit(3)->get();
 
 		$selected_chat_room_id = '';
 		$messages              = [];

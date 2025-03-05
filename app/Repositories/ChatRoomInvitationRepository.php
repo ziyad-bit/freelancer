@@ -2,13 +2,9 @@
 
 namespace App\Repositories;
 
-use App\Classes\{ChatRooms, Messages};
 use App\Events\AddUserToChatEvent;
-use App\Exceptions\RecordExistException;
 use App\Http\Requests\ChatRoomRequest;
 use App\Interfaces\Repository\ChatRoomInvitationRepositoryInterface;
-use App\Models\User;
-use App\Notifications\AddUserToChatNotification;
 use App\Traits\DatabaseCache;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\{Auth, DB, Log};
@@ -46,19 +42,19 @@ class ChatRoomInvitationRepository implements ChatRoomInvitationRepositoryInterf
 	public function sendInvitation(ChatRoomRequest $request):void
 	{
 		// try {
-			$chat_room_id = $request->chat_room_id;
-			$receiver_id  = $request->user_id;
-			$data         = $request->except('sender_id') + ['created_at' => now()];
+		$chat_room_id = $request->chat_room_id;
+		$receiver_id  = $request->user_id;
+		$data         = $request->except('sender_id') + ['created_at' => now()];
 
-			DB::beginTransaction();
+		DB::beginTransaction();
 
-			event(new AddUserToChatEvent($data,$chat_room_id,$receiver_id));
+		event(new AddUserToChatEvent($data, $chat_room_id, $receiver_id));
 
-			DB::commit();
+		DB::commit();
 
-			Log::info('database commit and user sent an invitation');
+		Log::info('database commit and user sent an invitation');
 
-			$this->forgetCache($receiver_id);
+		$this->forgetCache($receiver_id);
 		// }catch (\Throwable $th) {
 		// 	DB::rollBack();
 		// 	Log::critical('database rollback and error is ' . $th->getMessage());

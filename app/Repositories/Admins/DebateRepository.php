@@ -3,7 +3,7 @@
 namespace App\Repositories\Admins;
 
 use App\Exceptions\GeneralNotFoundException;
-use App\Http\Requests\{ReleaseRequest};
+use App\Http\Requests\ReleaseRequest;
 use App\Interfaces\Repository\Admins\DebateRepositoryInterface;
 use App\Traits\Slug;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -88,7 +88,7 @@ class DebateRepository implements DebateRepositoryInterface
 					->havingRaw('COUNT(DISTINCT user_id) = 2');
 			})
 			->when(
-				$message_id!=0,
+				$message_id != 0,
 				function ($query) use ($message_id) {
 					$query->Where('messages.id', '<', $message_id);
 				}

@@ -5,8 +5,7 @@ namespace App\Http\Controllers\Admins;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ReleaseRequest;
 use App\Interfaces\Repository\Admins\DebateRepositoryInterface;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\{JsonResponse, RedirectResponse};
 use Illuminate\View\View;
 
 class DebatesController extends Controller
@@ -34,7 +33,7 @@ class DebatesController extends Controller
 	}
 
 	// MARK: store
-	public function access_chat(int $initiator_id, int $opponent_id, int $message_id=0):View|JsonResponse
+	public function access_chat(int $initiator_id, int $opponent_id, int $message_id = 0):View|JsonResponse
 	{
 		$messages = $this->debateRepository->accessChatDebate($initiator_id, $opponent_id, $message_id);
 
@@ -42,13 +41,13 @@ class DebatesController extends Controller
 			return response()->json(['messages' => $messages]);
 		}
 
-		return view('admins.debate.chat', compact('messages','opponent_id','initiator_id'));
+		return view('admins.debate.chat', compact('messages', 'opponent_id', 'initiator_id'));
 	}
 
 	// MARK: update
-	public function update(ReleaseRequest $request,string $transaction_id):RedirectResponse
+	public function update(ReleaseRequest $request, string $transaction_id):RedirectResponse
 	{
-		$this->debateRepository->updateDebate($request,$transaction_id);
+		$this->debateRepository->updateDebate($request, $transaction_id);
 
 		return redirect()->back()->with('success', 'you released milestone successfully');
 	}

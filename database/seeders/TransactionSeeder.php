@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Traits\DateRandom;
 use Faker\Factory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +18,7 @@ class TransactionSeeder extends Seeder
 	{
 		$users     = collect(DB::table('users')->pluck('id')->toArray());
 		$projects  = collect(DB::table('projects')->pluck('id')->toArray());
-		$faker = Factory::create();
+		$faker     = Factory::create();
 
 		foreach ($users as $user) {
 			$date   = $faker->dateTimeBetween('-5 years');

@@ -25,10 +25,10 @@ class FilterRequest extends FormRequest
 	{
 		return [
 			'num_of_days' => 'nullable|numeric||max:90',
-			'min_price' => 'nullable|numeric|min:5|lte:max_price',
-			'max_price' => 'nullable|numeric|max:10000',
-			'exp.*' => 'nullable|string|in:beginner,intermediate,experienced',
-			'search' => 'nullable|string|max:30',
+			'min_price'   => 'nullable|numeric|min:5|lte:max_price',
+			'max_price'   => 'nullable|numeric|max:10000',
+			'exp.*'       => 'nullable|string|in:beginner,intermediate,experienced',
+			'search'      => 'nullable|string|max:30',
 		];
 	}
 }

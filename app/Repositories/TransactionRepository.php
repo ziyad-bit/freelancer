@@ -17,7 +17,7 @@ class TransactionRepository implements TransactionRepositoryInterface
 	use DatabaseCache ,Payment,GetFunds;
 
 	//MARK: index_transaction
-	public function index_transaction(string $created_at='' ):Collection|string
+	public function index_transaction(string $created_at = ''):Collection|string
 	{
 		$auth_id  = Auth::id();
 
@@ -38,7 +38,7 @@ class TransactionRepository implements TransactionRepositoryInterface
 			->join('users as owner', 'owner.id', '=', 'transactions.owner_id')
 			->where('receiver_id', $auth_id)
 			->orwhere(fn ($query) => $query->where('transactions.owner_id', $auth_id))
-			->when($created_at!='', fn ($query) => $query->where('date', '<', $created_at))
+			->when($created_at != '', fn ($query) => $query->where('date', '<', $created_at))
 			->latest('date')
 			->limit(8)
 			->get();

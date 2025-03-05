@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 
 interface TransactionRepositoryInterface
 {
-	public function index_transaction(string $created_at=''):Collection|string;
+	public function index_transaction(string $created_at = ''):Collection|string;
 	public function create_milestone(int $project_id, int $receiver_id):View|array;
 	public function checkout_transaction(int $amount):void;
 	public function release_milestone(TransactionRequest $request):void;

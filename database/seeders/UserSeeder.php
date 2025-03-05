@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Traits\DateRandom;
 use Faker\Factory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\{DB, Hash};

@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\{Project, Skill};
-use App\Traits\{SortedDates};
+use App\Traits\SortedDates;
 use Faker\Factory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -26,7 +26,7 @@ class ProjectSeeder extends Seeder
 		foreach ($users as $i => $user) {
 			$date    = $dates[$i];
 			$content = $faker->paragraph();
-			$title   = Str::limit($content, 30,'');
+			$title   = Str::limit($content, 30, '');
 
 			$project = Project::create([
 				'title'      => $title,

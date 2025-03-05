@@ -5,7 +5,7 @@ namespace App\Traits;
 trait Payment
 {
 	//MARK: forgetCache
-	public function getPaymentStatus(string $url,string $data = ''):array|string
+	public function getPaymentStatus(string $url, string $data = ''):array|string
 	{
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);

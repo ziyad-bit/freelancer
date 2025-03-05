@@ -2,8 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Chatroom;
-use App\Models\User;
+use App\Models\{Chatroom, User};
 use Faker\Factory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -30,8 +29,8 @@ class ChatroomSeeder extends Seeder
 			$chatroom->chatroom_user()->attach($users);
 
 			Chatroom::query()
-				->where('user_id',$users)
-				->update(['decision'=>'approved','created_at'=>now()]);
+				->where('user_id', $users)
+				->update(['decision' => 'approved', 'created_at' => now()]);
 		}
 	}
 }

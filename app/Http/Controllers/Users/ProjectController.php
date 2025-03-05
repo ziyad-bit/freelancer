@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\{FilterRequest, ProjectRequest, SearchRequest};
+use App\Http\Requests\{FilterRequest, ProjectRequest};
 use App\Interfaces\Repository\{FileRepositoryInterface, ProjectRepositoryInterface, SkillRepositoryInterface};
 use Illuminate\Http\{JsonResponse, RedirectResponse};
 use Illuminate\View\View;

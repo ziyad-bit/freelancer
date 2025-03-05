@@ -4,7 +4,7 @@ namespace App\Http\Middleware\Authorize;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{Auth, DB};
+use Illuminate\Support\Facades\DB;
 
 class Transaction_debate
 {
@@ -19,7 +19,7 @@ class Transaction_debate
 	public function handle(Request $request, Closure $next)
 	{
 		$users_id  = DB::table('debates')
-			->select('initiator_id','opponent_id')
+			->select('initiator_id', 'opponent_id')
 			->where('id', $request->debate)
 			->first();
 
@@ -27,7 +27,7 @@ class Transaction_debate
 
 		if (!in_array($request->receiver_id, $users_id)) {
 			abort(500, 'something went wrong');
-		} 
+		}
 
 		return $next($request);
 	}

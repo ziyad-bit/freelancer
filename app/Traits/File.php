@@ -22,11 +22,10 @@ trait File
 	//MARK: uploadAndResize
 	public function uploadAndResize(object $request, int $width = 0, string $path, string $input_name = 'image', int $height = 0):string
 	{
-
 		$file = $request->file($input_name);
 		$name = $file->hashName();
 
-		$width  = $width == 0 ? null : $width;
+		$width  = $width  == 0 ? null : $width;
 		$height = $height == null ? null : $height;
 
 		$img = Image::make($file)->resize($width, $height, function ($constraint) {
@@ -43,7 +42,7 @@ trait File
 	{
 		Storage::delete('images/' . $path . '/' . $old_image);
 
-		$image = $this->uploadAndResize($request, $width, $path,'image' ,$height);
+		$image = $this->uploadAndResize($request, $width, $path, 'image', $height);
 
 		return $image;
 	}

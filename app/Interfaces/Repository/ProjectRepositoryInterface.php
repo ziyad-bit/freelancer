@@ -2,7 +2,7 @@
 
 namespace App\Interfaces\Repository;
 
-use App\Http\Requests\{FilterRequest, ProjectRequest, SearchRequest};
+use App\Http\Requests\{FilterRequest, ProjectRequest};
 
 interface ProjectRepositoryInterface
 {

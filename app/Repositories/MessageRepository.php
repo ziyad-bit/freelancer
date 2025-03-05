@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\{Auth, DB, Log, Notification};
 class MessageRepository implements MessageRepositoryInterface
 {
 	use DatabaseCache;
-	
+
 	// MARK: storeMessage
 	public function storeMessage(MessageRequest $request, FileRepositoryInterface $fileRepository):array
 	{
@@ -44,7 +44,7 @@ class MessageRepository implements MessageRepositoryInterface
 
 			DB::commit();
 			Log::info('database commit and user will receive notification message');
-			
+
 			$data['text'] = $text;
 
 			//send message to other user by using broadcast
@@ -73,9 +73,9 @@ class MessageRepository implements MessageRepositoryInterface
 
 	// MARK: showMessages
 	//when user click on chat room
-	public function showMessages(string $chat_room_id, string $created_at=''):string
+	public function showMessages(string $chat_room_id, string $created_at = ''):string
 	{
-		$messages = Messages::index($chat_room_id,$created_at);
+		$messages = Messages::index($chat_room_id, $created_at);
 
 		return view('users.includes.chat.index_msgs', compact('messages'))->render();
 	}

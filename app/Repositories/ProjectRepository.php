@@ -73,8 +73,8 @@ class ProjectRepository implements ProjectRepositoryInterface
 
 		if ($min_price) {
 			$projects_query = $projects_query
-					->where('min_price','>=' ,$request->min_price)
-					->where('max_price','<=' ,$request->max_price);
+					->where('min_price', '>=', $request->min_price)
+					->where('max_price', '<=', $request->max_price);
 		}
 
 		if ($exp !== []) {

@@ -3,7 +3,6 @@
 namespace App\Repositories\Admins;
 
 use App\Classes\User;
-use App\Classes\Users;
 use App\Exceptions\GeneralNotFoundException;
 use App\Http\Requests\SignupRequest;
 use App\Interfaces\Repository\Admins\UserRepositoryInterface;
