@@ -9,17 +9,17 @@
 
     <i class="fa-solid fa-plus plus plus{{ $chat_room_id }}" data-bs-toggle="modal"
         data-bs-target="#send_user_invitation" data-receiver_id="{{ $receiver_id }}"
-        data-chat_room_id="{{ $chat_room_id }}" data-chatroom_users_url="{{ route('chatrooms.get_users',$chat_room_id) }}"
-        data-request_status="false">
+        data-chat_room_id="{{ $chat_room_id }}"
+        data-chatroom_users_url="{{ route('chatrooms.get_users', $chat_room_id) }}" data-request_status="false">
     </i>
 
     @csrf
 
     <div style="pointer-events: none">
         <img class="rounded-circle image" alt="loading" id="image{{ $receiver_id }}"
-            src="{{ asset('storage/images/users/' .$receiver_image ) }}">
+            src="{{ asset('storage/images/users/' . $receiver_image) }}">
 
-            {{-- check if user is online --}}
+        {{-- check if user is online --}}
         @if (Cache::has('online_' . $receiver_id))
             <div class="rounded-circle dot"></div>
         @endif
@@ -32,12 +32,10 @@
         <p style="margin-left: 30px;">
             <span id="sender_name">
                 @isset($message)
-                    @if ($message->text != 'new_chat_room%')
-                        @if ($message->sender_id !== Auth::id())
-                            {{ Str::limit($message->sender_name, 10, '...') }} :
-                        @else
-                            you :
-                        @endif
+                    @if ($message->sender_id !== Auth::id())
+                        {{ Str::limit($message->sender_name, 10, '...') }} :
+                    @else
+                        you :
                     @endif
                 @endisset
             </span>
@@ -48,15 +46,9 @@
                         file
                     </span>
                 @else
-                    @if ($message->text != 'new_chat_room%')
-                        <span class="msg_text">
-                            {{ Str::limit(decrypt($message->text), 15, '...') }}
-                        </span>
-                    @else
-                        <span class="msg_text">
-
-                        </span>
-                    @endif
+                    <span class="msg_text">
+                        {{ Str::limit(decrypt($message->text), 15, '...') }}
+                    </span>
                 @endif
             @else
                 <span class="msg_text">

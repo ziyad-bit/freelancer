@@ -76,19 +76,6 @@ class ChatRoomInvitationRepository implements ChatRoomInvitationRepositoryInterf
 
 			DB::beginTransaction();
 
-			DB::table('messages')
-				->where(['chat_room_id' => $chat_room_id, 'last' => 1])
-				->update(['last' => 0]);
-
-			DB::table('messages')
-				->insert([
-					'chat_room_id' => $chat_room_id,
-					'receiver_id'  => $auth_id,
-					'sender_id'    => $request->sender_id,
-					'text'         => 'new_chat_room%',
-					'created_at'   => now(),
-				]);
-
 			DB::table('chat_room_user')
 				->where(['chat_room_id' => $chat_room_id, 'user_id' => $auth_id])
 				->update(['decision' => 'approved']);
