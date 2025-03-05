@@ -49,11 +49,11 @@ class Handler extends ExceptionHandler
 			abort(404, 'url not found');
 		});
 
-		// $this->reportable(
-		// 	function (Throwable $e) {
-		// 		abort(500, 'Something went wrong');
-		// 	}
-		// );
+		$this->reportable(
+			function (Throwable $e) {
+				abort(500, 'Something went wrong');
+			}
+		);
 	}
 
 	public function report(Throwable $exception)

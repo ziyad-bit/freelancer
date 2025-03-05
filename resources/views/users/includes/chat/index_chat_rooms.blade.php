@@ -32,6 +32,10 @@
 @if ($all_chat_rooms->count() > 0)
     @foreach ($all_chat_rooms as $i => $message)
         @php
+            /*
+                get_receiver_data() and get_selected_chat_room() is imported 
+                from App/Helpers/General
+            */
             $receiver = get_receiver_data($message);
 
             $receiver_name = $receiver['receiver_name'];

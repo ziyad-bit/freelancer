@@ -36,7 +36,7 @@ class SkillRequest extends FormRequest
 			'num_input'     => 'required|numeric',
 			'skills'     	  => ['required', 'array', new NotEmptyArray],
 			'skills.*.name' => 'nullable|string',
-			'skills.*.id'   => ['nullable', 'numeric', 'distinct', 'exists:skills,id', Rule::notIn($user_skills_id)],
+			'skills.*.id'   => ['numeric', 'distinct', 'exists:skills,id', Rule::notIn($user_skills_id)],
 		];
 	}
 

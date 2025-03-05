@@ -19,23 +19,15 @@ class SearchRepository implements SearchRepositoryInterface
 		 */
 		$searchName     = $request->safe()->search;
 		$auth_id        = Auth::id();
-		$all_chat_rooms = ChatRooms::index(
-			['messages.sender_id' => $auth_id, 'last' => 1],
-			['messages.receiver_id' => $auth_id, 'last' => 1],
-			0,
-			'',
-			$searchName
-		)
-		->limit(3)
-		->get();
+		$all_chat_rooms = ChatRooms::index(0,$searchName)->limit(3)->get();
 
-		$chat_room_id       = null;
-		$messages           = [];
-		$show_chatroom      = false;
-		$is_chatroom_page_1 = false;
+		$selected_chat_room_id = '';
+		$messages              = [];
+		$show_chatroom         = false;
+		$is_chatroom_page_1    = false;
 
-		$chat_room_view = view('users.includes.chat.index_chat_rooms', compact('show_chatroom', 'all_chat_rooms', 'chat_room_id', 'searchName', 'is_chatroom_page_1'))->render();
-		$chat_box_view  = view('users.includes.chat.index_chat_boxes', compact('show_chatroom', 'all_chat_rooms', 'chat_room_id', 'searchName', 'messages'))->render();
+		$chat_room_view = view('users.includes.chat.index_chat_rooms', compact('show_chatroom', 'all_chat_rooms', 'selected_chat_room_id', 'searchName', 'is_chatroom_page_1'))->render();
+		$chat_box_view  = view('users.includes.chat.index_chat_boxes', compact('show_chatroom', 'all_chat_rooms', 'selected_chat_room_id', 'searchName', 'messages'))->render();
 
 		return [
 			'chat_room_view' => $chat_room_view,

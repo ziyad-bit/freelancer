@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\{Auth, DB, Log, Notification};
 class MessageRepository implements MessageRepositoryInterface
 {
 	use DatabaseCache;
+	
 	// MARK: storeMessage
 	public function storeMessage(MessageRequest $request, FileRepositoryInterface $fileRepository):array
 	{
@@ -41,14 +42,15 @@ class MessageRepository implements MessageRepositoryInterface
 
 			$files = $fileRepository->insert_file($request, 'message_files', 'message_id', $message_id);
 
+			DB::commit();
+			Log::info('database commit and user will receive notification message');
+			
 			$data['text'] = $text;
 
 			//send message to other user by using broadcast
 			$view_msg = view('users.includes.chat.send_message', compact('data', 'files'))->render();
 
 			broadcast(new MessageEvent($data, $view_msg, $auth_user->name))->toOthers();
-
-			Log::info('user sent message');
 
 			//send notification to other user
 			$notif_view = view('users.includes.notifications.send', compact('data'))->render();
@@ -57,9 +59,6 @@ class MessageRepository implements MessageRepositoryInterface
 			$data['text'] = $enc_text;
 
 			Notification::send($user, new NewMessageNotification($data, $auth_user->id, $auth_user->name, $auth_user->image, $notif_view));
-
-			DB::commit();
-			Log::info('database commit and user will receive notification message');
 
 			$this->forgetCache($receiver_id);
 

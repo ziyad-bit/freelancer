@@ -21,7 +21,6 @@ class Messages
 				DB::raw('GROUP_CONCAT(message_files.type order by message_files.file) as files_type'),
 			)
 			->where('messages.chat_room_id', $chat_room_id)
-			->where('messages.text', '!=', 'new_chat_room%')
 			->when(
 				$created_at!='',
 				function ($query) use ($created_at) {

@@ -41,14 +41,6 @@ class ChatRoomInvitationController extends Controller
 		return to_route('chatrooms.fetch', $request->sender_id);
 	}
 
-	// MARK:getAcceptInvitation
-	public function get_accept_invitation(string $chat_room_id):View|RedirectResponse
-	{
-		$data = $this->ChatRoomInvitationRepository->getAcceptInvitationChatroom($chat_room_id);
-
-		return view('users.chat.index', $data);
-	}
-
 	// MARK:refuse_invitation
 	public function refuse_invitation(ChatRoomRequest $request) : JsonResponse
 	{

@@ -19,17 +19,9 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 	public function indexChatroom():array
 	{
 		/**
-		 * we will get the chat rooms with last received message
-		 * or last sent message
+		 * we will get the chat rooms with last message
 		 */
-		$auth_id        = Auth::id();
-		$all_chat_rooms = ChatRooms::index(
-			['messages.sender_id' => $auth_id, 'last' => 1],
-			['messages.receiver_id' => $auth_id, 'last' => 1]
-		)
-		->latest('messages.created_at')
-		->limit(4)
-		->get();
+		$all_chat_rooms = ChatRooms::index()->limit(5)->get();
 
 		$messages     = [];
 		$chat_room_id = '';
@@ -50,8 +42,8 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 	// MARK: fetch
 	public function fetchWithSelectedUser(int $receiver_id): array|RedirectResponse
 	{
-		$messages     = [];
-		$auth_id      = Auth::id();
+		$messages = [];
+		$auth_id  = Auth::id();
 
 		$receiver = DB::table('users')
 			->select(['name', 'image', 'users.id', 'type'])
@@ -64,62 +56,38 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		}
 
 		//we will get the chat room between the authenticated user and the selected user
-		$selected_chat_room_query = ChatRooms::index(
-			['messages.sender_id' => $auth_id, 'messages.receiver_id' => $receiver_id, 'last' => 1],
-			['messages.receiver_id' => $auth_id, 'messages.sender_id' => $receiver_id, 'last' => 1]
-		)
-		->groupBy('messages.id');
-
-		$selected_chat_room = $selected_chat_room_query->first();
+		$selected_chat_room_query = ChatRooms::index(0, '', $receiver_id);
+		$selected_chat_room       = $selected_chat_room_query->first();
 
 		/**
-			 * we will get all the chat rooms with last received message
-			 * or last sent message except the selected one
-			 */
-		$all_chat_rooms = ChatRooms::index(
-				['messages.sender_id' => $auth_id, 'last' => 1],
-				['messages.receiver_id' => $auth_id, 'last' => 1],
-			)
-			->latest('messages.id')
-			->limit(3)
-			->get();
+			* we will get all the chat rooms with last message
+			*/
+		$all_chat_rooms = ChatRooms::index()->limit(4)->get();
 
 		/**
 		 * if the chatroom does not exist, create a new chatroom
 		*/
 		$created_at = now();
 		if (!$selected_chat_room) {
+			$uuid = Str::uuid();
+
 			DB::table('chat_rooms')
 				->insert(
 					[
-						'id'          => Str::uuid(),
+						'id'          => $uuid,
 						'owner_id'    => $auth_id,
 						'created_at'  => $created_at,
 					]
 				);
 
-			$chat_room_id = DB::table('chat_rooms')
-				->where(['created_at' => $created_at, 'owner_id' => $auth_id])
-				->value('id');
-
-			DB::table('messages')
-				->insert([
-					'chat_room_id' => $chat_room_id,
-					'receiver_id'  => $receiver_id,
-					'sender_id'    => $auth_id,
-					'text'         => 'new_chat_room%',
-					'created_at'   => $created_at,
-				]);
-
 			DB::table('chat_room_user')
 				->insert([
-					['chat_room_id' => $chat_room_id, 'user_id' => $auth_id],
-					['chat_room_id' => $chat_room_id, 'user_id' => $receiver_id],
+					['chat_room_id' => $uuid, 'user_id' => $auth_id],
+					['chat_room_id' => $uuid, 'user_id' => $receiver_id],
 				]);
 
 			$selected_chat_room = $selected_chat_room_query->first();
 		} else {
-
 			$messages = Messages::index($selected_chat_room->chat_room_id);
 		}
 
@@ -143,17 +111,9 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 	{
 		/**
 			get more the chat rooms for infinite scrolling
-			with last received message or last sent message
+			with last message
 		 */
-		$auth_id        = Auth::id();
-		$all_chat_rooms = ChatRooms::index(
-			['messages.sender_id' => $auth_id, 'last' => 1],
-			['messages.receiver_id' => $auth_id, 'last' => 1],
-			$message_id,
-		)
-		->latest('messages.id')
-		->limit(4)
-		->get();
+		$all_chat_rooms = ChatRooms::index($message_id)->limit(4)->get();
 
 		$data = [
 			'selected_chat_room_id' => '',

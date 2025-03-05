@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Classes\{ChatRooms, Messages};
+use App\Events\AddUserToChatEvent;
 use App\Exceptions\RecordExistException;
 use App\Http\Requests\ChatRoomRequest;
 use App\Interfaces\Repository\ChatRoomInvitationRepositoryInterface;
@@ -44,51 +45,26 @@ class ChatRoomInvitationRepository implements ChatRoomInvitationRepositoryInterf
 	//MARK: sendInvitation
 	public function sendInvitation(ChatRoomRequest $request):void
 	{
-		try {
-			$user         = Auth::user();
+		// try {
 			$chat_room_id = $request->chat_room_id;
 			$receiver_id  = $request->user_id;
 			$data         = $request->except('sender_id') + ['created_at' => now()];
 
 			DB::beginTransaction();
 
-			$user_in_chatroom = DB::table('chat_room_user')
-				->where(['user_id' => $receiver_id, 'chat_room_id' => $chat_room_id])
-				->first();
-
-			if ($user_in_chatroom) {
-				throw new RecordExistException('user');
-			} else {
-				DB::table('chat_room_user')->insert($data);
-			}
-
-			$receiver     = User::find($request->user_id);
-			$view         = view('users.includes.notifications.send_user_invitation')
-								->with('chat_room_id', $chat_room_id)
-								->render();
-
-			$receiver->notify(
-				new AddUserToChatNotification(
-					$chat_room_id,
-					$user->name,
-					$user->image,
-					$view
-				)
-			);
+			event(new AddUserToChatEvent($data,$chat_room_id,$receiver_id));
 
 			DB::commit();
 
 			Log::info('database commit and user sent an invitation');
 
 			$this->forgetCache($receiver_id);
-		} catch (RecordExistException $th) {
-			abort(409, $th->getMessage());
-		} catch (\Throwable $th) {
-			DB::rollBack();
-			Log::critical('database rollback and error is ' . $th->getMessage());
+		// }catch (\Throwable $th) {
+		// 	DB::rollBack();
+		// 	Log::critical('database rollback and error is ' . $th->getMessage());
 
-			abort(500, 'something went wrong');
-		}
+		// 	abort(500, 'something went wrong');
+		// }
 	}
 
 	// MARK: acceptInvitation
@@ -130,43 +106,6 @@ class ChatRoomInvitationRepository implements ChatRoomInvitationRepositoryInterf
 
 			abort(500, 'something went wrong');
 		}
-	}
-
-	// MARK: getAcceptInvitation
-	public function getAcceptInvitationChatroom(string $chat_room_id):array
-	{
-		$auth_id = Auth::id();
-
-		/**
-			we will get the chat room between the authenticated user and
-			user who sent the invitation
-		 * */
-		$selected_chat_room = ChatRooms::index(
-			['messages.chat_room_id' => $chat_room_id, 'last' => 1],
-			[]
-		);
-
-		/**
-		 * we will get the chat rooms with last received message
-		 * or last sent message
-		 */
-		$all_chat_rooms = ChatRooms::index(
-			['messages.sender_id' => $auth_id, 'last' => 1],
-			['messages.receiver_id' => $auth_id, 'last' => 1]
-		)
-		->latest('messages.id')
-		->limit(4);
-
-		$all_chat_rooms = $all_chat_rooms->union($selected_chat_room)->get();
-		$messages       = Messages::index($chat_room_id);
-
-		return [
-			'messages'           => $messages,
-			'chat_room_id'       => $chat_room_id,
-			'all_chat_rooms'     => $all_chat_rooms,
-			'show_chatroom'      => true,
-			'is_chatroom_page_1' => true,
-		];
 	}
 
 	// MARK: refuseInvitation
