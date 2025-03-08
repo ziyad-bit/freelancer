@@ -5,9 +5,35 @@
     z-index : 6;
     width   : 200px;
 }
+
 .search_item {
     background-color: rgb(166, 183, 196);
 }
+
+@media (max-width: 1200px) and (min-width: 768px) {
+    .navbar-nav {
+        flex-wrap: wrap !important; /* Allow items to wrap if needed */
+        justify-content: center !important; /* Center items horizontally */
+        gap: 10px; /* Add spacing between items */
+    }
+
+    .nav-item{
+        display: none ;
+        width: auto;
+    }
+
+
+    .de{
+        display: inline!important;
+    }
+}
+
+@media (min-width: 1200px){
+    .nav_right_side{
+        display: inherit!important;
+    }
+}
+
 
 .nav-pill {
     border: none;
@@ -28,83 +54,130 @@
 
 .notif {
     position: absolute;
-    top     : 54px;
-    right   : 40px;
+    top: 54px;
+    right: 40px;
+    z-index: 6;
+    max-height: 300px;
+    overflow-y: auto; /* Ensure scrolling when content overflows */
+    width: 320px; /* Default width */
+    background: white; /* Ensure visibility */
+    border-radius: 8px; /* Soft rounded corners */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
-.list-group .rounded-circle {
-    width       : 94px;
-    height      : 50px;
-    position    : relative;
-    bottom      : 8px;
-    margin-right: 5px;
+/* Medium screens (tablets) */
+@media (max-width: 768px) {
+    .notif {
+        top: 367px;
+        right: 20px; /* Reduce right margin */
+        width: 280px; /* Slightly smaller width */
+        max-height: 200px; /* Adjust max height */
+    }
 }
 
-.fa-bell {
-    /* right: 59px; */
-    top: 10px;
-}
-
-.notif {
-    position  : absolute;
-    top: 42px;
-    right     : 40px;
-    z-index   : 6;
-    max-height: 220px;
-    overflow-y: scroll;
-}
-
-.list-group .rounded-circle {
-    width       : 73px;
-    height: 50px;
-    position    : relative;
-    bottom      : 8px;
-    margin-right: 5px;
+/* Small screens (phones) */
+@media (max-width: 576px) {
+    .notif {
+        right: 10px; /* Align better on small screens */
+        width: 90%; /* Make it take most of the screen */
+        max-height: 180px; 
+        max-width: 380px;/* Further reduce height */
+        left: 0%; /* Center it */
+    }
 }
 
 .list-group .notif_hover:hover {
     background-color: #eee;
 }
 
-#bell {
-    right       : -2px;
-    top         : 10px;
-    margin-left : 17px;
-    margin-right: 12px;
+/* .notifications small {
+    margin-left: 20px;
+}
+*/
+.notifications .rounded-circle {
+    max-height  : 50px;
+    /* margin-right: 10px; */
 }
 
-#bell:hover{
+/* Ensure the navbar remains readable on small screens */
+.navbar-nav {
+    flex-direction: row; /* Align items horizontally */
+}
+
+/* Ensure the search form adjusts properly */
+#search_form {
+    width: 100%;
+    max-width: 300px;
+}
+
+/* Make notification bell and profile dropdown align properly */
+#bell {
+    position: relative;
     cursor: pointer;
 }
 
-.p {
-    position   : relative;
-    right      : 62px;
-    width      : 80%;
-    margin-left: 78px;
-}
-
-.notifications small {
-    margin-left: 20px;
-}
-
-.notifications .rounded-circle {
-    max-height  : 50px;
-    margin-right: 10px;
-}
-
-.notifications p {
-    position: relative;
-    right   : -71px;
-    bottom  : 22px;
-}
-
 #notifs_count {
-    position        : absolute;
-    left            : 6px;
-    bottom          : 31px;
-    color           : var(--white_color);
-    background-color: #f02849;
-    padding         : 5px;
-    font-size       : 11px;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: red;
+    color: white;
+    font-size: 10px;
+    padding: 3px 6px;
 }
+
+/* Ensure profile dropdown remains aligned */
+.nav-item.dropdown {
+    display: flex;
+    align-items: center;
+}
+
+/* Make navbar elements more user-friendly on mobile */
+@media (max-width: 768px) {
+    .navbar-nav {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    #search_form {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    #search {
+        width: 100%;
+    }
+
+    #search_btn {
+        width: 100%;
+        margin-top: 5px;
+    }
+
+    .wrapper_notifs {
+        width: 100%;
+    }
+
+    .card.notif {
+        width: 100%;
+        margin: 0 auto;
+    }
+}
+
+/* Make sure navbar brand and toggler are properly spaced */
+@media (max-width: 576px) {
+    .navbar-brand {
+        font-size: 18px;
+    }
+
+    .navbar-toggler {
+        padding: 4px 8px;
+    }
+
+    #bell {
+        font-size: 18px;
+        margin-left: 10px;
+    }
+}
+

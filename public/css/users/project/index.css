@@ -1,0 +1,26 @@
+.card {
+    border-radius: 10px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.badge {
+    font-size: 0.9rem;
+    padding: 5px 10px;
+}
+
+.text-muted {
+    font-size: 0.95rem;
+}
+
+.item{
+    margin-left: 5px;
+}
+
+.form-check-label{
+    font-size: small;
+}

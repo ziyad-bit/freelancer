@@ -107,7 +107,7 @@ function storeMsg(e) {
     e.preventDefault();
 
     let chat_room_id = e.target.parentElement.getAttribute('data-chat_room_id'),
-        store_msg_url = e.target.parentElement.getAttribute('data-store_msg_url'),
+        store_msg_url = e.target.getAttribute('data-store_msg_url'),
         form = document.querySelector('#form' + chat_room_id),
         formData = new FormData(form);
 
@@ -147,12 +147,15 @@ function storeMsg(e) {
                 document.querySelector(`.files_container${chat_room_id}`).style.display = 'none';
 
                 const msg_ele = document.querySelector(`.chat_room_${chat_room_id} div p .msg_text`);
+                const sender_name = document.querySelector(`.chat_room_${chat_room_id} div p #sender_name`);
 
                 if (text == null) {
                     msg_ele.textContent = 'file';
                 } else {
                     msg_ele.textContent = text;
                 }
+
+                sender_name.textContent='you :';
             }
         })
         .catch(err => {
@@ -496,3 +499,7 @@ function search_chatrooms() {
 search_input_ele.addEventListener('input', debounce(() => {
     search_chatrooms();
 }, 1000))
+
+
+
+

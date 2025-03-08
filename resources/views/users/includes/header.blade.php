@@ -11,7 +11,7 @@
 
     <!-- Scripts -->
     <script defer src="{{ asset('js/general.js') }}?v={{ filemtime(public_path('js/general.js')) }}"></script>
-    <script defer src="{{ asset('js/app.js') }}?v={{ filemtime(public_path('js/app.js')) }}"></script>
+    <script defer src="{{ asset('js/app.js') }}"></script>
     <script defer src="{{ asset('js/bootstrap.bundle.min.js') }}" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/dc24edae72.js" crossorigin="anonymous"></script>
 

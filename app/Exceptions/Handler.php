@@ -6,6 +6,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -38,20 +39,22 @@ class Handler extends ExceptionHandler
 	public function register()
 	{
 		$this->renderable(function (GeneralNotFoundException $e) {
-			abort(404, $e->getMessage());
+			return response()->view('errors.404', ['message' => $e->getMessage()], 404);		
 		});
 
 		$this->renderable(function (RecordExistException $e) {
-			abort(409, $e->getMessage());
+			return response()->view('errors.409', ['message' => $e->getMessage()], 409);		
 		});
 
 		$this->renderable(function (NotFoundHttpException $e) {
-			abort(404, 'url not found');
+			return response()->view('errors.404', ['message' => 'Link not found'], 404);		
 		});
 
 		$this->reportable(
 			function (Throwable $e) {
-				abort(500, 'Something went wrong');
+				if (!$e instanceof GeneralNotFoundException &&!$e instanceof RecordExistException) {
+					abort(500, 'Something went wrong');
+				}
 			}
 		);
 	}

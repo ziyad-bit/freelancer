@@ -20,12 +20,14 @@ window.axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 import Echo from 'laravel-echo';
 
-
 window.Pusher = require('pusher-js');
 
-
 window.Echo = new Echo({
-    broadcaster: 'pusher',
-    key        : process.env.MIX_PUSHER_APP_KEY,
-    cluster    : process.env.MIX_PUSHER_APP_CLUSTER,
+    broadcaster      : 'reverb',
+    key              : 'eoytyybulduyb02y32g6',
+    wsHost           : process.env.MIX_REVERB_HOST,
+    wsPort           : process.env.MIX_REVERB_PORT,
+    wssPort          : process.env.MIX_REVERB_PORT,
+    forceTLS         : false,
+    enabledTransports: ['ws', 'wss'],
 });

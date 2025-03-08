@@ -29,7 +29,7 @@ class Messages
 			)
 			->groupBy('messages.id')
 			->latest('messages.created_at')
-			->limit(4)
+			->limit(8)
 			->get();
 	}
 }

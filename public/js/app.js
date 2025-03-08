@@ -2197,9 +2197,13 @@ window.axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
-  broadcaster: 'pusher',
-  key: "4b7a308dff159a5ab580",
-  cluster: "eu"
+  broadcaster: 'reverb',
+  key: 'eoytyybulduyb02y32g6',
+  wsHost: "localhost",
+  wsPort: "8080",
+  wssPort: "8080",
+  forceTLS: false,
+  enabledTransports: ['ws', 'wss']
 });
 
 /***/ }),

@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Exceptions\GeneralNotFoundException;
+use App\Exceptions\RecordExistException;
 use App\Http\Requests\{FilterRequest, ProjectRequest};
 use App\Interfaces\Repository\{FileRepositoryInterface, ProjectRepositoryInterface, SkillRepositoryInterface};
 use App\Traits\{GetCursor, Slug};
@@ -85,7 +86,7 @@ class ProjectRepository implements ProjectRepositoryInterface
 					->where('active', 'active')
 					->groupBy('projects.id')
 					->latest('projects.id')
-					->cursorPaginate(5);
+					->cursorPaginate(8);
 
 		if ($search && Auth::check()) {
 			DB::table('searches')

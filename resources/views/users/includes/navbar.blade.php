@@ -12,37 +12,38 @@
                 aria-label="{{ __('Toggle navigation') }}">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            <span class="navbar-toggler-icon de" style="display: none"></span>
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <!-- Left Side Of Navbar -->
 
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('home') }}">
+                    <li class="nav-item link">
+                        <a class="nav-link " href="{{ route('home') }}">
                             find projects
                         </a>
                     </li>
 
                     @auth
-                        <li class="nav-item">
+                        <li class="nav-item link">
                             <a class="nav-link" href="{{ route('profile.get',Auth::user()->slug) }}">
                                 profile
                             </a>
                         </li>
 
-                        <li class="nav-item">
+                        <li class="nav-item link">
                             <a class="nav-link" href="{{ route('auth.project.index') }}">
                                 my projects
                             </a>
                         </li>
 
-                        <li class="nav-item">
+                        <li class="nav-item link">
                             <a class="nav-link" href="{{ route('transaction.index') }}">
                                 transactions
                             </a>
                         </li>
 
-                        <li class="nav-item">
+                        <li class="nav-item link">
                             <a class="nav-link" href="{{ route('chatrooms.index') }}">
                                 chat
                             </a>
@@ -51,7 +52,7 @@
                 </ul>
 
                 <!-- Right Side Of Navbar -->
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto nav_right_side" >
                     <form method="POST" id="search_form" action="{{ route('home') }}" class="d-flex">
                         @csrf
 
@@ -68,6 +69,7 @@
 
                         <button class="btn btn-outline-success" id="search_btn" type="submit">Search</button>
                     </form>
+
                     <!-- Authentication Links -->
                     @guest
                         <li class="nav-item">
@@ -121,6 +123,7 @@
                     @auth
                         <div class="card notif " style="width: 26rem;display: none " id="notif">
                             @include('users.includes.notifications.index')
+                            
                         </div>
                     @endauth
                 </div>

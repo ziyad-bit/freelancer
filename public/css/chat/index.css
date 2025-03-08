@@ -1,20 +1,7 @@
 #list-tab {
-    max-height: 220px;
+    max-height: 300px;
     overflow-y: scroll;
-    position  : relative;
     min-height: 100px;
-}
-
-.image {
-    width: 40px;
-}
-
-.card-body {
-    overflow-y: scroll;
-}
-
-.nav-pill {
-    border: 1px !important;
 }
 
 div .list_search {
@@ -43,30 +30,6 @@ div .list_search {
     margin-left: 52px;
 }
 
-div .send_input {
-    position: relative;
-    top     : 22px;
-    left    : 5px;
-    width   : 75%;
-}
-
-.app_upload{
-    margin-left: 614px;
-    margin-top : -38px;
-    width      : 8px;
-}
-
-.image_upload{
-    margin-left: 591px;
-    margin-top : -23px;
-    width      : 8px;
-}
-
-.video_upload{
-    margin-left: 565px;
-    margin-top : -23px;
-    width      : 8px;
-}
 
 .accordion{
     margin-top: 5px;
@@ -88,12 +51,7 @@ div .send_input {
     cursor: pointer;
 }
 
-.send_btn {
-    width      : 80px;
-    margin-left: 634px;
-    position   : relative;
-    bottom     : 15px;
-}
+
 
 .chat_msg {
     margin-left: 50px;
@@ -107,4 +65,46 @@ div .send_input {
     float   : right;
     position: relative;
     top     : -43px;
+} 
+
+/* Ensure the chat list takes full width on small screens */
+@media (max-width: 768px) {
+    .chat-list {
+        display: none; /* Hide chat list on small screens */
+        position: absolute;
+        width: 98%;
+        background: #fff;
+        z-index: 1000;
+        height: 100vh;
+        overflow-y: auto;
+    }
+
+    .chat-box {
+        width: 100%;
+    }
+
+    /* Show chat list when toggled */
+    .chat-list.show {
+        display: block;
+    }
+}
+
+/* Reduce padding for better mobile experience */
+.chat_tab_users button {
+    padding: 10px;
+    font-size: 14px;
+}
+
+/* Image adjustments */
+.image {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+}
+
+/* Make chat box full screen on mobile */
+@media (max-width: 576px) {
+    .chat-box {
+        padding: 10px;
+    }
 }

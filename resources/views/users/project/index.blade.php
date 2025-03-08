@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('header')
-    <link rel="stylesheet" href="{{ asset('css/users/profile/index.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/users/project/index.css') }}">
 
     <script defer src="{{ asset('js/project/index.js') }}?v={{ filemtime(public_path('js/project/index.js')) }}"></script>
 
@@ -15,124 +15,142 @@
 @endsection
 
 @section('content')
-    @if (Session::has('success'))
-        <div class="alert alert-success text-center">
-            {{ Session::get('success') }}
-        </div>
-    @endif
+    <div class="container mt-4">
+        @if (Session::has('success'))
+            <div class="alert alert-success text-center">
+                {{ Session::get('success') }}
+            </div>
+        @endif
 
-    @if (Session::has('error'))
-        <div class="alert alert-danger text-center">
-            {{ Session::get('error') }}
-        </div>
-    @endif
+        @if (Session::has('error'))
+            <div class="alert alert-danger text-center">
+                {{ Session::get('error') }}
+            </div>
+        @endif
 
-    <input type="hidden" value="{{ route('home') }}" class="index_url">
+        <input type="hidden" value="{{ route('home') }}" class="index_url">
 
-    <div class="row">
-        <div class="col-2" style="margin-top: 25px">
-            <form action="{{ route('home') }}" id="filter_form" method="post">
-                @csrf
+        <!-- Toggle Sidebar Button (Visible Only on Mobile) -->
+        <button id="toggleSidebarBtn" class="btn btn-primary btn-sm d-md-none mb-2">
+            Filters
+        </button>
 
-                <h4>search</h4>
-                <div class="form-group pb-3">
-                    <input type="text" class="form-control" name="search" value="{{ old('search', $search) }}">
-                </div>
+        <div class="row">
+            <!-- Sidebar (Hidden by Default on Mobile) -->
+            <div id="sidebar" class="col-12 col-md-2 mt-3 d-none d-md-block">
+                <form action="{{ route('home') }}" id="filter_form" method="post">
+                    @csrf
 
-                <h4> max number of days</h4>
-                <div class="form-group pb-3">
-                    <input type="number" name="num_of_days" class="form-control"
-                        value="{{ old('num_of_days', $num_of_days) }}">
-                </div>
+                    <h6 class="text-sm">Search</h6>
+                    <div class="form-group mb-2">
+                        <input type="text" placeholder="Search" class="form-control form-control-sm w-100" name="search"
+                            value="{{ old('search', $search) }}">
+                    </div>
 
-                @error('num_of_days')
-                    <small style="color: red">{{ $message }}</small>
-                @enderror
+                    <h6 class="text-sm">Max Number of Days</h6>
+                    <div class="form-group mb-2">
+                        <input type="number" name="num_of_days" class="form-control form-control-sm w-100"
+                            placeholder="Days" value="{{ old('num_of_days', $num_of_days) }}">
+                        @error('num_of_days')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
 
+                    <h6 class="text-sm">Price</h6>
+                    <div class="form-group mb-2">
+                        <input type="number" name="min_price" class="form-control form-control-sm w-100"
+                            value="{{ old('min_price', $min_price) }}" placeholder="Min">
+                        @error('min_price')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
 
-                <h4>price</h4>
-                <div class="form-group pb-3">
-                    <input type="number" name="min_price" class="form-control" value="{{ old('min_price', $min_price) }}"
-                        placeholder="min">
+                        <input type="number" name="max_price" class="form-control form-control-sm w-100 mt-1"
+                            value="{{ old('max_price', $max_price) }}" placeholder="Max">
+                        @error('max_price')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
 
-                    @error('min_price')
-                        <small style="color: red">{{ $message }}</small>
-                    @enderror
-
-                    <input type="number" name="max_price" class="form-control" value="{{ old('max_price', $max_price) }}"
-                        placeholder="max" style="margin-top: 5px">
-
-                    @error('max_price')
-                        <small style="color: red">{{ $message }}</small>
-                    @enderror
-                </div>
-
-                <div class="pb-3">
-                    <h4>experience</h4>
-
-                    <div class="form-check">
-                        <label class="form-check-label">
+                    <h6 class="text-sm">Experience</h6>
+                    <div class="mb-2">
+                        <div class="form-check">
                             <input type="checkbox" class="form-check-input" name="exp[]" value="beginner"
                                 @checked(in_array('beginner', old('exp', $exp)))>
-                            beginner
-                        </label>
-                    </div>
-
-                    <div class="form-check">
-                        <label class="form-check-label">
+                            <label class="form-check-label">Beginner</label>
+                        </div>
+                        <div class="form-check">
                             <input type="checkbox" class="form-check-input" name="exp[]" value="intermediate"
                                 @checked(in_array('intermediate', old('exp', $exp)))>
-                            intermediate
-                        </label>
-                    </div>
-
-                    <div class="form-check">
-                        <label class="form-check-label">
+                            <label class="form-check-label">Intermediate</label>
+                        </div>
+                        <div class="form-check">
                             <input type="checkbox" class="form-check-input" name="exp[]" value="experienced"
                                 @checked(in_array('experienced', old('exp', $exp)))>
-                            experienced
-                        </label>
+                            <label class="form-check-label">Experienced</label>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group pb-3">
-                    <button type="submit" class="btn btn-primary btn-block">
-                        Search
-                    </button>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-sm w-100">
+                            <i class="fa-solid fa-magnifying-glass mr-1"></i>
+                            <span>apply</span>
+                        </button>
+                        <a href="{{ route('home') }}" class="btn btn-danger btn-sm w-100">
+                            <i class="fa-solid fa-rotate-right mr-1"></i>
+                            <span>Reset</span>
+                        </a>
+                    </div>
+                </form>
+            </div>
 
-                    <a href="{{ route('home') }}" class="btn btn-danger btn-block">
-                        Reset
+            <!-- Job Listings -->
+            <div class="col-12 col-md-10">
+                @auth
+                    <a class="btn btn-primary mt-3 " href="{{ route('project.create') }}" role="button">
+                        <i class="fa-solid fa-plus mr-1"></i>
+                        <span>Add Project</span>
                     </a>
-                </div>
-            </form>
+                @endauth
 
-        </div>
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h5>Jobs You Might Like</h5>
+                    </div>
 
-        <div class="col-10">
-            @auth
-                <a class="btn btn-primary" href="{{ route('project.create') }}" style="margin-top: 25px" role="button">
-                    add project
-                </a>
-            @endauth
+                    <div class="parent_projects" data-cursor="{{ $cursor }}">
+                        @include('users.project.index_projects')
+                    </div>
 
-            <div class="card" style="margin-top: 5px">
-                <div class="card-header">
-                    <h3>jobs you might like</h3>
-                </div>
+                    <div class="d-flex justify-content-center">
+                        <div class="alert alert-danger err_msg d-none"></div>
 
-                <div class="parent_projects" data-cursor="{{ $cursor }}">
-                    @include('users.project.index_projects')
-                </div>
-
-                <div class="d-flex justify-content-center">
-                    <div class="alert alert-danger err_msg" style="display: none"></div>
-
-                    <button @style(['display:none' => !$cursor]) class="btn btn-primary submit_btn" style="width: 120px;margin-bottom: 25px"
-                        role="button">
-                        load more
-                    </button>
+                        <button class="btn btn-primary btn-sm submit_btn w-100 mt-2" @style(['display:none' => !$cursor])>
+                            Load More
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- JavaScript for Toggle -->
+    <script>
+        document.getElementById("toggleSidebarBtn").addEventListener("click", function() {
+            document.getElementById("sidebar").classList.toggle("d-none");
+        });
+
+        document.querySelector(".de").addEventListener("click", function() {
+            const nav_items = document.querySelectorAll(".link");
+            nav_items.forEach(item => {
+                item.classList.toggle("nav-item");
+            });
+
+            const right_side_nav = document.querySelector('.nav_right_side');
+            if (right_side_nav.style.display !== 'none') {
+                right_side_nav.style.display='none';
+            }else{
+                right_side_nav.style.display= '';
+            }
+        });
+    </script>
 @endsection

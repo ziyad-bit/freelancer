@@ -49,7 +49,7 @@ class ChatRooms
 				});
 			})
 			->when($message_id != 0, fn ($query) => $query->where('messages.id', '<', $message_id))
-			->distinct()
+			->groupBy('messages.chat_room_id')
 			->latest('messages.id');
 	}
 }

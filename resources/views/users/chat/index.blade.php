@@ -19,6 +19,8 @@
         <div class="alert alert-danger text-center">{{ Session::get('error') }}</div>
     @endif
 
+    <button class="btn btn-primary d-md-none" onclick="toggleChatList()">Show Chat List</button>
+
     <input type="hidden" value="{{ Auth::user()->name }}" id="auth_name">
     <input type="hidden" value="{{ Auth::user()->image }}" id="auth_photo">
     <input type="hidden" value="{{ Auth::id() }}" id="auth_id">
@@ -31,7 +33,7 @@
 
                     <div class="row" style="margin-top: 50px">
                         {{-- left side which contain search bar and chatrooms --}}
-                        <div class="col-4 ">
+                        <div class="col-md-4 col-sm-12 chat-list">
 
                             <div class="input-group mb-3">
                                 <span class="input-group-text" id="basic-addon1">
@@ -52,7 +54,7 @@
                         </div>
 
                         {{-- right side which contain chat boxes --}}
-                        <div class="col-8">
+                        <div class="col-md-8 col-sm-12">
                             <div class="tab-content box_msgs" id="nav-tabContent">
                                 @include('users.includes.chat.index_chat_boxes')
                             </div>
@@ -66,4 +68,10 @@
     @else
         <h3 style="margin-top: 10px" class="text-center">no messages</h3>
     @endif
+
+    <script>
+        function toggleChatList() {
+            document.querySelector('.chat-list').classList.toggle('show');
+        }
+    </script>
 @endsection
