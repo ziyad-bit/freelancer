@@ -21,7 +21,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		/**
 		 * we will get the chat rooms with last message
 		 */
-		$all_chat_rooms = ChatRooms::index()->limit(5)->get();
+		$all_chat_rooms = (new ChatRooms())->index()->limit(5)->get();
 
 		$messages     = [];
 		$chat_room_id = '';
@@ -56,13 +56,14 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		}
 
 		//we will get the chat room between the authenticated user and the selected user
-		$selected_chat_room_query = ChatRooms::index(0, '', $receiver_id);
+		$chatroom=new ChatRooms();
+		$selected_chat_room_query = $chatroom->index(0, '', $receiver_id);
 		$selected_chat_room       = $selected_chat_room_query->first();
 
 		/**
 			* we will get all the chat rooms with last message
 			*/
-		$all_chat_rooms = ChatRooms::index()->limit(4)->get();
+		$all_chat_rooms = $chatroom->index()->limit(4)->get();
 
 		/**
 		 * if the chatroom does not exist, create a new chatroom
@@ -113,7 +114,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 			get more the chat rooms for infinite scrolling
 			with last message
 		 */
-		$all_chat_rooms = ChatRooms::index($message_id)->limit(4)->get();
+		$all_chat_rooms = (new ChatRooms())->index($message_id)->limit(4)->get();
 
 		$data = [
 			'selected_chat_room_id' => '',

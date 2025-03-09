@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\{Auth, DB};
 
 class ChatRooms
 {
-	public static function index(int $message_id = 0, string $searchName = '', int $receiver_id = 0):Builder
+	public function index(int $message_id = 0, string $searchName = '', int $receiver_id = 0):Builder
 	{
 		/**
 		in case searchName is not empty string, we will search for the sender name

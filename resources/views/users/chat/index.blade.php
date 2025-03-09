@@ -19,7 +19,9 @@
         <div class="alert alert-danger text-center">{{ Session::get('error') }}</div>
     @endif
 
-    <button class="btn btn-primary d-md-none" onclick="toggleChatList()">Show Chat List</button>
+    <button class="btn btn-primary mt-5 d-md-none" onclick="toggleChatList()">
+        Show Chat List
+    </button>
 
     <input type="hidden" value="{{ Auth::user()->name }}" id="auth_name">
     <input type="hidden" value="{{ Auth::user()->image }}" id="auth_photo">
