@@ -29,7 +29,6 @@ class UserSeeder extends Seeder
 				'email_verified_at' => now(),
 				'password'          => Hash::make('13131313'),
 				'remember_token'    => Str::random(10),
-				'image'             => 'Unknown-person.gif',
 				'created_at'        => $date,
 				'updated_at'        => $date,
 			]);
