@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Exceptions\GeneralNotFoundException;
-use App\Exceptions\RecordExistException;
 use App\Http\Requests\{FilterRequest, ProjectRequest};
 use App\Interfaces\Repository\{FileRepositoryInterface, ProjectRepositoryInterface, SkillRepositoryInterface};
 use App\Traits\{GetCursor, Slug};

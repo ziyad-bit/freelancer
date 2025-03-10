@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('header')
-    <link rel="stylesheet" href="{{ asset('css/users/profile/index.css') }}">
+    <link rel="stylesheet" href="{{ mix('css/minify/users/profile/index.css') }}">
 
-    <script defer src="{{ asset('js/profile/index.js') }}?v={{ filemtime(public_path('js/profile/index.js')) }}"></script>
+    <script defer src="{{ mix('js/minify/profile/index.js')}}"></script>
 
     <title>
         {{ ucfirst($user_info->name) . ' - ' . config('app.name') }}

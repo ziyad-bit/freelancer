@@ -1,0 +1,1 @@
+(()=>{var e=document.querySelector("#next_btn");e.onclick=function(){e.disabled=!0;var t=document.querySelector(".checkout_btn"),n=document.querySelector("#amount").value,c=t.href;c=c.substring(0,c.lastIndexOf("/")),t.href=c+"/"+n,t.style.display=""}})();

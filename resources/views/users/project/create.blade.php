@@ -5,8 +5,8 @@
 
     <script defer src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
 
-    <script defer src="{{ asset('js/project/create.js') }}?v={{ filemtime(public_path('js/project/create.js')) }}"></script>
-    <script defer src="{{ asset('js/skill/add.js') }}?v={{ filemtime(public_path('js/skill/add.js')) }}"></script>
+    <script defer src="{{ mix('js/minify/project/create.js')}}"></script>
+    <script defer src="{{ mix('js/minify/skill/add.js')}}"></script>
 @endsection
 
 @section('content')

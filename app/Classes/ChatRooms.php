@@ -41,7 +41,7 @@ class ChatRooms
 						$query->where('cru2.user_id', $receiver_id);
 					});
 			})
-			->where('last', 1)
+			->where(['last' => 1, 'decision' => 'approved'])
 			->when($searchName != '', function ($query) use ($searchName) {
 				$query->where(function ($query) use ($searchName) {
 					$query->where('sender.name', 'LIKE', "{$searchName}%")

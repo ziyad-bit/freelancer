@@ -1,0 +1,1 @@
+(()=>{var t,e=!0;(t=document.querySelector(".chat_body")).onscroll=function(){if(0==t.scrollTop&&1==e){var o=this.firstElementChild.getAttribute("id"),r=t.getAttribute("data-url")+"/"+o;axios.get(r).then((function(o){if(200==o.status){var r=o.data.messages;""!==r?(t.insertAdjacentHTML("afterbegin",r),t.scrollTo({top:100,behavior:"smooth"})):e=!1}}))}}})();

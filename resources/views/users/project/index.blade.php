@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('header')
-    <link rel="stylesheet" href="{{ asset('css/users/project/index.css') }}">
+    <link rel="stylesheet" href="{{ mix('css/minify/users/project/index.css') }}">
 
-    <script defer src="{{ asset('js/project/index.js') }}?v={{ filemtime(public_path('js/project/index.js')) }}"></script>
+    <script defer src="{{ mix('js/minify/project/index.js')}}"></script>
 
     @auth
         <title>

@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('header')
-    <script defer src="{{ asset('js/skill/create.js') }}?v={{ filemtime(public_path('js/skill/create.js')) }}"></script>
-    <script defer src="{{ asset('js/skill/add.js') }}?v={{ filemtime(public_path('js/skill/add.js')) }}"></script>
+    <script defer src="{{ mix('js/minify/skill/create.js')}}"></script>
+    <script defer src="{{ mix('js/minify/skill/add.js')}}"></script>
 @endsection
 
 @section('content')

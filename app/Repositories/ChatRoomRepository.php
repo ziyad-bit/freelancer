@@ -56,7 +56,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		}
 
 		//we will get the chat room between the authenticated user and the selected user
-		$chatroom=new ChatRooms();
+		$chatroom                 = new ChatRooms();
 		$selected_chat_room_query = $chatroom->index(0, '', $receiver_id);
 		$selected_chat_room       = $selected_chat_room_query->first();
 
@@ -83,8 +83,8 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 
 			DB::table('chat_room_user')
 				->insert([
-					['chat_room_id' => $uuid, 'user_id' => $auth_id],
-					['chat_room_id' => $uuid, 'user_id' => $receiver_id],
+					['chat_room_id' => $uuid, 'user_id' => $auth_id, 'decision' => 'approved'],
+					['chat_room_id' => $uuid, 'user_id' => $receiver_id, 'decision' => 'approved'],
 				]);
 
 			$selected_chat_room = $selected_chat_room_query->first();

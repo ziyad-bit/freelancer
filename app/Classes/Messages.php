@@ -10,9 +10,6 @@ class Messages
 	public static function index(string $chat_room_id, string $created_at = ''):Collection
 	{
 		return DB::table('messages')
-			->join('users as sender', 'messages.sender_id', '=', 'sender.id')
-			->join('users as receiver', 'messages.receiver_id', '=', 'receiver.id')
-			->leftJoin('message_files', 'messages.id', '=', 'message_files.message_id')
 			->select(
 				'messages.*',
 				'sender.image   as sender_image',
@@ -20,6 +17,9 @@ class Messages
 				DB::raw('GROUP_CONCAT(message_files.file order by message_files.file) as files_name'),
 				DB::raw('GROUP_CONCAT(message_files.type order by message_files.file) as files_type'),
 			)
+			->join('users as sender', 'messages.sender_id', '=', 'sender.id')
+			->join('users as receiver', 'messages.receiver_id', '=', 'receiver.id')
+			->leftJoin('message_files', 'messages.id', '=', 'message_files.message_id')
 			->where('messages.chat_room_id', $chat_room_id)
 			->when(
 				$created_at != '',
