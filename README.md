@@ -5,13 +5,14 @@ Freelancer Project is a web application built with **Laravel**, **JavaScript**, 
 
 ## Features
 - **User Authentication**: Secure login and registration system.
-- **Freelancer & Client Profiles**: Separate dashboards for freelancers and clients.
 - **Job Posting**: Clients can create job listings with project details.
 - **Bidding System**: Freelancers can bid on projects with their proposals.
 - **Messaging System**: Real-time chat between freelancers and clients.
 - **Payment Integration**: Secure transactions using hyperPay gateway.
 - **Admin Panel**: Manage users, projects, and debates.
 - **transactions showing**: show all transactions for clients and freelancer.
+- **Separate admin dashboards**: Separate dashboards for admins and users.
+
 
 ## Tech Stack
 - **Backend**: Laravel (PHP Framework)
@@ -27,7 +28,7 @@ Freelancer Project is a web application built with **Laravel**, **JavaScript**, 
 Ensure you have the following installed:
 - PHP `>= 8.1`
 - Composer
-- Node.js & npm
+- Node.js & npm `= 18.00`
 - MySQL
 - Redis
 
