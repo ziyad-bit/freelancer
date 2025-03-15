@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Users\SkillController;
 use App\Http\Controllers\Users\ProjectController;
@@ -8,7 +7,7 @@ use App\Http\Controllers\Users\ProposalController;
 use App\Http\Controllers\Users\AuthProjectController;
 use App\Http\Controllers\Users\TransactionController;
 use App\Http\Controllers\Users\VerificationController;
-use App\Http\Controllers\Users\{AuthController, ChatRoomController, ChatRoomInvitationController, FileController, MessageController, MyProjectController, NotificationsController, ProfileController, ResetPasswordController, SearchController, SocialiteController};
+use App\Http\Controllers\Users\{AuthController, ChatRoomController, ChatRoomInvitationController, FileController, MessageController, NotificationsController, ProfileController, ResetPasswordController, SearchController, SocialiteController};
 
 /*
 |--------------------------------------------------------------------------
@@ -115,8 +114,7 @@ Route::namespace('Users')->controller(ChatRoomController::class)->group(function
 Route::namespace('Users')->controller(ChatRoomInvitationController::class)->group(function () {
 	Route::get('chatrooms/users/{chat_room_id}'            , 'get_users')->name('chatrooms.get_users');
 	Route::post('chatrooms/send-invitation'                , 'send_user_invitation')->name('chatrooms.send_user_invitation');
-	Route::post('chatrooms/accept-invitation'              , 'post_accept_invitation')->name('chatrooms.postAcceptInvitation');
-	Route::get('chatrooms/accept-invitation/{chat_room_id}', 'get_accept_invitation')->name('chatrooms.getAcceptInvitation');
+	Route::post('chatrooms/accept-invitation'              , 'accept_invitation')->name('chatrooms.postAcceptInvitation');
 	Route::post('chatrooms/refuse-invitation'              , 'refuse_invitation')->name('chatrooms.refuseInvitation');
 });
 

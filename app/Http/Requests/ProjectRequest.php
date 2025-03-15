@@ -35,7 +35,7 @@ class ProjectRequest extends FormRequest
 			'exp'           => ['required', 'string', Rule::in(['beginner', 'intermediate', 'experienced'])],
 			'skills'        => ['required', 'array', new NotEmptyArray],
 			'skills.*.name' => 'nullable|string',
-			'skills.*.id'   => ['nullable', 'numeric', 'distinct', 'exists:skills,id'],
+			'skills.*.id'   => ['numeric', 'distinct', 'exists:skills,id'],
 			'num_input'     => 'required|numeric',
 			'files'         => 'nullable|array',
 		];

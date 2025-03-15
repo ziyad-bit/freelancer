@@ -34,7 +34,7 @@ class ChatRoomInvitationController extends Controller
 	}
 
 	// MARK:AcceptInvitation
-	public function post_accept_invitation(ChatRoomRequest $request):View|RedirectResponse
+	public function accept_invitation(ChatRoomRequest $request):View|RedirectResponse
 	{
 		$this->ChatRoomInvitationRepository->postAcceptInvitationChatroom($request);
 

@@ -72,7 +72,7 @@ class ProfileRepository implements ProfileRepositoryInterface
 		$user_id = Auth::id();
 		$data    = $request->safe()->except('image');
 
-		try {
+		// try {
 			DB::beginTransaction();
 
 			DB::table('user_infos')->where('user_id', $user_id)->update($data);
@@ -93,12 +93,12 @@ class ProfileRepository implements ProfileRepositoryInterface
 			DB::commit();
 
 			$request->session()->regenerate();
-		} catch (\Throwable $th) {
-			DB::rollBack();
-			Log::critical('rollback database and error is ' . $th->getMessage());
+		// } catch (\Throwable $th) {
+		// 	DB::rollBack();
+		// 	Log::critical('rollback database and error is ' . $th->getMessage());
 
-			abort(500, 'something went wrong');
-		}
+		// 	abort(500, 'something went wrong');
+		// }
 	}
 
 	//MARK: deleteUserInfo

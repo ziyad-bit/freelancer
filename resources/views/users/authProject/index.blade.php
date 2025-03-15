@@ -22,11 +22,11 @@
         <div class="alert alert-danger text-center">{{ Session::get('error') }}</div>
     @endif
 
-    <table class="table " style="margin-top: 20px">
-        <thead class="thead-dark">
+    <table class="table  table-striped  table-hover m-3" style="margin-top: 20px">
+        <thead class="table-primary">
             <tr>
                 <th scope="col">type</th>
-                <th scope="col">amount</th>
+                <th scope="col">milestone</th>
                 <th scope="col">project title</th>
                 <th scope="col">client</th>
                 <th scope="col">freelancer</th>

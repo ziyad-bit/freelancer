@@ -38,11 +38,11 @@ class AuthProjectRepository implements AuthProjectRepositoryInterface
 				->leftJoin('transactions', 'projects.id', '=', 'transactions.project_id')
 				->leftJoin('debates', 'transactions.id', '=', 'debates.transaction_id')
 				->where('projects.user_id', $auth_id)
-				->where('type', '!=', 'withdraw')
 				->orWhere(fn ($query) => $query->where(['proposals.user_id' => $auth_id, 'proposals.approval' => 'approved']))
 				->latest('projects.created_at')
 				->limit(10)
 				->get();
+
 	}
 
 	// MARK: store Debate

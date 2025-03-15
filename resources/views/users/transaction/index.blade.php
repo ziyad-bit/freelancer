@@ -27,8 +27,8 @@
         withdraw
     </a>
 
-    <table class="table " style="margin-top: 20px">
-        <thead class="thead-dark">
+    <table class="table  table-striped  table-hover m-4" style="margin-top: 20px">
+        <thead class="table-primary">
             <tr>
                 <th scope="col">type</th>
                 <th scope="col">amount</th>

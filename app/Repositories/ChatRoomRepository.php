@@ -54,7 +54,7 @@ class ChatRoomRepository implements ChatRoomRepositoryInterface
 		if (!$receiver) {
 			throw new GeneralNotFoundException('user');
 		}
-
+		
 		//we will get the chat room between the authenticated user and the selected user
 		$chatroom                 = new ChatRooms();
 		$selected_chat_room_query = $chatroom->index(0, '', $receiver_id);

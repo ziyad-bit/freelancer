@@ -18,8 +18,8 @@ class Project
 	 */
 	public function handle(Request $request, Closure $next)
 	{
-		$project_id = $request->route('project');
-		$user_id    = DB::table('projects')->where('id', $project_id)->value('user_id');
+		$project_slug = $request->route('project');
+		$user_id    = DB::table('projects')->where('slug', $project_slug)->value('user_id');
 
 		if ($user_id !== Auth::id()) {
 			abort(500, 'something went wrong');

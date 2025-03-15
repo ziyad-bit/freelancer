@@ -20,7 +20,7 @@ class proposalSeeder extends Seeder
 		$users    = collect(DB::table('users')->pluck('id')->toArray());
 		$projects = collect(DB::table('projects')->pluck('id')->toArray());
 
-		for ($i = 0; $i < 100; $i++) {
+		foreach ($projects as $i => $project) {
 			$date   = $faker->dateTimeBetween('-5 years');
 
 			DB::table('proposals')->insert([
@@ -30,7 +30,7 @@ class proposalSeeder extends Seeder
 				'finished'    => Arr::random(['finished', 'unfinished', null, 'in progress']),
 				'num_of_days' => rand(3, 9),
 				'user_id'     => $users->random(),
-				'project_id'  => $projects->random(),
+				'project_id'  => $project,
 				'created_at'  => $date,
 				'updated_at'  => $date,
 			]);

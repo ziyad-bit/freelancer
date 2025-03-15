@@ -13,7 +13,7 @@
         add
     </a>
 
-        <table class="table table-striped  table-hover m-1" >
+        <table class="table-primary table-striped  table-hover m-1" >
             <thead class="thead-dark">
                 <tr>
                     <th scope="col">ID</th>

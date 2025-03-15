@@ -31,6 +31,6 @@
     @endforeach
 @else
     @if (!request()->ajax())
-        <h3>no transactions</h3>
+        <h3 class="text-center mt-5">no transactions</h3>
     @endif
 @endif
