@@ -6,6 +6,7 @@ use App\Exceptions\GeneralNotFoundException;
 use App\Http\Requests\SignupRequest;
 use App\Interfaces\Repository\Admins\AdminRepositoryInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use stdClass;
 
@@ -79,6 +80,10 @@ class AdminRepository implements AdminRepositoryInterface
 	//MARK: deleteAdmin
 	public function deleteAdmin(int $id):void
 	{
+		if (Auth::id() == $id) {
+			abort(403);
+		}
+
 		$admin_query = DB::table('admins')->where('id', $id);
 		$admin_id    = $admin_query->value('id');
 

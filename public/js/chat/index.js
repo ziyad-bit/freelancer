@@ -106,7 +106,7 @@ chat_room_box.onscroll = function () {
 function storeMsg(e) {
     e.preventDefault();
 
-    let chat_room_id = e.target.parentElement.getAttribute('data-chat_room_id'),
+    let chat_room_id = e.target.getAttribute('data-chat_room_id'),
         store_msg_url = e.target.getAttribute('data-store_msg_url'),
         form = document.querySelector('#form' + chat_room_id),
         formData = new FormData(form);
@@ -420,10 +420,8 @@ subscribedChatChannels.add(selected_chat_room_id)
 
 // eslint-disable-next-line no-undef
 generalEventListener('input', '.send_input', e => {
-    let card = e.target.parentElement;
-    let chat_room_id = card.getAttribute('data-chat_room_id');
+    let chat_room_id = e.target.getAttribute('data-chat_room_id');
     let user_id = document.getElementById('auth_id').value;
-
     // eslint-disable-next-line no-undef
     Echo.join(`chatrooms.` + chat_room_id).whisper('typing', {
         chat_room_id: chat_room_id,

@@ -24,11 +24,11 @@
 
                 <div class="row gx-2">
                     <div class="col-9">
-                        <textarea name="text" class="form-control send_input" id="msg{{ $chat_room_id }}" rows="2" 
-                            placeholder="Type a message..."></textarea>
+                        <textarea name="text" data-store_msg_url="{{ route('message.store') }}" class="form-control send_input" id="msg{{ $chat_room_id }}" rows="2" 
+                            data-chat_room_id="{{$chat_room_id }}" placeholder="Type a message..."></textarea>
                     </div>
                     <div class="col-3 d-flex align-items-center" data-chat_room_id="{{$chat_room_id }}">
-                        <button type="button" data-store_msg_url="{{ route('message.store') }}" class="btn btn-success w-100 send_btn">
+                        <button type="button" data-chat_room_id="{{$chat_room_id }}" data-store_msg_url="{{ route('message.store') }}" style="margin-left: 45px;width: 100px" class="btn btn-success  w-80 send_btn">
                             Send
                         </button>
                     </div>
