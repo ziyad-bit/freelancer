@@ -50,17 +50,20 @@
                 <div class="col-md-8">
                     <div class="card-body">
                         <h4 class="card-title">{{ $user_info->name }}</h4>
-
                         @if ($user_info->id === Auth::id())
                             <p class="text-muted">{{ $user_info->email }}</p>
                         @endif
-                        
+
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item"><strong>Job:</strong> {{ $user_info->job ?? '__' }}</li>
                             <li class="list-group-item"><strong>Location:</strong> {{ $user_info->location ?? '__' }}</li>
                             <li class="list-group-item"><strong>Review:</strong> {{ $user_info->review ?? '__' }}</li>
                             <li class="list-group-item"><strong>Earned:</strong> ${{ $user_info->total_amount ?? '0' }}
                             </li>
+                            
+                            @if ($user_info->id === Auth::id())
+                                <li class="list-group-item"><strong>Available:</strong> ${{ $available_money ?? '0' }}</li>
+                            @endif
                         </ul>
                     </div>
                 </div>
