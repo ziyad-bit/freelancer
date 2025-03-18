@@ -18,7 +18,7 @@ class ProfileController extends Controller
 	{
 		$this->middleware('auth');
 		$this->middleware('verifyEmail')->except('index');
-		// $this->middleware('profile')->only(['create', 'store']);
+		$this->middleware('profile')->only(['create', 'store']);
 	}
 
 	//MARK: get

@@ -56,7 +56,7 @@ class User
 					'=',
 					'users.id'
 				)
-				->where('users.slug', Auth::user()->slug)
+				->where('users.slug', $slug)
 				->groupBy('users.id')
 				->first();
 	}
